@@ -21,11 +21,13 @@ if not exist %SEVENZIP% exit
 if not exist %LCOUNTER% exit
 
 
+
 rem ########## Initializing ##########
 echo;
 echo Initializing...
-if exist webapp rmdir /S /Q webapp
+if exist sample rmdir /S /Q sample
 if exist deployment rmdir /S /Q deployment
+
 
 
 rem ########## Building ##########
@@ -38,6 +40,7 @@ echo Building stkwebappcmd.sln...
 %DEVENV% "..\..\YaizuComLib\src\stkwebapp\stkwebappcmd.sln" /rebuild Release
 
 
+
 rem ########## Checking file existence ##########
 echo;
 echo Checking "stkwebapp.exe" existence...
@@ -46,17 +49,31 @@ echo Checking "stkdatagui.exe" existence...
 if not exist "..\..\YaizuComLib\src\stkdatagui\Release\stkdatagui.exe" goto FILENOTEXIST
 echo Checking "stkwebappcmd.exe" existence...
 if not exist "..\..\YaizuComLib\src\stkwebapp\Release\stkwebappcmd.exe" goto FILENOTEXIST
+echo Checking "nginx-1.10.3.zip" existence...
+if not exist "..\..\YaizuComLib\src\stkwebapp\etc\nginx-1.10.3.zip" goto FILENOTEXIST
+
 
 
 rem ########## Deployment of files and folders ##########
 echo;
 echo Deployment of files and folders...
+
 mkdir sample
 copy "..\src\sample\Release\stkwebapp.exe" sample
 copy "..\..\YaizuComLib\src\stkdatagui\Release\stkdatagui.exe" sample
 copy "..\..\YaizuComLib\src\stkwebapp\Release\stkwebappcmd.exe" sample
+
+mkdir sample\nginx
+copy "..\..\YaizuComLib\src\stkwebapp\etc\nginx-1.10.3.zip" sample\nginx
+pushd sample\nginx
+%SEVENZIP% x "nginx-1.10.3.zip"
+popd
+xcopy /y /q /i /s /e "sample\nginx\nginx-1.10.3" sample
+if exist sample\nginx rmdir /S /Q sample\nginx
+
 pause
 exit
+
 
 
 rem ########## Making installer ##########
@@ -65,6 +82,7 @@ echo Making installer...
 %DEVENV% "setup\cmdfreak.sln" /rebuild Release
 mkdir deployment
 copy setup\Release\cmdfreak.msi deployment
+
 
 
 rem ########## ZIP packing ##########
@@ -82,6 +100,7 @@ del cmdfreak.msi
 cd..
 
 
+
 rem ########## build complete ##########
 echo;
 %LCOUNTER% ..\src /subdir
@@ -89,6 +108,7 @@ echo;
 echo All building processes of CmdFreak have been successfully finished.
 pause
 exit /B
+
 
 
 rem ########## Error ##########
