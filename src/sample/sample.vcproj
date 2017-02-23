@@ -61,6 +61,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="Ws2_32.lib shlwapi.lib Psapi.lib Debug\commonfunc.lib Debug\stkthread.lib Debug\stksocket.lib Debug\stkwebapp.lib"
+				OutputFile="$(OutDir)\stkwebapp.exe"
 				LinkIncremental="2"
 				GenerateDebugInformation="true"
 				SubSystem="1"
@@ -138,6 +139,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="Ws2_32.lib shlwapi.lib Psapi.lib Release\commonfunc.lib Release\stkthread.lib Release\stksocket.lib Release\stkwebapp.lib"
+				OutputFile="$(OutDir)\stkwebapp.exe"
 				LinkIncremental="1"
 				GenerateDebugInformation="true"
 				SubSystem="1"
