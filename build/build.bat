@@ -51,6 +51,10 @@ echo Checking "stkwebappcmd.exe" existence...
 if not exist "..\..\YaizuComLib\src\stkwebapp\Release\stkwebappcmd.exe" goto FILENOTEXIST
 echo Checking "nginx-1.10.3.zip" existence...
 if not exist "..\..\YaizuComLib\src\stkwebapp\etc\nginx-1.10.3.zip" goto FILENOTEXIST
+echo Checking "stkwebapp.conf" existence...
+if not exist "..\src\sample\stkwebapp.conf" goto FILENOTEXIST
+echo Checking "stkwebapp.dat" existence...
+if not exist "..\src\sample\stkwebapp.dat" goto FILENOTEXIST
 
 
 
@@ -60,6 +64,8 @@ echo Deployment of files and folders...
 
 mkdir sample
 copy "..\src\sample\Release\stkwebapp.exe" sample
+copy "..\src\sample\stkwebapp.conf" sample
+copy "..\src\sample\stkwebapp.dat" sample
 copy "..\..\YaizuComLib\src\stkdatagui\Release\stkdatagui.exe" sample
 copy "..\..\YaizuComLib\src\stkwebapp\Release\stkwebappcmd.exe" sample
 
