@@ -55,6 +55,10 @@ echo Checking "stkwebapp.conf" existence...
 if not exist "..\src\sample\stkwebapp.conf" goto FILENOTEXIST
 echo Checking "stkwebapp.dat" existence...
 if not exist "..\src\sample\stkwebapp.dat" goto FILENOTEXIST
+echo Checking "index.html" existence...
+if not exist "..\src\sample\index.html" goto FILENOTEXIST
+echo Checking "style.css" existence...
+if not exist "..\src\sample\style.css" goto FILENOTEXIST
 
 
 
@@ -76,6 +80,9 @@ pushd sample\nginx
 popd
 xcopy /y /q /i /s /e "sample\nginx\nginx-1.10.3" sample
 if exist sample\nginx rmdir /S /Q sample\nginx
+
+copy "..\src\sample\index.html" sample\html
+copy "..\src\sample\style.css" sample\html
 
 pause
 exit

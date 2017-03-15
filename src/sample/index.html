@@ -1,0 +1,70 @@
+<!doctype html>
+<html>
+<head>
+<title>StkWebApp - Sample</title>
+
+<link rel="stylesheet" href="./style.css" />
+
+<script type="text/javascript">
+
+    window.onload = function() {
+        boxResize();
+    }
+
+    function boxResize() {
+        var box_info = document.getElementById('box_info');
+        var box_cont = document.getElementById('container');
+        var boxHeight = getshowHeight();
+        var boxWidth  = getshowWidth();
+        if (boxHeight < 440) {
+            boxHeight = 440;
+        }
+        if (boxWidth < 580) {
+            boxWidth = 580;
+        }
+        box_info.style.height = boxHeight - 20 + 'px';
+        box_info.style.width  = boxWidth  + 'px';
+        box_cont.style.height = boxHeight + 'px';
+        box_cont.style.width  = boxWidth  + 'px';
+    }
+
+    function getshowHeight() {
+        if (window.innerHeight)
+            return window.innerHeight;
+        if (document.body.parentNode.clientHeight)
+            return document.body.parentNode.clientHeight;
+        if (document.body.clientHeight)
+            return document.body.clientHeight;
+    }
+
+    function getshowWidth() {
+        if (window.innerWidth)
+            return window.innerWidth;
+        if (document.body.parentNode.clientWidth)
+            return document.body.parentNode.clientWidth;
+        if (document.body.clientWidth)
+            return document.body.clientWidth;
+    }
+
+</script>
+</head>
+
+<body style="overflow: hidden;" onresize="boxResize()">
+<div id="container">
+    <div class="headtailbar">
+        <table class="ttblstyle" width="100%"><tr>
+            <td align="left"><b>StkWebApp - Sample</b></td>
+            <td align="right">Copyright (C) S.Takeuchi</td>
+        </tr></table>
+    </div>
+
+    <div id="box_info">
+        <noscript>
+            JavaScriptが無効です。<br>ブラウザの設定を変更してJavaScriptを有効後，ページをリフレッシュしてください。<br>
+        </noscript>
+    </div>
+</div>
+
+</body>
+
+</html>
