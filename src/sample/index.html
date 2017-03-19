@@ -3,12 +3,15 @@
 <head>
 <title>StkWebApp - Sample</title>
 
+<script src="jquery-3.2.0.min.js"></script>
 <link rel="stylesheet" href="./style.css" />
 
 <script type="text/javascript">
 
     window.onload = function() {
         boxResize();
+        var respdata;
+        sendRequestToWebServer('./api/aaa/bbb/', null, respdata);
     }
 
     function boxResize() {
@@ -44,6 +47,24 @@
             return document.body.parentNode.clientWidth;
         if (document.body.clientWidth)
             return document.body.clientWidth;
+    }
+
+    function sendRequestToWebServer(url, request, response) {
+        var resultcode = 0;
+        $.ajax({
+            type: 'GET',
+            dataType: 'json',
+            url: url,
+            async: false,
+            success: function(msg){
+                resultcode = 10
+            },
+            error: function(){
+                resultcode = 20
+            }
+        });
+
+        return resultcode;
     }
 
 </script>
