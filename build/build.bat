@@ -87,17 +87,17 @@ copy "..\src\sample\index.html" sample\html
 copy "..\src\sample\style.css" sample\html
 copy "..\..\YaizuComLib\src\stkwebapp\etc\jquery-3.2.0.min.js" sample\html
 
-pause
-exit
-
 
 
 rem ########## Making installer ##########
 echo;
 echo Making installer...
-%DEVENV% "setup\cmdfreak.sln" /rebuild Release
+%DEVENV% "setup\setup.sln" /rebuild Release
 mkdir deployment
-copy setup\Release\cmdfreak.msi deployment
+copy setup\Release\stkwebapp.msi deployment
+
+pause
+exit
 
 
 
