@@ -1,8 +1,8 @@
-<!doctype html>
+ï»¿<!doctype html>
 <html>
 <head>
 <title>StkWebApp - Sample</title>
-
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <script src="jquery-3.2.0.min.js"></script>
 <link rel="stylesheet" href="./style.css" />
 
@@ -10,9 +10,9 @@
 
     window.onload = function() {
         boxResize();
-        var respdata = { Person : [{'name' : '', 'age' : 0, 'address' : '' }] };
-        var resphtml = { hello : '' };
-        var resphtml2 = { hello2 : '' };
+        var respdata = {};
+        var resphtml = {};
+        var resphtml2 = {};
 
         sendRequestRecvResponse('./api/aaa/bbb/', null, respdata);
         $personDat = $('<table border="1"></table>');
@@ -75,12 +75,12 @@
             url: url,
             data: request,
             async: false,
-            success: function(msg){
-                resultcode = 10
-                $.extend(response,msg);
+            success: function(msg, textStatus, xhr) {
+                resultcode = xhr.status;
+                $.extend(response, msg);
             },
-            error: function(){
-                resultcode = 20
+            error: function() {
+                resultcode = -1;
             }
         });
         return resultcode;
@@ -100,7 +100,7 @@
 
     <div id="box_info">
         <noscript>
-            JavaScript‚ª–³Œø‚Å‚·B<br>ƒuƒ‰ƒEƒU‚Ìİ’è‚ğ•ÏX‚µ‚ÄJavaScript‚ğ—LŒøŒãCƒy[ƒW‚ğƒŠƒtƒŒƒbƒVƒ…‚µ‚Ä‚­‚¾‚³‚¢B<br>
+            JavaScriptãŒç„¡åŠ¹ã§ã™ã€‚<br>ãƒ–ãƒ©ã‚¦ã‚¶ã®è¨­å®šã‚’å¤‰æ›´ã—ã¦JavaScriptã‚’æœ‰åŠ¹å¾Œï¼Œãƒšãƒ¼ã‚¸ã‚’ãƒªãƒ•ãƒ¬ãƒƒã‚·ãƒ¥ã—ã¦ãã ã•ã„ã€‚<br>
         </noscript>
     </div>
 </div>
