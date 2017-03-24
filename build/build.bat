@@ -2,7 +2,7 @@
 
 echo;
 echo =========================================
-echo Build YaizuSample
+echo Build StkWebApp
 echo =========================================
 
 set CURRENTPATH=%cd%
@@ -96,32 +96,13 @@ echo Making installer...
 mkdir deployment
 copy setup\Release\stkwebapp.msi deployment
 
-pause
-exit
-
-
-
-rem ########## ZIP packing ##########
-echo;
-echo ZIP packing stage...
-copy ..\doc\readme\ReadmeJPN.txt deployment
-copy ..\doc\readme\ReadmeENG.txt deployment
-cd deployment
-%SEVENZIP% a cfk100.zip cmdfreak.msi
-%SEVENZIP% a cfk100.zip ReadmeENG.txt
-%SEVENZIP% a cfk100.zip ReadmeJPN.txt
-del ReadmeENG.txt
-del ReadmeJPN.txt
-del cmdfreak.msi
-cd..
-
 
 
 rem ########## build complete ##########
 echo;
 %LCOUNTER% ..\src /subdir
 echo;
-echo All building processes of CmdFreak have been successfully finished.
+echo All building processes of StkWebApp have been successfully finished.
 pause
 exit /B
 

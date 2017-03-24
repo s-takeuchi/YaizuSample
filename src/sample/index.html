@@ -10,8 +10,26 @@
 
     window.onload = function() {
         boxResize();
-        var respdata;
-        sendRequestToWebServer('./api/aaa/bbb/', null, respdata);
+        var respdata = { Person : [{'name' : '', 'age' : 0, 'address' : '' }] };
+        var resphtml = { hello : '' };
+        var resphtml2 = { hello2 : '' };
+
+        sendRequestRecvResponse('./api/aaa/bbb/', null, respdata);
+        $personDat = $('<table border="1"></table>');
+        for (var Loop = 0; Loop < 3; Loop++) {
+            $personDat.append('<tr><td>' + respdata.Person[Loop].name + '</td><td>' + respdata.Person[Loop].age + '</td><td>' + respdata.Person[Loop].address + '</td></tr>');
+        }
+        $('#box_info').append($personDat);
+
+        sendRequestRecvResponse('./api/aaa/xxx/', null, resphtml);
+        $h1Dat = $('<h1></h1>');
+        $h1Dat.append(resphtml.hello);
+        $('#box_info').append($h1Dat);
+
+        sendRequestRecvResponse('./api/bbb/xxx/', null, resphtml2);
+        $h2Dat = $('<h2></h2>');
+        $h2Dat.append(resphtml2.hello2);
+        $('#box_info').append($h2Dat);
     }
 
     function boxResize() {
@@ -49,21 +67,22 @@
             return document.body.clientWidth;
     }
 
-    function sendRequestToWebServer(url, request, response) {
+    function sendRequestRecvResponse(url, request, response) {
         var resultcode = 0;
         $.ajax({
             type: 'GET',
             dataType: 'json',
             url: url,
+            data: request,
             async: false,
             success: function(msg){
                 resultcode = 10
+                $.extend(response,msg);
             },
             error: function(){
                 resultcode = 20
             }
         });
-
         return resultcode;
     }
 

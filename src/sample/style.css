@@ -86,7 +86,7 @@ table.ttblstyle{
 	empty-cells:show;
 }
 
-.tblstyle th{
+.ttblstyle th{
 	border-top:1px solid #000000;
 	border-bottom:1px solid #000000;
 	border-left:1px solid #000000;
