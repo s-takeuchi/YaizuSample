@@ -1,7 +1,7 @@
 #include <tchar.h>
 #include "Sample_Elem1.h"
 
-StkObject* Sample_Elem1::Execute(StkObject* ReqObj, int Method, TCHAR UrlPath[128], int* ResultCode)
+StkObject* Sample_Elem1::Execute(StkObject* ReqObj, int Method, TCHAR UrlPath[128], int* ResultCode, TCHAR Locale[3])
 {
 	StkObject* TmpObj = new StkObject(_T(""));
 	StkObject* TmpObj1 = new StkObject(_T("Person"));
