@@ -8,6 +8,7 @@
 #include "..\..\..\YaizuComLib\src\stkthread\stkthread.h"
 #include "..\..\..\YaizuComLib\src\stksocket\stksocket.h"
 #include "..\..\..\YaizuComLib\src\stkwebapp\StkWebApp.h"
+#include "..\..\..\YaizuComLib\src\stkwebapp\StkWebAppExec.h"
 #include "sample_elem1.h"
 #include "sample_elem2.h"
 #include "sample_elem3.h"
@@ -19,19 +20,19 @@ void Sample(TCHAR* IpAddr, int Port)
 	StkWebApp* Soc = new StkWebApp(Ids, 3, IpAddr, Port);
 
 	Sample_Elem1* Test1Hndl = new Sample_Elem1();
-	int Add1 = Soc->AddReqHandler(StkWebApp::STKWEBAPP_METHOD_GET, _T("/api/aaa/bbb/"), (StkWebAppExec*)Test1Hndl);
+	int Add1 = Soc->AddReqHandler(StkWebAppExec::STKWEBAPP_METHOD_GET, _T("/api/aaa/bbb/"), (StkWebAppExec*)Test1Hndl);
 	Sample_Elem2* Test2Hndl = new Sample_Elem2();
-	int Add2 = Soc->AddReqHandler(StkWebApp::STKWEBAPP_METHOD_GET, _T("/api/aaa/xxx/"), (StkWebAppExec*)Test2Hndl);
+	int Add2 = Soc->AddReqHandler(StkWebAppExec::STKWEBAPP_METHOD_GET, _T("/api/aaa/xxx/"), (StkWebAppExec*)Test2Hndl);
 	Sample_Elem3* Test3Hndl = new Sample_Elem3();
-	int Add3 = Soc->AddReqHandler(StkWebApp::STKWEBAPP_METHOD_GET, _T("/api/bbb/$/"), (StkWebAppExec*)Test3Hndl);
+	int Add3 = Soc->AddReqHandler(StkWebAppExec::STKWEBAPP_METHOD_GET, _T("/api/bbb/$/"), (StkWebAppExec*)Test3Hndl);
 
 	////////// Main logic starts
 	Soc->TheLoop();
 	////////// Main logic ends
 
-	int Del1 = Soc->DeleteReqHandler(StkWebApp::STKWEBAPP_METHOD_GET, _T("/api/aaa/bbb/"));
-	int Del2 = Soc->DeleteReqHandler(StkWebApp::STKWEBAPP_METHOD_GET, _T("/api/aaa/xxx/"));
-	int Del3 = Soc->DeleteReqHandler(StkWebApp::STKWEBAPP_METHOD_GET, _T("/api/bbb/$/"));
+	int Del1 = Soc->DeleteReqHandler(StkWebAppExec::STKWEBAPP_METHOD_GET, _T("/api/aaa/bbb/"));
+	int Del2 = Soc->DeleteReqHandler(StkWebAppExec::STKWEBAPP_METHOD_GET, _T("/api/aaa/xxx/"));
+	int Del3 = Soc->DeleteReqHandler(StkWebAppExec::STKWEBAPP_METHOD_GET, _T("/api/bbb/$/"));
 
 	delete Soc;
 }
