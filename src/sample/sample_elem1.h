@@ -3,5 +3,5 @@
 
 class Sample_Elem1 : StkWebAppExec
 {
-	StkObject* Execute(StkObject*, int, TCHAR[128], int*, TCHAR[3]);
+	StkObject* Execute(StkObject*, int, TCHAR[StkWebAppExec::URL_PATH_LENGTH], int*, TCHAR[3]);
 };
