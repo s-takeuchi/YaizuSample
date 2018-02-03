@@ -6,7 +6,7 @@ echo Build StkWebApp
 echo =========================================
 
 set CURRENTPATH=%cd%
-set DEVENV="C:\Program Files (x86)\Microsoft Visual Studio 9.0\Common7\IDE\devenv.exe"
+set DEVENV="C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\Common7\IDE\devenv.exe"
 set SEVENZIP="C:\Program Files\7-Zip\7z.exe"
 set LCOUNTER="C:\Program Files (x86)\lcounter\lcounter.exe"
 
