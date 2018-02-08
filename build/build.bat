@@ -12,7 +12,7 @@ set LCOUNTER="C:\Program Files (x86)\lcounter\lcounter.exe"
 
 echo;
 echo This batch file requires softwares shown below.
-echo (1) Microsoft Visual Studio 2008 Professional Edition
+echo (1) Microsoft Visual Studio 2017
 echo (2) 7-Zip 9.20
 echo (3) Line Counter
 
