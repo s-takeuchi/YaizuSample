@@ -165,6 +165,12 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_BD20251DB9BE419192D58F60FBA395F9"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_BE35B8BE3AC740D0977D88BB62351C7B"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -822,6 +828,26 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_BD20251DB9BE419192D58F60FBA395F9"
+            {
+            "SourcePath" = "8:..\\sample\\contrib\\vim\\ftplugin\\nginx.vim"
+            "TargetName" = "8:nginx.vim"
+            "Tag" = "8:"
+            "Folder" = "8:_6328216AAF024686963BA03D474C6543"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_BE35B8BE3AC740D0977D88BB62351C7B"
             {
             "SourcePath" = "8:..\\sample\\stkdatagui.exe"
@@ -1124,6 +1150,17 @@
                                         {
                                         }
                                     }
+                                    "{9EF0B969-E518-4E46-987F-47570745A589}:_6328216AAF024686963BA03D474C6543"
+                                    {
+                                    "Name" = "8:ftplugin"
+                                    "AlwaysCreate" = "11:FALSE"
+                                    "Condition" = "8:"
+                                    "Transitive" = "11:FALSE"
+                                    "Property" = "8:_97B8B4F5D17C43928A6A9D261231C8B2"
+                                        "Folders"
+                                        {
+                                        }
+                                    }
                                     "{9EF0B969-E518-4E46-987F-47570745A589}:_79B5CA20CFE042FF9609F83C8842A428"
                                     {
                                     "Name" = "8:ftdetect"
@@ -1182,6 +1219,7 @@
         "ProductCode" = "8:{CA413C2F-2F60-4105-8064-929D4A7951D0}"
         "PackageCode" = "8:{BC2019BE-76BA-4E46-B656-875073924639}"
         "UpgradeCode" = "8:{90817031-7435-47D4-A459-BD005762365D}"
+        "AspNetVersion" = "8:2.0.50727.0"
         "RestartWWWService" = "11:FALSE"
         "RemovePreviousVersions" = "11:TRUE"
         "DetectNewerInstalledVersion" = "11:TRUE"
@@ -1693,7 +1731,7 @@
                     "{688940B3-5CA9-4162-8DEE-2993FA9D8CBC}:_79A9B254FA2C4AFDA70187C886BA7DD3"
                     {
                     "Sequence" = "3:200"
-                    "DisplayName" = "8:インストール フォルダ"
+                    "DisplayName" = "8:インストール フォルダー"
                     "UseDynamicProperties" = "11:TRUE"
                     "IsDependency" = "11:FALSE"
                     "SourcePath" = "8:<VsdDialogDir>\\VsdFolderDlg.wid"
@@ -1879,7 +1917,7 @@
                     "{688940B3-5CA9-4162-8DEE-2993FA9D8CBC}:_2D92D1F76C114904A408336E188E9EDC"
                     {
                     "Sequence" = "3:200"
-                    "DisplayName" = "8:インストール フォルダ"
+                    "DisplayName" = "8:インストール フォルダー"
                     "UseDynamicProperties" = "11:TRUE"
                     "IsDependency" = "11:FALSE"
                     "SourcePath" = "8:<VsdDialogDir>\\VsdAdminFolderDlg.wid"

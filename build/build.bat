@@ -49,8 +49,8 @@ echo Checking "stkdatagui.exe" existence...
 if not exist "..\..\YaizuComLib\src\stkdatagui\Release\stkdatagui.exe" goto FILENOTEXIST
 echo Checking "stkwebappcmd.exe" existence...
 if not exist "..\..\YaizuComLib\src\stkwebapp\Release\stkwebappcmd.exe" goto FILENOTEXIST
-echo Checking "nginx-1.10.3.zip" existence...
-if not exist "..\..\YaizuComLib\src\stkwebapp\nginx-1.10.3.zip" goto FILENOTEXIST
+echo Checking "nginx-1.12.2.zip" existence...
+if not exist "..\..\YaizuComLib\src\stkwebapp\nginx-1.12.2.zip" goto FILENOTEXIST
 echo Checking "jquery-3.2.0.min.js" existence...
 if not exist "..\src\sample\jquery-3.2.0.min.js" goto FILENOTEXIST
 echo Checking "stkwebapp.conf" existence...
@@ -76,11 +76,11 @@ copy "..\..\YaizuComLib\src\stkdatagui\Release\stkdatagui.exe" sample
 copy "..\..\YaizuComLib\src\stkwebapp\Release\stkwebappcmd.exe" sample
 
 mkdir sample\nginx
-copy "..\..\YaizuComLib\src\stkwebapp\nginx-1.10.3.zip" sample\nginx
+copy "..\..\YaizuComLib\src\stkwebapp\nginx-1.12.2.zip" sample\nginx
 pushd sample\nginx
-%SEVENZIP% x "nginx-1.10.3.zip"
+%SEVENZIP% x "nginx-1.12.2.zip"
 popd
-xcopy /y /q /i /s /e "sample\nginx\nginx-1.10.3" sample
+xcopy /y /q /i /s /e "sample\nginx\nginx-1.12.2" sample
 if exist sample\nginx rmdir /S /Q sample\nginx
 
 copy "..\src\sample\index.html" sample\html
