@@ -1,14 +1,14 @@
-#include <tchar.h>
+Ôªø#include "../../../YaizuComLib/src/StkPl.h"
 #include "sample_elem3.h"
 
-StkObject* Sample_Elem3::Execute(StkObject* ReqObj, int Method, TCHAR UrlPath[StkWebAppExec::URL_PATH_LENGTH], int* ResultCode, TCHAR Locale[3])
+StkObject* Sample_Elem3::Execute(StkObject* ReqObj, int Method, wchar_t UrlPath[StkWebAppExec::URL_PATH_LENGTH], int* ResultCode, wchar_t Locale[3])
 {
 	int ErrCode;
 	StkObject* TmpObj;
-	if (lstrcmp(Locale, _T("ja")) == 0) {
-		TmpObj = StkObject::CreateObjectFromJson(_T("{ \"hello2\" : \"Ç±ÇÒÇ…ÇøÇÕ!!\" }"), &ErrCode);
+	if (StkPlWcsCmp(Locale, L"ja") == 0) {
+		TmpObj = StkObject::CreateObjectFromJson(L"{ \"hello2\" : \"„Åì„Çì„Å´„Å°„ÅØ!!\" }", &ErrCode);
 	} else {
-		TmpObj = StkObject::CreateObjectFromJson(_T("{ \"hello2\" : \"hello, world!!\" }"), &ErrCode);
+		TmpObj = StkObject::CreateObjectFromJson(L"{ \"hello2\" : \"hello, world!!\" }", &ErrCode);
 	}
 	*ResultCode = 200;
 	return TmpObj;
