@@ -69,6 +69,12 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_38E56281386C4DF79894DCE448E72F4E"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_46A9864B62CA4D83BD5D7512507A7343"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -106,12 +112,6 @@
         "Entry"
         {
         "MsmKey" = "8:_59A17EB60DA54AD3BBA768F4FCBC24A9"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_5C33D4F7107148348B70271095F90C31"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -177,6 +177,12 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_C4089C91301B4F6B920FB7D591533163"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_C76CD6719C0646389B3EE4E187CC6B3A"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -196,12 +202,6 @@
         "Entry"
         {
         "MsmKey" = "8:_DC3BFB9A3D474241B44EA47B317204D6"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_DD2F1087DE284C258EF005B16608BCEE"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -306,7 +306,7 @@
             "Object" = "8:_4BF20778C63C471B924A7D2E8542E6B8"
             "FileType" = "3:2"
             "InstallAction" = "3:1"
-            "Arguments" = "8:inst ProductName=[ProductName] WebPort=[EDITA1] SrvPort=[EDITA2]"
+            "Arguments" = "8:inst ProductName=[ProductName] SrvProgram=sample WebPort=[EDITA1] SrvPort=[EDITA2]"
             "EntryPoint" = "8:"
             "Sequence" = "3:1"
             "Identifier" = "8:_2FCA5C0E_8DEC_4BBB_AA30_50A813633FE6"
@@ -508,6 +508,26 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_38E56281386C4DF79894DCE448E72F4E"
+            {
+            "SourcePath" = "8:..\\sample\\sample.exe"
+            "TargetName" = "8:sample.exe"
+            "Tag" = "8:"
+            "Folder" = "8:_2EE47700FD9E4DD4BD9BDA1A2D4D47F4"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_46A9864B62CA4D83BD5D7512507A7343"
             {
             "SourcePath" = "8:..\\sample\\conf\\nginx.conf"
@@ -634,26 +654,6 @@
             "TargetName" = "8:scgi_params"
             "Tag" = "8:"
             "Folder" = "8:_7B6C4252067649FB9C9B0989F0DBD017"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_5C33D4F7107148348B70271095F90C31"
-            {
-            "SourcePath" = "8:..\\sample\\stkwebapp.dat"
-            "TargetName" = "8:stkwebapp.dat"
-            "Tag" = "8:"
-            "Folder" = "8:_2EE47700FD9E4DD4BD9BDA1A2D4D47F4"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -868,6 +868,26 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_C4089C91301B4F6B920FB7D591533163"
+            {
+            "SourcePath" = "8:..\\sample\\sample.dat"
+            "TargetName" = "8:sample.dat"
+            "Tag" = "8:"
+            "Folder" = "8:_2EE47700FD9E4DD4BD9BDA1A2D4D47F4"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_C76CD6719C0646389B3EE4E187CC6B3A"
             {
             "SourcePath" = "8:..\\sample\\contrib\\unicode2nginx\\win-utf"
@@ -934,26 +954,6 @@
             "TargetName" = "8:uwsgi_params"
             "Tag" = "8:"
             "Folder" = "8:_7B6C4252067649FB9C9B0989F0DBD017"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_DD2F1087DE284C258EF005B16608BCEE"
-            {
-            "SourcePath" = "8:..\\sample\\stkwebapp.exe"
-            "TargetName" = "8:stkwebapp.exe"
-            "Tag" = "8:"
-            "Folder" = "8:_2EE47700FD9E4DD4BD9BDA1A2D4D47F4"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
