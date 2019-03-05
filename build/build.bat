@@ -57,6 +57,8 @@ echo Checking "stkwebapp.conf" existence...
 if not exist "..\src\sample\stkwebapp.conf" goto FILENOTEXIST
 echo Checking "sample.dat" existence...
 if not exist "..\src\sample\sample.dat" goto FILENOTEXIST
+echo Checking "sample.conf" existence...
+if not exist "..\src\sample\sample.conf" goto FILENOTEXIST
 echo Checking "index.html" existence...
 if not exist "..\src\sample\index.html" goto FILENOTEXIST
 echo Checking "style.css" existence...
@@ -72,6 +74,7 @@ mkdir sample
 copy "..\src\sample\Release\sample.exe" sample
 copy "..\src\sample\stkwebapp.conf" sample
 copy "..\src\sample\sample.dat" sample
+copy "..\src\sample\sample.conf" sample
 copy "..\..\YaizuComLib\src\stkdatagui\Release\stkdatagui.exe" sample
 copy "..\..\YaizuComLib\src\stkwebapp\Release\stkwebappcmd.exe" sample
 

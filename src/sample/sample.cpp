@@ -39,7 +39,7 @@ int main(int Argc, char* Argv[])
 	int Port;
 	StkProperties *Prop = new StkProperties();
 	
-	if (Prop->GetProperties(L"stkwebapp.conf") == 0) {
+	if (Prop->GetProperties(L"sample.conf") == 0) {
 		if (Prop->GetPropertyStr("servicehost", IpAddrTmp) != 0) {
 			StkPlPrintf("servicehost property is not found.\r\n");
 			return -1;
