@@ -8,7 +8,7 @@ mkdir -p $BUILDDIR/SOURCES
 # Build
 cd ../src/sample
 make all
-cp ../../src/sample/stkwebapp $BUILDDIR/SOURCES
+cp ../../src/sample/sample $BUILDDIR/SOURCES
 cp ../../src/sample/sample.conf $BUILDDIR/SOURCES
 echo servicehost=127.0.0.1 >> $BUILDDIR/SOURCES/sample.conf
 echo serviceport=8081 >> $BUILDDIR/SOURCES/sample.conf
@@ -26,9 +26,10 @@ Name:    YaizuSample
 Version: 1
 Release: 1%{?dist}
 Summary: YaizuSample
+Requires: nginx = 1:1.12.2-1.el7_4.ngx
 
 License: No License No Life
-Source1: stkwebapp
+Source1: sample
 Source2: sample.conf
 Source3: sample_nginx.conf
 SOurce4: sample.service
@@ -54,7 +55,7 @@ install -p -m 644 %{SOURCE6} %{buildroot}/%{_datarootdir}/nginx/html
 install -p -m 644 %{SOURCE7} %{buildroot}/%{_datarootdir}/nginx/html
 
 %files
-%{_bindir}/stkwebapp
+%{_bindir}/sample
 %{_sysconfdir}/sample.conf
 %{_sysconfdir}/nginx/conf.d/sample_nginx.conf
 %{_sysconfdir}/systemd/system/sample.service
@@ -75,11 +76,11 @@ systemctl enable sample.service
 %preun
 systemctl stop nginx.service
 systemctl stop sample.service
-systemctl disable sample.service
 
 %postun
 firewall-cmd --remove-port=8080/tcp --permanent
 firewall-cmd --reload
+systemctl disable sample.service
 systemctl start nginx.service
 
 
