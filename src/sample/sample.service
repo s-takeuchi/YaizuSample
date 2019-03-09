@@ -1,0 +1,12 @@
+[Unit]
+Description=YaizuSample!!
+After=network.service
+
+[Service]
+Type=simple
+Restart=on-success
+ExecStart=/usr/bin/stkwebapp
+
+[Install]
+WantedBy=multi-user.target
+
