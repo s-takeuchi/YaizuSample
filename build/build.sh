@@ -14,7 +14,7 @@ echo servicehost=127.0.0.1 >> $BUILDDIR/SOURCES/sample.conf
 echo serviceport=8081 >> $BUILDDIR/SOURCES/sample.conf
 cp ../../src/sample/sample.service $BUILDDIR/SOURCES
 cp ../../src/sample/sample_nginx.conf $BUILDDIR/SOURCES
-cp ../../src/sample/index.html $BUILDDIR/SOURCES/sample.html
+cp ../../src/sample/sample.html $BUILDDIR/SOURCES
 cp ../../src/sample/jquery-3.2.0.min.js $BUILDDIR/SOURCES
 cp ../../src/sample/style.css $BUILDDIR/SOURCES
 
@@ -88,4 +88,3 @@ EOF
 
 # RpmBuild
 rpmbuild --define "_topdir ${BUILDDIR}" -bb ./$SPEC
-

@@ -129,6 +129,12 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_83C209FD91AC44D6A5D07AACA8CD2264"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_876094B1770A41F0AD2FC03D85B0227C"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -700,6 +706,26 @@
             "TargetName" = "8:nginx.vim"
             "Tag" = "8:"
             "Folder" = "8:_79B5CA20CFE042FF9609F83C8842A428"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_83C209FD91AC44D6A5D07AACA8CD2264"
+            {
+            "SourcePath" = "8:..\\sample\\html\\sample.html"
+            "TargetName" = "8:sample.html"
+            "Tag" = "8:"
+            "Folder" = "8:_328950E660704BD7856D4AF4E7C70906"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
