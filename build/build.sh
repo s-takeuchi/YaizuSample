@@ -8,18 +8,19 @@ mkdir -p $BUILDDIR/SOURCES
 # Build
 cd ../src/sample
 make all
-cp ../../src/sample/sample $BUILDDIR/SOURCES
-cp ../../src/sample/sample.conf $BUILDDIR/SOURCES
+cp sample $BUILDDIR/SOURCES
+cp sample.conf $BUILDDIR/SOURCES
 echo servicehost=127.0.0.1 >> $BUILDDIR/SOURCES/sample.conf
 echo serviceport=8081 >> $BUILDDIR/SOURCES/sample.conf
-cp ../../src/sample/sample.service $BUILDDIR/SOURCES
-cp ../../src/sample/sample_nginx.conf $BUILDDIR/SOURCES
-cp ../../src/sample/sample.html $BUILDDIR/SOURCES
-cp ../../src/sample/jquery-3.2.0.min.js $BUILDDIR/SOURCES
-cp ../../src/sample/style.css $BUILDDIR/SOURCES
+cp sample.service $BUILDDIR/SOURCES
+cp sample_nginx.conf $BUILDDIR/SOURCES
+cp sample.html $BUILDDIR/SOURCES
+cp jquery-3.2.0.min.js $BUILDDIR/SOURCES
+cp style.css $BUILDDIR/SOURCES
 
 
 # Make SPEC file
+cd $BUILDDIR
 SPEC=sample.spec
 cat <<EOF > ./$SPEC
 Name:    YaizuSample
@@ -83,8 +84,14 @@ firewall-cmd --reload
 systemctl disable sample.service
 systemctl start nginx.service
 
-
 EOF
 
+
 # RpmBuild
+cd $BUILDDIR
 rpmbuild --define "_topdir ${BUILDDIR}" -bb ./$SPEC
+if [ -e ../deployment ]; then
+    yes|rm -r ../deployment
+fi
+mkdir -p ../deployment
+cp RPMS/x86_64/YaizuSample-1-1.el7.centos.x86_64.rpm ../deployment
