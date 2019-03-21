@@ -65,7 +65,7 @@
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>Ws2_32.lib;shlwapi.lib;Psapi.lib;Debug\commonfunc.lib;Debug\stkthread.lib;Debug\stksocket.lib;Debug\stkwebapp.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>Ws2_32.lib;shlwapi.lib;Psapi.lib;Debug\commonfunc.lib;Debug\stkthread.lib;Debug\stksocket.lib;Debug\stkwebapp.lib;Debug\stkpl.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)$(TargetName)$(TargetExt)</OutputFile>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Console</SubSystem>
@@ -88,7 +88,7 @@
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>Ws2_32.lib;shlwapi.lib;Psapi.lib;Release\commonfunc.lib;Release\stkthread.lib;Release\stksocket.lib;Release\stkwebapp.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>Ws2_32.lib;shlwapi.lib;Psapi.lib;Release\commonfunc.lib;Release\stkthread.lib;Release\stksocket.lib;Release\stkwebapp.lib;Release\stkpl.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)$(TargetName)$(TargetExt)</OutputFile>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Console</SubSystem>
