@@ -146,4 +146,4 @@ if [ -e ../deployment ]; then
     yes|rm -r ../deployment
 fi
 mkdir -p ../deployment
-cp RPMS/x86_64/YaizuSample-1-1.el7.centos.x86_64.rpm ../deployment
+cp RPMS/x86_64/YaizuSample-1-1.*.rpm ../deployment
