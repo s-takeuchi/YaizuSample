@@ -1,70 +1,38 @@
 ﻿<!doctype html>
-<html>
+<html lang="ja">
 <head>
-<title>StkWebApp - Sample</title>
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<script src="jquery-3.2.0.min.js"></script>
-<link rel="stylesheet" href="./style.css" />
+    <title>YaizuSample</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="bootstrap-3.3.7-dist/css/bootstrap.min.css" rel="stylesheet" media="screen">
+    <script src="jquery-3.2.0.min.js"></script>
+    <script src="bootstrap-3.3.7-dist/js/bootstrap.min.js"></script>
 
-<script type="text/javascript">
-
+    <script>
     window.onload = function() {
-        boxResize();
         var respdata = {};
         var resphtml = {};
         var resphtml2 = {};
 
         sendRequestRecvResponse('./api/aaa/bbb/', null, respdata);
-        $personDat = $('<table border="1"></table>');
+        var personDat = $('<table>');
+        personDat.addClass('table table-striped');
+        var tBody = $('<tbody>');
         for (var Loop = 0; Loop < 3; Loop++) {
-            $personDat.append('<tr><td>' + respdata.Person[Loop].name + '</td><td>' + respdata.Person[Loop].age + '</td><td>' + respdata.Person[Loop].address + '</td></tr>');
+            tBody.append('<tr><td>' + respdata.Person[Loop].name + '</td><td>' + respdata.Person[Loop].age + '</td><td>' + respdata.Person[Loop].address + '</td></tr>');
         }
-        $('#box_info').append($personDat);
+        personDat.append(tBody);
+        $('#workspace').append(personDat);
 
         sendRequestRecvResponse('./api/aaa/xxx/', null, resphtml);
         $h1Dat = $('<h1></h1>');
         $h1Dat.append(resphtml.hello);
-        $('#box_info').append($h1Dat);
+        $('#workspace').append($h1Dat);
 
         sendRequestRecvResponse('./api/bbb/xxx/', null, resphtml2);
         $h2Dat = $('<h2></h2>');
         $h2Dat.append(resphtml2.hello2);
-        $('#box_info').append($h2Dat);
-    }
-
-    function boxResize() {
-        var box_info = document.getElementById('box_info');
-        var box_cont = document.getElementById('container');
-        var boxHeight = getshowHeight();
-        var boxWidth  = getshowWidth();
-        if (boxHeight < 440) {
-            boxHeight = 440;
-        }
-        if (boxWidth < 580) {
-            boxWidth = 580;
-        }
-        box_info.style.height = boxHeight - 20 + 'px';
-        box_info.style.width  = boxWidth  + 'px';
-        box_cont.style.height = boxHeight + 'px';
-        box_cont.style.width  = boxWidth  + 'px';
-    }
-
-    function getshowHeight() {
-        if (window.innerHeight)
-            return window.innerHeight;
-        if (document.body.parentNode.clientHeight)
-            return document.body.parentNode.clientHeight;
-        if (document.body.clientHeight)
-            return document.body.clientHeight;
-    }
-
-    function getshowWidth() {
-        if (window.innerWidth)
-            return window.innerWidth;
-        if (document.body.parentNode.clientWidth)
-            return document.body.parentNode.clientWidth;
-        if (document.body.clientWidth)
-            return document.body.clientWidth;
+        $('#workspace').append($h2Dat);
     }
 
     function sendRequestRecvResponse(url, request, response) {
@@ -85,26 +53,36 @@
         });
         return resultcode;
     }
-
-</script>
+    </script>
 </head>
 
-<body style="overflow: hidden;" onresize="boxResize()">
-<div id="container">
-    <div class="headtailbar">
-        <table class="ttblstyle" width="100%"><tr>
-            <td align="left"><b>StkWebApp - Sample</b></td>
-            <td align="right">Copyright (C) S.Takeuchi</td>
-        </tr></table>
-    </div>
+<body>
+    <nav class="navbar navbar-default">
+        <div id="container">
+            <div class="navbar-header">
+                <a class="navbar-brand" href="">
+                    <strong>YaizuSample</strong>
+                </a>
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#top-nav">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+            </div>
+            <div class="collapse navbar-collapse" id="top-nav">
+            </div>
+        </div>
+    </nav>
 
-    <div id="box_info">
-        <noscript>
-            JavaScriptが無効です。<br>ブラウザの設定を変更してJavaScriptを有効後，ページをリフレッシュしてください。<br>
-        </noscript>
+    <div class="container-fluid">
+        <div id="top" class="row">
+            <div id="workspace" class="col-xs-12">
+                <p class="text-center">
+                    YaizuSample
+                </p>
+            </div>
+        </div>
     </div>
-</div>
-
 </body>
 
 </html>

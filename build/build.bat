@@ -61,8 +61,6 @@ echo Checking "sample.conf" existence...
 if not exist "..\src\sample\sample.conf" goto FILENOTEXIST
 echo Checking "sample.html" existence...
 if not exist "..\src\sample\sample.html" goto FILENOTEXIST
-echo Checking "style.css" existence...
-if not exist "..\src\sample\style.css" goto FILENOTEXIST
 
 
 
@@ -77,6 +75,7 @@ copy "..\src\sample\sample.dat" sample
 copy "..\src\sample\sample.conf" sample
 copy "..\..\YaizuComLib\src\stkdatagui\Release\stkdatagui.exe" sample
 copy "..\..\YaizuComLib\src\stkwebapp\Release\stkwebappcmd.exe" sample
+xcopy /y /q /i /s /e "..\src\sample\bootstrap-3.3.7-dist" sample\bootstrap-3.3.7-dist
 
 mkdir sample\nginx
 copy "..\..\YaizuComLib\src\stkwebapp\nginx-1.12.2.zip" sample\nginx
