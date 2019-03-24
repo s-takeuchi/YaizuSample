@@ -9,7 +9,7 @@ sample : sample.o sample_elem1.o sample_elem2.o sample_elem3.o
 	cp ../../../YaizuComLib/src/stksocket/stksocket.a .
 	cd ../../../YaizuComLib/src/stkthread; make
 	cp ../../../YaizuComLib/src/stkthread/stkthread.a .
-	g++ -o sample sample.o sample_elem1.o sample_elem2.o sample_elem3.o stkpl.a stkwebapp.a commonfunc.a stksocket.a stkthread.a -std=c++1z -lstdc++fs -pthread
+	g++ -o sample sample.o sample_elem1.o sample_elem2.o sample_elem3.o stkpl.a stkwebapp.a commonfunc.a stksocket.a stkthread.a -std=c++1z -lstdc++fs -pthread -static-libgcc -static-libstdc++
 
 sample_elem1.o : sample_elem1.cpp
 	g++ -c sample_elem1.cpp -std=c++1z
