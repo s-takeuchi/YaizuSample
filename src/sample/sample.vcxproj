@@ -102,12 +102,14 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="ApiPostAgentInfo.cpp" />
     <ClCompile Include="sample.cpp" />
     <ClCompile Include="sample_elem1.cpp" />
     <ClCompile Include="sample_elem2.cpp" />
     <ClCompile Include="sample_elem3.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="ApiPostAgentInfo.h" />
     <ClInclude Include="sample_elem1.h" />
     <ClInclude Include="sample_elem2.h" />
     <ClInclude Include="sample_elem3.h" />

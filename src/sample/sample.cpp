@@ -8,6 +8,7 @@
 #include "sample_elem1.h"
 #include "sample_elem2.h"
 #include "sample_elem3.h"
+#include "ApiPostAgentInfo.h"
 
 void Sample(wchar_t* IpAddr, int Port)
 {
@@ -21,6 +22,8 @@ void Sample(wchar_t* IpAddr, int Port)
 	int Add2 = Soc->AddReqHandler(StkWebAppExec::STKWEBAPP_METHOD_GET, L"/api/aaa/xxx/", (StkWebAppExec*)Test2Hndl);
 	Sample_Elem3* Test3Hndl = new Sample_Elem3();
 	int Add3 = Soc->AddReqHandler(StkWebAppExec::STKWEBAPP_METHOD_GET, L"/api/bbb/$/", (StkWebAppExec*)Test3Hndl);
+	ApiPostAgentInfo* ApiPostAgentInfoObj = new ApiPostAgentInfo();
+	int Add4 = Soc->AddReqHandler(StkWebAppExec::STKWEBAPP_METHOD_POST, L"/api/agent/", (StkWebAppExec*)ApiPostAgentInfoObj);
 
 	////////// Main logic starts
 	Soc->TheLoop();
@@ -29,6 +32,7 @@ void Sample(wchar_t* IpAddr, int Port)
 	int Del1 = Soc->DeleteReqHandler(StkWebAppExec::STKWEBAPP_METHOD_GET, L"/api/aaa/bbb/");
 	int Del2 = Soc->DeleteReqHandler(StkWebAppExec::STKWEBAPP_METHOD_GET, L"/api/aaa/xxx/");
 	int Del3 = Soc->DeleteReqHandler(StkWebAppExec::STKWEBAPP_METHOD_GET, L"/api/bbb/$/");
+	int Del4 = Soc->DeleteReqHandler(StkWebAppExec::STKWEBAPP_METHOD_POST, L"/api/agent/");
 
 	delete Soc;
 }
@@ -51,7 +55,7 @@ int main(int Argc, char* Argv[])
 		}
 		StkPlPrintf("serviceport property = %d\r\n", Port);
 	} else {
-		StkPlPrintf("stkwebapp.conf is not found.\r\n");
+		StkPlPrintf("sample.conf is not found.\r\n");
 		return -1;
 	}
 
