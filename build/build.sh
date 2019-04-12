@@ -15,6 +15,7 @@ echo serviceport=8081 >> $BUILDDIR/SOURCES/sample.conf
 cp sample.service $BUILDDIR/SOURCES
 cp sample_nginx.conf $BUILDDIR/SOURCES
 cp sample.html $BUILDDIR/SOURCES
+cp sample.dat $BUILDDIR/SOURCES
 cp jquery-3.2.0.min.js $BUILDDIR/SOURCES
 cp bootstrap-3.3.7-dist/css/* $BUILDDIR/SOURCES
 cp bootstrap-3.3.7-dist/fonts/* $BUILDDIR/SOURCES
@@ -53,6 +54,7 @@ Source19: glyphicons-halflings-regular.woff2
 Source20: bootstrap.js
 Source21: bootstrap.min.js
 Source22: npm.js
+Source23: sample.dat
 
 %description
 YaizuSample!!
@@ -89,6 +91,7 @@ install -p -m 644 %{SOURCE19} %{buildroot}/%{_datarootdir}/nginx/html/bootstrap-
 install -p -m 644 %{SOURCE20} %{buildroot}/%{_datarootdir}/nginx/html/bootstrap-3.3.7-dist/js
 install -p -m 644 %{SOURCE21} %{buildroot}/%{_datarootdir}/nginx/html/bootstrap-3.3.7-dist/js
 install -p -m 644 %{SOURCE22} %{buildroot}/%{_datarootdir}/nginx/html/bootstrap-3.3.7-dist/js
+install -p -m 644 %{SOURCE23} %{buildroot}/%{_sysconfdir}
 
 
 %files
@@ -114,6 +117,7 @@ install -p -m 644 %{SOURCE22} %{buildroot}/%{_datarootdir}/nginx/html/bootstrap-
 %{_datarootdir}/nginx/html/bootstrap-3.3.7-dist/js/bootstrap.js
 %{_datarootdir}/nginx/html/bootstrap-3.3.7-dist/js/bootstrap.min.js
 %{_datarootdir}/nginx/html/bootstrap-3.3.7-dist/js/npm.js
+%{_sysconfdir}/sample.dat
 
 
 %post
