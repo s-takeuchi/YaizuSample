@@ -1,4 +1,4 @@
-sample : sample.o sample_elem1.o sample_elem2.o sample_elem3.o
+sample : sample.o sample_elem1.o sample_elem2.o sample_elem3.o ApiPostAgentInfo.o dataaccess.o
 	cd ../../../YaizuComLib/src/stkpl; make
 	cp ../../../YaizuComLib/src/stkpl/stkpl.a .
 	cd ../../../YaizuComLib/src/stkwebapp; make
@@ -9,7 +9,7 @@ sample : sample.o sample_elem1.o sample_elem2.o sample_elem3.o
 	cp ../../../YaizuComLib/src/stksocket/stksocket.a .
 	cd ../../../YaizuComLib/src/stkthread; make
 	cp ../../../YaizuComLib/src/stkthread/stkthread.a .
-	g++ -o sample sample.o sample_elem1.o sample_elem2.o sample_elem3.o stkpl.a stkwebapp.a commonfunc.a stksocket.a stkthread.a -std=c++1z -lstdc++fs -pthread -static-libgcc -static-libstdc++
+	g++ -o sample sample.o sample_elem1.o sample_elem2.o sample_elem3.o ApiPostAgentInfo.o dataaccess.o stkpl.a stkwebapp.a commonfunc.a stksocket.a stkthread.a  -std=c++1z -lstdc++fs -pthread -static-libgcc -static-libstdc++
 
 sample_elem1.o : sample_elem1.cpp
 	g++ -c sample_elem1.cpp -std=c++1z
@@ -19,6 +19,12 @@ sample_elem2.o : sample_elem2.cpp
 
 sample_elem3.o : sample_elem3.cpp
 	g++ -c sample_elem3.cpp -std=c++1z
+
+ApiPostAgentInfo.o : ApiPostAgentInfo.cpp
+	g++ -c ApiPostAgentInfo.cpp -std=c++1z
+
+dataaccess.o : dataaccess.cpp
+	g++ -c dataaccess.cpp -std=c++1z
 
 sample.o : sample.cpp
 	g++ -c sample.cpp -std=c++1z
