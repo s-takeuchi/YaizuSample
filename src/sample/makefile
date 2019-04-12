@@ -9,7 +9,10 @@ sample : sample.o sample_elem1.o sample_elem2.o sample_elem3.o ApiPostAgentInfo.
 	cp ../../../YaizuComLib/src/stksocket/stksocket.a .
 	cd ../../../YaizuComLib/src/stkthread; make
 	cp ../../../YaizuComLib/src/stkthread/stkthread.a .
-	g++ -o sample sample.o sample_elem1.o sample_elem2.o sample_elem3.o ApiPostAgentInfo.o dataaccess.o stkpl.a stkwebapp.a commonfunc.a stksocket.a stkthread.a  -std=c++1z -lstdc++fs -pthread -static-libgcc -static-libstdc++
+	cd ../../../YaizuComLib/src/stkdata; make
+	cp ../../../YaizuComLib/src/stkdata/stkdata.a .
+
+	g++ -o sample sample.o sample_elem1.o sample_elem2.o sample_elem3.o ApiPostAgentInfo.o dataaccess.o stkpl.a stkwebapp.a commonfunc.a stksocket.a stkthread.a stkdata.a -std=c++1z -lstdc++fs -pthread -static-libgcc -static-libstdc++
 
 sample_elem1.o : sample_elem1.cpp
 	g++ -c sample_elem1.cpp -std=c++1z
@@ -36,6 +39,7 @@ clean :
 	cd ../../../YaizuComLib/src/commonfunc; make clean
 	cd ../../../YaizuComLib/src/stksocket; make clean
 	cd ../../../YaizuComLib/src/stkthread; make clean
+	cd ../../../YaizuComLib/src/stkdata; make clean
 
 all : clean sample
 
