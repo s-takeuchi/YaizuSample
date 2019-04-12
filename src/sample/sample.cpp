@@ -9,9 +9,12 @@
 #include "sample_elem2.h"
 #include "sample_elem3.h"
 #include "ApiPostAgentInfo.h"
+#include "dataaccess.h"
 
 void Sample(wchar_t* IpAddr, int Port)
 {
+	DataAccess::GetInstance()->CreateTables(L"sample.dat");
+
 	int Ids[7] = {11, 12, 13, 14, 15, 16, 17};
 
 	StkWebApp* Soc = new StkWebApp(Ids, 3, IpAddr, Port);
