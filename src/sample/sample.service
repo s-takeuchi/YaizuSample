@@ -4,8 +4,9 @@ After=network.service
 
 [Service]
 Type=simple
-Restart=on-success
+Restart=no
 ExecStart=/usr/bin/sample
+ExecStop=/usr/bin/samplestop sample.conf
 
 [Install]
 WantedBy=multi-user.target
