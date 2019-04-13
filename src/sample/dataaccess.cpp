@@ -26,7 +26,7 @@ DataAccess* DataAccess::GetInstance()
 
 // Stops AutoSave function and save the latest data
 // Return : always zero returned
-int DataAccess::StopAutoSave(wchar_t* DataFileName)
+int DataAccess::StopAutoSave(const wchar_t* DataFileName)
 {
 	wchar_t Buf[FILENAME_MAX];
 #ifdef WIN32
@@ -45,7 +45,7 @@ int DataAccess::StopAutoSave(wchar_t* DataFileName)
 // Create tables for CmdFreak
 // DataFileName [in] : data file name which you want to preserve.
 // Return : [0:Success, -1:Failed]
-int DataAccess::CreateTables(wchar_t* DataFileName)
+int DataAccess::CreateTables(const wchar_t* DataFileName)
 {
 	// Make full path name and call AutoSave
 	wchar_t Buf[FILENAME_MAX];
@@ -88,7 +88,7 @@ int DataAccess::CreateTables(wchar_t* DataFileName)
 // Add log message
 // LogMsg [in] : Message which you want to insert
 // Return : always zero returned.
-int DataAccess::AddLogMsg(wchar_t LogMsg[DA_MAXLEN_OF_LOGTIME])
+int DataAccess::AddLogMsg(const wchar_t LogMsg[DA_MAXLEN_OF_LOGTIME])
 {
 	static int MaxLogId = 0;
 	if (MaxLogId == 0) {

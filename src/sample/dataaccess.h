@@ -15,10 +15,10 @@ private:
 public:
 	// Get this instance
 	static DataAccess* GetInstance();
-	int StopAutoSave(wchar_t*);
-	int CreateTables(wchar_t*);
+	int StopAutoSave(const wchar_t*);
+	int CreateTables(const wchar_t*);
 
-	int AddLogMsg(wchar_t[DA_MAXLEN_OF_LOGMSG]);
+	int AddLogMsg(const wchar_t[DA_MAXLEN_OF_LOGMSG]);
 	int GetMaxLogId();
 	int GetNumOfLogs();
 	int GetLogs(wchar_t[DA_MAXNUM_OF_LOGRECORDS][DA_MAXLEN_OF_LOGTIME], wchar_t[DA_MAXNUM_OF_LOGRECORDS][DA_MAXLEN_OF_LOGTIME], wchar_t[DA_MAXNUM_OF_LOGRECORDS][DA_MAXLEN_OF_LOGMSG]);
