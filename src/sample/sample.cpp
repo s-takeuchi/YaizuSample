@@ -13,8 +13,6 @@
 
 void Sample(wchar_t* IpAddr, int Port)
 {
-	DataAccess::GetInstance()->CreateTables(L"sample.dat");
-
 	int Ids[7] = {11, 12, 13, 14, 15, 16, 17};
 
 	StkWebApp* Soc = new StkWebApp(Ids, 3, IpAddr, Port);
@@ -62,9 +60,13 @@ int main(int Argc, char* Argv[])
 		return -1;
 	}
 
+	DataAccess::GetInstance()->CreateTables(L"sample.dat");
+	DataAccess::GetInstance()->AddLogMsg(L"Service started.");
 	wchar_t* IpAddr = StkPlCreateWideCharFromUtf8(IpAddrTmp);
 	Sample(IpAddr, Port);
 	delete IpAddr;
+	DataAccess::GetInstance()->AddLogMsg(L"Service stopped.");
+	DataAccess::GetInstance()->StopAutoSave(L"sample.dat");
 
 	return 0;
 }

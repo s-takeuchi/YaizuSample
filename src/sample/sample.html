@@ -18,8 +18,14 @@
         var personDat = $('<table>');
         personDat.addClass('table table-striped');
         var tBody = $('<tbody>');
-        for (var Loop = 0; Loop < 3; Loop++) {
-            tBody.append('<tr><td>' + respdata.Person[Loop].name + '</td><td>' + respdata.Person[Loop].age + '</td><td>' + respdata.Person[Loop].address + '</td></tr>');
+        var People = [];
+        if (respdata.Person instanceof Array) {
+                People = respdata.Person;
+        } else if (respdata.Person) {
+                People.push(respdata.Person);
+        }
+        for (var Loop = 0; Loop < People.length; Loop++) {
+            tBody.append('<tr><td>' + People[Loop].name + '</td><td>' + People[Loop].age + '</td><td>' + People[Loop].address + '</td></tr>');
         }
         personDat.append(tBody);
         $('#workspace').append(personDat);
