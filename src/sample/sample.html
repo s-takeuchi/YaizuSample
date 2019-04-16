@@ -1,7 +1,7 @@
 ﻿<!doctype html>
 <html lang="ja">
 <head>
-    <title>YaizuSample</title>
+    <title>Exec Manager</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="bootstrap-3.3.7-dist/css/bootstrap.min.css" rel="stylesheet" media="screen">
@@ -12,9 +12,11 @@
 
     <script>
 
+    var API_GET_SVRINFO             = 1;
     var API_GET_LOGS                = 2;
+    var API_GET_AGTINFO             = 3;
 
-    function displayLogInfo(index) {
+    function displayLogInfo() {
         var personDat = $('<table>');
         personDat.addClass('table table-striped');
 
@@ -24,40 +26,45 @@
 
         var tBody = $('<tbody>');
         var Log = [];
-        if (responseData[index].Log instanceof Array) {
-                Log = responseData[index].Log;
-        } else if (responseData[index]) {
-                Log.push(responseData[index].Log);
+        if (responseData[API_GET_LOGS].Log instanceof Array) {
+                Log = responseData[API_GET_LOGS].Log;
+        } else if (responseData[API_GET_LOGS]) {
+                Log.push(responseData[API_GET_LOGS].Log);
         }
         for (var Loop = 0; Loop < Log.length; Loop++) {
             tBody.append('<tr><td>' + Log[Loop].TimeUtc + '</td><td>' + Log[Loop].TimeLocal + '</td><td>' + Log[Loop].Msg + '</td></tr>');
         }
         personDat.append(tBody);
-        $('#workspace').append('Log Information');
-        $('#workspace').append(personDat);
+        $('#workspace_loginfo').append('<h2><span class="glyphicon glyphicon-time"></span> Audit Log</h2>');
+        $('#workspace_loginfo').append(personDat);
+    }
+
+    function displayAgentInfo() {
+        $('#workspace_agtinfo').append('<h2><span class="glyphicon glyphicon-eye-open"></span> Agent Info</h2>');
+        $('#workspace_agtinfo').append(responseData[API_GET_AGTINFO].hello2);
+    }
+
+    function displayServerInfo() {
+        $('#workspace_svrinfo').append('<h2><span class="glyphicon glyphicon-tower"></span> Server Info</h2>');
+        $('#workspace_svrinfo').append(responseData[API_GET_SVRINFO].hello);
     }
 
     window.onload = function() {
-        var respdata = {};
-        var resphtml = {};
-        var resphtml2 = {};
-
         apiCall('GET', './api/aaa/bbb/', null, API_GET_LOGS, displayLogInfo);
-
-        sendRequestRecvResponse('./api/aaa/xxx/', null, resphtml);
-        $h1Dat = $('<h1></h1>');
-        $h1Dat.append(resphtml.hello);
-        $('#workspace').append($h1Dat);
-
-        sendRequestRecvResponse('./api/bbb/xxx/', null, resphtml2);
-        $h2Dat = $('<h2></h2>');
-        $h2Dat.append(resphtml2.hello2);
-        $('#workspace').append($h2Dat);
-
-        
+        apiCall('GET', './api/aaa/xxx/', null, API_GET_SVRINFO, displayServerInfo);
+        apiCall('GET', './api/bbb/xxx/', null, API_GET_AGTINFO, displayAgentInfo);
     }
-    </script>
 
+    function activateTopic(id) {
+        var Rows = document.getElementsByClassName("row");
+        for (var Loop = 0; Loop < Rows.length; Loop++) {
+            Rows[Loop].style.display = 'none'
+        }
+        var activateTarget = document.getElementById(id);
+        activateTarget.style.display = 'block'
+    }
+
+    </script>
 </head>
 
 <body>
@@ -65,7 +72,7 @@
         <div id="container">
             <div class="navbar-header">
                 <a class="navbar-brand" href="">
-                    <strong>YaizuSample</strong>
+                    <strong>Exec Manager</strong>
                 </a>
                 <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#top-nav">
                     <span class="icon-bar"></span>
@@ -74,13 +81,26 @@
                 </button>
             </div>
             <div class="collapse navbar-collapse" id="top-nav">
+                <ul class="nav navbar-nav">
+                    <li><a onclick="activateTopic('agtinfo')"><span class="glyphicon glyphicon-eye-open"></span> Agent Info</a></li>
+                    <li><a onclick="activateTopic('svrinfo')"><span class="glyphicon glyphicon-tower"></span> Server Info</a></li>
+                    <li><a onclick="activateTopic('loginfo')"><span class="glyphicon glyphicon-time"></span> Audit Log</a></li>
+                </ul>
             </div>
         </div>
     </nav>
 
     <div class="container-fluid">
-        <div id="top" class="row">
-            <div id="workspace" class="col-xs-12">
+        <div id="agtinfo" class="row" style="display:none">
+            <div id="workspace_agtinfo" class="col-xs-12">
+            </div>
+        </div>
+        <div id="svrinfo" class="row" style="display:none">
+            <div id="workspace_svrinfo" class="col-xs-12">
+            </div>
+        </div>
+        <div id="loginfo" class="row" style="display:none">
+            <div id="workspace_loginfo" class="col-xs-12">
             </div>
         </div>
     </div>
