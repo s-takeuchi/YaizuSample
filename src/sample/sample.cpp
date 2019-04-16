@@ -5,7 +5,7 @@
 #include "../../../YaizuComLib/src/stksocket/stksocket.h"
 #include "../../../YaizuComLib/src/stkwebapp/StkWebApp.h"
 #include "../../../YaizuComLib/src/stkwebapp/StkWebAppExec.h"
-#include "sample_elem1.h"
+#include "ApiGetLogInfo.h"
 #include "sample_elem2.h"
 #include "sample_elem3.h"
 #include "ApiPostAgentInfo.h"
@@ -17,8 +17,8 @@ void Sample(wchar_t* IpAddr, int Port)
 
 	StkWebApp* Soc = new StkWebApp(Ids, 3, IpAddr, Port);
 
-	Sample_Elem1* Test1Hndl = new Sample_Elem1();
-	int Add1 = Soc->AddReqHandler(StkWebAppExec::STKWEBAPP_METHOD_GET, L"/api/aaa/bbb/", (StkWebAppExec*)Test1Hndl);
+	ApiGetLogInfo* ApiGetLogInfoObj = new ApiGetLogInfo();
+	int Add1 = Soc->AddReqHandler(StkWebAppExec::STKWEBAPP_METHOD_GET, L"/api/log/", (StkWebAppExec*)ApiGetLogInfoObj);
 	Sample_Elem2* Test2Hndl = new Sample_Elem2();
 	int Add2 = Soc->AddReqHandler(StkWebAppExec::STKWEBAPP_METHOD_GET, L"/api/aaa/xxx/", (StkWebAppExec*)Test2Hndl);
 	Sample_Elem3* Test3Hndl = new Sample_Elem3();
