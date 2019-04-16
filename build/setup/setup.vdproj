@@ -255,6 +255,12 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_C737393B421E43EB8075C12CD879D320"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_C76CD6719C0646389B3EE4E187CC6B3A"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -1216,6 +1222,26 @@
             "TargetName" = "8:sample.dat"
             "Tag" = "8:"
             "Folder" = "8:_2EE47700FD9E4DD4BD9BDA1A2D4D47F4"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_C737393B421E43EB8075C12CD879D320"
+            {
+            "SourcePath" = "8:..\\sample\\html\\stkcommon.js"
+            "TargetName" = "8:stkcommon.js"
+            "Tag" = "8:"
+            "Folder" = "8:_328950E660704BD7856D4AF4E7C70906"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"

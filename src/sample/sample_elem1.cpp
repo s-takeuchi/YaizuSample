@@ -10,10 +10,10 @@ StkObject* Sample_Elem1::Execute(StkObject* ReqObj, int Method, wchar_t UrlPath[
 
 	StkObject* TmpObj = new StkObject(L"");
 	for (int Loop = 0; Loop < Count; Loop++) {
-		StkObject* TmpObjC = new StkObject(L"Person");
-		TmpObjC->AppendChildElement(new StkObject(L"name", TimeLocal[Loop]));
-		TmpObjC->AppendChildElement(new StkObject(L"age", Loop));
-		TmpObjC->AppendChildElement(new StkObject(L"address", Msg[Loop]));
+		StkObject* TmpObjC = new StkObject(L"Log");
+		TmpObjC->AppendChildElement(new StkObject(L"TimeUtc", TimeUtc[Loop]));
+		TmpObjC->AppendChildElement(new StkObject(L"TimeLocal", TimeLocal[Loop]));
+		TmpObjC->AppendChildElement(new StkObject(L"Msg", Msg[Loop]));
 		TmpObj->AppendChildElement(TmpObjC);
 	}
 	*ResultCode = 200;

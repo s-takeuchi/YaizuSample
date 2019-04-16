@@ -75,6 +75,8 @@ echo Checking "sample.conf" existence...
 if not exist "..\src\sample\sample.conf" goto ERRORRAISED
 echo Checking "sample.html" existence...
 if not exist "..\src\sample\sample.html" goto ERRORRAISED
+echo Checking "stkcommon.js" existence...
+if not exist "..\src\sample\stkcommon.js" goto ERRORRAISED
 
 
 rem ########## Deployment of files and folders ##########
@@ -99,7 +101,7 @@ xcopy /y /q /i /s /e "sample\nginx\nginx-1.12.2" sample
 if exist sample\nginx rmdir /S /Q sample\nginx
 
 copy "..\src\sample\sample.html" sample\html
-copy "..\src\sample\style.css" sample\html
+copy "..\src\sample\stkcommon.js" sample\html
 copy "..\src\sample\jquery-3.2.0.min.js" sample\html
 
 

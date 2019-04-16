@@ -8,27 +8,41 @@
     <script src="jquery-3.2.0.min.js"></script>
     <script src="bootstrap-3.3.7-dist/js/bootstrap.min.js"></script>
 
+    <script type="text/javascript" src="stkcommon.js"></script>
+
     <script>
+
+    var API_GET_LOGS                = 2;
+
+    function displayLogInfo(index) {
+        var personDat = $('<table>');
+        personDat.addClass('table table-striped');
+
+        var tHead = $('<thead>');
+        tHead.append('<tr><th>UTC Time</th><th>Local Time</th><th>Message</th></tr>');
+        personDat.append(tHead);
+
+        var tBody = $('<tbody>');
+        var Log = [];
+        if (responseData[index].Log instanceof Array) {
+                Log = responseData[index].Log;
+        } else if (responseData[index]) {
+                Log.push(responseData[index].Log);
+        }
+        for (var Loop = 0; Loop < Log.length; Loop++) {
+            tBody.append('<tr><td>' + Log[Loop].TimeUtc + '</td><td>' + Log[Loop].TimeLocal + '</td><td>' + Log[Loop].Msg + '</td></tr>');
+        }
+        personDat.append(tBody);
+        $('#workspace').append('Log Information');
+        $('#workspace').append(personDat);
+    }
+
     window.onload = function() {
         var respdata = {};
         var resphtml = {};
         var resphtml2 = {};
 
-        sendRequestRecvResponse('./api/aaa/bbb/', null, respdata);
-        var personDat = $('<table>');
-        personDat.addClass('table table-striped');
-        var tBody = $('<tbody>');
-        var People = [];
-        if (respdata.Person instanceof Array) {
-                People = respdata.Person;
-        } else if (respdata.Person) {
-                People.push(respdata.Person);
-        }
-        for (var Loop = 0; Loop < People.length; Loop++) {
-            tBody.append('<tr><td>' + People[Loop].name + '</td><td>' + People[Loop].age + '</td><td>' + People[Loop].address + '</td></tr>');
-        }
-        personDat.append(tBody);
-        $('#workspace').append(personDat);
+        apiCall('GET', './api/aaa/bbb/', null, API_GET_LOGS, displayLogInfo);
 
         sendRequestRecvResponse('./api/aaa/xxx/', null, resphtml);
         $h1Dat = $('<h1></h1>');
@@ -39,27 +53,11 @@
         $h2Dat = $('<h2></h2>');
         $h2Dat.append(resphtml2.hello2);
         $('#workspace').append($h2Dat);
-    }
 
-    function sendRequestRecvResponse(url, request, response) {
-        var resultcode = 0;
-        $.ajax({
-            type: 'GET',
-            dataType: 'json',
-            url: url,
-            data: request,
-            async: false,
-            success: function(msg, textStatus, xhr) {
-                resultcode = xhr.status;
-                $.extend(response, msg);
-            },
-            error: function() {
-                resultcode = -1;
-            }
-        });
-        return resultcode;
+        
     }
     </script>
+
 </head>
 
 <body>
@@ -83,12 +81,27 @@
     <div class="container-fluid">
         <div id="top" class="row">
             <div id="workspace" class="col-xs-12">
-                <p class="text-center">
-                    YaizuSample
-                </p>
             </div>
         </div>
     </div>
+
+    <div id="loading_Modal" class="modal fade" tabindex="-1" role="dialog" data-keyboard="false" data-backdrop="static">
+        <div class="modal-dialog" style="width:350px;top:30%;">
+            <div class="modal-content">
+                <div class="modal-header" style="padding: 0px; text-align: center;">
+                    <h2 style="margin-top: 5px;">Please wait ....</h2>
+                </div>
+                <div class="modal-body">
+                    <div style="height:20px">
+                        <div class="progress">
+                            <div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100" style="width:100%"> </div>                    
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
 </body>
 
 </html>

@@ -15,6 +15,7 @@ echo serviceport=8081 >> $BUILDDIR/SOURCES/sample.conf
 cp sample.service $BUILDDIR/SOURCES
 cp sample_nginx.conf $BUILDDIR/SOURCES
 cp sample.html $BUILDDIR/SOURCES
+cp stkcommon.js $BUILDDIR/SOURCES
 cp sample.dat $BUILDDIR/SOURCES
 cp jquery-3.2.0.min.js $BUILDDIR/SOURCES
 cp bootstrap-3.3.7-dist/css/* $BUILDDIR/SOURCES
@@ -39,7 +40,7 @@ License: No License No Life
 Source1: sample
 Source2: sample.conf
 Source3: sample_nginx.conf
-SOurce4: sample.service
+Source4: sample.service
 Source5: sample.html
 Source6: jquery-3.2.0.min.js
 Source7: bootstrap.css
@@ -51,7 +52,7 @@ Source12: bootstrap-theme.css.map
 Source13: bootstrap-theme.min.css
 Source14: bootstrap-theme.min.css.map
 Source15: glyphicons-halflings-regular.eot
-SOurce16: glyphicons-halflings-regular.svg
+Source16: glyphicons-halflings-regular.svg
 Source17: glyphicons-halflings-regular.ttf
 Source18: glyphicons-halflings-regular.woff
 Source19: glyphicons-halflings-regular.woff2
@@ -60,6 +61,7 @@ Source21: bootstrap.min.js
 Source22: npm.js
 Source23: sample.dat
 Source24: samplestop
+Source25: stkcommon.js
 
 %description
 YaizuSample!!
@@ -98,6 +100,7 @@ install -p -m 644 %{SOURCE21} %{buildroot}/%{_datarootdir}/nginx/html/bootstrap-
 install -p -m 644 %{SOURCE22} %{buildroot}/%{_datarootdir}/nginx/html/bootstrap-3.3.7-dist/js
 install -p -m 644 %{SOURCE23} %{buildroot}/%{_sysconfdir}
 install -p -m 755 %{SOURCE24} %{buildroot}/%{_bindir}
+install -p -m 644 %{SOURCE25} %{buildroot}/%{_datarootdir}/nginx/html
 
 
 %files
@@ -106,6 +109,7 @@ install -p -m 755 %{SOURCE24} %{buildroot}/%{_bindir}
 %{_sysconfdir}/nginx/conf.d/sample_nginx.conf
 %{_sysconfdir}/systemd/system/sample.service
 %{_datarootdir}/nginx/html/sample.html
+%{_datarootdir}/nginx/html/stkcommon.js
 %{_datarootdir}/nginx/html/jquery-3.2.0.min.js
 %{_datarootdir}/nginx/html/bootstrap-3.3.7-dist/css/bootstrap.css
 %{_datarootdir}/nginx/html/bootstrap-3.3.7-dist/css/bootstrap.css.map
