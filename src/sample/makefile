@@ -1,4 +1,4 @@
-sample : sample.o ApiGetLogInfo.o sample_elem2.o sample_elem3.o ApiPostAgentInfo.o dataaccess.o
+sample : sample.o ApiGetLogInfo.o ApiGetServerInfo.o sample_elem3.o ApiPostAgentInfo.o dataaccess.o
 	cd ../../../YaizuComLib/src/stkpl; make
 	cp ../../../YaizuComLib/src/stkpl/stkpl.a .
 	cd ../../../YaizuComLib/src/stkwebapp; make
