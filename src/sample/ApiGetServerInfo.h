@@ -9,6 +9,6 @@ private:
 	wchar_t StartTimeLocal[DA_MAXLEN_OF_TIME];
 
 public:
-	ApiGetServerInfo::ApiGetServerInfo();
+	ApiGetServerInfo();
 	StkObject* Execute(StkObject*, int, wchar_t[StkWebAppExec::URL_PATH_LENGTH], int*, wchar_t[3]);
 };

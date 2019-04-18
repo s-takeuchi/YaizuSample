@@ -1,6 +1,6 @@
 ﻿#include "../../../YaizuComLib/src/stkpl/StkPl.h"
 #include "dataaccess.h"
-#include "sample_elem2.h"
+#include "ApiGetServerInfo.h"
 
 ApiGetServerInfo::ApiGetServerInfo()
 {

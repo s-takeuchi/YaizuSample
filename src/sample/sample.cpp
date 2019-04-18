@@ -6,7 +6,7 @@
 #include "../../../YaizuComLib/src/stkwebapp/StkWebApp.h"
 #include "../../../YaizuComLib/src/stkwebapp/StkWebAppExec.h"
 #include "ApiGetLogInfo.h"
-#include "sample_elem2.h"
+#include "ApiGetServerInfo.h"
 #include "sample_elem3.h"
 #include "ApiPostAgentInfo.h"
 #include "dataaccess.h"

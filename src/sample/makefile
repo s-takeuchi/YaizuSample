@@ -12,13 +12,13 @@ sample : sample.o ApiGetLogInfo.o sample_elem2.o sample_elem3.o ApiPostAgentInfo
 	cd ../../../YaizuComLib/src/stkdata; make
 	cp ../../../YaizuComLib/src/stkdata/stkdata.a .
 
-	g++ -o sample sample.o ApiGetLogInfo.o sample_elem2.o sample_elem3.o ApiPostAgentInfo.o dataaccess.o stkpl.a stkwebapp.a commonfunc.a stksocket.a stkthread.a stkdata.a -std=c++1z -lstdc++fs -pthread -static-libgcc -static-libstdc++
+	g++ -o sample sample.o ApiGetLogInfo.o ApiGetServerInfo.o sample_elem3.o ApiPostAgentInfo.o dataaccess.o stkpl.a stkwebapp.a commonfunc.a stksocket.a stkthread.a stkdata.a -std=c++1z -lstdc++fs -pthread -static-libgcc -static-libstdc++
 
 ApiGetLogInfo.o : ApiGetLogInfo.cpp
 	g++ -c ApiGetLogInfo.cpp -std=c++1z
 
-sample_elem2.o : sample_elem2.cpp
-	g++ -c sample_elem2.cpp -std=c++1z
+ApiGetServerInfo.o : ApiGetServerInfo.cpp
+	g++ -c ApiGetServerInfo.cpp -std=c++1z
 
 sample_elem3.o : sample_elem3.cpp
 	g++ -c sample_elem3.cpp -std=c++1z
