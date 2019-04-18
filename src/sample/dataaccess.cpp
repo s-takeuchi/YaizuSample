@@ -125,7 +125,7 @@ void DataAccess::SetAgentInfo(wchar_t AgtName[DA_MAXLEN_OF_AGTNAME], wchar_t Tim
 // Add log message
 // LogMsg [in] : Message which you want to insert
 // Return : always zero returned.
-int DataAccess::AddLogMsg(const wchar_t LogMsg[DA_MAXLEN_OF_TIME])
+int DataAccess::AddLogMsg(const wchar_t LogMsg[DA_MAXLEN_OF_LOGMSG])
 {
 	static int MaxLogId = 0;
 	if (MaxLogId == 0) {

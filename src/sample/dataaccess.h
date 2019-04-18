@@ -19,8 +19,8 @@ public:
 	int StopAutoSave(const wchar_t*);
 	int CreateTables(const wchar_t*);
 
-	bool DataAccess::CheckExistenceOfTargetAgent(wchar_t[DA_MAXLEN_OF_AGTNAME]);
-	void DataAccess::SetAgentInfo(wchar_t[DA_MAXLEN_OF_AGTNAME], wchar_t[DA_MAXLEN_OF_TIME], wchar_t[DA_MAXLEN_OF_TIME]);
+	bool CheckExistenceOfTargetAgent(wchar_t[DA_MAXLEN_OF_AGTNAME]);
+	void SetAgentInfo(wchar_t[DA_MAXLEN_OF_AGTNAME], wchar_t[DA_MAXLEN_OF_TIME], wchar_t[DA_MAXLEN_OF_TIME]);
 
 	int AddLogMsg(const wchar_t[DA_MAXLEN_OF_LOGMSG]);
 	int GetMaxLogId();

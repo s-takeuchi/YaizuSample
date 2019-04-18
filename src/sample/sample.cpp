@@ -19,8 +19,8 @@ void Sample(wchar_t* IpAddr, int Port)
 
 	ApiGetLogInfo* ApiGetLogInfoObj = new ApiGetLogInfo();
 	int Add1 = Soc->AddReqHandler(StkWebAppExec::STKWEBAPP_METHOD_GET, L"/api/log/", (StkWebAppExec*)ApiGetLogInfoObj);
-	Sample_Elem2* Test2Hndl = new Sample_Elem2();
-	int Add2 = Soc->AddReqHandler(StkWebAppExec::STKWEBAPP_METHOD_GET, L"/api/aaa/xxx/", (StkWebAppExec*)Test2Hndl);
+	ApiGetServerInfo* ApiGetServerInfoObj = new ApiGetServerInfo();
+	int Add2 = Soc->AddReqHandler(StkWebAppExec::STKWEBAPP_METHOD_GET, L"/api/aaa/xxx/", (StkWebAppExec*)ApiGetServerInfoObj);
 	Sample_Elem3* Test3Hndl = new Sample_Elem3();
 	int Add3 = Soc->AddReqHandler(StkWebAppExec::STKWEBAPP_METHOD_GET, L"/api/bbb/$/", (StkWebAppExec*)Test3Hndl);
 	ApiPostAgentInfo* ApiPostAgentInfoObj = new ApiPostAgentInfo();

@@ -46,8 +46,21 @@
 
     function displayServerInfo() {
         $('#workspace_svrinfo').append('<h2><span class="glyphicon glyphicon-tower"></span> Server Info</h2>');
-        $('#workspace_svrinfo').append(responseData[API_GET_SVRINFO].hello);
-    }
+
+        var StartTimeTbl = $('<table>');
+        StartTimeTbl.addClass('table table-striped');
+
+        var tHead = $('<thead>');
+        tHead.append('<tr><th>Service Start Time (UTC)</th><th>Service Start Time (Local)</th></tr>');
+        StartTimeTbl.append(tHead);
+
+        var tBody = $('<tbody>');
+        tBody.append('<tr><td>' + responseData[API_GET_SVRINFO].ServerInfo.StartTimeUtc + '</td><td>' + responseData[API_GET_SVRINFO].ServerInfo.StartTimeLocal + '</td></tr>');
+        StartTimeTbl.append(tBody);
+
+        $('#workspace_svrinfo').append('<h4>Version : ' + responseData[API_GET_SVRINFO].ServerInfo.Version + '</h4>');
+        $('#workspace_svrinfo').append(StartTimeTbl);
+     }
 
     window.onload = function() {
         apiCall('GET', './api/log/', null, API_GET_LOGS, displayLogInfo);

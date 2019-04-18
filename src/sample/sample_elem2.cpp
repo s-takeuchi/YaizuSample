@@ -1,9 +1,22 @@
-﻿#include "sample_elem2.h"
+﻿#include "../../../YaizuComLib/src/stkpl/StkPl.h"
+#include "dataaccess.h"
+#include "sample_elem2.h"
 
-StkObject* Sample_Elem2::Execute(StkObject* ReqObj, int Method, wchar_t UrlPath[StkWebAppExec::URL_PATH_LENGTH], int* ResultCode, wchar_t Locale[3])
+ApiGetServerInfo::ApiGetServerInfo()
 {
-	int ErrCode;
-	StkObject* TmpObj = StkObject::CreateObjectFromJson(L"{ \"hello\" : \"hello, world!!\" }", &ErrCode);
+	StkPlGetWTimeInIso8601(StartTimeUtc, false);
+	StkPlGetWTimeInIso8601(StartTimeLocal, true);
+}
+
+StkObject* ApiGetServerInfo::Execute(StkObject* ReqObj, int Method, wchar_t UrlPath[StkWebAppExec::URL_PATH_LENGTH], int* ResultCode, wchar_t Locale[3])
+{
+	StkObject* TmpObj = new StkObject(L"");
+	StkObject* TmpObjC = new StkObject(L"ServerInfo");
+	TmpObjC->AppendChildElement(new StkObject(L"StartTimeUtc", StartTimeUtc));
+	TmpObjC->AppendChildElement(new StkObject(L"StartTimeLocal", StartTimeLocal));
+	TmpObjC->AppendChildElement(new StkObject(L"Version", L"1.0.0"));
+	TmpObj->AppendChildElement(TmpObjC);
+	TmpObj->AppendChildElement(new StkObject(L"Msg", L""));
 	*ResultCode = 200;
 	return TmpObj;
 }
