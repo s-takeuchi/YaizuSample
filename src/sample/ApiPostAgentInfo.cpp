@@ -1,24 +1,36 @@
+#include "../../../YaizuComLib/src/stkpl/StkPl.h"
+#include "dataaccess.h"
 #include "ApiPostAgentInfo.h"
 
 StkObject* ApiPostAgentInfo::Execute(StkObject* ReqObj, int Method, wchar_t UrlPath[StkWebAppExec::URL_PATH_LENGTH], int* ResultCode, wchar_t Locale[3])
 {
-	StkObject* TmpObj = new StkObject(L"");
-	StkObject* TmpObj1 = new StkObject(L"Person");
-	StkObject* TmpObj2 = new StkObject(L"Person");
-	StkObject* TmpObj3 = new StkObject(L"Person");
-	TmpObj1->AppendChildElement(new StkObject(L"name", L"Aaa Bbbb"));
-	TmpObj1->AppendChildElement(new StkObject(L"age", 21));
-	TmpObj1->AppendChildElement(new StkObject(L"address", L"Xxx 1-1-1"));
-	TmpObj2->AppendChildElement(new StkObject(L"name", L"Cccc Dddd"));
-	TmpObj2->AppendChildElement(new StkObject(L"age", 54));
-	TmpObj2->AppendChildElement(new StkObject(L"address", L"Yyy 2-2-2"));
-	TmpObj3->AppendChildElement(new StkObject(L"name", L"Eee Fffff"));
-	TmpObj3->AppendChildElement(new StkObject(L"age", 11));
-	TmpObj3->AppendChildElement(new StkObject(L"address", L"Zzz 3-3-3"));
-	TmpObj->AppendChildElement(TmpObj1);
-	TmpObj->AppendChildElement(TmpObj2);
-	TmpObj->AppendChildElement(TmpObj3);
+	wchar_t* Name = NULL;
+	wchar_t* StatusTimeUtc = NULL;
+	wchar_t* StatusTimeLocal = NULL;
+	if (ReqObj != NULL) {
+		*ResultCode = 200;
+		StkObject* AgentInfo = ReqObj->GetFirstChildElement();
+		if (AgentInfo == NULL) {
+			return NULL;
+		}
+		StkObject* AgtInfoName = AgentInfo->GetFirstChildElement();
+		if (AgtInfoName == NULL) {
+			return NULL;
+		}
+		StkObject* AgtInfoTimeUtc = AgtInfoName->GetNext();
+		if (AgtInfoTimeUtc == NULL) {
+			return NULL;
+		}
+		StkObject* AgtInfoTimeLocal = AgtInfoTimeUtc->GetNext();
+		if (AgtInfoTimeLocal == NULL) {
+			return NULL;
+		}
+		Name = AgtInfoName->GetStringValue();
+		StatusTimeUtc = AgtInfoTimeUtc->GetStringValue();
+		StatusTimeLocal = AgtInfoTimeLocal->GetStringValue();
+	}
 
+	StkObject* TmpObj = new StkObject(L"");
 	*ResultCode = 200;
 	return TmpObj;
 }
