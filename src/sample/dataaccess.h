@@ -4,6 +4,7 @@
 #define DA_MAXLEN_OF_LOGMSG 256
 #define DA_MAXNUM_OF_LOGRECORDS 512
 #define DA_MAXLEN_OF_AGTNAME 256
+#define DA_MAXNUM_OF_AGTRECORDS 256
 
 class DataAccess
 {
@@ -21,6 +22,7 @@ public:
 
 	bool CheckExistenceOfTargetAgent(wchar_t[DA_MAXLEN_OF_AGTNAME]);
 	void SetAgentInfo(wchar_t[DA_MAXLEN_OF_AGTNAME], wchar_t[DA_MAXLEN_OF_TIME], wchar_t[DA_MAXLEN_OF_TIME]);
+	int GetAgentInfo(wchar_t[DA_MAXNUM_OF_AGTRECORDS][DA_MAXLEN_OF_AGTNAME], wchar_t[DA_MAXNUM_OF_AGTRECORDS][DA_MAXLEN_OF_TIME], wchar_t[DA_MAXNUM_OF_AGTRECORDS][DA_MAXLEN_OF_TIME]);
 
 	int AddLogMsg(const wchar_t[DA_MAXLEN_OF_LOGMSG]);
 	int GetMaxLogId();

@@ -28,6 +28,7 @@ StkObject* ApiPostAgentInfo::Execute(StkObject* ReqObj, int Method, wchar_t UrlP
 		Name = AgtInfoName->GetStringValue();
 		StatusTimeUtc = AgtInfoTimeUtc->GetStringValue();
 		StatusTimeLocal = AgtInfoTimeLocal->GetStringValue();
+		DataAccess::GetInstance()->SetAgentInfo(Name, StatusTimeUtc, StatusTimeLocal);
 	}
 
 	StkObject* TmpObj = new StkObject(L"");

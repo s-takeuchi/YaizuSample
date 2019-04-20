@@ -80,7 +80,7 @@ int DataAccess::CreateTables(const wchar_t* DataFileName)
 			ColumnDefWStr ColDefAgtName(L"Name", DA_MAXLEN_OF_AGTNAME);
 			ColumnDefWStr ColDefAgtTimeUtc(L"TimeUtc", DA_MAXLEN_OF_TIME);
 			ColumnDefWStr ColDefAgtTimeLocal(L"TimeLocal", DA_MAXLEN_OF_TIME);
-			TableDef TabDefAgtInfo(L"AgentInfo", DA_MAXNUM_OF_LOGRECORDS);
+			TableDef TabDefAgtInfo(L"AgentInfo", DA_MAXNUM_OF_AGTRECORDS);
 			TabDefAgtInfo.AddColumnDef(&ColDefAgtName);
 			TabDefAgtInfo.AddColumnDef(&ColDefAgtTimeUtc);
 			TabDefAgtInfo.AddColumnDef(&ColDefAgtTimeLocal);
@@ -119,7 +119,53 @@ bool DataAccess::CheckExistenceOfTargetAgent(wchar_t AgtName[DA_MAXLEN_OF_AGTNAM
 
 void DataAccess::SetAgentInfo(wchar_t AgtName[DA_MAXLEN_OF_AGTNAME], wchar_t TimeUtc[DA_MAXLEN_OF_TIME], wchar_t TimeLocal[DA_MAXLEN_OF_TIME])
 {
+	// New record information
+	ColumnData *ColDatAgt[3];
+	ColDatAgt[0] = new ColumnDataWStr(L"Name", AgtName);
+	ColDatAgt[1] = new ColumnDataWStr(L"TimeUtc", TimeUtc);
+	ColDatAgt[2] = new ColumnDataWStr(L"TimeLocal", TimeLocal);
+	RecordData* RecDatAgt = new RecordData(L"AgentInfo", ColDatAgt, 3);
+	// Add record
+	LockTable(L"AgentInfo", LOCK_EXCLUSIVE);
+	int Ret = InsertRecord(RecDatAgt);
+	UnlockTable(L"AgentInfo");
+	delete RecDatAgt;
+}
 
+int DataAccess::GetAgentInfo(wchar_t AgtName[DA_MAXNUM_OF_AGTRECORDS][DA_MAXLEN_OF_AGTNAME],
+							wchar_t TimeUtc[DA_MAXNUM_OF_AGTRECORDS][DA_MAXLEN_OF_TIME],
+							wchar_t TimeLocal[DA_MAXNUM_OF_AGTRECORDS][DA_MAXLEN_OF_TIME])
+{
+	LockTable(L"AgentInfo", LOCK_EXCLUSIVE);
+	RecordData* RecDatLog = GetRecord(L"AgentInfo");
+	UnlockTable(L"AgentInfo");
+
+	int NumOfRec = 0;
+	RecordData* CurrRecDat = RecDatLog;
+	while (CurrRecDat != NULL) {
+		ColumnDataWStr* ColDatName = (ColumnDataWStr*)CurrRecDat->GetColumn(0);
+		ColumnDataWStr* ColDatTimeUtc = (ColumnDataWStr*)CurrRecDat->GetColumn(1);
+		ColumnDataWStr* ColDatTimeLocal = (ColumnDataWStr*)CurrRecDat->GetColumn(2);
+		if (ColDatTimeUtc != NULL && ColDatTimeUtc->GetValue() != NULL) {
+			StkPlSwPrintf(TimeUtc[NumOfRec], DA_MAXLEN_OF_TIME, ColDatTimeUtc->GetValue());
+		} else {
+			StkPlSwPrintf(TimeUtc[NumOfRec], DA_MAXLEN_OF_TIME, L"");
+		}
+		if (ColDatTimeLocal != NULL && ColDatTimeLocal->GetValue() != NULL) {
+			StkPlSwPrintf(TimeLocal[NumOfRec], DA_MAXLEN_OF_TIME, ColDatTimeLocal->GetValue());
+		} else {
+			StkPlSwPrintf(TimeLocal[NumOfRec], DA_MAXLEN_OF_TIME, L"");
+		}
+		if (ColDatName != NULL && ColDatName->GetValue() != NULL) {
+			StkPlSwPrintf(AgtName[NumOfRec], DA_MAXLEN_OF_LOGMSG, ColDatName->GetValue());
+		} else {
+			StkPlSwPrintf(AgtName[NumOfRec], DA_MAXLEN_OF_LOGMSG, L"");
+		}
+		NumOfRec++;
+		CurrRecDat = CurrRecDat->GetNextRecord();
+	}
+	delete RecDatLog;
+	return NumOfRec;
 }
 
 // Add log message

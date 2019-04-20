@@ -1,15 +1,23 @@
-﻿#include "../../../YaizuComLib/src/stkpl/StkPl.h"
+﻿#include "dataaccess.h"
+#include "../../../YaizuComLib/src/stkpl/StkPl.h"
 #include "sample_elem3.h"
 
 StkObject* Sample_Elem3::Execute(StkObject* ReqObj, int Method, wchar_t UrlPath[StkWebAppExec::URL_PATH_LENGTH], int* ResultCode, wchar_t Locale[3])
 {
-	int ErrCode;
-	StkObject* TmpObj;
-	if (StkPlWcsCmp(Locale, L"ja") == 0) {
-		TmpObj = StkObject::CreateObjectFromJson(L"{ \"hello2\" : \"こんにちは!!\" }", &ErrCode);
-	} else {
-		TmpObj = StkObject::CreateObjectFromJson(L"{ \"hello2\" : \"hello, world!!\" }", &ErrCode);
+	wchar_t TimeUtc[DA_MAXNUM_OF_AGTRECORDS][DA_MAXLEN_OF_TIME];
+	wchar_t TimeLocal[DA_MAXNUM_OF_AGTRECORDS][DA_MAXLEN_OF_TIME];
+	wchar_t Name[DA_MAXNUM_OF_AGTRECORDS][DA_MAXLEN_OF_AGTNAME];
+	int Count = DataAccess::GetInstance()->GetAgentInfo(Name, TimeUtc, TimeLocal);
+
+	StkObject* TmpObj = new StkObject(L"");
+	for (int Loop = 0; Loop < Count; Loop++) {
+		StkObject* TmpObjC = new StkObject(L"AgentInfo");
+		TmpObjC->AppendChildElement(new StkObject(L"Name", Name[Loop]));
+		TmpObjC->AppendChildElement(new StkObject(L"TimeUtc", TimeUtc[Loop]));
+		TmpObjC->AppendChildElement(new StkObject(L"TimeLocal", TimeLocal[Loop]));
+		TmpObj->AppendChildElement(TmpObjC);
 	}
+	TmpObj->AppendChildElement(new StkObject(L"Msg", L""));
 	*ResultCode = 200;
 	return TmpObj;
 }
