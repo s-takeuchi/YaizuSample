@@ -7,7 +7,7 @@
 #include "../../../YaizuComLib/src/stkwebapp/StkWebAppExec.h"
 #include "ApiGetLogInfo.h"
 #include "ApiGetServerInfo.h"
-#include "sample_elem3.h"
+#include "ApiGetAgentInfo.h"
 #include "ApiPostAgentInfo.h"
 #include "dataaccess.h"
 
@@ -20,9 +20,9 @@ void Sample(wchar_t* IpAddr, int Port)
 	ApiGetLogInfo* ApiGetLogInfoObj = new ApiGetLogInfo();
 	int Add1 = Soc->AddReqHandler(StkWebAppExec::STKWEBAPP_METHOD_GET, L"/api/log/", (StkWebAppExec*)ApiGetLogInfoObj);
 	ApiGetServerInfo* ApiGetServerInfoObj = new ApiGetServerInfo();
-	int Add2 = Soc->AddReqHandler(StkWebAppExec::STKWEBAPP_METHOD_GET, L"/api/aaa/xxx/", (StkWebAppExec*)ApiGetServerInfoObj);
-	Sample_Elem3* Test3Hndl = new Sample_Elem3();
-	int Add3 = Soc->AddReqHandler(StkWebAppExec::STKWEBAPP_METHOD_GET, L"/api/bbb/$/", (StkWebAppExec*)Test3Hndl);
+	int Add2 = Soc->AddReqHandler(StkWebAppExec::STKWEBAPP_METHOD_GET, L"/api/server/", (StkWebAppExec*)ApiGetServerInfoObj);
+	ApiGetAgentInfo* ApiGetAgentInfoObj = new ApiGetAgentInfo();
+	int Add3 = Soc->AddReqHandler(StkWebAppExec::STKWEBAPP_METHOD_GET, L"/api/agent/", (StkWebAppExec*)ApiGetAgentInfoObj);
 	ApiPostAgentInfo* ApiPostAgentInfoObj = new ApiPostAgentInfo();
 	int Add4 = Soc->AddReqHandler(StkWebAppExec::STKWEBAPP_METHOD_POST, L"/api/agent/", (StkWebAppExec*)ApiPostAgentInfoObj);
 
@@ -30,9 +30,9 @@ void Sample(wchar_t* IpAddr, int Port)
 	Soc->TheLoop();
 	////////// Main logic ends
 
-	int Del1 = Soc->DeleteReqHandler(StkWebAppExec::STKWEBAPP_METHOD_GET, L"/api/aaa/bbb/");
-	int Del2 = Soc->DeleteReqHandler(StkWebAppExec::STKWEBAPP_METHOD_GET, L"/api/aaa/xxx/");
-	int Del3 = Soc->DeleteReqHandler(StkWebAppExec::STKWEBAPP_METHOD_GET, L"/api/bbb/$/");
+	int Del1 = Soc->DeleteReqHandler(StkWebAppExec::STKWEBAPP_METHOD_GET, L"/api/log/");
+	int Del2 = Soc->DeleteReqHandler(StkWebAppExec::STKWEBAPP_METHOD_GET, L"/api/server/");
+	int Del3 = Soc->DeleteReqHandler(StkWebAppExec::STKWEBAPP_METHOD_GET, L"/api/agent/");
 	int Del4 = Soc->DeleteReqHandler(StkWebAppExec::STKWEBAPP_METHOD_POST, L"/api/agent/");
 
 	delete Soc;

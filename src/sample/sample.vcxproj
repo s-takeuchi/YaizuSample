@@ -102,19 +102,19 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="ApiGetAgentInfo.cpp" />
     <ClCompile Include="ApiGetLogInfo.cpp" />
     <ClCompile Include="ApiGetServerInfo.cpp" />
     <ClCompile Include="ApiPostAgentInfo.cpp" />
     <ClCompile Include="dataaccess.cpp" />
     <ClCompile Include="sample.cpp" />
-    <ClCompile Include="sample_elem3.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="ApiGetAgentInfo.h" />
     <ClInclude Include="ApiGetLogInfo.h" />
     <ClInclude Include="ApiGetServerInfo.h" />
     <ClInclude Include="ApiPostAgentInfo.h" />
     <ClInclude Include="dataaccess.h" />
-    <ClInclude Include="sample_elem3.h" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\YaizuComLib\src\commonfunc\commonfunc.vcxproj">

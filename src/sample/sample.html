@@ -82,8 +82,8 @@
 
     window.onload = function() {
         apiCall('GET', './api/log/', null, API_GET_LOGS, displayLogInfo);
-        apiCall('GET', './api/aaa/xxx/', null, API_GET_SVRINFO, displayServerInfo);
-        apiCall('GET', './api/bbb/xxx/', null, API_GET_AGTINFO, displayAgentInfo);
+        apiCall('GET', './api/server/', null, API_GET_SVRINFO, displayServerInfo);
+        apiCall('GET', './api/agent/', null, API_GET_AGTINFO, displayAgentInfo);
     }
 
     function activateTopic(id) {
