@@ -40,8 +40,26 @@
     }
 
     function displayAgentInfo() {
+        var agentInfoData = $('<table>');
+        agentInfoData.addClass('table table-striped');
+
+        var tHead = $('<thead>');
+        tHead.append('<tr><th>Name</th><th>Status Acquired Time</th><th>Update Time</th></tr>');
+        agentInfoData.append(tHead);
+
+        var tBody = $('<tbody>');
+        var AgentInfo = [];
+        if (responseData[API_GET_AGTINFO].AgentInfo instanceof Array) {
+                AgentInfo = responseData[API_GET_AGTINFO].AgentInfo;
+        } else if (responseData[API_GET_AGTINFO]) {
+                AgentInfo.push(responseData[API_GET_AGTINFO].AgentInfo);
+        }
+        for (var Loop = 0; Loop < AgentInfo.length; Loop++) {
+            tBody.append('<tr><td>' + AgentInfo[Loop].Name + '</td><td>' + AgentInfo[Loop].TimeUtc + '<br/>' + AgentInfo[Loop].TimeLocal + '</td><td>' + AgentInfo[Loop].UdTimeUtc + '<br/>' + AgentInfo[Loop].UdTimeLocal + '</td></tr>');
+        }
+        agentInfoData.append(tBody);
         $('#workspace_agtinfo').append('<h2><span class="glyphicon glyphicon-eye-open"></span> Agent Info</h2>');
-        $('#workspace_agtinfo').append(responseData[API_GET_AGTINFO].hello2);
+        $('#workspace_agtinfo').append(agentInfoData);
     }
 
     function displayServerInfo() {
