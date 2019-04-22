@@ -103,6 +103,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="ApiGetAgentInfo.cpp" />
+    <ClCompile Include="ApiGetCommandForStatus.cpp" />
     <ClCompile Include="ApiGetLogInfo.cpp" />
     <ClCompile Include="ApiGetServerInfo.cpp" />
     <ClCompile Include="ApiPostAgentInfo.cpp" />
@@ -111,6 +112,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ApiGetAgentInfo.h" />
+    <ClInclude Include="ApiGetCommandForStatus.h" />
     <ClInclude Include="ApiGetLogInfo.h" />
     <ClInclude Include="ApiGetServerInfo.h" />
     <ClInclude Include="ApiPostAgentInfo.h" />

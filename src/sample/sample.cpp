@@ -9,6 +9,7 @@
 #include "ApiGetServerInfo.h"
 #include "ApiGetAgentInfo.h"
 #include "ApiPostAgentInfo.h"
+#include "ApiGetCommandForStatus.h"
 #include "dataaccess.h"
 
 void Sample(wchar_t* IpAddr, int Port)
@@ -25,6 +26,8 @@ void Sample(wchar_t* IpAddr, int Port)
 	int Add3 = Soc->AddReqHandler(StkWebAppExec::STKWEBAPP_METHOD_GET, L"/api/agent/", (StkWebAppExec*)ApiGetAgentInfoObj);
 	ApiPostAgentInfo* ApiPostAgentInfoObj = new ApiPostAgentInfo();
 	int Add4 = Soc->AddReqHandler(StkWebAppExec::STKWEBAPP_METHOD_POST, L"/api/agent/", (StkWebAppExec*)ApiPostAgentInfoObj);
+	ApiGetCommandForStatus* ApiGetCommandForStatusObj = new ApiGetCommandForStatus();
+	int Add5 = Soc->AddReqHandler(StkWebAppExec::STKWEBAPP_METHOD_GET, L"/api/statuscommand/", (StkWebAppExec*)ApiGetCommandForStatusObj);
 
 	////////// Main logic starts
 	Soc->TheLoop();
@@ -34,6 +37,7 @@ void Sample(wchar_t* IpAddr, int Port)
 	int Del2 = Soc->DeleteReqHandler(StkWebAppExec::STKWEBAPP_METHOD_GET, L"/api/server/");
 	int Del3 = Soc->DeleteReqHandler(StkWebAppExec::STKWEBAPP_METHOD_GET, L"/api/agent/");
 	int Del4 = Soc->DeleteReqHandler(StkWebAppExec::STKWEBAPP_METHOD_POST, L"/api/agent/");
+	int Del5 = Soc->DeleteReqHandler(StkWebAppExec::STKWEBAPP_METHOD_POST, L"/api/statuscommand/");
 
 	delete Soc;
 }

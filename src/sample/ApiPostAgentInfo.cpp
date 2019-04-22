@@ -32,6 +32,7 @@ StkObject* ApiPostAgentInfo::Execute(StkObject* ReqObj, int Method, wchar_t UrlP
 	}
 
 	StkObject* TmpObj = new StkObject(L"");
+	TmpObj->AppendChildElement(new StkObject(L"Msg0", L""));
 	*ResultCode = 200;
 	return TmpObj;
 }

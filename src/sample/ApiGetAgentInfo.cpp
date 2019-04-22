@@ -21,7 +21,7 @@ StkObject* ApiGetAgentInfo::Execute(StkObject* ReqObj, int Method, wchar_t UrlPa
 		TmpObjC->AppendChildElement(new StkObject(L"UdTimeLocal", UdTimeLocal[Loop]));
 		TmpObj->AppendChildElement(TmpObjC);
 	}
-	TmpObj->AppendChildElement(new StkObject(L"Msg", L""));
+	TmpObj->AppendChildElement(new StkObject(L"Msg0", L""));
 	*ResultCode = 200;
 	return TmpObj;
 }

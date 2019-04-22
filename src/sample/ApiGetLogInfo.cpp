@@ -16,7 +16,7 @@ StkObject* ApiGetLogInfo::Execute(StkObject* ReqObj, int Method, wchar_t UrlPath
 		TmpObjC->AppendChildElement(new StkObject(L"Msg", Msg[Loop]));
 		TmpObj->AppendChildElement(TmpObjC);
 	}
-	TmpObj->AppendChildElement(new StkObject(L"Msg", L""));
+	TmpObj->AppendChildElement(new StkObject(L"Msg0", L""));
 	*ResultCode = 200;
 	return TmpObj;
 }
