@@ -15,6 +15,8 @@ StkObject* ApiGetServerInfo::Execute(StkObject* ReqObj, int Method, wchar_t UrlP
 	TmpObjC->AppendChildElement(new StkObject(L"StartTimeUtc", StartTimeUtc));
 	TmpObjC->AppendChildElement(new StkObject(L"StartTimeLocal", StartTimeLocal));
 	TmpObjC->AppendChildElement(new StkObject(L"Version", L"1.0.0"));
+	TmpObjC->AppendChildElement(new StkObject(L"PollingInterval", 300));
+	TmpObjC->AppendChildElement(new StkObject(L"StatusAcquisitionInterval", 1800));
 	TmpObj->AppendChildElement(TmpObjC);
 	TmpObj->AppendChildElement(new StkObject(L"Msg0", L""));
 	*ResultCode = 200;
