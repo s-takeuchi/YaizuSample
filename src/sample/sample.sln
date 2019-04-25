@@ -10,6 +10,9 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "sample", "sample.vcxproj", 
 	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "commonfunc", "..\..\..\YaizuComLib\src\commonfunc\commonfunc.vcxproj", "{8061DCB2-52A6-462E-8955-FCFE6F7A7D41}"
+	ProjectSection(ProjectDependencies) = postProject
+		{CC482842-6B46-401A-9911-E6A7D084AB26} = {CC482842-6B46-401A-9911-E6A7D084AB26}
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "stkwebapp", "..\..\..\YaizuComLib\src\stkwebapp\stkwebapp.vcxproj", "{85C0E32C-8AB1-495D-9968-0ABDEBD671AE}"
 	ProjectSection(ProjectDependencies) = postProject
@@ -17,12 +20,21 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "stkwebapp", "..\..\..\Yaizu
 	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "stkthread", "..\..\..\YaizuComLib\src\stkthread\stkthread.vcxproj", "{C85C9417-1312-4A69-B254-B4F041A9D9C1}"
+	ProjectSection(ProjectDependencies) = postProject
+		{CC482842-6B46-401A-9911-E6A7D084AB26} = {CC482842-6B46-401A-9911-E6A7D084AB26}
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "stksocket", "..\..\..\YaizuComLib\src\stksocket\stksocket.vcxproj", "{3839D168-00F8-420A-BAE6-AB290802FFC7}"
+	ProjectSection(ProjectDependencies) = postProject
+		{CC482842-6B46-401A-9911-E6A7D084AB26} = {CC482842-6B46-401A-9911-E6A7D084AB26}
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "stkpl", "..\..\..\YaizuComLib\src\stkpl\stkpl.vcxproj", "{CC482842-6B46-401A-9911-E6A7D084AB26}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "stkdata", "..\..\..\YaizuComLib\src\stkdata\stkdata.vcxproj", "{83E294F2-A071-4ECC-BAE2-B5F127DD537E}"
+	ProjectSection(ProjectDependencies) = postProject
+		{CC482842-6B46-401A-9911-E6A7D084AB26} = {CC482842-6B46-401A-9911-E6A7D084AB26}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

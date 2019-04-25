@@ -92,6 +92,17 @@ int DataAccess::CreateTables(const wchar_t* DataFileName)
 				return -1;
 			}
 		}
+		// Server info table
+		{
+			ColumnDefInt ColDefSvrPi(L"PInterval");
+			ColumnDefInt ColDefSvrSai(L"SaInterval");
+			TableDef TabDefSvrInfo(L"ServerInfo", 1);
+			TabDefSvrInfo.AddColumnDef(&ColDefSvrPi);
+			TabDefSvrInfo.AddColumnDef(&ColDefSvrSai);
+			if (CreateTable(&TabDefSvrInfo) != 0) {
+				return -1;
+			}
+		}
 
 	} else {
 		if (LoadData(Buf) != 0) {
@@ -100,6 +111,16 @@ int DataAccess::CreateTables(const wchar_t* DataFileName)
 		}
 	}
 	UnlockAllTable();
+
+	ColumnData *ColDatSvr[2];
+	ColDatSvr[0] = new ColumnDataInt(L"PInterval", 300);
+	ColDatSvr[1] = new ColumnDataInt(L"SaInterval", 1800);
+	RecordData* RecSvrInfo = new RecordData(L"ServerInfo", ColDatSvr, 2);
+	// Add record
+	LockTable(L"ServerInfo", LOCK_EXCLUSIVE);
+	int Ret = InsertRecord(RecSvrInfo);
+	UnlockTable(L"ServerInfo");
+	delete RecSvrInfo;
 
 	return 0;
 }
@@ -160,7 +181,7 @@ int DataAccess::GetAgentInfo(wchar_t AgtName[DA_MAXNUM_OF_AGTRECORDS][DA_MAXLEN_
 							wchar_t UdTimeUtc[DA_MAXNUM_OF_AGTRECORDS][DA_MAXLEN_OF_TIME],
 							wchar_t UdTimeLocal[DA_MAXNUM_OF_AGTRECORDS][DA_MAXLEN_OF_TIME])
 {
-	LockTable(L"AgentInfo", LOCK_EXCLUSIVE);
+	LockTable(L"AgentInfo", LOCK_SHARE);
 	RecordData* RecDatLog = GetRecord(L"AgentInfo");
 	UnlockTable(L"AgentInfo");
 
@@ -202,6 +223,40 @@ int DataAccess::GetAgentInfo(wchar_t AgtName[DA_MAXNUM_OF_AGTRECORDS][DA_MAXLEN_
 	}
 	delete RecDatLog;
 	return NumOfRec;
+}
+
+int  DataAccess::GetServerInfo(int* PInterval, int* SaInterval)
+{
+	LockTable(L"ServerInfo", LOCK_SHARE);
+	RecordData* RecDatSvr = GetRecord(L"ServerInfo");
+	UnlockTable(L"ServerInfo");
+	if (RecDatSvr == NULL) {
+		return -1;
+	}
+	ColumnDataInt* ColDatPInterval = (ColumnDataInt*)RecDatSvr->GetColumn(0);
+	ColumnDataInt* ColDatSaInterval = (ColumnDataInt*)RecDatSvr->GetColumn(1);
+	if (ColDatPInterval == NULL || ColDatSaInterval == NULL) {
+		delete RecDatSvr;
+		return -1;
+	}
+	*PInterval = ColDatPInterval->GetValue();
+	*SaInterval = ColDatSaInterval->GetValue();
+	delete RecDatSvr;
+	return 0;
+}
+
+int DataAccess::SetServerInfo(int PInterval, int SaInterval)
+{
+	ColumnData *ColDatSvr[2];
+	ColDatSvr[0] = new ColumnDataInt(L"PInterval", PInterval);
+	ColDatSvr[1] = new ColumnDataInt(L"SaInterval", SaInterval);
+	RecordData* RecDatSvr = new RecordData(L"ServerInfo", ColDatSvr, 2);
+	LockTable(L"ServerInfo", LOCK_EXCLUSIVE);
+	DeleteRecord(L"ServerInfo");
+	int Ret = InsertRecord(RecDatSvr);
+	UnlockTable(L"ServerInfo");
+	delete RecDatSvr;
+	return 0;
 }
 
 // Add log message
