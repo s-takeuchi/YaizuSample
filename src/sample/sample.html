@@ -15,6 +15,7 @@
     var API_GET_SVRINFO             = 1;
     var API_GET_LOGS                = 2;
     var API_GET_AGTINFO             = 3;
+    var API_POST_SVRINFO            = 4;
 
     var selectedPollingInterval = 1;
     var pollingIntervalStr = ['30 sec ', '1 min ', '5 min ', '15 min '];
@@ -135,13 +136,41 @@
     function selectPollingInterval(interval) {
         selectedPollingInterval = interval;
         $('#selectedPI').text(pollingIntervalStr[selectedPollingInterval]);
-
+        var pInterval = getPollingInterval(selectedPollingInterval);
+        var saInterval = getStatusAcquisitionInterval(selectedStatusAcquisitionInterval);
+        apiCall('POST', './api/server/', {"ServerInfo":{"PInterval":pInterval, "SaInterval":saInterval}}, API_POST_SVRINFO, null);
     }
 
     function selectStatusAcquisitionInterval(interval) {
         selectedStatusAcquisitionInterval = interval;
         $('#selectedSAI').text(statusAcquisitionIntervalStr[selectedStatusAcquisitionInterval]);
+        var pInterval = getPollingInterval(selectedPollingInterval);
+        var saInterval = getStatusAcquisitionInterval(selectedStatusAcquisitionInterval);
+        apiCall('POST', './api/server/', {"ServerInfo":{"PInterval":pInterval, "SaInterval":saInterval}}, API_POST_SVRINFO, null);
+    }
 
+    function getPollingInterval(interval) {
+        if (interval == 0) {
+            return 30;
+        } else if (interval == 1) {
+            return 60;
+        } else if (interval == 2) {
+            return 300;
+        } else if (interval == 3) {
+            return 900;
+        }
+    }
+
+    function getStatusAcquisitionInterval(interval) {
+        if (interval == 0) {
+            return 300;
+        } else if (interval == 1) {
+            return 900;
+        } else if (interval == 2) {
+            return 1800;
+        } else if (interval == 3) {
+            return 3600;
+        }
     }
 
     window.onload = function() {

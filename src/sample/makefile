@@ -1,4 +1,4 @@
-sample : sample.o ApiGetLogInfo.o ApiGetServerInfo.o ApiGetAgentInfo.o ApiPostAgentInfo.o ApiGetCommandForStatus.o dataaccess.o
+sample : sample.o ApiGetLogInfo.o ApiGetServerInfo.o ApiPostServerInfo.o ApiGetAgentInfo.o ApiPostAgentInfo.o ApiGetCommandForStatus.o dataaccess.o
 	cd ../../../YaizuComLib/src/stkpl; make
 	cp ../../../YaizuComLib/src/stkpl/stkpl.a .
 	cd ../../../YaizuComLib/src/stkwebapp; make
@@ -12,13 +12,16 @@ sample : sample.o ApiGetLogInfo.o ApiGetServerInfo.o ApiGetAgentInfo.o ApiPostAg
 	cd ../../../YaizuComLib/src/stkdata; make
 	cp ../../../YaizuComLib/src/stkdata/stkdata.a .
 
-	g++ -o sample sample.o ApiGetLogInfo.o ApiGetServerInfo.o ApiGetAgentInfo.o ApiPostAgentInfo.o ApiGetCommandForStatus.o dataaccess.o stkpl.a stkwebapp.a commonfunc.a stksocket.a stkthread.a stkdata.a -std=c++1z -lstdc++fs -pthread -static-libgcc -static-libstdc++
+	g++ -o sample sample.o ApiGetLogInfo.o ApiGetServerInfo.o ApiPostServerInfo.o ApiGetAgentInfo.o ApiPostAgentInfo.o ApiGetCommandForStatus.o dataaccess.o stkpl.a stkwebapp.a commonfunc.a stksocket.a stkthread.a stkdata.a -std=c++1z -lstdc++fs -pthread -static-libgcc -static-libstdc++
 
 ApiGetLogInfo.o : ApiGetLogInfo.cpp
 	g++ -c ApiGetLogInfo.cpp -std=c++1z
 
 ApiGetServerInfo.o : ApiGetServerInfo.cpp
 	g++ -c ApiGetServerInfo.cpp -std=c++1z
+
+ApiPostServerInfo.o : ApiPostServerInfo.cpp
+	g++ -c ApiPostServerInfo.cpp -std=c++1z
 
 ApiGetAgentInfo.o : ApiGetAgentInfo.cpp
 	g++ -c ApiGetAgentInfo.cpp -std=c++1z
