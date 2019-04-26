@@ -19,18 +19,8 @@ StkObject* GetAgentInfo()
 	return NewObj;
 }
 
-int main(int argc, char* argv[])
+void StatusLoop(wchar_t HostOrIpAddr[256], int PortNum)
 {
-	wchar_t HostOrIpAddr[256] = L"";
-	int PortNum = 0;
-	if (argc >= 2) {
-		StkPlConvUtf8ToWideChar(HostOrIpAddr, 256, argv[1]);
-		PortNum = StkPlAtoi(argv[2]);
-	} else {
-		StkPlPrintf("Usage: %s, hostname_or_ipaddress, port number\r\n", argv[0]);
-		StkPlExit(-1);
-	}
-
 	StkWebAppSend SendObj(1, HostOrIpAddr, PortNum);
 	int Result = 0;
 	SendObj.SetTimeoutInterval(60000 * 16);
@@ -40,10 +30,12 @@ int main(int argc, char* argv[])
 		if (Result == 200 && ResGetCommandForStatus != NULL) {
 			StkObject* TargetObj = ResGetCommandForStatus->GetFirstChildElement();
 			while (TargetObj) {
+				char TmpTime[64] = "";
+				StkPlGetTimeInIso8601(TmpTime, false);
 				if (StkPlWcsCmp(TargetObj->GetName(), L"Msg0") == 0 && StkPlWcsCmp(TargetObj->GetStringValue(), L"Timeout") == 0) {
-					StkPlPrintf("Timeout\r\n", Result);
+					StkPlPrintf("Timeout [%s]\r\n", TmpTime);
 				} else if (StkPlWcsCmp(TargetObj->GetName(), L"Msg0") == 0 && StkPlWcsCmp(TargetObj->GetStringValue(), L"Execution") == 0) {
-					StkPlPrintf("Execution\r\n", Result);
+					StkPlPrintf("Execution [%s]\r\n", TmpTime);
 					StkObject* ResObj = SendObj.SendRequestRecvResponse(StkWebAppSend::STKWEBAPP_METHOD_POST, "/api/agent/", GetAgentInfo(), &Result);
 					delete ResObj;
 				} else {
@@ -56,6 +48,20 @@ int main(int argc, char* argv[])
 		}
 		delete ResGetCommandForStatus;
 	}
+}
+
+int main(int argc, char* argv[])
+{
+	wchar_t HostOrIpAddr[256] = L"";
+	int PortNum = 0;
+	if (argc >= 2) {
+		StkPlConvUtf8ToWideChar(HostOrIpAddr, 256, argv[1]);
+		PortNum = StkPlAtoi(argv[2]);
+	} else {
+		StkPlPrintf("Usage: %s, hostname_or_ipaddress, port number\r\n", argv[0]);
+		StkPlExit(-1);
+	}
+	StatusLoop(HostOrIpAddr, PortNum);
 	
 	return 0;
 }
