@@ -69,11 +69,11 @@ int main(int Argc, char* Argv[])
 	}
 
 	DataAccess::GetInstance()->CreateTables(L"sample.dat");
-	DataAccess::GetInstance()->AddLogMsg(L"Service started.");
+	DataAccess::GetInstance()->AddLogMsg(L"Service has started.");
 	wchar_t* IpAddr = StkPlCreateWideCharFromUtf8(IpAddrTmp);
 	Sample(IpAddr, Port);
 	delete IpAddr;
-	DataAccess::GetInstance()->AddLogMsg(L"Service stopped.");
+	DataAccess::GetInstance()->AddLogMsg(L"Service has stopped.");
 	DataAccess::GetInstance()->StopAutoSave(L"sample.dat");
 
 	return 0;

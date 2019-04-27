@@ -2,6 +2,24 @@
 #include "../../../YaizuComLib/src/commonfunc/StkObject.h"
 #include "../../../YaizuComLib/src/commonfunc/StkProperties.h"
 #include "../../../YaizuComLib/src/stkwebapp/StkWebAppSend.h"
+#include "../../../YaizuComLib/src/stkthread/stkthread.h"
+
+#ifdef WIN32
+#include <Windows.h>
+#define SERVICE_NAME (TEXT("YaizuSampleAgent"))
+
+bool g_bRun = true;
+bool g_bService = true;
+SERVICE_STATUS_HANDLE g_hServiceStatus = NULL;
+
+DWORD WINAPI HandlerEx(DWORD, DWORD, PVOID, PVOID);
+VOID WINAPI ServiceMain(DWORD dwArgc, PTSTR* pszArgv);
+
+SERVICE_TABLE_ENTRY ServiceTable[] = {
+	{ SERVICE_NAME, ServiceMain },
+{ NULL, NULL }
+}; 
+#endif
 
 StkObject* GetAgentInfo()
 {
@@ -51,36 +69,205 @@ void StatusLoop(wchar_t HostOrIpAddr[256], int PortNum)
 	}
 }
 
+int LoadPropertyFile(wchar_t HostOrIpAddr[256], int* PortNum)
+{
+	char TmpHostOrIpAddr[256] = "";
+	StkProperties *Prop = new StkProperties();
+	if (Prop->GetProperties(L"agent.conf") == 0) {
+		if (Prop->GetPropertyStr("targethost", TmpHostOrIpAddr) != 0) {
+			StkPlPrintf("targethost property is not found.\r\n");
+			return -1;
+		}
+		StkPlPrintf("targethost property = %s\r\n", TmpHostOrIpAddr);
+		StkPlConvUtf8ToWideChar(HostOrIpAddr, 256, TmpHostOrIpAddr);
+
+		if (Prop->GetPropertyInt("targetport", PortNum) != 0) {
+			StkPlPrintf("targetport property is not found.\r\n");
+			return -1;
+		}
+		StkPlPrintf("targetport property = %d\r\n", *PortNum);
+	} else {
+		StkPlPrintf("agent.conf is not found.\r\n");
+		return -1;
+	}
+	return 0;
+}
+
 int main(int argc, char* argv[])
 {
 	wchar_t HostOrIpAddr[256] = L"";
-	char TmpHostOrIpAddr[256] = "";
 	int PortNum = 0;
 	if (argc >= 2) {
 		StkPlConvUtf8ToWideChar(HostOrIpAddr, 256, argv[1]);
 		PortNum = StkPlAtoi(argv[2]);
+		StatusLoop(HostOrIpAddr, PortNum);
 	} else {
-		StkProperties *Prop = new StkProperties();
-
-		if (Prop->GetProperties(L"agent.conf") == 0) {
-			if (Prop->GetPropertyStr("targethost", TmpHostOrIpAddr) != 0) {
-				StkPlPrintf("targethost property is not found.\r\n");
-				return -1;
-			}
-			StkPlPrintf("servicehost property = %s\r\n", TmpHostOrIpAddr);
-			StkPlConvUtf8ToWideChar(HostOrIpAddr, 256, TmpHostOrIpAddr);
-
-			if (Prop->GetPropertyInt("targetport", &PortNum) != 0) {
-				StkPlPrintf("targetport property is not found.\r\n");
-				return -1;
-			}
-			StkPlPrintf("targetport property = %d\r\n", PortNum);
-		} else {
-			StkPlPrintf("agent.conf is not found.\r\n");
-			return -1;
-		}
+#ifdef WIN32
+		StartServiceCtrlDispatcher(ServiceTable);
+#else
+		LoadPropertyFile(HostOrIpAddr, &PortNum); 
+		StatusLoop(HostOrIpAddr, PortNum);
+#endif
 	}
-	StatusLoop(HostOrIpAddr, PortNum);
 
 	return 0;
 }
+
+#ifdef WIN32
+int TheLoop(int Id)
+{
+	wchar_t HostOrIpAddr[256] = L"";
+	int PortNum = 0;
+	LoadPropertyFile(HostOrIpAddr, &PortNum);
+	StatusLoop(HostOrIpAddr, PortNum);
+	return 0;
+}
+
+DWORD WINAPI HandlerEx(DWORD dwControl, DWORD dwEventType, LPVOID lpEventData, LPVOID lpContext)
+{
+	// Initialize Variables for Service Control
+	SERVICE_STATUS ss;
+	ss.dwServiceType = SERVICE_WIN32_OWN_PROCESS;
+	ss.dwWin32ExitCode = NO_ERROR;
+	ss.dwServiceSpecificExitCode = 0;
+	ss.dwCheckPoint = 1;
+	ss.dwWaitHint = 1000;
+	ss.dwControlsAccepted = 0;
+
+	switch (dwControl) {
+	case SERVICE_CONTROL_STOP:
+	case SERVICE_CONTROL_SHUTDOWN:
+
+		// Set STOP_PENDING status.
+		ss.dwCurrentState = SERVICE_STOP_PENDING;
+		if (!SetServiceStatus(g_hServiceStatus, &ss)) {
+			break;
+		}
+
+		// SERVICE SPECIFIC STOPPING CODE HERE.
+		// ...
+		// ...
+		g_bService = false;
+		Sleep(2 * 1000);
+
+		// Set STOPPED status.
+		ss.dwCurrentState = SERVICE_STOPPED;
+		ss.dwCheckPoint = 0;
+		ss.dwWaitHint = 0;
+		if (!SetServiceStatus(g_hServiceStatus, &ss)) {
+			break;
+		}
+		break;
+
+	case SERVICE_CONTROL_PAUSE:
+
+		// Set PAUSE_PENDING status.
+		ss.dwCurrentState = SERVICE_PAUSE_PENDING;
+		if (!SetServiceStatus(g_hServiceStatus, &ss)) {
+			break;
+		}
+
+		// APPLICATION SPECIFIC PAUSE_PENDING CODE HERE.
+		// ...
+		// ...
+		g_bRun = false;
+		Sleep(2 * 1000);
+
+		// Set PAUSE_PENDING status.
+		ss.dwCurrentState = SERVICE_PAUSED;
+		ss.dwCheckPoint = 0;
+		ss.dwWaitHint = 0;
+		ss.dwControlsAccepted =
+			SERVICE_ACCEPT_PAUSE_CONTINUE |
+			SERVICE_ACCEPT_SHUTDOWN |
+			SERVICE_ACCEPT_STOP;
+		if (!SetServiceStatus(g_hServiceStatus, &ss)) {
+			break;
+		}
+		break;
+
+	case SERVICE_CONTROL_CONTINUE:
+
+		// Set PAUSE_PENDING status.
+		ss.dwCurrentState = SERVICE_START_PENDING;
+		if (!SetServiceStatus(g_hServiceStatus, &ss)) {
+			break;
+		}
+
+		// APPLICATION SPECIFIC START_PENDING CODE HERE.
+		// ...
+		// ...
+		g_bRun = true;
+		Sleep(2 * 1000);
+
+		// Set RUNNING status.
+		ss.dwCurrentState = SERVICE_RUNNING;
+		ss.dwCheckPoint = 0;
+		ss.dwWaitHint = 0;
+		ss.dwControlsAccepted =
+			SERVICE_ACCEPT_PAUSE_CONTINUE |
+			SERVICE_ACCEPT_SHUTDOWN |
+			SERVICE_ACCEPT_STOP;
+		if (!SetServiceStatus(g_hServiceStatus, &ss)) {
+			break;
+		}
+		break;
+
+	default:
+		return ERROR_CALL_NOT_IMPLEMENTED;
+	}
+
+	return NO_ERROR;
+}
+
+VOID WINAPI ServiceMain(DWORD dwArgc, PTSTR* pszArgv)
+{
+	// Initialize Variables for Service Control
+	SERVICE_STATUS ss;
+	ss.dwServiceType = SERVICE_WIN32_OWN_PROCESS;
+	ss.dwWin32ExitCode = NO_ERROR;
+	ss.dwServiceSpecificExitCode = 0;
+	ss.dwCheckPoint = 1;
+	ss.dwWaitHint = 1000;
+	ss.dwControlsAccepted = 0;
+	ss.dwCurrentState = SERVICE_START_PENDING;
+
+	// Register Service Control Handler
+	g_hServiceStatus = RegisterServiceCtrlHandlerEx(SERVICE_NAME, HandlerEx, NULL);
+	if (0 == g_hServiceStatus) {
+		return;
+	}
+
+	// Entering Starting Service.
+	if (!SetServiceStatus(g_hServiceStatus, &ss)) {
+		return;
+	}
+
+	// APPLICATION SPECIFIC INITIALIZATION CODE
+	// ...
+	// ...
+
+	// Finish Initializing.
+	ss.dwCurrentState = SERVICE_RUNNING;
+	ss.dwCheckPoint = 0;
+	ss.dwWaitHint = 0;
+	ss.dwControlsAccepted =
+		SERVICE_ACCEPT_PAUSE_CONTINUE |
+		SERVICE_ACCEPT_SHUTDOWN |
+		SERVICE_ACCEPT_STOP;
+	if (!SetServiceStatus(g_hServiceStatus, &ss)) {
+		return;
+	}
+
+	AddStkThread(1, L"Loop", L"", NULL, NULL, TheLoop, NULL, NULL);
+	StartAllOfStkThreads();
+
+	while (g_bService) {
+		if (!g_bRun) {
+			Sleep(1000);
+			continue;
+		}
+		Sleep(1);
+	}
+}
+#endif

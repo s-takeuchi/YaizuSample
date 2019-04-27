@@ -258,6 +258,9 @@ int DataAccess::SetServerInfo(int PInterval, int SaInterval)
 	int Ret = InsertRecord(RecDatSvr);
 	UnlockTable(L"ServerInfo");
 	delete RecDatSvr;
+	wchar_t LogMsg[256] = L"";
+	StkPlSwPrintf(LogMsg, 256, L"Server information has been changed. [Polling Interval=%d sec, Status Acquisition Interval=%d sec]", PInterval, SaInterval);
+	AddLogMsg(LogMsg);
 	return 0;
 }
 
