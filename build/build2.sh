@@ -10,8 +10,6 @@ cd ../src/agent
 make all
 cp agent $BUILDDIR/SOURCES
 cp agent.conf $BUILDDIR/SOURCES
-echo targethost=127.0.0.1 >> $BUILDDIR/SOURCES/agent.conf
-echo targetport=8080 >> $BUILDDIR/SOURCES/agent.conf
 cp agent.service $BUILDDIR/SOURCES
 
 

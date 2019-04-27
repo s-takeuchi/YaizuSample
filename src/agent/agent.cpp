@@ -1,5 +1,6 @@
 #include "../../../YaizuComLib/src/stkpl/StkPl.h"
 #include "../../../YaizuComLib/src/commonfunc/StkObject.h"
+#include "../../../YaizuComLib/src/commonfunc/StkProperties.h"
 #include "../../../YaizuComLib/src/stkwebapp/StkWebAppSend.h"
 
 StkObject* GetAgentInfo()
@@ -53,15 +54,33 @@ void StatusLoop(wchar_t HostOrIpAddr[256], int PortNum)
 int main(int argc, char* argv[])
 {
 	wchar_t HostOrIpAddr[256] = L"";
+	char TmpHostOrIpAddr[256] = "";
 	int PortNum = 0;
 	if (argc >= 2) {
 		StkPlConvUtf8ToWideChar(HostOrIpAddr, 256, argv[1]);
 		PortNum = StkPlAtoi(argv[2]);
 	} else {
-		StkPlPrintf("Usage: %s, hostname_or_ipaddress, port number\r\n", argv[0]);
-		StkPlExit(-1);
+		StkProperties *Prop = new StkProperties();
+
+		if (Prop->GetProperties(L"agent.conf") == 0) {
+			if (Prop->GetPropertyStr("targethost", TmpHostOrIpAddr) != 0) {
+				StkPlPrintf("targethost property is not found.\r\n");
+				return -1;
+			}
+			StkPlPrintf("servicehost property = %s\r\n", TmpHostOrIpAddr);
+			StkPlConvUtf8ToWideChar(HostOrIpAddr, 256, TmpHostOrIpAddr);
+
+			if (Prop->GetPropertyInt("targetport", &PortNum) != 0) {
+				StkPlPrintf("targetport property is not found.\r\n");
+				return -1;
+			}
+			StkPlPrintf("targetport property = %d\r\n", PortNum);
+		} else {
+			StkPlPrintf("agent.conf is not found.\r\n");
+			return -1;
+		}
 	}
 	StatusLoop(HostOrIpAddr, PortNum);
-	
+
 	return 0;
 }

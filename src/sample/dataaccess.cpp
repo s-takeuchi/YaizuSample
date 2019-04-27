@@ -163,7 +163,7 @@ void DataAccess::SetAgentInfo(wchar_t AgtName[DA_MAXLEN_OF_AGTNAME], wchar_t Tim
 		UnlockTable(L"AgentInfo");
 		delete RecDatAgt;
 		wchar_t LogMsg[512] = L"";
-		StkPlSwPrintf(LogMsg, 256, L"New agent information has been notified. [%s]", AgtName);
+		StkPlSwPrintf(LogMsg, 256, L"New agent information has been notified. [%ls]", AgtName);
 		AddLogMsg(LogMsg);
 	} else {
 		ColumnData *ColDatAgtFind[1];

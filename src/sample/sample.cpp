@@ -15,9 +15,9 @@
 
 void Sample(wchar_t* IpAddr, int Port)
 {
-	int Ids[7] = {11, 12, 13, 14, 15, 16, 17};
+	int Ids[32] = {10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31};
 
-	StkWebApp* Soc = new StkWebApp(Ids, 3, IpAddr, Port);
+	StkWebApp* Soc = new StkWebApp(Ids, 32, IpAddr, Port);
 
 	ApiGetLogInfo* ApiGetLogInfoObj = new ApiGetLogInfo();
 	int Add1 = Soc->AddReqHandler(StkWebAppExec::STKWEBAPP_METHOD_GET, L"/api/log/", (StkWebAppExec*)ApiGetLogInfoObj);

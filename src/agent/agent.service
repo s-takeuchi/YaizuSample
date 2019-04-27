@@ -5,7 +5,7 @@ After=network.service
 [Service]
 Type=simple
 Restart=no
-ExecStart=/usr/bin/agent 192.168.0.5 8080
+ExecStart=/usr/bin/agent
 KillMode=process
 
 [Install]
