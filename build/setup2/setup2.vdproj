@@ -15,13 +15,13 @@
     {
         "Entry"
         {
-        "MsmKey" = "8:_547AF875FE624856B3C0FB9BD0978585"
+        "MsmKey" = "8:_27116796C75148F89970CE538CEBCA0A"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
-        "MsmKey" = "8:_70B2E23EC8FE40308DB02F1886031226"
+        "MsmKey" = "8:_547AF875FE624856B3C0FB9BD0978585"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -105,31 +105,31 @@
     {
         "CustomAction"
         {
-            "{4AA51A2D-7D85-4A59-BA75-B0809FC8B380}:_40BDB6B36D0F4C7AB218D91D98441B94"
+            "{4AA51A2D-7D85-4A59-BA75-B0809FC8B380}:_262192B6C84C41699125187286EB4DDD"
             {
-            "Name" = "8:bbbb.exe"
+            "Name" = "8:agentsvc.exe"
             "Condition" = "8:"
-            "Object" = "8:_70B2E23EC8FE40308DB02F1886031226"
+            "Object" = "8:_27116796C75148F89970CE538CEBCA0A"
             "FileType" = "3:2"
             "InstallAction" = "3:4"
             "Arguments" = "8:svcdel"
             "EntryPoint" = "8:"
             "Sequence" = "3:1"
-            "Identifier" = "8:_1B267EB0_2802_41C5_9C0E_DCE21CCAA241"
+            "Identifier" = "8:_DA9B7127_1B8C_4E0A_B156_5213FC86D8E4"
             "InstallerClass" = "11:FALSE"
             "CustomActionData" = "8:"
             }
-            "{4AA51A2D-7D85-4A59-BA75-B0809FC8B380}:_4C072443B9C047EFB7ADEE2C5D70914A"
+            "{4AA51A2D-7D85-4A59-BA75-B0809FC8B380}:_BA4B09CF73214C0E98030D6DCC72EAA8"
             {
-            "Name" = "8:bbbb.exe"
+            "Name" = "8:agentsvc.exe"
             "Condition" = "8:"
-            "Object" = "8:_70B2E23EC8FE40308DB02F1886031226"
+            "Object" = "8:_27116796C75148F89970CE538CEBCA0A"
             "FileType" = "3:2"
             "InstallAction" = "3:1"
             "Arguments" = "8:svcadd"
             "EntryPoint" = "8:"
             "Sequence" = "3:1"
-            "Identifier" = "8:_56ADCD94_25C0_4DCB_881E_840F6AB82E1C"
+            "Identifier" = "8:_FC8250A3_9E4E_48E4_BFE9_5E380D387097"
             "InstallerClass" = "11:FALSE"
             "CustomActionData" = "8:"
             }
@@ -148,10 +148,10 @@
         }
         "File"
         {
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_547AF875FE624856B3C0FB9BD0978585"
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_27116796C75148F89970CE538CEBCA0A"
             {
-            "SourcePath" = "8:..\\agent\\svcadd.bat"
-            "TargetName" = "8:svcadd.bat"
+            "SourcePath" = "8:..\\agent\\agentsvc.exe"
+            "TargetName" = "8:agentsvc.exe"
             "Tag" = "8:"
             "Folder" = "8:_7BE98197E1CB41A89AA3647CD3357CF5"
             "Condition" = "8:"
@@ -168,10 +168,10 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_70B2E23EC8FE40308DB02F1886031226"
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_547AF875FE624856B3C0FB9BD0978585"
             {
-            "SourcePath" = "8:..\\agent\\bbbb.exe"
-            "TargetName" = "8:bbbb.exe"
+            "SourcePath" = "8:..\\agent\\svcadd.bat"
+            "TargetName" = "8:svcadd.bat"
             "Tag" = "8:"
             "Folder" = "8:_7BE98197E1CB41A89AA3647CD3357CF5"
             "Condition" = "8:"

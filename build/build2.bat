@@ -49,18 +49,22 @@ rem ########## Building ##########
 echo;
 echo Building agent.sln...
 %DEVENV% "..\src\agent\agent.sln" /rebuild Release 
+echo Building agentsvc.sln...
+%DEVENV% "..\src\agentsvc\agentsvc.sln" /rebuild Release 
 
 
 rem ########## Checking file existence ##########
 echo;
 echo Checking "agent.exe" existence...
 if not exist "..\src\agent\Release\agent.exe" goto ERRORRAISED
+echo Checking "agentsvc.exe" existence...
+if not exist "..\src\agentsvc\Release\agentsvc.exe" goto ERRORRAISED
 echo Checking "agent.conf" existence...
 if not exist "..\src\agent\agent.conf" goto ERRORRAISED
 echo Checking "svcadd.bat" existence...
-if not exist "..\src\agent\svcadd.bat" goto ERRORRAISED
+if not exist "..\src\agentsvc\svcadd.bat" goto ERRORRAISED
 echo Checking "svcdel.bat" existence...
-if not exist "..\src\agent\svcdel.bat" goto ERRORRAISED
+if not exist "..\src\agentsvc\svcdel.bat" goto ERRORRAISED
 
 
 rem ########## Deployment of files and folders ##########
@@ -69,10 +73,10 @@ echo Deployment of files and folders...
 
 mkdir agent
 copy "..\src\agent\Release\agent.exe" agent
-copy "..\src\agent\Release\agent.exe" agent\bbbb.exe
+copy "..\src\agentsvc\Release\agentsvc.exe" agent
 copy "..\src\agent\agent.conf" agent
-copy "..\src\agent\svcadd.bat" agent
-copy "..\src\agent\svcdel.bat" agent
+copy "..\src\agentsvc\svcadd.bat" agent
+copy "..\src\agentsvc\svcdel.bat" agent
 
 
 rem ########## Making installer ##########
