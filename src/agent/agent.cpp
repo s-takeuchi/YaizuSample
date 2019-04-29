@@ -97,10 +97,37 @@ int main(int argc, char* argv[])
 {
 	wchar_t HostOrIpAddr[256] = L"";
 	int PortNum = 0;
-	if (argc >= 2) {
+	if (argc == 3) {
+		StkPlPrintf("%s command execution...\r\n", argv[0]);
 		StkPlConvUtf8ToWideChar(HostOrIpAddr, 256, argv[1]);
 		PortNum = StkPlAtoi(argv[2]);
 		StatusLoop(HostOrIpAddr, PortNum);
+	} else if (argc == 2) {
+#ifdef WIN32
+		wchar_t TmpPath[FILENAME_MAX] = L"";
+		wchar_t TmpPath2[FILENAME_MAX] = L"";
+		wchar_t TmpCmd[FILENAME_MAX + 32] = L"";
+		StkPlGetFullPathFromFileName(L"agent.exe", TmpPath);
+		StkPlGetFullPathWithoutFileName(TmpPath, TmpPath2);
+		StkPlPrintf("Service configuration [%s]\r\n", argv[1]);
+		StkPlSleepMs(1000);
+
+		if (StkPlStrCmp(argv[1], "svcadd") == 0) {
+			StkPlSwPrintf(TmpCmd, FILENAME_MAX + 32, L"cmd /c \"%ls\\svcadd.bat\"", TmpPath2);
+			char* TmpCmds = StkPlCreateUtf8FromWideChar(TmpCmd);
+			StkPlPrintf("%s\r\n", TmpCmds);
+			StkPlSleepMs(1000);
+			system(TmpCmds);
+			delete TmpCmds;
+		} else if (StkPlStrCmp(argv[1], "svcdel") == 0) {
+			StkPlSwPrintf(TmpCmd, FILENAME_MAX + 32, L"cmd /c \"%ls\\svcdel.bat\"", TmpPath2);
+			char* TmpCmds = StkPlCreateUtf8FromWideChar(TmpCmd);
+			StkPlPrintf("%s\r\n", TmpCmds);
+			StkPlSleepMs(1000);
+			system(TmpCmds);
+			delete TmpCmds;
+		}
+#endif
 	} else {
 #ifdef WIN32
 		StartServiceCtrlDispatcher(ServiceTable);

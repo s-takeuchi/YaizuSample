@@ -57,6 +57,10 @@ echo Checking "agent.exe" existence...
 if not exist "..\src\agent\Release\agent.exe" goto ERRORRAISED
 echo Checking "agent.conf" existence...
 if not exist "..\src\agent\agent.conf" goto ERRORRAISED
+echo Checking "svcadd.bat" existence...
+if not exist "..\src\agent\svcadd.bat" goto ERRORRAISED
+echo Checking "svcdel.bat" existence...
+if not exist "..\src\agent\svcdel.bat" goto ERRORRAISED
 
 
 rem ########## Deployment of files and folders ##########
@@ -65,15 +69,18 @@ echo Deployment of files and folders...
 
 mkdir agent
 copy "..\src\agent\Release\agent.exe" agent
+copy "..\src\agent\Release\agent.exe" agent\bbbb.exe
 copy "..\src\agent\agent.conf" agent
+copy "..\src\agent\svcadd.bat" agent
+copy "..\src\agent\svcdel.bat" agent
 
 
 rem ########## Making installer ##########
 echo;
 echo Making installer...
-rem %DEVENV% "setup\setup.sln" /rebuild Release
+%DEVENV% "setup2\setup2.sln" /rebuild Release
 mkdir deployment
-rem copy setup\Release\stkwebapp.msi deployment
+copy setup2\Release\agent.msi deployment
 
 
 rem ########## build complete ##########
