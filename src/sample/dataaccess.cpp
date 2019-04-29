@@ -103,6 +103,17 @@ int DataAccess::CreateTables(const wchar_t* DataFileName)
 				return -1;
 			}
 		}
+		// Command table
+		{
+			ColumnDefInt ColDefComType(L"Type");
+			ColumnDefWStr ColDefComScript(L"Script", 8192);
+			TableDef TabDefCommand(L"Command", 16);
+			TabDefCommand.AddColumnDef(&ColDefComType);
+			TabDefCommand.AddColumnDef(&ColDefComScript);
+			if (CreateTable(&TabDefCommand) != 0) {
+				return -1;
+			}
+		}
 
 	} else {
 		if (LoadData(Buf) != 0) {

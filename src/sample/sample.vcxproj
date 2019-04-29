@@ -103,20 +103,24 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="ApiGetAgentInfo.cpp" />
+    <ClCompile Include="ApiGetCommand.cpp" />
     <ClCompile Include="ApiGetCommandForStatus.cpp" />
     <ClCompile Include="ApiGetLogInfo.cpp" />
     <ClCompile Include="ApiGetServerInfo.cpp" />
     <ClCompile Include="ApiPostAgentInfo.cpp" />
+    <ClCompile Include="ApiPostCommand.cpp" />
     <ClCompile Include="ApiPostServerInfo.cpp" />
     <ClCompile Include="dataaccess.cpp" />
     <ClCompile Include="sample.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ApiGetAgentInfo.h" />
+    <ClInclude Include="ApiGetCommand.h" />
     <ClInclude Include="ApiGetCommandForStatus.h" />
     <ClInclude Include="ApiGetLogInfo.h" />
     <ClInclude Include="ApiGetServerInfo.h" />
     <ClInclude Include="ApiPostAgentInfo.h" />
+    <ClInclude Include="ApiPostCommand.h" />
     <ClInclude Include="ApiPostServerInfo.h" />
     <ClInclude Include="dataaccess.h" />
   </ItemGroup>
