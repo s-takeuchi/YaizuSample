@@ -23,6 +23,19 @@
     var statusAcquisitionIntervalStr = ['5 min ', '15 min ', '30 min ', '60 min '];
 
     function displayLogInfo() {
+        $('#workspace_loginfo').append('<h2><span class="glyphicon glyphicon-time"></span> Audit Log</h2>');
+        var Log = [];
+        if (responseData[API_GET_LOGS].Log instanceof Array) {
+            Log = responseData[API_GET_LOGS].Log;
+        } else if (responseData[API_GET_LOGS]) {
+            if (responseData[API_GET_LOGS].Log === undefined) {
+                $('#workspace_loginfo').append('No log information<br/>');
+                return;
+            } else {
+                Log.push(responseData[API_GET_LOGS].Log);
+            }
+        }
+
         var logData = $('<table>');
         logData.addClass('table table-striped');
 
@@ -31,21 +44,27 @@
         logData.append(tHead);
 
         var tBody = $('<tbody>');
-        var Log = [];
-        if (responseData[API_GET_LOGS].Log instanceof Array) {
-                Log = responseData[API_GET_LOGS].Log;
-        } else if (responseData[API_GET_LOGS]) {
-                Log.push(responseData[API_GET_LOGS].Log);
-        }
         for (var Loop = 0; Loop < Log.length; Loop++) {
             tBody.append('<tr><td>' + Log[Loop].TimeUtc + '</td><td>' + Log[Loop].TimeLocal + '</td><td>' + Log[Loop].Msg + '</td></tr>');
         }
         logData.append(tBody);
-        $('#workspace_loginfo').append('<h2><span class="glyphicon glyphicon-time"></span> Audit Log</h2>');
         $('#workspace_loginfo').append(logData);
     }
 
     function displayAgentInfo() {
+        $('#workspace_agtinfo').append('<h2><span class="glyphicon glyphicon-eye-open"></span> Agent Info</h2>');
+        var AgentInfo = [];
+        if (responseData[API_GET_AGTINFO].AgentInfo instanceof Array) {
+            AgentInfo = responseData[API_GET_AGTINFO].AgentInfo;
+        } else if (responseData[API_GET_AGTINFO]) {
+            if (responseData[API_GET_AGTINFO].AgentInfo === undefined) {
+                $('#workspace_agtinfo').append('No agent information<br/>');
+                return;
+            } else {
+                AgentInfo.push(responseData[API_GET_AGTINFO].AgentInfo);
+            }
+        }
+
         var agentInfoData = $('<table>');
         agentInfoData.addClass('table table-striped');
 
@@ -54,17 +73,10 @@
         agentInfoData.append(tHead);
 
         var tBody = $('<tbody>');
-        var AgentInfo = [];
-        if (responseData[API_GET_AGTINFO].AgentInfo instanceof Array) {
-                AgentInfo = responseData[API_GET_AGTINFO].AgentInfo;
-        } else if (responseData[API_GET_AGTINFO]) {
-                AgentInfo.push(responseData[API_GET_AGTINFO].AgentInfo);
-        }
         for (var Loop = 0; Loop < AgentInfo.length; Loop++) {
             tBody.append('<tr><td>' + AgentInfo[Loop].Name + '</td><td>' + AgentInfo[Loop].TimeUtc + '<br/>' + AgentInfo[Loop].TimeLocal + '</td><td>' + AgentInfo[Loop].UdTimeUtc + '<br/>' + AgentInfo[Loop].UdTimeLocal + '</td></tr>');
         }
         agentInfoData.append(tBody);
-        $('#workspace_agtinfo').append('<h2><span class="glyphicon glyphicon-eye-open"></span> Agent Info</h2>');
         $('#workspace_agtinfo').append(agentInfoData);
     }
 
@@ -208,6 +220,7 @@
                 <ul class="nav navbar-nav">
                     <li><a onclick="activateTopic('agtinfo')"><span class="glyphicon glyphicon-eye-open"></span> Agent Info</a></li>
                     <li><a onclick="activateTopic('svrinfo')"><span class="glyphicon glyphicon-tower"></span> Server Info</a></li>
+                    <li><a onclick="activateTopic('command')"><span class="glyphicon glyphicon-flash"></span> Command</a></li>
                     <li><a onclick="activateTopic('loginfo')"><span class="glyphicon glyphicon-time"></span> Audit Log</a></li>
                 </ul>
             </div>
@@ -221,6 +234,10 @@
         </div>
         <div id="svrinfo" class="row" style="display:none">
             <div id="workspace_svrinfo" class="col-xs-12">
+            </div>
+        </div>
+        <div id="command" class="row" style="display:none">
+            <div id="workspace_command" class="col-xs-12">
             </div>
         </div>
         <div id="loginfo" class="row" style="display:none">

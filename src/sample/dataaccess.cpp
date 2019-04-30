@@ -105,9 +105,13 @@ int DataAccess::CreateTables(const wchar_t* DataFileName)
 		}
 		// Command table
 		{
+			ColumnDefInt ColDefComId(L"Id");
+			ColumnDefWStr ColDefComName(L"Name", DA_MAXLEN_OF_CMDNAME);
 			ColumnDefInt ColDefComType(L"Type");
-			ColumnDefWStr ColDefComScript(L"Script", 8192);
-			TableDef TabDefCommand(L"Command", 16);
+			ColumnDefBin ColDefComScript(L"Script", DA_MAXLEN_OF_CMDSCRIPT);
+			TableDef TabDefCommand(L"Command", DA_MAXNUM_OF_CMDRECORDS);
+			TabDefCommand.AddColumnDef(&ColDefComId);
+			TabDefCommand.AddColumnDef(&ColDefComName);
 			TabDefCommand.AddColumnDef(&ColDefComType);
 			TabDefCommand.AddColumnDef(&ColDefComScript);
 			if (CreateTable(&TabDefCommand) != 0) {
@@ -269,9 +273,74 @@ int DataAccess::SetServerInfo(int PInterval, int SaInterval)
 	int Ret = InsertRecord(RecDatSvr);
 	UnlockTable(L"ServerInfo");
 	delete RecDatSvr;
+
 	wchar_t LogMsg[256] = L"";
 	StkPlSwPrintf(LogMsg, 256, L"Server information has been changed. [Polling Interval=%d sec, Status Acquisition Interval=%d sec]", PInterval, SaInterval);
 	AddLogMsg(LogMsg);
+
+	return 0;
+}
+
+int DataAccess::GetCommand(int* Id[DA_MAXNUM_OF_CMDRECORDS], wchar_t Name[DA_MAXNUM_OF_CMDRECORDS][DA_MAXLEN_OF_CMDNAME], int* Type[DA_MAXNUM_OF_CMDRECORDS], char Script[DA_MAXNUM_OF_CMDRECORDS][DA_MAXLEN_OF_CMDSCRIPT])
+{
+	LockTable(L"Command", LOCK_SHARE);
+	RecordData* RecDatCmdRes = GetRecord(L"Command");
+	UnlockTable(L"Command");
+
+	int NumOfRec = 0;
+	RecordData* CurDat = RecDatCmdRes;
+	while (CurDat) {
+		ColumnDataInt* ColDatCmdResId = (ColumnDataInt*)CurDat->GetColumn(0);
+		ColumnDataWStr* ColDatCmdResName = (ColumnDataWStr*)CurDat->GetColumn(1);
+		ColumnDataInt* ColDatCmdResType = (ColumnDataInt*)CurDat->GetColumn(2);
+		ColumnDataBin* ColDatCmdResScript = (ColumnDataBin*)CurDat->GetColumn(3);
+		if (ColDatCmdResId == NULL || ColDatCmdResName == NULL || ColDatCmdResType == NULL || ColDatCmdResScript == NULL) {
+			break;
+		}
+		*Id[NumOfRec] = ColDatCmdResId->GetValue();
+		StkPlWcsCpy(Name[NumOfRec], DA_MAXLEN_OF_CMDNAME, ColDatCmdResName->GetValue());
+		*Type[NumOfRec] = ColDatCmdResType->GetValue();
+		StkPlMemCpy(Script[NumOfRec], ColDatCmdResScript->GetValue(), DA_MAXLEN_OF_CMDSCRIPT);
+
+		NumOfRec++;
+		CurDat = CurDat->GetNextRecord();
+	}
+
+	delete RecDatCmdRes;
+	return 0;
+}
+
+int DataAccess::SetCommand(int Id, wchar_t Name[DA_MAXLEN_OF_CMDNAME], int Type, char Script[DA_MAXLEN_OF_CMDSCRIPT])
+{
+	ColumnData *ColDatCmdFind[1];
+	ColDatCmdFind[0] = new ColumnDataInt(L"Id", Id);
+	RecordData* RecDatCmdFind = new RecordData(L"Command", ColDatCmdFind, 1);
+	LockTable(L"Command", LOCK_SHARE);
+	RecordData* RecDatCmdFindRes = GetRecord(RecDatCmdFind);
+	UnlockTable(L"Command");
+
+	ColumnData *ColDatCmd[4];
+	ColDatCmd[0] = new ColumnDataInt(L"Id", Id);
+	ColDatCmd[1] = new ColumnDataWStr(L"Name", Name);
+	ColDatCmd[2] = new ColumnDataInt(L"Type", Type);
+	ColDatCmd[3] = new ColumnDataBin(L"Script", (unsigned char*)Script, DA_MAXLEN_OF_CMDSCRIPT);
+	RecordData* RecDatCmd = new RecordData(L"Command", ColDatCmd, 4);
+	LockTable(L"Command", LOCK_EXCLUSIVE);
+	if (RecDatCmdFindRes == NULL) {
+		InsertRecord(RecDatCmd);
+	} else {
+		UpdateRecord(RecDatCmdFind, RecDatCmd);
+	}
+	UnlockTable(L"Command");
+	delete RecDatCmd;
+
+	delete RecDatCmdFind;
+	delete RecDatCmdFindRes;
+
+	wchar_t LogMsg[256] = L"";
+	StkPlSwPrintf(LogMsg, 256, L"A command has been added. [%ls]", Name);
+	AddLogMsg(LogMsg);
+
 	return 0;
 }
 
