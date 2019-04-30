@@ -281,7 +281,7 @@ int DataAccess::SetServerInfo(int PInterval, int SaInterval)
 	return 0;
 }
 
-int DataAccess::GetCommand(int* Id[DA_MAXNUM_OF_CMDRECORDS], wchar_t Name[DA_MAXNUM_OF_CMDRECORDS][DA_MAXLEN_OF_CMDNAME], int* Type[DA_MAXNUM_OF_CMDRECORDS], char Script[DA_MAXNUM_OF_CMDRECORDS][DA_MAXLEN_OF_CMDSCRIPT])
+int DataAccess::GetCommand(int Id[DA_MAXNUM_OF_CMDRECORDS], wchar_t Name[DA_MAXNUM_OF_CMDRECORDS][DA_MAXLEN_OF_CMDNAME], int Type[DA_MAXNUM_OF_CMDRECORDS], char Script[DA_MAXNUM_OF_CMDRECORDS][DA_MAXLEN_OF_CMDSCRIPT])
 {
 	LockTable(L"Command", LOCK_SHARE);
 	RecordData* RecDatCmdRes = GetRecord(L"Command");
@@ -297,9 +297,9 @@ int DataAccess::GetCommand(int* Id[DA_MAXNUM_OF_CMDRECORDS], wchar_t Name[DA_MAX
 		if (ColDatCmdResId == NULL || ColDatCmdResName == NULL || ColDatCmdResType == NULL || ColDatCmdResScript == NULL) {
 			break;
 		}
-		*Id[NumOfRec] = ColDatCmdResId->GetValue();
+		Id[NumOfRec] = ColDatCmdResId->GetValue();
 		StkPlWcsCpy(Name[NumOfRec], DA_MAXLEN_OF_CMDNAME, ColDatCmdResName->GetValue());
-		*Type[NumOfRec] = ColDatCmdResType->GetValue();
+		Type[NumOfRec] = ColDatCmdResType->GetValue();
 		StkPlMemCpy(Script[NumOfRec], ColDatCmdResScript->GetValue(), DA_MAXLEN_OF_CMDSCRIPT);
 
 		NumOfRec++;

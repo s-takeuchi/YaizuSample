@@ -12,10 +12,10 @@ var responseData = [{},{},{},{},{},{},{},{},{},{},{},{},{},{}];
 
 function apiCall(method, url, request, index, targetFunc) {
     sendRequestRecvResponse(method, url, request, index);
-    setTimeout(function() {waitForResponse(index, 0, targetFunc);}, 1);
+    setTimeout(function() {waitForResponse(0, targetFunc);}, 1);
 }
 
-function waitForResponse(index, count, targetFunc) {
+function waitForResponse(count, targetFunc) {
     if (targetFunc == null) {
         return;
     }
@@ -23,7 +23,7 @@ function waitForResponse(index, count, targetFunc) {
         if (underComm == 0) {
             targetFunc();
         } else {
-            setTimeout(function() {waitForResponse(index, count + 1, targetFunc);}, 50);
+            setTimeout(function() {waitForResponse(count + 1, targetFunc);}, 50);
         }
         return;
     }
@@ -33,7 +33,7 @@ function waitForResponse(index, count, targetFunc) {
         return;
     }
     $('#loading_Modal').modal('show');
-    setTimeout(function() {waitForResponse(index, count + 1, targetFunc);}, 500);
+    setTimeout(function() {waitForResponse(count + 1, targetFunc);}, 500);
 }
 
 function sendRequestRecvResponse(method, url, request, index) {

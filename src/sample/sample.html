@@ -16,6 +16,7 @@
     var API_GET_LOGS                = 2;
     var API_GET_AGTINFO             = 3;
     var API_POST_SVRINFO            = 4;
+    var API_GET_COMMAND             = 5;
 
     var selectedPollingInterval = 1;
     var pollingIntervalStr = ['30 sec ', '1 min ', '5 min ', '15 min '];
@@ -142,7 +143,6 @@
         $('#workspace_svrinfo').append('Status Acquisition Interval : ');
         $('#workspace_svrinfo').append(btnGrp);
         $('#workspace_svrinfo').append('</p>');
-
     }
 
     function selectPollingInterval(interval) {
@@ -185,10 +185,32 @@
         }
     }
 
+    function displayCommand() {
+        $('#workspace_command').append('<h2><span class="glyphicon glyphicon-flash"></span> Command</h2>');
+        var Command = [];
+        if (responseData[API_GET_COMMAND].Command instanceof Array) {
+            AgentInfo = responseData[API_GET_COMMAND].Command;
+        } else if (responseData[API_GET_COMMAND]) {
+            if (responseData[API_GET_COMMAND].Command === undefined) {
+                $('#workspace_command').append('<p>No command exists</p>');
+            } else {
+                AgentInfo.push(responseData[API_GET_COMMAND].Command);
+            }
+        }
+
+        $('#workspace_command').append('<div class="form-group"><label for="exampleInputEmail1">Email address</label><input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter email"></div>');
+        $('#workspace_command').append('<div class="form-group"><label for="exampleSelect2">Example multiple select</label><select class="form-control" id="exampleSelect1"><option>1</option><option>2</option></select></div>');
+        $('#workspace_command').append('<div class="form-group"><label for="exampleTextarea">Example textarea</label><textarea class="form-control" id="exampleTextarea" rows="3" style="margin-top: 0px; margin-bottom: 0px; height: 185px;"></textarea></div>');
+        $('#workspace_command').append('<button type="button" class="btn btn-primary">Add</button> ');
+        $('#workspace_command').append('<button type="button" class="btn btn-primary disabled">Edit</button> ');
+        $('#workspace_command').append('<button type="button" class="btn btn-primary disabled">Delete</button> ');
+    }
+
     window.onload = function() {
         apiCall('GET', './api/log/', null, API_GET_LOGS, displayLogInfo);
         apiCall('GET', './api/server/', null, API_GET_SVRINFO, displayServerInfo);
         apiCall('GET', './api/agent/', null, API_GET_AGTINFO, displayAgentInfo);
+        apiCall('GET', './api/command/', null, API_GET_COMMAND, displayCommand);
     }
 
     function activateTopic(id) {
