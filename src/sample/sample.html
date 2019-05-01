@@ -23,6 +23,7 @@
     var pollingIntervalStr = ['30 sec ', '1 min ', '5 min ', '15 min '];
     var selectedStatusAcquisitionInterval = 2;
     var statusAcquisitionIntervalStr = ['5 min ', '15 min ', '30 min ', '60 min '];
+    var selectedCommand = -1;
 
     function displayLogInfo() {
         $('#workspace_loginfo').append('<h2><span class="glyphicon glyphicon-time"></span> Audit Log</h2>');
@@ -199,36 +200,38 @@
             }
         }
 
-        var commandListTable = $('<table>');
-        commandListTable.addClass('table table-striped');
+        if (responseData[API_GET_COMMAND].Command !== undefined) {
+            var commandListTable = $('<table>');
+            commandListTable.addClass('table table-striped');
 
-        var tHead = $('<thead>');
-        tHead.append('<tr><th>Name</th><th>Type</th></tr>');
-        commandListTable.append(tHead);
+            var tHead = $('<thead>');
+            tHead.append('<tr><th>Name</th><th>Type</th></tr>');
+            commandListTable.append(tHead);
 
-        var tBody = $('<tbody>');
-        for (var Loop = 0; Loop < commandList.length; Loop++) {
-            var typeStr = '';
-            if (commandList[Loop].Type == 0) {
-                typeStr = 'Linux /usr/bash';
-            } else {
-                typeStr = 'Windows cmd.exe /c';
+            var tBody = $('<tbody>');
+            for (var Loop = 0; Loop < commandList.length; Loop++) {
+                var typeStr = '';
+                if (commandList[Loop].Type == 0) {
+                    typeStr = 'Linux /usr/bash';
+                } else {
+                    typeStr = 'Windows cmd.exe /c';
+                }
+                tBody.append('<tr><td><div class="radio"><label><input type="radio" id="radioCom' + commandList[Loop].Id + '" name="optradio" onclick="selectCommand('+ commandList[Loop].Id + ')">' + commandList[Loop].Name + '</label></div></td><td>' + typeStr + '</td></tr>');
             }
-            tBody.append('<tr><td><div class="radio"><label><input type="radio" id="radioCom' + commandList[Loop].Id + '" name="optradio">' + commandList[Loop].Name + '</label></div></td><td>' + typeStr + '</td></tr>');
+            commandListTable.append(tBody);
+            $('#workspace_command').append(commandListTable);
         }
-        commandListTable.append(tBody);
-        $('#workspace_command').append(commandListTable);
 
         $('#workspace_command').append('<div class="form-group"><label for="commandName">Command Name</label><input type="text" class="form-control" id="commandName" placeholder="Command Name"></div>');
         $('#workspace_command').append('<div class="form-group"><label for="commandType">Command Type</label><select class="form-control" id="commandType"><option>Linux /usr/bash</option><option>Windows cmd.exe /c</option></select></div>');
         $('#workspace_command').append('<div class="form-group"><label for="commandScript">Script</label><textarea class="form-control" id="commandScript" rows="3" style="margin-top: 0px; margin-bottom: 0px; height: 185px;"></textarea></div>');
-        $('#workspace_command').append('<button type="button" class="btn btn-primary" onclick="addCommand()">Add</button> ');
-        $('#workspace_command').append('<button type="button" class="btn btn-primary disabled">Update</button> ');
-        $('#workspace_command').append('<button type="button" class="btn btn-primary disabled">Delete</button> ');
+        $('#workspace_command').append('<button type="button" id="commandBtnAdd" class="btn btn-primary" onclick="updateCommand(false)">Add</button> ');
+        $('#workspace_command').append('<button type="button" id="commandBtnUpdate" class="btn btn-primary disabled" onclick="updateCommand(true)">Update</button> ');
+        $('#workspace_command').append('<button type="button" id="commandBtnDelete" class="btn btn-primary disabled">Delete</button> ');
         $('#workspace_command').append('<p></p>');
     }
 
-    function addCommand() {
+    function updateCommand(updateFlag) {
         var comType = $("#commandType").val();
         var comTypeInt = -1;
         if (comType === 'Linux /usr/bash') {
@@ -236,8 +239,32 @@
         } else if (comType === 'Windows cmd.exe /c') {
             comTypeInt = 1;
         }
-        var ReqObj = { Command : { Name : $("#commandName").val(), Type : comTypeInt, Script : $("#commandScript").val() }};
-        apiCall('POST', './api/command/', ReqObj, API_POST_COMMAND, null);
+        if (updateFlag == false) {
+            var ReqObj = { Command : { Name : $("#commandName").val(), Type : comTypeInt, Script : $("#commandScript").val() }};
+            apiCall('POST', './api/command/', ReqObj, API_POST_COMMAND, null);
+        } else {
+            var ReqObj = { Command : { Id : selectedCommand, Name : $("#commandName").val(), Type : comTypeInt, Script : $("#commandScript").val() }};
+            apiCall('POST', './api/command/', ReqObj, API_POST_COMMAND, null);
+        }
+    }
+
+    function selectCommand(targetId) {
+        selectedCommand = targetId;
+        for (loop = 0; loop < responseData[API_GET_COMMAND].Command.length; loop++) {
+            if (responseData[API_GET_COMMAND].Command[loop].Id == targetId) {
+                var typeStr = '';
+                if (responseData[API_GET_COMMAND].Command[loop].Type == 0) {
+                    typeStr = 'Linux /usr/bash';
+                } else {
+                    typeStr = 'Windows cmd.exe /c';
+                }
+                $('#commandName').val(responseData[API_GET_COMMAND].Command[loop].Name);
+                $('#commandType').val(typeStr);
+                $('#commandScript').val(responseData[API_GET_COMMAND].Command[loop].Script);
+                $('#commandBtnUpdate').removeClass('disabled');
+                $('#commandBtnDelete').removeClass('disabled');
+            }
+        }
     }
 
     window.onload = function() {

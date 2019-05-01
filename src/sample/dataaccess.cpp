@@ -326,10 +326,13 @@ int DataAccess::SetCommand(int Id, wchar_t Name[DA_MAXLEN_OF_CMDNAME], int Type,
 	ColDatCmd[3] = new ColumnDataBin(L"Script", (unsigned char*)Script, DA_MAXLEN_OF_CMDSCRIPT);
 	RecordData* RecDatCmd = new RecordData(L"Command", ColDatCmd, 4);
 	LockTable(L"Command", LOCK_EXCLUSIVE);
+	wchar_t LogMsg[256] = L"";
 	if (RecDatCmdFindRes == NULL) {
 		InsertRecord(RecDatCmd);
+		StkPlSwPrintf(LogMsg, 256, L"A command has been added. [%ls]", Name);
 	} else {
 		UpdateRecord(RecDatCmdFind, RecDatCmd);
+		StkPlSwPrintf(LogMsg, 256, L"A command has been modified. [%ls]", Name);
 	}
 	UnlockTable(L"Command");
 	delete RecDatCmd;
@@ -337,11 +340,20 @@ int DataAccess::SetCommand(int Id, wchar_t Name[DA_MAXLEN_OF_CMDNAME], int Type,
 	delete RecDatCmdFind;
 	delete RecDatCmdFindRes;
 
-	wchar_t LogMsg[256] = L"";
-	StkPlSwPrintf(LogMsg, 256, L"A command has been added. [%ls]", Name);
 	AddLogMsg(LogMsg);
 
 	return 0;
+}
+
+int deleteCommand(int Id)
+{
+	ColumnData *ColDatCmdFind[1];
+	ColDatCmdFind[0] = new ColumnDataInt(L"Id", Id);
+	RecordData* RecDatCmdFind = new RecordData(L"Command", ColDatCmdFind, 1);
+	LockTable(L"Command", LOCK_EXCLUSIVE);
+	DeleteRecord(RecDatCmdFind);
+	UnlockTable(L"Command");
+	delete RecDatCmdFind;
 }
 
 int DataAccess::GetMaxCommandId()
