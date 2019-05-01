@@ -18,6 +18,7 @@
     var API_POST_SVRINFO            = 4;
     var API_GET_COMMAND             = 5;
     var API_POST_COMMAND            = 6;
+    var API_DELETE_COMMAND          = 7;
 
     var selectedPollingInterval = 1;
     var pollingIntervalStr = ['30 sec ', '1 min ', '5 min ', '15 min '];
@@ -227,7 +228,7 @@
         $('#workspace_command').append('<div class="form-group"><label for="commandScript">Script</label><textarea class="form-control" id="commandScript" rows="3" style="margin-top: 0px; margin-bottom: 0px; height: 185px;"></textarea></div>');
         $('#workspace_command').append('<button type="button" id="commandBtnAdd" class="btn btn-primary" onclick="updateCommand(false)">Add</button> ');
         $('#workspace_command').append('<button type="button" id="commandBtnUpdate" class="btn btn-primary disabled" onclick="updateCommand(true)">Update</button> ');
-        $('#workspace_command').append('<button type="button" id="commandBtnDelete" class="btn btn-primary disabled">Delete</button> ');
+        $('#workspace_command').append('<button type="button" id="commandBtnDelete" class="btn btn-primary disabled" onclick="deleteCommand()">Delete</button> ');
         $('#workspace_command').append('<p></p>');
     }
 
@@ -248,19 +249,29 @@
         }
     }
 
+    function deleteCommand() {
+        apiCall('DELETE', './api/command/' + selectedCommand + '/', null, API_DELETE_COMMAND, null);
+    }
+
     function selectCommand(targetId) {
+        var commandList = [];
+        if (responseData[API_GET_COMMAND].Command instanceof Array) {
+            commandList = responseData[API_GET_COMMAND].Command;
+        } else if (responseData[API_GET_COMMAND]) {
+            commandList.push(responseData[API_GET_COMMAND].Command);
+        }
         selectedCommand = targetId;
-        for (loop = 0; loop < responseData[API_GET_COMMAND].Command.length; loop++) {
-            if (responseData[API_GET_COMMAND].Command[loop].Id == targetId) {
+        for (loop = 0; loop < commandList.length; loop++) {
+            if (commandList[loop].Id == targetId) {
                 var typeStr = '';
-                if (responseData[API_GET_COMMAND].Command[loop].Type == 0) {
+                if (commandList[loop].Type == 0) {
                     typeStr = 'Linux /usr/bash';
                 } else {
                     typeStr = 'Windows cmd.exe /c';
                 }
-                $('#commandName').val(responseData[API_GET_COMMAND].Command[loop].Name);
+                $('#commandName').val(commandList[loop].Name);
                 $('#commandType').val(typeStr);
-                $('#commandScript').val(responseData[API_GET_COMMAND].Command[loop].Script);
+                $('#commandScript').val(commandList[loop].Script);
                 $('#commandBtnUpdate').removeClass('disabled');
                 $('#commandBtnDelete').removeClass('disabled');
             }

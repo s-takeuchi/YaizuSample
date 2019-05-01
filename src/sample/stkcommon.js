@@ -38,7 +38,7 @@ function waitForResponse(count, targetFunc) {
 
 function sendRequestRecvResponse(method, url, request, index) {
     underComm++;
-    if (method === 'GET') {
+    if (method === 'GET' || method === 'DELETE') {
         $.ajax({
             type: method,
             dataType: 'json',

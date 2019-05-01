@@ -345,15 +345,29 @@ int DataAccess::SetCommand(int Id, wchar_t Name[DA_MAXLEN_OF_CMDNAME], int Type,
 	return 0;
 }
 
-int deleteCommand(int Id)
+int DataAccess::DeleteCommand(int Id)
 {
 	ColumnData *ColDatCmdFind[1];
 	ColDatCmdFind[0] = new ColumnDataInt(L"Id", Id);
 	RecordData* RecDatCmdFind = new RecordData(L"Command", ColDatCmdFind, 1);
-	LockTable(L"Command", LOCK_EXCLUSIVE);
-	DeleteRecord(RecDatCmdFind);
+
+	LockTable(L"Command", LOCK_SHARE);
+	RecordData* RecDatCmdFindRes = GetRecord(RecDatCmdFind);
 	UnlockTable(L"Command");
+	if (RecDatCmdFindRes != NULL) {
+		ColumnDataWStr* Name = (ColumnDataWStr*)RecDatCmdFindRes->GetColumn(L"Name");
+		wchar_t LogMsg[256] = L"";
+		StkPlSwPrintf(LogMsg, 256, L"A command has been deleted. [%ls]", Name->GetValue());
+		AddLogMsg(LogMsg);
+		delete RecDatCmdFindRes;
+
+		LockTable(L"Command", LOCK_EXCLUSIVE);
+		DeleteRecord(RecDatCmdFind);
+		UnlockTable(L"Command");
+	}
 	delete RecDatCmdFind;
+
+	return 0;
 }
 
 int DataAccess::GetMaxCommandId()
