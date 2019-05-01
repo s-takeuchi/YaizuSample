@@ -55,10 +55,35 @@ void StatusLoop(wchar_t HostOrIpAddr[256], int PortNum)
 					StkPlPrintf("Timeout [%s]\r\n", TmpTime);
 				} else if (StkPlWcsCmp(TargetObj->GetName(), L"Msg0") == 0 && StkPlWcsCmp(TargetObj->GetStringValue(), L"Execution") == 0) {
 					StkPlPrintf("Execution [%s]\r\n", TmpTime);
+					StkObject* CommandSearch = ResGetCommandForStatus->GetFirstChildElement();
+					while (CommandSearch) {
+						if (StkPlWcsCmp(CommandSearch->GetName(), L"Command") == 0) {
+							char* TmpScript = NULL;
+							int TmpType = -1;
+							StkObject* ScriptSearch = CommandSearch->GetFirstChildElement();
+							while (ScriptSearch) {
+								if (StkPlWcsCmp(ScriptSearch->GetName(), L"Script") == 0) {
+									TmpScript = StkPlCreateUtf8FromWideChar(ScriptSearch->GetStringValue());
+								} else if (StkPlWcsCmp(ScriptSearch->GetName(), L"Type") == 0) {
+									TmpType = ScriptSearch->GetIntValue();
+								}
+								ScriptSearch = ScriptSearch->GetNext();
+							}
+							if (TmpScript != NULL) {
+								if (TmpType == 0) {
+									StkPlWriteFile(L"aaa.sh", TmpScript, StkPlStrLen(TmpScript));
+								} else if (TmpType == 1) {
+									StkPlWriteFile(L"aaa.bat", TmpScript, StkPlStrLen(TmpScript));
+								}
+								delete TmpScript;
+							}
+						}
+						CommandSearch = CommandSearch->GetNext();
+					}
 					StkObject* ResObj = SendObj.SendRequestRecvResponse(StkWebAppSend::STKWEBAPP_METHOD_POST, "/api/agent/", GetAgentInfo(), &Result);
 					delete ResObj;
 				} else {
-					StkPlPrintf("Unknown Response\r\n", Result);
+					//
 				}
 				TargetObj = TargetObj->GetNext();
 			}

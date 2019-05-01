@@ -30,7 +30,21 @@ StkObject* ApiGetCommandForStatus::Execute(StkObject* ReqObj, int Method, wchar_
 			(SaInterval == 900 && Min % 15 == 0 && Sec == 0) ||
 			(SaInterval == 1800 && Min % 30 == 0 && Sec == 0) ||
 			(SaInterval == 3600 && Min == 0 && Sec == 0)) {
+
+			int Id[DA_MAXNUM_OF_CMDRECORDS];
+			wchar_t Name[DA_MAXNUM_OF_CMDRECORDS][DA_MAXLEN_OF_CMDNAME];
+			int Type[DA_MAXNUM_OF_CMDRECORDS];
+			char Script[DA_MAXNUM_OF_CMDRECORDS][DA_MAXLEN_OF_CMDSCRIPT];
+
+			int ResCount = DataAccess::GetInstance()->GetCommand(Id, Name, Type, Script);
+
 			TmpObj->AppendChildElement(new StkObject(L"Msg0", L"Execution"));
+			StkObject* CommandObj = new StkObject(L"Command");
+			CommandObj->AppendChildElement(new StkObject(L"Id", Id[0]));
+			CommandObj->AppendChildElement(new StkObject(L"Name", Name[0]));
+			CommandObj->AppendChildElement(new StkObject(L"Type", Type[0]));
+			CommandObj->AppendChildElement(new StkObject(L"Script", (wchar_t*)Script[0]));
+			TmpObj->AppendChildElement(CommandObj);
 			*ResultCode = 200;
 			break;
 		}
