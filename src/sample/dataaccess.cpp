@@ -307,7 +307,7 @@ int DataAccess::GetCommand(int Id[DA_MAXNUM_OF_CMDRECORDS], wchar_t Name[DA_MAXN
 	}
 
 	delete RecDatCmdRes;
-	return 0;
+	return NumOfRec;
 }
 
 int DataAccess::SetCommand(int Id, wchar_t Name[DA_MAXLEN_OF_CMDNAME], int Type, char Script[DA_MAXLEN_OF_CMDSCRIPT])
@@ -342,6 +342,26 @@ int DataAccess::SetCommand(int Id, wchar_t Name[DA_MAXLEN_OF_CMDNAME], int Type,
 	AddLogMsg(LogMsg);
 
 	return 0;
+}
+
+int DataAccess::GetMaxCommandId()
+{
+	LockTable(L"Command", LOCK_SHARE);
+	RecordData* RecDatCommand = GetRecord(L"Command");
+	UnlockTable(L"Command");
+
+	RecordData* CurrRecDat = RecDatCommand;
+	int MaxCommandId = 0;
+	while (CurrRecDat != NULL) {
+		ColumnDataInt* ColDat = (ColumnDataInt*)CurrRecDat->GetColumn(0);
+		int CurrId = ColDat->GetValue();
+		if (CurrId > MaxCommandId) {
+			MaxCommandId = CurrId;
+		}
+		CurrRecDat = CurrRecDat->GetNextRecord();
+	}
+	delete RecDatCommand;
+	return MaxCommandId;
 }
 
 // Add log message

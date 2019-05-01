@@ -17,6 +17,7 @@
     var API_GET_AGTINFO             = 3;
     var API_POST_SVRINFO            = 4;
     var API_GET_COMMAND             = 5;
+    var API_POST_COMMAND            = 6;
 
     var selectedPollingInterval = 1;
     var pollingIntervalStr = ['30 sec ', '1 min ', '5 min ', '15 min '];
@@ -187,23 +188,56 @@
 
     function displayCommand() {
         $('#workspace_command').append('<h2><span class="glyphicon glyphicon-flash"></span> Command</h2>');
-        var Command = [];
+        var commandList = [];
         if (responseData[API_GET_COMMAND].Command instanceof Array) {
-            AgentInfo = responseData[API_GET_COMMAND].Command;
+            commandList = responseData[API_GET_COMMAND].Command;
         } else if (responseData[API_GET_COMMAND]) {
             if (responseData[API_GET_COMMAND].Command === undefined) {
                 $('#workspace_command').append('<p>No command exists</p>');
             } else {
-                AgentInfo.push(responseData[API_GET_COMMAND].Command);
+                commandList.push(responseData[API_GET_COMMAND].Command);
             }
         }
 
-        $('#workspace_command').append('<div class="form-group"><label for="exampleInputEmail1">Email address</label><input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter email"></div>');
-        $('#workspace_command').append('<div class="form-group"><label for="exampleSelect2">Example multiple select</label><select class="form-control" id="exampleSelect1"><option>1</option><option>2</option></select></div>');
-        $('#workspace_command').append('<div class="form-group"><label for="exampleTextarea">Example textarea</label><textarea class="form-control" id="exampleTextarea" rows="3" style="margin-top: 0px; margin-bottom: 0px; height: 185px;"></textarea></div>');
-        $('#workspace_command').append('<button type="button" class="btn btn-primary">Add</button> ');
-        $('#workspace_command').append('<button type="button" class="btn btn-primary disabled">Edit</button> ');
+        var commandListTable = $('<table>');
+        commandListTable.addClass('table table-striped');
+
+        var tHead = $('<thead>');
+        tHead.append('<tr><th>Name</th><th>Type</th></tr>');
+        commandListTable.append(tHead);
+
+        var tBody = $('<tbody>');
+        for (var Loop = 0; Loop < commandList.length; Loop++) {
+            var typeStr = '';
+            if (commandList[Loop].Type == 0) {
+                typeStr = 'Linux /usr/bash';
+            } else {
+                typeStr = 'Windows cmd.exe /c';
+            }
+            tBody.append('<tr><td><div class="radio"><label><input type="radio" id="radioCom' + commandList[Loop].Id + '" name="optradio">' + commandList[Loop].Name + '</label></div></td><td>' + typeStr + '</td></tr>');
+        }
+        commandListTable.append(tBody);
+        $('#workspace_command').append(commandListTable);
+
+        $('#workspace_command').append('<div class="form-group"><label for="commandName">Command Name</label><input type="text" class="form-control" id="commandName" placeholder="Command Name"></div>');
+        $('#workspace_command').append('<div class="form-group"><label for="commandType">Command Type</label><select class="form-control" id="commandType"><option>Linux /usr/bash</option><option>Windows cmd.exe /c</option></select></div>');
+        $('#workspace_command').append('<div class="form-group"><label for="commandScript">Script</label><textarea class="form-control" id="commandScript" rows="3" style="margin-top: 0px; margin-bottom: 0px; height: 185px;"></textarea></div>');
+        $('#workspace_command').append('<button type="button" class="btn btn-primary" onclick="addCommand()">Add</button> ');
+        $('#workspace_command').append('<button type="button" class="btn btn-primary disabled">Update</button> ');
         $('#workspace_command').append('<button type="button" class="btn btn-primary disabled">Delete</button> ');
+        $('#workspace_command').append('<p></p>');
+    }
+
+    function addCommand() {
+        var comType = $("#commandType").val();
+        var comTypeInt = -1;
+        if (comType === 'Linux /usr/bash') {
+            comTypeInt = 0;
+        } else if (comType === 'Windows cmd.exe /c') {
+            comTypeInt = 1;
+        }
+        var ReqObj = { Command : { Name : $("#commandName").val(), Type : comTypeInt, Script : $("#commandScript").val() }};
+        apiCall('POST', './api/command/', ReqObj, API_POST_COMMAND, null);
     }
 
     window.onload = function() {
