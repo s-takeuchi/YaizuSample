@@ -35,18 +35,41 @@ StkObject* ApiGetCommandForStatus::Execute(StkObject* ReqObj, int Method, wchar_
 			wchar_t Name[DA_MAXNUM_OF_CMDRECORDS][DA_MAXLEN_OF_CMDNAME];
 			int Type[DA_MAXNUM_OF_CMDRECORDS];
 			char Script[DA_MAXNUM_OF_CMDRECORDS][DA_MAXLEN_OF_CMDSCRIPT];
+			wchar_t WScript[DA_MAXLEN_OF_CMDSCRIPT / 2] = L"";
+			wchar_t* Ptr = WScript;
 
 			int ResCount = DataAccess::GetInstance()->GetCommand(Id, Name, Type, Script);
+			if (ResCount >= 1) {
+				for (wchar_t* Loop = (wchar_t*)Script[0]; *Loop != NULL; Loop++) {
+					if (*Loop == L'\n') {
+						if (Type[0] == 1) {
+							*Ptr = L'\r';
+							*(Ptr + 1) = L'\n';
+							Ptr += 2;
+						} else {
+							*Ptr = *Loop;
+							Ptr++;
+						}
+					} else {
+						*Ptr = *Loop;
+						Ptr++;
+					}
+					if ((Ptr - (wchar_t*)Script[0]) == DA_MAXLEN_OF_CMDSCRIPT / 2) {
+						break;
+					}
+				}
+				*Ptr = L'\0';
 
-			TmpObj->AppendChildElement(new StkObject(L"Msg0", L"Execution"));
-			StkObject* CommandObj = new StkObject(L"Command");
-			CommandObj->AppendChildElement(new StkObject(L"Id", Id[0]));
-			CommandObj->AppendChildElement(new StkObject(L"Name", Name[0]));
-			CommandObj->AppendChildElement(new StkObject(L"Type", Type[0]));
-			CommandObj->AppendChildElement(new StkObject(L"Script", (wchar_t*)Script[0]));
-			TmpObj->AppendChildElement(CommandObj);
-			*ResultCode = 200;
-			break;
+				TmpObj->AppendChildElement(new StkObject(L"Msg0", L"Execution"));
+				StkObject* CommandObj = new StkObject(L"Command");
+				CommandObj->AppendChildElement(new StkObject(L"Id", Id[0]));
+				CommandObj->AppendChildElement(new StkObject(L"Name", Name[0]));
+				CommandObj->AppendChildElement(new StkObject(L"Type", Type[0]));
+				CommandObj->AppendChildElement(new StkObject(L"Script", WScript));
+				TmpObj->AppendChildElement(CommandObj);
+				*ResultCode = 200;
+				break;
+			}
 		}
 
 		if ((PInterval == 30 && Sec % 30 == 0) ||

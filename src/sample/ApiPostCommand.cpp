@@ -36,6 +36,7 @@ StkObject* ApiPostCommand::Execute(StkObject* ReqObj, int Method, wchar_t UrlPat
 	if (Id == -1) {
 		Id = DataAccess::GetInstance()->GetMaxCommandId();
 		Id++;
+		DataAccess::GetInstance()->SetMaxCommandId(Id);
 	}
 	DataAccess::GetInstance()->SetCommand(Id, Name, Type, (char*)Script);
 

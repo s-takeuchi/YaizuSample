@@ -57,9 +57,8 @@ int DataAccess::CreateTables(const wchar_t* DataFileName)
 #endif
 	AutoSave(Buf, 30, true);
 
-	LockAllTable(2);
 	if (StkPlGetFileSize(Buf) == 0) {
-
+		LockAllTable(2);
 		// Log table
 		{
 			ColumnDefInt ColDefLogId(L"Id");
@@ -72,34 +71,43 @@ int DataAccess::CreateTables(const wchar_t* DataFileName)
 			TabDefLog.AddColumnDef(&ColDefLogTimeLocal);
 			TabDefLog.AddColumnDef(&ColDefLogMsg);
 			if (CreateTable(&TabDefLog) != 0) {
+				UnlockAllTable();
 				return -1;
 			}
 		}
 		// Agent info table
 		{
 			ColumnDefWStr ColDefAgtName(L"Name", DA_MAXLEN_OF_AGTNAME);
+			ColumnDefInt  ColDefAgtStatus(L"Status");
 			ColumnDefWStr ColDefAgtTimeUtc(L"TimeUtc", DA_MAXLEN_OF_TIME);
 			ColumnDefWStr ColDefAgtTimeLocal(L"TimeLocal", DA_MAXLEN_OF_TIME);
 			ColumnDefWStr ColDefAgtUdTimeUtc(L"UdTimeUtc", DA_MAXLEN_OF_TIME);
 			ColumnDefWStr ColDefAgUdtTimeLocal(L"UdTimeLocal", DA_MAXLEN_OF_TIME);
 			TableDef TabDefAgtInfo(L"AgentInfo", DA_MAXNUM_OF_AGTRECORDS);
 			TabDefAgtInfo.AddColumnDef(&ColDefAgtName);
+			TabDefAgtInfo.AddColumnDef(&ColDefAgtStatus);
 			TabDefAgtInfo.AddColumnDef(&ColDefAgtTimeUtc);
 			TabDefAgtInfo.AddColumnDef(&ColDefAgtTimeLocal);
 			TabDefAgtInfo.AddColumnDef(&ColDefAgtUdTimeUtc);
 			TabDefAgtInfo.AddColumnDef(&ColDefAgUdtTimeLocal);
 			if (CreateTable(&TabDefAgtInfo) != 0) {
+				UnlockAllTable();
 				return -1;
 			}
 		}
 		// Server info table
 		{
+			ColumnDefInt ColDefSvrId(L"Id");
 			ColumnDefInt ColDefSvrPi(L"PInterval");
 			ColumnDefInt ColDefSvrSai(L"SaInterval");
+			ColumnDefInt ColDefSvrMaxComId(L"MaxCommandId");
 			TableDef TabDefSvrInfo(L"ServerInfo", 1);
+			TabDefSvrInfo.AddColumnDef(&ColDefSvrId);
 			TabDefSvrInfo.AddColumnDef(&ColDefSvrPi);
 			TabDefSvrInfo.AddColumnDef(&ColDefSvrSai);
+			TabDefSvrInfo.AddColumnDef(&ColDefSvrMaxComId);
 			if (CreateTable(&TabDefSvrInfo) != 0) {
+				UnlockAllTable();
 				return -1;
 			}
 		}
@@ -115,27 +123,35 @@ int DataAccess::CreateTables(const wchar_t* DataFileName)
 			TabDefCommand.AddColumnDef(&ColDefComType);
 			TabDefCommand.AddColumnDef(&ColDefComScript);
 			if (CreateTable(&TabDefCommand) != 0) {
+				UnlockAllTable();
 				return -1;
 			}
 		}
+		UnlockAllTable();
+
+		{
+			ColumnData *ColDatSvr[4];
+			ColDatSvr[0] = new ColumnDataInt(L"Id", 0);
+			ColDatSvr[1] = new ColumnDataInt(L"PInterval", 300);
+			ColDatSvr[2] = new ColumnDataInt(L"SaInterval", 1800);
+			ColDatSvr[3] = new ColumnDataInt(L"MaxCommandId", 1);
+			RecordData* RecSvrInfo = new RecordData(L"ServerInfo", ColDatSvr, 4);
+			// Add record
+			LockTable(L"ServerInfo", LOCK_EXCLUSIVE);
+			int Ret = InsertRecord(RecSvrInfo);
+			UnlockTable(L"ServerInfo");
+			delete RecSvrInfo;
+		}
 
 	} else {
-		if (LoadData(Buf) != 0) {
-			UnlockAllTable();
+		LockAllTable(2);
+		int Ret = LoadData(Buf);
+		UnlockAllTable();
+
+		if (Ret != 0) {
 			return -1;
 		}
 	}
-	UnlockAllTable();
-
-	ColumnData *ColDatSvr[2];
-	ColDatSvr[0] = new ColumnDataInt(L"PInterval", 300);
-	ColDatSvr[1] = new ColumnDataInt(L"SaInterval", 1800);
-	RecordData* RecSvrInfo = new RecordData(L"ServerInfo", ColDatSvr, 2);
-	// Add record
-	LockTable(L"ServerInfo", LOCK_EXCLUSIVE);
-	int Ret = InsertRecord(RecSvrInfo);
-	UnlockTable(L"ServerInfo");
-	delete RecSvrInfo;
 
 	return 0;
 }
@@ -164,13 +180,14 @@ void DataAccess::SetAgentInfo(wchar_t AgtName[DA_MAXLEN_OF_AGTNAME], wchar_t Tim
 	StkPlGetWTimeInIso8601(UdTimeUtc, false);
 	StkPlGetWTimeInIso8601(UdTimeLocal, true);
 	// Record information
-	ColumnData *ColDatAgt[5];
+	ColumnData *ColDatAgt[6];
 	ColDatAgt[0] = new ColumnDataWStr(L"Name", AgtName);
-	ColDatAgt[1] = new ColumnDataWStr(L"TimeUtc", TimeUtc);
-	ColDatAgt[2] = new ColumnDataWStr(L"TimeLocal", TimeLocal);
-	ColDatAgt[3] = new ColumnDataWStr(L"UdTimeUtc", UdTimeUtc);
-	ColDatAgt[4] = new ColumnDataWStr(L"UdTimeLocal", UdTimeLocal);
-	RecordData* RecDatAgt = new RecordData(L"AgentInfo", ColDatAgt, 5);
+	ColDatAgt[1] = new ColumnDataInt(L"Status", 1);
+	ColDatAgt[2] = new ColumnDataWStr(L"TimeUtc", TimeUtc);
+	ColDatAgt[3] = new ColumnDataWStr(L"TimeLocal", TimeLocal);
+	ColDatAgt[4] = new ColumnDataWStr(L"UdTimeUtc", UdTimeUtc);
+	ColDatAgt[5] = new ColumnDataWStr(L"UdTimeLocal", UdTimeLocal);
+	RecordData* RecDatAgt = new RecordData(L"AgentInfo", ColDatAgt, 6);
 	if (CheckExistenceOfTargetAgent(AgtName) == false) {
 		// Add record
 		LockTable(L"AgentInfo", LOCK_EXCLUSIVE);
@@ -206,10 +223,10 @@ int DataAccess::GetAgentInfo(wchar_t AgtName[DA_MAXNUM_OF_AGTRECORDS][DA_MAXLEN_
 	RecordData* CurrRecDat = RecDatLog;
 	while (CurrRecDat != NULL) {
 		ColumnDataWStr* ColDatName = (ColumnDataWStr*)CurrRecDat->GetColumn(0);
-		ColumnDataWStr* ColDatTimeUtc = (ColumnDataWStr*)CurrRecDat->GetColumn(1);
-		ColumnDataWStr* ColDatTimeLocal = (ColumnDataWStr*)CurrRecDat->GetColumn(2);
-		ColumnDataWStr* ColDatUdTimeUtc = (ColumnDataWStr*)CurrRecDat->GetColumn(3);
-		ColumnDataWStr* ColDatUdTimeLocal = (ColumnDataWStr*)CurrRecDat->GetColumn(4);
+		ColumnDataWStr* ColDatTimeUtc = (ColumnDataWStr*)CurrRecDat->GetColumn(2);
+		ColumnDataWStr* ColDatTimeLocal = (ColumnDataWStr*)CurrRecDat->GetColumn(3);
+		ColumnDataWStr* ColDatUdTimeUtc = (ColumnDataWStr*)CurrRecDat->GetColumn(4);
+		ColumnDataWStr* ColDatUdTimeLocal = (ColumnDataWStr*)CurrRecDat->GetColumn(5);
 		if (ColDatTimeUtc != NULL && ColDatTimeUtc->GetValue() != NULL) {
 			StkPlSwPrintf(TimeUtc[NumOfRec], DA_MAXLEN_OF_TIME, ColDatTimeUtc->GetValue());
 		} else {
@@ -250,8 +267,8 @@ int  DataAccess::GetServerInfo(int* PInterval, int* SaInterval)
 	if (RecDatSvr == NULL) {
 		return -1;
 	}
-	ColumnDataInt* ColDatPInterval = (ColumnDataInt*)RecDatSvr->GetColumn(0);
-	ColumnDataInt* ColDatSaInterval = (ColumnDataInt*)RecDatSvr->GetColumn(1);
+	ColumnDataInt* ColDatPInterval = (ColumnDataInt*)RecDatSvr->GetColumn(1);
+	ColumnDataInt* ColDatSaInterval = (ColumnDataInt*)RecDatSvr->GetColumn(2);
 	if (ColDatPInterval == NULL || ColDatSaInterval == NULL) {
 		delete RecDatSvr;
 		return -1;
@@ -264,15 +281,20 @@ int  DataAccess::GetServerInfo(int* PInterval, int* SaInterval)
 
 int DataAccess::SetServerInfo(int PInterval, int SaInterval)
 {
+	ColumnData *ColDatSvrFind[1];
+	ColDatSvrFind[0] = new ColumnDataInt(L"Id", 0);
+	RecordData* RecDatSvrFind = new RecordData(L"ServerInfo", ColDatSvrFind, 1);
+
 	ColumnData *ColDatSvr[2];
 	ColDatSvr[0] = new ColumnDataInt(L"PInterval", PInterval);
 	ColDatSvr[1] = new ColumnDataInt(L"SaInterval", SaInterval);
 	RecordData* RecDatSvr = new RecordData(L"ServerInfo", ColDatSvr, 2);
+
 	LockTable(L"ServerInfo", LOCK_EXCLUSIVE);
-	DeleteRecord(L"ServerInfo");
-	int Ret = InsertRecord(RecDatSvr);
+	int Ret = UpdateRecord(RecDatSvrFind, RecDatSvr);
 	UnlockTable(L"ServerInfo");
 	delete RecDatSvr;
+	delete RecDatSvrFind;
 
 	wchar_t LogMsg[256] = L"";
 	StkPlSwPrintf(LogMsg, 256, L"Server information has been changed. [Polling Interval=%d sec, Status Acquisition Interval=%d sec]", PInterval, SaInterval);
@@ -372,22 +394,36 @@ int DataAccess::DeleteCommand(int Id)
 
 int DataAccess::GetMaxCommandId()
 {
-	LockTable(L"Command", LOCK_SHARE);
-	RecordData* RecDatCommand = GetRecord(L"Command");
-	UnlockTable(L"Command");
-
-	RecordData* CurrRecDat = RecDatCommand;
+	LockTable(L"ServerInfo", LOCK_SHARE);
+	RecordData* RecDatCommand = GetRecord(L"ServerInfo");
+	UnlockTable(L"ServerInfo");
 	int MaxCommandId = 0;
-	while (CurrRecDat != NULL) {
-		ColumnDataInt* ColDat = (ColumnDataInt*)CurrRecDat->GetColumn(0);
-		int CurrId = ColDat->GetValue();
-		if (CurrId > MaxCommandId) {
-			MaxCommandId = CurrId;
+	if (RecDatCommand != NULL) {
+		ColumnDataInt* ColDat = (ColumnDataInt*)RecDatCommand->GetColumn(3);
+		if (ColDat != NULL) {
+			MaxCommandId = ColDat->GetValue();
 		}
-		CurrRecDat = CurrRecDat->GetNextRecord();
 	}
 	delete RecDatCommand;
 	return MaxCommandId;
+}
+
+int DataAccess::SetMaxCommandId(int Id)
+{
+	ColumnData *ColDatSvrFind[1];
+	ColDatSvrFind[0] = new ColumnDataInt(L"Id", 0);
+	RecordData* RecDatSvrFind = new RecordData(L"ServerInfo", ColDatSvrFind, 1);
+
+	ColumnData *ColDatSvr[1];
+	ColDatSvr[0] = new ColumnDataInt(L"MaxCommandId", Id);
+	RecordData* RecDatSvr = new RecordData(L"ServerInfo", ColDatSvr, 1);
+
+	LockTable(L"ServerInfo", LOCK_EXCLUSIVE);
+	int Ret = UpdateRecord(RecDatSvrFind, RecDatSvr);
+	UnlockTable(L"ServerInfo");
+	delete RecDatSvr;
+	delete RecDatSvrFind;
+	return Id;
 }
 
 // Add log message

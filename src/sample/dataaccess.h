@@ -5,7 +5,7 @@
 #define DA_MAXNUM_OF_LOGRECORDS 512
 #define DA_MAXLEN_OF_AGTNAME 256
 #define DA_MAXNUM_OF_AGTRECORDS 256
-#define DA_MAXLEN_OF_CMDSCRIPT 8096
+#define DA_MAXLEN_OF_CMDSCRIPT 8192
 #define DA_MAXLEN_OF_CMDNAME 32
 #define DA_MAXNUM_OF_CMDRECORDS 16
 
@@ -34,6 +34,7 @@ public:
 	int GetServerInfo(int*, int*);
 	int SetServerInfo(int, int);
 	int GetMaxCommandId();
+	int SetMaxCommandId(int);
 
 	int GetCommand(int[DA_MAXNUM_OF_CMDRECORDS], wchar_t[DA_MAXNUM_OF_CMDRECORDS][DA_MAXLEN_OF_CMDNAME], int[DA_MAXNUM_OF_CMDRECORDS], char[DA_MAXNUM_OF_CMDRECORDS][DA_MAXLEN_OF_CMDSCRIPT]);
 	int SetCommand(int, wchar_t[DA_MAXLEN_OF_CMDNAME], int, char[DA_MAXLEN_OF_CMDSCRIPT]);
