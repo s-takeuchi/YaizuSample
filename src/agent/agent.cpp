@@ -79,9 +79,9 @@ void StatusLoop(wchar_t HostOrIpAddr[256], int PortNum)
 								}
 								delete TmpScript;
 #ifdef WIN32
-								ReturnCode = system("cmd /c aaa.bat");
+								ReturnCode = StkPlSystem("cmd /c aaa.bat");
 #else
-								ReturnCode = system("/usr/bin/bash aaa.sh");
+								ReturnCode = StkPlSystem("/usr/bin/bash aaa.sh");
 #endif
 							}
 						}
