@@ -40,7 +40,7 @@ StkObject* ApiGetCommandForStatus::Execute(StkObject* ReqObj, int Method, wchar_
 
 			int ResCount = DataAccess::GetInstance()->GetCommand(Id, Name, Type, Script);
 			if (ResCount >= 1) {
-				for (wchar_t* Loop = (wchar_t*)Script[0]; *Loop != NULL; Loop++) {
+				for (wchar_t* Loop = (wchar_t*)Script[0]; *Loop != L'\0'; Loop++) {
 					if (*Loop == L'\n') {
 						if (Type[0] == 1) {
 							*Ptr = L'\r';

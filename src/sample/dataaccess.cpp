@@ -234,7 +234,7 @@ int DataAccess::GetAgentInfo(wchar_t AgtName[DA_MAXNUM_OF_AGTRECORDS][DA_MAXLEN_
 		} else {
 			StkPlSwPrintf(TimeUtc[NumOfRec], DA_MAXLEN_OF_TIME, L"");
 		}
-		if (ColDatStatus != NULL && ColDatStatus->GetValue() != NULL) {
+		if (ColDatStatus != NULL) {
 			AgtStatus[NumOfRec] = ColDatStatus->GetValue();
 		} else {
 			AgtStatus[NumOfRec] = -1;
