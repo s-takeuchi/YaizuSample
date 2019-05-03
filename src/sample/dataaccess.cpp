@@ -173,7 +173,7 @@ bool DataAccess::CheckExistenceOfTargetAgent(wchar_t AgtName[DA_MAXLEN_OF_AGTNAM
 	return true;
 }
 
-void DataAccess::SetAgentInfo(wchar_t AgtName[DA_MAXLEN_OF_AGTNAME], wchar_t TimeUtc[DA_MAXLEN_OF_TIME], wchar_t TimeLocal[DA_MAXLEN_OF_TIME])
+void DataAccess::SetAgentInfo(wchar_t AgtName[DA_MAXLEN_OF_AGTNAME], int AgtStatus, wchar_t TimeUtc[DA_MAXLEN_OF_TIME], wchar_t TimeLocal[DA_MAXLEN_OF_TIME])
 {
 	wchar_t UdTimeUtc[DA_MAXLEN_OF_TIME] = L"";
 	wchar_t UdTimeLocal[DA_MAXLEN_OF_TIME] = L"";
@@ -182,7 +182,7 @@ void DataAccess::SetAgentInfo(wchar_t AgtName[DA_MAXLEN_OF_AGTNAME], wchar_t Tim
 	// Record information
 	ColumnData *ColDatAgt[6];
 	ColDatAgt[0] = new ColumnDataWStr(L"Name", AgtName);
-	ColDatAgt[1] = new ColumnDataInt(L"Status", 1);
+	ColDatAgt[1] = new ColumnDataInt(L"Status", AgtStatus);
 	ColDatAgt[2] = new ColumnDataWStr(L"TimeUtc", TimeUtc);
 	ColDatAgt[3] = new ColumnDataWStr(L"TimeLocal", TimeLocal);
 	ColDatAgt[4] = new ColumnDataWStr(L"UdTimeUtc", UdTimeUtc);
@@ -210,6 +210,7 @@ void DataAccess::SetAgentInfo(wchar_t AgtName[DA_MAXLEN_OF_AGTNAME], wchar_t Tim
 }
 
 int DataAccess::GetAgentInfo(wchar_t AgtName[DA_MAXNUM_OF_AGTRECORDS][DA_MAXLEN_OF_AGTNAME],
+							int AgtStatus[DA_MAXNUM_OF_AGTRECORDS],
 							wchar_t TimeUtc[DA_MAXNUM_OF_AGTRECORDS][DA_MAXLEN_OF_TIME],
 							wchar_t TimeLocal[DA_MAXNUM_OF_AGTRECORDS][DA_MAXLEN_OF_TIME],
 							wchar_t UdTimeUtc[DA_MAXNUM_OF_AGTRECORDS][DA_MAXLEN_OF_TIME],
@@ -223,6 +224,7 @@ int DataAccess::GetAgentInfo(wchar_t AgtName[DA_MAXNUM_OF_AGTRECORDS][DA_MAXLEN_
 	RecordData* CurrRecDat = RecDatLog;
 	while (CurrRecDat != NULL) {
 		ColumnDataWStr* ColDatName = (ColumnDataWStr*)CurrRecDat->GetColumn(0);
+		ColumnDataInt* ColDatStatus = (ColumnDataInt*)CurrRecDat->GetColumn(1);
 		ColumnDataWStr* ColDatTimeUtc = (ColumnDataWStr*)CurrRecDat->GetColumn(2);
 		ColumnDataWStr* ColDatTimeLocal = (ColumnDataWStr*)CurrRecDat->GetColumn(3);
 		ColumnDataWStr* ColDatUdTimeUtc = (ColumnDataWStr*)CurrRecDat->GetColumn(4);
@@ -231,6 +233,11 @@ int DataAccess::GetAgentInfo(wchar_t AgtName[DA_MAXNUM_OF_AGTRECORDS][DA_MAXLEN_
 			StkPlSwPrintf(TimeUtc[NumOfRec], DA_MAXLEN_OF_TIME, ColDatTimeUtc->GetValue());
 		} else {
 			StkPlSwPrintf(TimeUtc[NumOfRec], DA_MAXLEN_OF_TIME, L"");
+		}
+		if (ColDatStatus != NULL && ColDatStatus->GetValue() != NULL) {
+			AgtStatus[NumOfRec] = ColDatStatus->GetValue();
+		} else {
+			AgtStatus[NumOfRec] = -1;
 		}
 		if (ColDatTimeLocal != NULL && ColDatTimeLocal->GetValue() != NULL) {
 			StkPlSwPrintf(TimeLocal[NumOfRec], DA_MAXLEN_OF_TIME, ColDatTimeLocal->GetValue());

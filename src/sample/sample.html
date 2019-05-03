@@ -73,12 +73,12 @@
         agentInfoData.addClass('table table-striped');
 
         var tHead = $('<thead>');
-        tHead.append('<tr><th>Name</th><th>Status Acquired Time</th><th>Update Time</th></tr>');
+        tHead.append('<tr><th>Name</th><th>Status</th><th>Status Acquired Time</th><th>Update Time</th></tr>');
         agentInfoData.append(tHead);
 
         var tBody = $('<tbody>');
         for (var Loop = 0; Loop < AgentInfo.length; Loop++) {
-            tBody.append('<tr><td>' + AgentInfo[Loop].Name + '</td><td>' + AgentInfo[Loop].TimeUtc + '<br/>' + AgentInfo[Loop].TimeLocal + '</td><td>' + AgentInfo[Loop].UdTimeUtc + '<br/>' + AgentInfo[Loop].UdTimeLocal + '</td></tr>');
+            tBody.append('<tr><td>' + AgentInfo[Loop].Name + '</td><td>' + AgentInfo[Loop].Status + '</td><td>' + AgentInfo[Loop].TimeUtc + '<br/>' + AgentInfo[Loop].TimeLocal + '</td><td>' + AgentInfo[Loop].UdTimeUtc + '<br/>' + AgentInfo[Loop].UdTimeLocal + '</td></tr>');
         }
         agentInfoData.append(tBody);
         $('#workspace_agtinfo').append(agentInfoData);
@@ -213,7 +213,7 @@
             for (var Loop = 0; Loop < commandList.length; Loop++) {
                 var typeStr = '';
                 if (commandList[Loop].Type == 0) {
-                    typeStr = 'Linux /usr/bash';
+                    typeStr = 'Linux /usr/bin/bash';
                 } else {
                     typeStr = 'Windows cmd.exe /c';
                 }
@@ -224,7 +224,7 @@
         }
 
         $('#workspace_command').append('<div class="form-group"><label for="commandName">Command Name</label><input type="text" class="form-control" id="commandName" placeholder="Command Name"></div>');
-        $('#workspace_command').append('<div class="form-group"><label for="commandType">Command Type</label><select class="form-control" id="commandType"><option>Linux /usr/bash</option><option>Windows cmd.exe /c</option></select></div>');
+        $('#workspace_command').append('<div class="form-group"><label for="commandType">Command Type</label><select class="form-control" id="commandType"><option>Linux /usr/bin/bash</option><option>Windows cmd.exe /c</option></select></div>');
         $('#workspace_command').append('<div class="form-group"><label for="commandScript">Script</label><textarea class="form-control" id="commandScript" rows="3" style="margin-top: 0px; margin-bottom: 0px; height: 185px;"></textarea></div>');
         $('#workspace_command').append('<button type="button" id="commandBtnAdd" class="btn btn-primary" onclick="updateCommand(false)">Add</button> ');
         $('#workspace_command').append('<button type="button" id="commandBtnUpdate" class="btn btn-primary disabled" onclick="updateCommand(true)">Update</button> ');
@@ -235,7 +235,7 @@
     function updateCommand(updateFlag) {
         var comType = $("#commandType").val();
         var comTypeInt = -1;
-        if (comType === 'Linux /usr/bash') {
+        if (comType === 'Linux /usr/bin/bash') {
             comTypeInt = 0;
         } else if (comType === 'Windows cmd.exe /c') {
             comTypeInt = 1;
@@ -265,7 +265,7 @@
             if (commandList[loop].Id == targetId) {
                 var typeStr = '';
                 if (commandList[loop].Type == 0) {
-                    typeStr = 'Linux /usr/bash';
+                    typeStr = 'Linux /usr/bin/bash';
                 } else {
                     typeStr = 'Windows cmd.exe /c';
                 }
