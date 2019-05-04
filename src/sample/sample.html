@@ -19,25 +19,34 @@
     var API_GET_COMMAND             = 5;
     var API_POST_COMMAND            = 6;
     var API_DELETE_COMMAND          = 7;
+    var API_POST_AGTINFO            = 8;
 
     var selectedPollingInterval = 1;
     var pollingIntervalStr = ['30 sec ', '1 min ', '5 min ', '15 min '];
     var selectedStatusAcquisitionInterval = 2;
     var statusAcquisitionIntervalStr = ['5 min ', '15 min ', '30 min ', '60 min '];
     var selectedCommand = -1;
+    var selectedAgentStatusCommand = '';
+
+    function getArray(targetObject) {
+        if (targetObject === undefined) {
+            return null;
+        }
+        var targetArray = [];
+        if (targetObject instanceof Array) {
+            return targetObject;
+        } else {
+            targetArray.push(targetObject);
+            return targetArray;
+        }
+    }
 
     function displayLogInfo() {
         $('#workspace_loginfo').append('<h2><span class="glyphicon glyphicon-time"></span> Audit Log</h2>');
-        var Log = [];
-        if (responseData[API_GET_LOGS].Log instanceof Array) {
-            Log = responseData[API_GET_LOGS].Log;
-        } else if (responseData[API_GET_LOGS]) {
-            if (responseData[API_GET_LOGS].Log === undefined) {
-                $('#workspace_loginfo').append('No log information<br/>');
-                return;
-            } else {
-                Log.push(responseData[API_GET_LOGS].Log);
-            }
+        var Log = getArray(responseData[API_GET_LOGS].Log);
+        if (Log == null) {
+            $('#workspace_loginfo').append('No log information<br/>');
+            return;
         }
 
         var logData = $('<table>');
@@ -57,16 +66,10 @@
 
     function displayAgentInfo() {
         $('#workspace_agtinfo').append('<h2><span class="glyphicon glyphicon-eye-open"></span> Agent Info</h2>');
-        var AgentInfo = [];
-        if (responseData[API_GET_AGTINFO].AgentInfo instanceof Array) {
-            AgentInfo = responseData[API_GET_AGTINFO].AgentInfo;
-        } else if (responseData[API_GET_AGTINFO]) {
-            if (responseData[API_GET_AGTINFO].AgentInfo === undefined) {
-                $('#workspace_agtinfo').append('No agent information<br/>');
-                return;
-            } else {
-                AgentInfo.push(responseData[API_GET_AGTINFO].AgentInfo);
-            }
+        var AgentInfo = getArray(responseData[API_GET_AGTINFO].AgentInfo);
+        if (AgentInfo == null) {
+            $('#workspace_agtinfo').append('No agent information<br/>');
+            return;
         }
 
         var agentInfoData = $('<table>');
@@ -78,10 +81,107 @@
 
         var tBody = $('<tbody>');
         for (var Loop = 0; Loop < AgentInfo.length; Loop++) {
-            tBody.append('<tr><td>' + AgentInfo[Loop].Name + '</td><td>' + AgentInfo[Loop].Status + '</td><td>' + AgentInfo[Loop].TimeUtc + '<br/>' + AgentInfo[Loop].TimeLocal + '</td><td>' + AgentInfo[Loop].UdTimeUtc + '<br/>' + AgentInfo[Loop].UdTimeLocal + '</td></tr>');
+            tBody.append('<tr><td><div class="checkbox"><label><input type="checkbox" id="id_' + AgentInfo[Loop].Name + '" value="" onclick="switchAgentInfoButton()"/>' + AgentInfo[Loop].Name + '</label></div></td><td>' + AgentInfo[Loop].Status + '</td><td>' + AgentInfo[Loop].TimeUtc + '<br/>' + AgentInfo[Loop].TimeLocal + '</td><td>' + AgentInfo[Loop].UdTimeUtc + '<br/>' + AgentInfo[Loop].UdTimeLocal + '</td></tr>');
         }
         agentInfoData.append(tBody);
         $('#workspace_agtinfo').append(agentInfoData);
+        $('#workspace_agtinfo').append('<button type="button" id="setAgentStatusCommand" class="btn btn-primary disabled" onclick="displayAgentStatusCommandDlg()">Set Status Command</button> ');
+        $('#workspace_agtinfo').append('<p></p>');
+    }
+
+    function switchAgentInfoButton() {
+        var AgentInfo = getArray(responseData[API_GET_AGTINFO].AgentInfo);
+        var foundFlag = false;
+        for (var loop = 0; loop < AgentInfo.length; loop++) {
+            if ($('#id_' + AgentInfo[loop].Name).prop('checked') == true) {
+                foundFlag = true;
+            }
+        }
+        if (foundFlag == true) {
+            $('#setAgentStatusCommand').removeClass('disabled');
+        } else {
+            $('#setAgentStatusCommand').addClass('disabled');
+        }
+    }
+
+    function displayAgentStatusCommandDlg() {
+        var AgentInfo = getArray(responseData[API_GET_AGTINFO].AgentInfo);
+        var foundFlag = false;
+        for (var loop = 0; loop < AgentInfo.length; loop++) {
+            if ($('#id_' + AgentInfo[loop].Name).prop('checked') == true) {
+                foundFlag = true;
+            }
+        }
+        if (foundFlag == false) {
+            return;
+        }
+
+        var commandList = getArray(responseData[API_GET_COMMAND].Command);
+
+        $('#inputDlgModalTitle').empty();
+        $('#inputDlgModalBody').empty();
+
+        $('#inputDlgModalTitle').append('<h3 class="modal-title">Select status acquisition command</h3>');
+
+        var btnGrp = $('<div class="btn-group">');
+        btnGrp.append('<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><span id="selectedAgentStatus">' + getAgentStatusCommand() + '</span><span class="caret"></span></button>');
+        var ddMenu = $('<ul class="dropdown-menu" role="menu">');
+        for (var loop = 0; loop < commandList.length; loop++) {
+            ddMenu.append('<li role="presentation"><a onclick="selectAgentStatusCommand(' + loop + ')" role="menuitem" tabindex="-1" href="#">' + commandList[loop].Name + '</a></li>');
+        }
+        btnGrp.append(ddMenu);
+        $('#inputDlgModalBody').append('<p>');
+        $('#inputDlgModalBody').append('Command : ');
+        $('#inputDlgModalBody').append(btnGrp);
+        $('#inputDlgModalBody').append('</p>');
+
+        $('#inputDlgModalBody').append('<button type="button" id="OK" class="btn btn-primary" onclick="closeAgentStatusCommandDlg()">OK</button> ');
+        $('#inputDlgModalBody').append('<button type="button" id="Cancel" class="btn btn-primary" onclick="closeAgentStatusCommandDlg()">Cancel</button> ');
+        $('#inputDlgModal').modal('show');
+    }
+
+    function closeAgentStatusCommandDlg() {
+        $('#inputDlgModal').modal('hide');
+    }
+
+    function getAgentStatusCommand() {
+        var AgentInfo = getArray(responseData[API_GET_AGTINFO].AgentInfo);
+        var commandList = getArray(responseData[API_GET_COMMAND].Command);
+        var allSame = true;
+        var commandId = -1;
+        var commandStr = '';
+        for (var loop = 0; loop < AgentInfo.length; loop++) {
+            if ($('#id_' + AgentInfo[loop].Name).prop('checked') == true) {
+                if (commandId != -1 && AgentInfo[loop].StatusCmd != commandId) {
+                    allSame = false;
+                } else {
+                    commandId = AgentInfo[loop].StatusCmd;
+                }
+            }
+        }
+        if (commandId == -1 || allSame == false) {
+            return '';
+        } else {
+            for (var loop = 0; loop < commandList.length; loop++) {
+                if (commandId == commandList[loop].Id) {
+                    return commandList[loop].Name;
+                }
+            }
+        }
+    }
+
+    function selectAgentStatusCommand(agentStatusCommand) {
+        var commandList = getArray(responseData[API_GET_COMMAND].Command);
+        selectedAgentStatusCommand = commandList[agentStatusCommand].Name;
+        $('#selectedAgentStatus').text(selectedAgentStatusCommand);
+
+        var AgentInfo = getArray(responseData[API_GET_AGTINFO].AgentInfo);
+        for (var loop = 0; loop < AgentInfo.length; loop++) {
+            if ($('#id_' + AgentInfo[loop].Name).prop('checked') == true) {
+                var ReqObj = { AgentInfo : { Name : AgentInfo[loop].Name, StatusCmd : commandList[agentStatusCommand].Id }};
+                apiCall('POST', './api/agent/', ReqObj, API_POST_AGTINFO, null);
+            }
+        }
     }
 
     function displayServerInfo() {
@@ -190,15 +290,9 @@
 
     function displayCommand() {
         $('#workspace_command').append('<h2><span class="glyphicon glyphicon-flash"></span> Command</h2>');
-        var commandList = [];
-        if (responseData[API_GET_COMMAND].Command instanceof Array) {
-            commandList = responseData[API_GET_COMMAND].Command;
-        } else if (responseData[API_GET_COMMAND]) {
-            if (responseData[API_GET_COMMAND].Command === undefined) {
-                $('#workspace_command').append('<p>No command exists</p>');
-            } else {
-                commandList.push(responseData[API_GET_COMMAND].Command);
-            }
+        var commandList = getArray(responseData[API_GET_COMMAND].Command);
+        if (commandList == null) {
+            $('#workspace_command').append('<p>No command exists</p>');
         }
 
         if (responseData[API_GET_COMMAND].Command !== undefined) {
@@ -217,7 +311,7 @@
                 } else {
                     typeStr = 'Windows cmd.exe /c';
                 }
-                tBody.append('<tr><td><div class="radio"><label><input type="radio" id="radioCom' + commandList[Loop].Id + '" name="optradio" onclick="selectCommand('+ commandList[Loop].Id + ')">' + commandList[Loop].Name + '</label></div></td><td>' + typeStr + '</td></tr>');
+                tBody.append('<tr><td><div class="radio"><label><input type="radio" id="radioCom' + commandList[Loop].Id + '" name="optradio" onclick="selectCommand('+ commandList[Loop].Id + ')"/>' + commandList[Loop].Name + '</label></div></td><td>' + typeStr + '</td></tr>');
             }
             commandListTable.append(tBody);
             $('#workspace_command').append(commandListTable);
@@ -254,12 +348,7 @@
     }
 
     function selectCommand(targetId) {
-        var commandList = [];
-        if (responseData[API_GET_COMMAND].Command instanceof Array) {
-            commandList = responseData[API_GET_COMMAND].Command;
-        } else if (responseData[API_GET_COMMAND]) {
-            commandList.push(responseData[API_GET_COMMAND].Command);
-        }
+        var commandList = getArray(responseData[API_GET_COMMAND].Command);
         selectedCommand = targetId;
         for (loop = 0; loop < commandList.length; loop++) {
             if (commandList[loop].Id == targetId) {
@@ -340,11 +429,22 @@
         </div>
     </div>
 
+    <div id="inputDlgModal" class="modal fade" tabindex="-1" role="dialog" data-keyboard="false" data-backdrop="static">
+        <div class="modal-dialog" style="top:30%;">
+            <div class="modal-content">
+                <div class="modal-header" id="inputDlgModalTitle">
+                </div>
+                <div class="modal-body" id="inputDlgModalBody">
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div id="loading_Modal" class="modal fade" tabindex="-1" role="dialog" data-keyboard="false" data-backdrop="static">
         <div class="modal-dialog" style="width:350px;top:30%;">
             <div class="modal-content">
                 <div class="modal-header" style="padding: 0px; text-align: center;">
-                    <h2 style="margin-top: 5px;">Please wait ....</h2>
+                    <h2 style="margin-top: 5px;">Now loading ...</h2>
                 </div>
                 <div class="modal-body">
                     <div style="height:20px">

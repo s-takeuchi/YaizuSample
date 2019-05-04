@@ -4,10 +4,11 @@
 
 StkObject* ApiPostAgentInfo::Execute(StkObject* ReqObj, int Method, wchar_t UrlPath[StkWebAppExec::URL_PATH_LENGTH], int* ResultCode, wchar_t Locale[3])
 {
-	wchar_t Name[DA_MAXLEN_OF_AGTNAME];
+	wchar_t Name[DA_MAXLEN_OF_AGTNAME] = L"";
 	int Status = 0;
-	wchar_t StatusTimeUtc[DA_MAXLEN_OF_TIME];
-	wchar_t StatusTimeLocal[DA_MAXLEN_OF_TIME];
+	int StatusCmd = -1;
+	wchar_t StatusTimeUtc[DA_MAXLEN_OF_TIME] = L"";
+	wchar_t StatusTimeLocal[DA_MAXLEN_OF_TIME] = L"";
 	if (ReqObj != NULL) {
 		*ResultCode = 200;
 		StkObject* AgentInfo = ReqObj->GetFirstChildElement();
@@ -22,6 +23,9 @@ StkObject* ApiPostAgentInfo::Execute(StkObject* ReqObj, int Method, wchar_t UrlP
 			if (StkPlWcsCmp(CurrAgentInfo->GetName(), L"Status") == 0) {
 				Status = CurrAgentInfo->GetIntValue();
 			}
+			if (StkPlWcsCmp(CurrAgentInfo->GetName(), L"StatusCmd") == 0) {
+				StatusCmd = CurrAgentInfo->GetIntValue();
+			}
 			if (StkPlWcsCmp(CurrAgentInfo->GetName(), L"StatusTimeUtc") == 0) {
 				StkPlWcsCpy(StatusTimeUtc, DA_MAXLEN_OF_TIME, CurrAgentInfo->GetStringValue());
 			}
@@ -30,7 +34,11 @@ StkObject* ApiPostAgentInfo::Execute(StkObject* ReqObj, int Method, wchar_t UrlP
 			}
 			CurrAgentInfo = CurrAgentInfo->GetNext();
 		}
-		DataAccess::GetInstance()->SetAgentInfo(Name, Status, StatusTimeUtc, StatusTimeLocal);
+		if (StatusCmd == -1) {
+			DataAccess::GetInstance()->SetAgentInfo(Name, Status, StatusTimeUtc, StatusTimeLocal);
+		} else {
+			DataAccess::GetInstance()->SetAgentInfo(Name, StatusCmd);
+		}
 	}
 
 	StkObject* TmpObj = new StkObject(L"");

@@ -37,12 +37,27 @@ StkObject* ApiGetCommandForStatus::Execute(StkObject* ReqObj, int Method, wchar_
 			char Script[DA_MAXNUM_OF_CMDRECORDS][DA_MAXLEN_OF_CMDSCRIPT];
 			wchar_t WScript[DA_MAXLEN_OF_CMDSCRIPT / 2] = L"";
 			wchar_t* Ptr = WScript;
-
 			int ResCount = DataAccess::GetInstance()->GetCommand(Id, Name, Type, Script);
-			if (ResCount >= 1) {
-				for (wchar_t* Loop = (wchar_t*)Script[0]; *Loop != L'\0'; Loop++) {
+
+			wchar_t AgtName[DA_MAXNUM_OF_AGTRECORDS][DA_MAXLEN_OF_AGTNAME];
+			int Status[DA_MAXNUM_OF_AGTRECORDS];
+			int StatusCmd[DA_MAXNUM_OF_AGTRECORDS];
+			wchar_t TimeUtc[DA_MAXNUM_OF_AGTRECORDS][DA_MAXLEN_OF_TIME];
+			wchar_t TimeLocal[DA_MAXNUM_OF_AGTRECORDS][DA_MAXLEN_OF_TIME];
+			wchar_t UdTimeUtc[DA_MAXNUM_OF_AGTRECORDS][DA_MAXLEN_OF_TIME];
+			wchar_t UdTimeLocal[DA_MAXNUM_OF_AGTRECORDS][DA_MAXLEN_OF_TIME];
+			int ReAgtCount = DataAccess::GetInstance()->GetAgentInfo(AgtName, Status, StatusCmd, TimeUtc, TimeLocal, UdTimeUtc, UdTimeLocal);
+
+			if (ResCount >= 1 && ReAgtCount >= 1) {
+				int FoundIndex = 0;
+				for (int Loop = 0; Loop < ResCount; Loop++) {
+					if (Id[Loop] == StatusCmd[0]) {
+						FoundIndex = Loop;
+					}
+				}
+				for (wchar_t* Loop = (wchar_t*)Script[FoundIndex]; *Loop != L'\0'; Loop++) {
 					if (*Loop == L'\n') {
-						if (Type[0] == 1) {
+						if (Type[FoundIndex] == 1) {
 							*Ptr = L'\r';
 							*(Ptr + 1) = L'\n';
 							Ptr += 2;
@@ -54,7 +69,7 @@ StkObject* ApiGetCommandForStatus::Execute(StkObject* ReqObj, int Method, wchar_
 						*Ptr = *Loop;
 						Ptr++;
 					}
-					if ((Ptr - (wchar_t*)Script[0]) == DA_MAXLEN_OF_CMDSCRIPT / 2) {
+					if ((Ptr - (wchar_t*)Script[FoundIndex]) == DA_MAXLEN_OF_CMDSCRIPT / 2) {
 						break;
 					}
 				}
@@ -62,9 +77,9 @@ StkObject* ApiGetCommandForStatus::Execute(StkObject* ReqObj, int Method, wchar_
 
 				TmpObj->AppendChildElement(new StkObject(L"Msg0", L"Execution"));
 				StkObject* CommandObj = new StkObject(L"Command");
-				CommandObj->AppendChildElement(new StkObject(L"Id", Id[0]));
-				CommandObj->AppendChildElement(new StkObject(L"Name", Name[0]));
-				CommandObj->AppendChildElement(new StkObject(L"Type", Type[0]));
+				CommandObj->AppendChildElement(new StkObject(L"Id", Id[FoundIndex]));
+				CommandObj->AppendChildElement(new StkObject(L"Name", Name[FoundIndex]));
+				CommandObj->AppendChildElement(new StkObject(L"Type", Type[FoundIndex]));
 				CommandObj->AppendChildElement(new StkObject(L"Script", WScript));
 				TmpObj->AppendChildElement(CommandObj);
 				*ResultCode = 200;

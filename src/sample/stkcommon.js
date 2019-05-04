@@ -12,7 +12,9 @@ var responseData = [{},{},{},{},{},{},{},{},{},{},{},{},{},{}];
 
 function apiCall(method, url, request, index, targetFunc) {
     sendRequestRecvResponse(method, url, request, index);
-    setTimeout(function() {waitForResponse(0, targetFunc);}, 1);
+    if (targetFunc != null) {
+        setTimeout(function() {waitForResponse(0, targetFunc);}, 1);
+    }
 }
 
 function waitForResponse(count, targetFunc) {
