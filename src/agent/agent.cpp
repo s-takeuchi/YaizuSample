@@ -43,6 +43,9 @@ void StatusLoop(wchar_t HostOrIpAddr[256], int PortNum)
 {
 	StkWebAppSend SendObj(1, HostOrIpAddr, PortNum);
 	int Result = 0;
+	StkObject* ResObj = SendObj.SendRequestRecvResponse(StkWebAppSend::STKWEBAPP_METHOD_POST, "/api/agent/", GetAgentInfo(0), &Result);
+	delete ResObj;
+
 	SendObj.SetTimeoutInterval(60000 * 16);
 	while (true) {
 		StkPlPrintf("Get Command For Status...");
@@ -152,6 +155,7 @@ int TheLoop(int Id)
 	wchar_t HostOrIpAddr[256] = L"";
 	int PortNum = 0;
 	LoadPropertyFile(HostOrIpAddr, &PortNum);
+
 	StatusLoop(HostOrIpAddr, PortNum);
 	return 0;
 }
