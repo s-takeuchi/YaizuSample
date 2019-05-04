@@ -26,7 +26,7 @@
     var selectedStatusAcquisitionInterval = 2;
     var statusAcquisitionIntervalStr = ['5 min ', '15 min ', '30 min ', '60 min '];
     var selectedCommand = -1;
-    var selectedAgentStatusCommand = '';
+    var selectedAgentStatusCommand = -1;
 
     function getArray(targetObject) {
         if (targetObject === undefined) {
@@ -72,6 +72,8 @@
             return;
         }
 
+        selectedAgentStatusCommand = -1;
+
         var agentInfoData = $('<table>');
         agentInfoData.addClass('table table-striped');
 
@@ -81,7 +83,7 @@
 
         var tBody = $('<tbody>');
         for (var Loop = 0; Loop < AgentInfo.length; Loop++) {
-            tBody.append('<tr><td><div class="checkbox"><label><input type="checkbox" id="id_' + AgentInfo[Loop].Name + '" value="" onclick="switchAgentInfoButton()"/>' + AgentInfo[Loop].Name + '</label></div></td><td>' + AgentInfo[Loop].Status + '</td><td>' + AgentInfo[Loop].TimeUtc + '<br/>' + AgentInfo[Loop].TimeLocal + '</td><td>' + AgentInfo[Loop].UdTimeUtc + '<br/>' + AgentInfo[Loop].UdTimeLocal + '</td></tr>');
+            tBody.append('<tr><td><div class="checkbox"><label><input type="checkbox" id="agtInfoId' + Loop + '" value="" onclick="switchAgentInfoButton()"/>' + AgentInfo[Loop].Name + '</label></div></td><td>' + AgentInfo[Loop].Status + '</td><td>' + AgentInfo[Loop].TimeUtc + '<br/>' + AgentInfo[Loop].TimeLocal + '</td><td>' + AgentInfo[Loop].UdTimeUtc + '<br/>' + AgentInfo[Loop].UdTimeLocal + '</td></tr>');
         }
         agentInfoData.append(tBody);
         $('#workspace_agtinfo').append(agentInfoData);
@@ -93,7 +95,7 @@
         var AgentInfo = getArray(responseData[API_GET_AGTINFO].AgentInfo);
         var foundFlag = false;
         for (var loop = 0; loop < AgentInfo.length; loop++) {
-            if ($('#id_' + AgentInfo[loop].Name).prop('checked') == true) {
+            if ($('#agtInfoId' + loop).prop('checked') == true) {
                 foundFlag = true;
             }
         }
@@ -108,7 +110,7 @@
         var AgentInfo = getArray(responseData[API_GET_AGTINFO].AgentInfo);
         var foundFlag = false;
         for (var loop = 0; loop < AgentInfo.length; loop++) {
-            if ($('#id_' + AgentInfo[loop].Name).prop('checked') == true) {
+            if ($('#agtInfoId' + loop).prop('checked') == true) {
                 foundFlag = true;
             }
         }
@@ -135,12 +137,23 @@
         $('#inputDlgModalBody').append(btnGrp);
         $('#inputDlgModalBody').append('</p>');
 
-        $('#inputDlgModalBody').append('<button type="button" id="OK" class="btn btn-primary" onclick="closeAgentStatusCommandDlg()">OK</button> ');
-        $('#inputDlgModalBody').append('<button type="button" id="Cancel" class="btn btn-primary" onclick="closeAgentStatusCommandDlg()">Cancel</button> ');
+        $('#inputDlgModalBody').append('<button type="button" id="OK" class="btn btn-primary" onclick="closeAgentStatusCommandDlg(true)">OK</button> ');
+        $('#inputDlgModalBody').append('<button type="button" id="Cancel" class="btn btn-primary" onclick="closeAgentStatusCommandDlg(false)">Cancel</button> ');
         $('#inputDlgModal').modal('show');
     }
 
-    function closeAgentStatusCommandDlg() {
+    function closeAgentStatusCommandDlg(okFlag) {
+        if (okFlag == true && selectedAgentStatusCommand != -1) {
+            var commandList = getArray(responseData[API_GET_COMMAND].Command);
+            var AgentInfo = getArray(responseData[API_GET_AGTINFO].AgentInfo);
+            for (var loop = 0; loop < AgentInfo.length; loop++) {
+                if ($('#agtInfoId' + loop).prop('checked') == true) {
+                    var ReqObj = { AgentInfo : { Name : AgentInfo[loop].Name, StatusCmd : commandList[selectedAgentStatusCommand].Id }};
+                    apiCall('POST', './api/agent/', ReqObj, API_POST_AGTINFO, null);
+                }
+            }
+            refreshInfo();
+        }
         $('#inputDlgModal').modal('hide');
     }
 
@@ -151,7 +164,7 @@
         var commandId = -1;
         var commandStr = '';
         for (var loop = 0; loop < AgentInfo.length; loop++) {
-            if ($('#id_' + AgentInfo[loop].Name).prop('checked') == true) {
+            if ($('#agtInfoId' + loop).prop('checked') == true) {
                 if (commandId != -1 && AgentInfo[loop].StatusCmd != commandId) {
                     allSame = false;
                 } else {
@@ -168,20 +181,13 @@
                 }
             }
         }
+        return '';
     }
 
     function selectAgentStatusCommand(agentStatusCommand) {
         var commandList = getArray(responseData[API_GET_COMMAND].Command);
-        selectedAgentStatusCommand = commandList[agentStatusCommand].Name;
-        $('#selectedAgentStatus').text(selectedAgentStatusCommand);
-
-        var AgentInfo = getArray(responseData[API_GET_AGTINFO].AgentInfo);
-        for (var loop = 0; loop < AgentInfo.length; loop++) {
-            if ($('#id_' + AgentInfo[loop].Name).prop('checked') == true) {
-                var ReqObj = { AgentInfo : { Name : AgentInfo[loop].Name, StatusCmd : commandList[agentStatusCommand].Id }};
-                apiCall('POST', './api/agent/', ReqObj, API_POST_AGTINFO, null);
-            }
-        }
+        $('#selectedAgentStatus').text(commandList[agentStatusCommand].Name);
+        selectedAgentStatusCommand = agentStatusCommand;
     }
 
     function displayServerInfo() {
@@ -295,6 +301,8 @@
             $('#workspace_command').append('<p>No command exists</p>');
         }
 
+        selectedCommand = -1;
+
         if (responseData[API_GET_COMMAND].Command !== undefined) {
             var commandListTable = $('<table>');
             commandListTable.addClass('table table-striped');
@@ -327,6 +335,9 @@
     }
 
     function updateCommand(updateFlag) {
+        if (updateFlag == true && selectedCommand == -1) {
+            return;
+        }
         var comType = $("#commandType").val();
         var comTypeInt = -1;
         if (comType === 'Linux /usr/bin/bash') {
@@ -341,10 +352,15 @@
             var ReqObj = { Command : { Id : selectedCommand, Name : $("#commandName").val(), Type : comTypeInt, Script : $("#commandScript").val() }};
             apiCall('POST', './api/command/', ReqObj, API_POST_COMMAND, null);
         }
+        refreshInfo();
     }
 
     function deleteCommand() {
+        if (selectedCommand == -1) {
+            return;
+        }
         apiCall('DELETE', './api/command/' + selectedCommand + '/', null, API_DELETE_COMMAND, null);
+        refreshInfo();
     }
 
     function selectCommand(targetId) {
@@ -368,6 +384,14 @@
     }
 
     window.onload = function() {
+        refreshInfo();
+    }
+
+    function refreshInfo() {
+        $('#workspace_agtinfo').empty();
+        $('#workspace_svrinfo').empty();
+        $('#workspace_command').empty();
+        $('#workspace_loginfo').empty();
         apiCall('GET', './api/log/', null, API_GET_LOGS, displayLogInfo);
         apiCall('GET', './api/server/', null, API_GET_SVRINFO, displayServerInfo);
         apiCall('GET', './api/agent/', null, API_GET_AGTINFO, displayAgentInfo);
@@ -375,6 +399,7 @@
     }
 
     function activateTopic(id) {
+        refreshInfo();
         var Rows = document.getElementsByClassName("row");
         for (var Loop = 0; Loop < Rows.length; Loop++) {
             Rows[Loop].style.display = 'none'

@@ -31,7 +31,7 @@ void Sample(wchar_t* IpAddr, int Port)
 	ApiPostAgentInfo* ApiPostAgentInfoObj = new ApiPostAgentInfo();
 	int Add4 = Soc->AddReqHandler(StkWebAppExec::STKWEBAPP_METHOD_POST, L"/api/agent/", (StkWebAppExec*)ApiPostAgentInfoObj);
 	ApiGetCommandForStatus* ApiGetCommandForStatusObj = new ApiGetCommandForStatus();
-	int Add5 = Soc->AddReqHandler(StkWebAppExec::STKWEBAPP_METHOD_GET, L"/api/statuscommand/", (StkWebAppExec*)ApiGetCommandForStatusObj);
+	int Add5 = Soc->AddReqHandler(StkWebAppExec::STKWEBAPP_METHOD_GET, L"/api/statuscommand/$/", (StkWebAppExec*)ApiGetCommandForStatusObj);
 	ApiPostServerInfo* ApiPostServerInfoObj = new ApiPostServerInfo();
 	int Add6 = Soc->AddReqHandler(StkWebAppExec::STKWEBAPP_METHOD_POST, L"/api/server/", (StkWebAppExec*)ApiPostServerInfoObj);
 	ApiGetCommand* ApiGetCommandObj = new ApiGetCommand();

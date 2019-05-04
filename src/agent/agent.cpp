@@ -46,10 +46,17 @@ void StatusLoop(wchar_t HostOrIpAddr[256], int PortNum)
 	StkObject* ResObj = SendObj.SendRequestRecvResponse(StkWebAppSend::STKWEBAPP_METHOD_POST, "/api/agent/", GetAgentInfo(0), &Result);
 	delete ResObj;
 
+	wchar_t HostName[256] = L"";
+	wchar_t Url[512] = L"";
+	char Urlc[512] = "";
+	StkPlGetHostName(HostName, 256);
+	StkPlSwPrintf(Url, 512, L"/api/statuscommand/%ls/", HostName);
+	StkPlConvWideCharToUtf8(Urlc, 512, Url);
+
 	SendObj.SetTimeoutInterval(60000 * 16);
 	while (true) {
 		StkPlPrintf("Get Command For Status...");
-		StkObject* ResGetCommandForStatus = SendObj.SendRequestRecvResponse(StkWebAppSend::STKWEBAPP_METHOD_GET, "/api/statuscommand/", NULL, &Result);
+		StkObject* ResGetCommandForStatus = SendObj.SendRequestRecvResponse(StkWebAppSend::STKWEBAPP_METHOD_GET, Urlc, NULL, &Result);
 		if (Result == 200 && ResGetCommandForStatus != NULL) {
 			StkObject* TargetObj = ResGetCommandForStatus->GetFirstChildElement();
 			while (TargetObj) {

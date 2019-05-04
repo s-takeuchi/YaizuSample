@@ -1,9 +1,12 @@
 #include "dataaccess.h"
 #include "../../../YaizuComLib/src/stkpl/StkPl.h"
+#include "../../../YaizuComLib/src/commonfunc/StkStringParser.h"
 #include "ApiGetCommandForStatus.h"
 
 StkObject* ApiGetCommandForStatus::Execute(StkObject* ReqObj, int Method, wchar_t UrlPath[StkWebAppExec::URL_PATH_LENGTH], int* ResultCode, wchar_t Locale[3])
 {
+	wchar_t TargetAgtName[DA_MAXLEN_OF_AGTNAME];
+	StkStringParser::ParseInto1Param(UrlPath, L"/api/statuscommand/$/", L'$', TargetAgtName, DA_MAXLEN_OF_AGTNAME);
 	StkObject* TmpObj = new StkObject(L"");
 	while (true) {
 		StkPlSleepMs(1000);
@@ -37,7 +40,7 @@ StkObject* ApiGetCommandForStatus::Execute(StkObject* ReqObj, int Method, wchar_
 			char Script[DA_MAXNUM_OF_CMDRECORDS][DA_MAXLEN_OF_CMDSCRIPT];
 			wchar_t WScript[DA_MAXLEN_OF_CMDSCRIPT / 2] = L"";
 			wchar_t* Ptr = WScript;
-			int ResCount = DataAccess::GetInstance()->GetCommand(Id, Name, Type, Script);
+			int ResCmdCount = DataAccess::GetInstance()->GetCommand(Id, Name, Type, Script);
 
 			wchar_t AgtName[DA_MAXNUM_OF_AGTRECORDS][DA_MAXLEN_OF_AGTNAME];
 			int Status[DA_MAXNUM_OF_AGTRECORDS];
@@ -47,43 +50,51 @@ StkObject* ApiGetCommandForStatus::Execute(StkObject* ReqObj, int Method, wchar_
 			wchar_t UdTimeUtc[DA_MAXNUM_OF_AGTRECORDS][DA_MAXLEN_OF_TIME];
 			wchar_t UdTimeLocal[DA_MAXNUM_OF_AGTRECORDS][DA_MAXLEN_OF_TIME];
 			int ReAgtCount = DataAccess::GetInstance()->GetAgentInfo(AgtName, Status, StatusCmd, TimeUtc, TimeLocal, UdTimeUtc, UdTimeLocal);
+			int TargetAgtIndex = -1;
+			for (int Loop = 0; Loop < ReAgtCount; Loop++) {
+				if (StkPlWcsCmp(AgtName[Loop], TargetAgtName) == 0) {
+					TargetAgtIndex = Loop;
+				}
+			}
 
-			if (ResCount >= 1 && ReAgtCount >= 1) {
-				int FoundIndex = 0;
-				for (int Loop = 0; Loop < ResCount; Loop++) {
-					if (Id[Loop] == StatusCmd[0]) {
+			if (ResCmdCount >= 1 && ReAgtCount >= 1 && TargetAgtIndex != -1) {
+				int FoundIndex = -1;
+				for (int Loop = 0; Loop < ResCmdCount; Loop++) {
+					if (Id[Loop] == StatusCmd[TargetAgtIndex]) {
 						FoundIndex = Loop;
 					}
 				}
-				for (wchar_t* Loop = (wchar_t*)Script[FoundIndex]; *Loop != L'\0'; Loop++) {
-					if (*Loop == L'\n') {
-						if (Type[FoundIndex] == 1) {
-							*Ptr = L'\r';
-							*(Ptr + 1) = L'\n';
-							Ptr += 2;
+				if (FoundIndex != -1) {
+					for (wchar_t* Loop = (wchar_t*)Script[FoundIndex]; *Loop != L'\0'; Loop++) {
+						if (*Loop == L'\n') {
+							if (Type[FoundIndex] == 1) {
+								*Ptr = L'\r';
+								*(Ptr + 1) = L'\n';
+								Ptr += 2;
+							} else {
+								*Ptr = *Loop;
+								Ptr++;
+							}
 						} else {
 							*Ptr = *Loop;
 							Ptr++;
 						}
-					} else {
-						*Ptr = *Loop;
-						Ptr++;
+						if ((Ptr - (wchar_t*)Script[FoundIndex]) == DA_MAXLEN_OF_CMDSCRIPT / 2) {
+							break;
+						}
 					}
-					if ((Ptr - (wchar_t*)Script[FoundIndex]) == DA_MAXLEN_OF_CMDSCRIPT / 2) {
-						break;
-					}
-				}
-				*Ptr = L'\0';
+					*Ptr = L'\0';
 
-				TmpObj->AppendChildElement(new StkObject(L"Msg0", L"Execution"));
-				StkObject* CommandObj = new StkObject(L"Command");
-				CommandObj->AppendChildElement(new StkObject(L"Id", Id[FoundIndex]));
-				CommandObj->AppendChildElement(new StkObject(L"Name", Name[FoundIndex]));
-				CommandObj->AppendChildElement(new StkObject(L"Type", Type[FoundIndex]));
-				CommandObj->AppendChildElement(new StkObject(L"Script", WScript));
-				TmpObj->AppendChildElement(CommandObj);
-				*ResultCode = 200;
-				break;
+					TmpObj->AppendChildElement(new StkObject(L"Msg0", L"Execution"));
+					StkObject* CommandObj = new StkObject(L"Command");
+					CommandObj->AppendChildElement(new StkObject(L"Id", Id[FoundIndex]));
+					CommandObj->AppendChildElement(new StkObject(L"Name", Name[FoundIndex]));
+					CommandObj->AppendChildElement(new StkObject(L"Type", Type[FoundIndex]));
+					CommandObj->AppendChildElement(new StkObject(L"Script", WScript));
+					TmpObj->AppendChildElement(CommandObj);
+					*ResultCode = 200;
+					break;
+				}
 			}
 		}
 
