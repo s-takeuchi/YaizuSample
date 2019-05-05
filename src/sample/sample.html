@@ -27,6 +27,7 @@
     var statusAcquisitionIntervalStr = ['5 min ', '15 min ', '30 min ', '60 min '];
     var selectedCommand = -1;
     var selectedAgentStatusCommand = -1;
+    var selectedOperationCommand = -1;
 
     function getArray(targetObject) {
         if (targetObject === undefined) {
@@ -71,23 +72,32 @@
             $('#workspace_agtinfo').append('No agent information<br/>');
             return;
         }
+        var commandList = getArray(responseData[API_GET_COMMAND].Command);
 
         selectedAgentStatusCommand = -1;
+        selectedOperationCommand = -1;
 
         var agentInfoData = $('<table>');
         agentInfoData.addClass('table table-striped');
 
         var tHead = $('<thead>');
-        tHead.append('<tr><th>Name</th><th>Status</th><th>Status Acquired Time</th><th>Update Time</th></tr>');
+        tHead.append('<tr><th>Name</th><th>Status</th><th>Command for Status</th><th>Status Acquisition Time</th><th>Update Time</th></tr>');
         agentInfoData.append(tHead);
 
         var tBody = $('<tbody>');
         for (var Loop = 0; Loop < AgentInfo.length; Loop++) {
-            tBody.append('<tr><td><div class="checkbox"><label><input type="checkbox" id="agtInfoId' + Loop + '" value="" onclick="switchAgentInfoButton()"/>' + AgentInfo[Loop].Name + '</label></div></td><td>' + AgentInfo[Loop].Status + '</td><td>' + AgentInfo[Loop].TimeUtc + '<br/>' + AgentInfo[Loop].TimeLocal + '</td><td>' + AgentInfo[Loop].UdTimeUtc + '<br/>' + AgentInfo[Loop].UdTimeLocal + '</td></tr>');
+            var cmdNameStatus = '';
+            for (var loopcmd = 0; commandList != null && loopcmd < commandList.length; loopcmd++) {
+                if (AgentInfo[Loop].StatusCmd == commandList[loopcmd].Id) {
+                    cmdNameStatus = commandList[loopcmd].Name
+                }
+            }
+            tBody.append('<tr><td><div class="checkbox"><label><input type="checkbox" id="agtInfoId' + Loop + '" value="" onclick="switchAgentInfoButton()"/>' + AgentInfo[Loop].Name + '</label></div></td><td>' + AgentInfo[Loop].Status + '</td><td>' + cmdNameStatus + '</td><td>' + AgentInfo[Loop].TimeUtc + '<br/>' + AgentInfo[Loop].TimeLocal + '</td><td>' + AgentInfo[Loop].UdTimeUtc + '<br/>' + AgentInfo[Loop].UdTimeLocal + '</td></tr>');
         }
         agentInfoData.append(tBody);
         $('#workspace_agtinfo').append(agentInfoData);
         $('#workspace_agtinfo').append('<button type="button" id="setAgentStatusCommand" class="btn btn-primary disabled" onclick="displayAgentStatusCommandDlg()">Set Status Command</button> ');
+        $('#workspace_agtinfo').append('<button type="button" id="execOpeCommand" class="btn btn-primary disabled" onclick="displayExecCommandDlg()">Execute Command</button> ');
         $('#workspace_agtinfo').append('<p></p>');
     }
 
@@ -101,9 +111,68 @@
         }
         if (foundFlag == true) {
             $('#setAgentStatusCommand').removeClass('disabled');
+            $('#execOpeCommand').removeClass('disabled');
         } else {
             $('#setAgentStatusCommand').addClass('disabled');
+            $('#execOpeCommand').addClass('disabled');
         }
+    }
+
+    function displayExecCommandDlg() {
+        var AgentInfo = getArray(responseData[API_GET_AGTINFO].AgentInfo);
+        var foundFlag = false;
+        for (var loop = 0; loop < AgentInfo.length; loop++) {
+            if ($('#agtInfoId' + loop).prop('checked') == true) {
+                foundFlag = true;
+            }
+        }
+        if (foundFlag == false) {
+            return;
+        }
+
+        var commandList = getArray(responseData[API_GET_COMMAND].Command);
+
+        $('#inputDlgModalTitle').empty();
+        $('#inputDlgModalBody').empty();
+
+        $('#inputDlgModalTitle').append('<h3 class="modal-title">Select execution command</h3>');
+
+        var btnGrp = $('<div class="btn-group">');
+        btnGrp.append('<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><span id="selectedExecCommand"></span><span class="caret"></span></button>');
+        var ddMenu = $('<ul class="dropdown-menu" role="menu">');
+        for (var loop = 0; commandList != null && loop < commandList.length; loop++) {
+            ddMenu.append('<li role="presentation"><a onclick="selectExecCommand(' + loop + ')" role="menuitem" tabindex="-1" href="#">' + commandList[loop].Name + '</a></li>');
+        }
+        btnGrp.append(ddMenu);
+        $('#inputDlgModalBody').append('<p>');
+        $('#inputDlgModalBody').append('Command : ');
+        $('#inputDlgModalBody').append(btnGrp);
+        $('#inputDlgModalBody').append('</p>');
+
+        $('#inputDlgModalBody').append('<button type="button" id="OK" class="btn btn-primary" onclick="closeExecCommandDlg(true)">Execute</button> ');
+        $('#inputDlgModalBody').append('<button type="button" id="Cancel" class="btn btn-primary" onclick="closeExecCommandDlg(false)">Cancel</button> ');
+        $('#inputDlgModal').modal('show');
+    }
+
+    function closeExecCommandDlg(okFlag) {
+        if (okFlag == true && selectedOperationCommand != -1) {
+            var commandList = getArray(responseData[API_GET_COMMAND].Command);
+            var AgentInfo = getArray(responseData[API_GET_AGTINFO].AgentInfo);
+            for (var loop = 0; loop < AgentInfo.length; loop++) {
+                if ($('#agtInfoId' + loop).prop('checked') == true) {
+                    var ReqObj = { AgentInfo : { Name : AgentInfo[loop].Name, OpCmd : commandList[selectedOperationCommand].Id }};
+                    apiCall('POST', './api/agent/', ReqObj, API_POST_AGTINFO, null);
+                }
+            }
+            refreshInfo();
+        }
+        $('#inputDlgModal').modal('hide');
+    }
+
+    function selectExecCommand(execCommand) {
+        var commandList = getArray(responseData[API_GET_COMMAND].Command);
+        $('#selectedExecCommand').text(commandList[execCommand].Name);
+        selectedOperationCommand = execCommand;
     }
 
     function displayAgentStatusCommandDlg() {
@@ -128,7 +197,7 @@
         var btnGrp = $('<div class="btn-group">');
         btnGrp.append('<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><span id="selectedAgentStatus">' + getAgentStatusCommand() + '</span><span class="caret"></span></button>');
         var ddMenu = $('<ul class="dropdown-menu" role="menu">');
-        for (var loop = 0; loop < commandList.length; loop++) {
+        for (var loop = 0; commandList != null && loop < commandList.length; loop++) {
             ddMenu.append('<li role="presentation"><a onclick="selectAgentStatusCommand(' + loop + ')" role="menuitem" tabindex="-1" href="#">' + commandList[loop].Name + '</a></li>');
         }
         btnGrp.append(ddMenu);
@@ -455,7 +524,7 @@
     </div>
 
     <div id="inputDlgModal" class="modal fade" tabindex="-1" role="dialog" data-keyboard="false" data-backdrop="static">
-        <div class="modal-dialog" style="top:30%;">
+        <div class="modal-dialog modal-sm">
             <div class="modal-content">
                 <div class="modal-header" id="inputDlgModalTitle">
                 </div>
@@ -466,10 +535,10 @@
     </div>
 
     <div id="loading_Modal" class="modal fade" tabindex="-1" role="dialog" data-keyboard="false" data-backdrop="static">
-        <div class="modal-dialog" style="width:350px;top:30%;">
+        <div class="modal-dialog  modal-sm">
             <div class="modal-content">
                 <div class="modal-header" style="padding: 0px; text-align: center;">
-                    <h2 style="margin-top: 5px;">Now loading ...</h2>
+                    <h3 style="margin-top: 5px;">Now loading ...</h3>
                 </div>
                 <div class="modal-body">
                     <div style="height:20px">

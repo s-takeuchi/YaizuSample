@@ -7,6 +7,7 @@ StkObject* ApiPostAgentInfo::Execute(StkObject* ReqObj, int Method, wchar_t UrlP
 	wchar_t Name[DA_MAXLEN_OF_AGTNAME] = L"";
 	int Status = 0;
 	int StatusCmd = -1;
+	int OpCmd = -1;
 	wchar_t StatusTimeUtc[DA_MAXLEN_OF_TIME] = L"";
 	wchar_t StatusTimeLocal[DA_MAXLEN_OF_TIME] = L"";
 	if (ReqObj != NULL) {
@@ -26,6 +27,9 @@ StkObject* ApiPostAgentInfo::Execute(StkObject* ReqObj, int Method, wchar_t UrlP
 			if (StkPlWcsCmp(CurrAgentInfo->GetName(), L"StatusCmd") == 0) {
 				StatusCmd = CurrAgentInfo->GetIntValue();
 			}
+			if (StkPlWcsCmp(CurrAgentInfo->GetName(), L"OpCmd") == 0) {
+				OpCmd = CurrAgentInfo->GetIntValue();
+			}
 			if (StkPlWcsCmp(CurrAgentInfo->GetName(), L"StatusTimeUtc") == 0) {
 				StkPlWcsCpy(StatusTimeUtc, DA_MAXLEN_OF_TIME, CurrAgentInfo->GetStringValue());
 			}
@@ -34,10 +38,14 @@ StkObject* ApiPostAgentInfo::Execute(StkObject* ReqObj, int Method, wchar_t UrlP
 			}
 			CurrAgentInfo = CurrAgentInfo->GetNext();
 		}
-		if (StatusCmd == -1) {
+		if (StatusCmd != -1) {
+			DataAccess::GetInstance()->SetAgentInfoForStatusCmd(Name, StatusCmd);
+		}
+		if (OpCmd != -1) {
+			DataAccess::GetInstance()->SetAgentInfoForOpCmd(Name, OpCmd);
+		}
+		if (StatusCmd == -1 && OpCmd == -1) {
 			DataAccess::GetInstance()->SetAgentInfo(Name, Status, StatusTimeUtc, StatusTimeLocal);
-		} else {
-			DataAccess::GetInstance()->SetAgentInfo(Name, StatusCmd);
 		}
 	}
 

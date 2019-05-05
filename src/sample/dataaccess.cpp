@@ -80,6 +80,8 @@ int DataAccess::CreateTables(const wchar_t* DataFileName)
 			ColumnDefWStr ColDefAgtName(L"Name", DA_MAXLEN_OF_AGTNAME);
 			ColumnDefInt  ColDefAgtStatus(L"Status");
 			ColumnDefInt  ColDefAgtStatusCmd(L"StatusCmd");
+			ColumnDefInt  ColDefAgtOpStatus(L"OpStatus");
+			ColumnDefInt  ColDefAgtOpCmd(L"OpCmd");
 			ColumnDefWStr ColDefAgtTimeUtc(L"TimeUtc", DA_MAXLEN_OF_TIME);
 			ColumnDefWStr ColDefAgtTimeLocal(L"TimeLocal", DA_MAXLEN_OF_TIME);
 			ColumnDefWStr ColDefAgtUdTimeUtc(L"UdTimeUtc", DA_MAXLEN_OF_TIME);
@@ -88,6 +90,8 @@ int DataAccess::CreateTables(const wchar_t* DataFileName)
 			TabDefAgtInfo.AddColumnDef(&ColDefAgtName);
 			TabDefAgtInfo.AddColumnDef(&ColDefAgtStatus);
 			TabDefAgtInfo.AddColumnDef(&ColDefAgtStatusCmd);
+			TabDefAgtInfo.AddColumnDef(&ColDefAgtOpStatus);
+			TabDefAgtInfo.AddColumnDef(&ColDefAgtOpCmd);
 			TabDefAgtInfo.AddColumnDef(&ColDefAgtTimeUtc);
 			TabDefAgtInfo.AddColumnDef(&ColDefAgtTimeLocal);
 			TabDefAgtInfo.AddColumnDef(&ColDefAgtUdTimeUtc);
@@ -182,17 +186,19 @@ void DataAccess::SetAgentInfo(wchar_t AgtName[DA_MAXLEN_OF_AGTNAME], int AgtStat
 	StkPlGetWTimeInIso8601(UdTimeUtc, false);
 	StkPlGetWTimeInIso8601(UdTimeLocal, true);
 	// Record information
-	ColumnData *ColDatAgt[7];
+	ColumnData *ColDatAgt[9];
 	if (CheckExistenceOfTargetAgent(AgtName) == false) {
 		// Add record
 		ColDatAgt[0] = new ColumnDataWStr(L"Name", AgtName);
 		ColDatAgt[1] = new ColumnDataInt(L"Status", AgtStatus);
 		ColDatAgt[2] = new ColumnDataInt(L"StatusCmd", -1);
-		ColDatAgt[3] = new ColumnDataWStr(L"TimeUtc", TimeUtc);
-		ColDatAgt[4] = new ColumnDataWStr(L"TimeLocal", TimeLocal);
-		ColDatAgt[5] = new ColumnDataWStr(L"UdTimeUtc", UdTimeUtc);
-		ColDatAgt[6] = new ColumnDataWStr(L"UdTimeLocal", UdTimeLocal);
-		RecordData* RecDatAgt = new RecordData(L"AgentInfo", ColDatAgt, 7);
+		ColDatAgt[3] = new ColumnDataInt(L"OpStatus", -1);
+		ColDatAgt[4] = new ColumnDataInt(L"OpCmd", -1);
+		ColDatAgt[5] = new ColumnDataWStr(L"TimeUtc", TimeUtc);
+		ColDatAgt[6] = new ColumnDataWStr(L"TimeLocal", TimeLocal);
+		ColDatAgt[7] = new ColumnDataWStr(L"UdTimeUtc", UdTimeUtc);
+		ColDatAgt[8] = new ColumnDataWStr(L"UdTimeLocal", UdTimeLocal);
+		RecordData* RecDatAgt = new RecordData(L"AgentInfo", ColDatAgt, 9);
 
 		LockTable(L"AgentInfo", LOCK_EXCLUSIVE);
 		int Ret = InsertRecord(RecDatAgt);
@@ -224,7 +230,7 @@ void DataAccess::SetAgentInfo(wchar_t AgtName[DA_MAXLEN_OF_AGTNAME], int AgtStat
 	}
 }
 
-void DataAccess::SetAgentInfo(wchar_t AgtName[DA_MAXLEN_OF_AGTNAME], int StatusCmd)
+void DataAccess::SetAgentInfoForStatusCmd(wchar_t AgtName[DA_MAXLEN_OF_AGTNAME], int StatusCmd)
 {
 	ColumnData *ColDatAgtFind[1];
 	ColDatAgtFind[0] = new ColumnDataWStr(L"Name", AgtName);
@@ -232,6 +238,23 @@ void DataAccess::SetAgentInfo(wchar_t AgtName[DA_MAXLEN_OF_AGTNAME], int StatusC
 
 	ColumnData *ColDatAgt[1];
 	ColDatAgt[0] = new ColumnDataInt(L"StatusCmd", StatusCmd);
+	RecordData* RecDatAgt = new RecordData(L"AgentInfo", ColDatAgt, 1);
+
+	LockTable(L"AgentInfo", LOCK_EXCLUSIVE);
+	int Ret = UpdateRecord(RecDatAgtFind, RecDatAgt);
+	UnlockTable(L"AgentInfo");
+	delete RecDatAgt;
+	delete RecDatAgtFind;
+}
+
+void DataAccess::SetAgentInfoForOpCmd(wchar_t AgtName[DA_MAXLEN_OF_AGTNAME], int OpCmd)
+{
+	ColumnData *ColDatAgtFind[1];
+	ColDatAgtFind[0] = new ColumnDataWStr(L"Name", AgtName);
+	RecordData* RecDatAgtFind = new RecordData(L"AgentInfo", ColDatAgtFind, 1);
+
+	ColumnData *ColDatAgt[1];
+	ColDatAgt[0] = new ColumnDataInt(L"OpCmd", OpCmd);
 	RecordData* RecDatAgt = new RecordData(L"AgentInfo", ColDatAgt, 1);
 
 	LockTable(L"AgentInfo", LOCK_EXCLUSIVE);
@@ -259,10 +282,12 @@ int DataAccess::GetAgentInfo(wchar_t AgtName[DA_MAXNUM_OF_AGTRECORDS][DA_MAXLEN_
 		ColumnDataWStr* ColDatName = (ColumnDataWStr*)CurrRecDat->GetColumn(0);
 		ColumnDataInt* ColDatStatus = (ColumnDataInt*)CurrRecDat->GetColumn(1);
 		ColumnDataInt* ColDatStatusCmd = (ColumnDataInt*)CurrRecDat->GetColumn(2);
-		ColumnDataWStr* ColDatTimeUtc = (ColumnDataWStr*)CurrRecDat->GetColumn(3);
-		ColumnDataWStr* ColDatTimeLocal = (ColumnDataWStr*)CurrRecDat->GetColumn(4);
-		ColumnDataWStr* ColDatUdTimeUtc = (ColumnDataWStr*)CurrRecDat->GetColumn(5);
-		ColumnDataWStr* ColDatUdTimeLocal = (ColumnDataWStr*)CurrRecDat->GetColumn(6);
+		ColumnDataInt* ColDatOpStatus = (ColumnDataInt*)CurrRecDat->GetColumn(3);
+		ColumnDataInt* ColDatOpCmd = (ColumnDataInt*)CurrRecDat->GetColumn(4);
+		ColumnDataWStr* ColDatTimeUtc = (ColumnDataWStr*)CurrRecDat->GetColumn(5);
+		ColumnDataWStr* ColDatTimeLocal = (ColumnDataWStr*)CurrRecDat->GetColumn(6);
+		ColumnDataWStr* ColDatUdTimeUtc = (ColumnDataWStr*)CurrRecDat->GetColumn(7);
+		ColumnDataWStr* ColDatUdTimeLocal = (ColumnDataWStr*)CurrRecDat->GetColumn(8);
 		if (ColDatTimeUtc != NULL && ColDatTimeUtc->GetValue() != NULL) {
 			StkPlSwPrintf(TimeUtc[NumOfRec], DA_MAXLEN_OF_TIME, ColDatTimeUtc->GetValue());
 		} else {
@@ -277,6 +302,16 @@ int DataAccess::GetAgentInfo(wchar_t AgtName[DA_MAXNUM_OF_AGTRECORDS][DA_MAXLEN_
 			AgtStatusCmd[NumOfRec] = ColDatStatusCmd->GetValue();
 		} else {
 			AgtStatusCmd[NumOfRec] = -1;
+		}
+		if (ColDatOpStatus != NULL) {
+			//AgtOpStatus[NumOfRec] = ColDatOpStatus->GetValue();
+		} else {
+			//AgtOpStatus[NumOfRec] = -1;
+		}
+		if (ColDatOpCmd != NULL) {
+			//AgtOpCmd[NumOfRec] = ColDatOpCmd->GetValue();
+		} else {
+			//AgtOpCmd[NumOfRec] = -1;
 		}
 		if (ColDatTimeLocal != NULL && ColDatTimeLocal->GetValue() != NULL) {
 			StkPlSwPrintf(TimeLocal[NumOfRec], DA_MAXLEN_OF_TIME, ColDatTimeLocal->GetValue());

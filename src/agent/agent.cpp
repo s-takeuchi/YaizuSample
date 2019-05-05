@@ -21,6 +21,9 @@ SERVICE_TABLE_ENTRY ServiceTable[] = {
 }; 
 #endif
 
+StkWebAppSend* SendObjPostAgentInfo = NULL;
+StkWebAppSend* SendObjGetStatusCommand = NULL;
+
 StkObject* GetAgentInfo(int Status)
 {
 	wchar_t StatusTimeUtc[64];
@@ -39,12 +42,14 @@ StkObject* GetAgentInfo(int Status)
 	return NewObj;
 }
 
-void StatusLoop(wchar_t HostOrIpAddr[256], int PortNum)
+int OperationLoop(int TargetId)
 {
-	StkWebAppSend SendObj(1, HostOrIpAddr, PortNum);
+	return 0;
+}
+
+int StatusLoop(int TargetId)
+{
 	int Result = 0;
-	StkObject* ResObj = SendObj.SendRequestRecvResponse(StkWebAppSend::STKWEBAPP_METHOD_POST, "/api/agent/", GetAgentInfo(0), &Result);
-	delete ResObj;
 
 	wchar_t HostName[256] = L"";
 	wchar_t Url[512] = L"";
@@ -52,63 +57,61 @@ void StatusLoop(wchar_t HostOrIpAddr[256], int PortNum)
 	StkPlGetHostName(HostName, 256);
 	StkPlSwPrintf(Url, 512, L"/api/statuscommand/%ls/", HostName);
 	StkPlConvWideCharToUtf8(Urlc, 512, Url);
+	StkObject* ResGetCommandForStatus = SendObjGetStatusCommand->SendRequestRecvResponse(StkWebAppSend::STKWEBAPP_METHOD_GET, Urlc, NULL, &Result);
 
-	SendObj.SetTimeoutInterval(60000 * 16);
-	while (true) {
-		StkPlPrintf("Get Command For Status...");
-		StkObject* ResGetCommandForStatus = SendObj.SendRequestRecvResponse(StkWebAppSend::STKWEBAPP_METHOD_GET, Urlc, NULL, &Result);
-		if (Result == 200 && ResGetCommandForStatus != NULL) {
-			StkObject* TargetObj = ResGetCommandForStatus->GetFirstChildElement();
-			while (TargetObj) {
-				char TmpTime[64] = "";
-				StkPlGetTimeInIso8601(TmpTime, false);
-				if (StkPlWcsCmp(TargetObj->GetName(), L"Msg0") == 0 && StkPlWcsCmp(TargetObj->GetStringValue(), L"Timeout") == 0) {
-					StkPlPrintf("Timeout [%s]\r\n", TmpTime);
-				} else if (StkPlWcsCmp(TargetObj->GetName(), L"Msg0") == 0 && StkPlWcsCmp(TargetObj->GetStringValue(), L"Execution") == 0) {
-					StkPlPrintf("Execution [%s]\r\n", TmpTime);
-					int ReturnCode = 0;
-					StkObject* CommandSearch = ResGetCommandForStatus->GetFirstChildElement();
-					while (CommandSearch) {
-						if (StkPlWcsCmp(CommandSearch->GetName(), L"Command") == 0) {
-							char* TmpScript = NULL;
-							int TmpType = -1;
-							StkObject* ScriptSearch = CommandSearch->GetFirstChildElement();
-							while (ScriptSearch) {
-								if (StkPlWcsCmp(ScriptSearch->GetName(), L"Script") == 0) {
-									TmpScript = StkPlCreateUtf8FromWideChar(ScriptSearch->GetStringValue());
-								} else if (StkPlWcsCmp(ScriptSearch->GetName(), L"Type") == 0) {
-									TmpType = ScriptSearch->GetIntValue();
-								}
-								ScriptSearch = ScriptSearch->GetNext();
+	if (Result == 200 && ResGetCommandForStatus != NULL) {
+		StkObject* TargetObj = ResGetCommandForStatus->GetFirstChildElement();
+		while (TargetObj) {
+			char TmpTime[64] = "";
+			StkPlGetTimeInIso8601(TmpTime, false);
+			if (StkPlWcsCmp(TargetObj->GetName(), L"Msg0") == 0 && StkPlWcsCmp(TargetObj->GetStringValue(), L"Timeout") == 0) {
+				StkPlPrintf("Get Command For Status >> Timeout [%s]\r\n", TmpTime);
+			} else if (StkPlWcsCmp(TargetObj->GetName(), L"Msg0") == 0 && StkPlWcsCmp(TargetObj->GetStringValue(), L"Execution") == 0) {
+				StkPlPrintf("Get Command For Status >> Execution [%s]\r\n", TmpTime);
+				int ReturnCode = 0;
+				StkObject* CommandSearch = ResGetCommandForStatus->GetFirstChildElement();
+				while (CommandSearch) {
+					if (StkPlWcsCmp(CommandSearch->GetName(), L"Command") == 0) {
+						char* TmpScript = NULL;
+						int TmpType = -1;
+						StkObject* ScriptSearch = CommandSearch->GetFirstChildElement();
+						while (ScriptSearch) {
+							if (StkPlWcsCmp(ScriptSearch->GetName(), L"Script") == 0) {
+								TmpScript = StkPlCreateUtf8FromWideChar(ScriptSearch->GetStringValue());
+							} else if (StkPlWcsCmp(ScriptSearch->GetName(), L"Type") == 0) {
+								TmpType = ScriptSearch->GetIntValue();
 							}
-							if (TmpScript != NULL) {
-								if (TmpType == 0) {
-									StkPlWriteFile(L"aaa.sh", TmpScript, StkPlStrLen(TmpScript));
-								} else if (TmpType == 1) {
-									StkPlWriteFile(L"aaa.bat", TmpScript, StkPlStrLen(TmpScript));
-								}
-								delete TmpScript;
-#ifdef WIN32
-								ReturnCode = StkPlSystem("cmd /c aaa.bat");
-#else
+							ScriptSearch = ScriptSearch->GetNext();
+						}
+						if (TmpScript != NULL) {
+							if (TmpType == 0) {
+								StkPlWriteFile(L"aaa.sh", TmpScript, StkPlStrLen(TmpScript));
+							} else if (TmpType == 1) {
+								StkPlWriteFile(L"aaa.bat", TmpScript, StkPlStrLen(TmpScript));
+							}
+							delete TmpScript;
+
+							if (TmpType == 0) {
 								ReturnCode = StkPlSystem("/usr/bin/bash aaa.sh");
-#endif
+							} else if (TmpType == 1) {
+								ReturnCode = StkPlSystem("cmd /c aaa.bat");
 							}
 						}
-						CommandSearch = CommandSearch->GetNext();
 					}
-					StkObject* ResObj = SendObj.SendRequestRecvResponse(StkWebAppSend::STKWEBAPP_METHOD_POST, "/api/agent/", GetAgentInfo(ReturnCode), &Result);
-					delete ResObj;
-				} else {
-					//
+					CommandSearch = CommandSearch->GetNext();
 				}
-				TargetObj = TargetObj->GetNext();
+				StkObject* ResObj = SendObjPostAgentInfo->SendRequestRecvResponse(StkWebAppSend::STKWEBAPP_METHOD_POST, "/api/agent/", GetAgentInfo(ReturnCode), &Result);
+				delete ResObj;
+			} else {
+				//
 			}
-		} else {
-			StkPlPrintf("Error[%d]\r\n", Result);
+			TargetObj = TargetObj->GetNext();
 		}
-		delete ResGetCommandForStatus;
+	} else {
+		StkPlPrintf("Error[%d]\r\n", Result);
 	}
+	delete ResGetCommandForStatus;
+	return 0;
 }
 
 int LoadPropertyFile(wchar_t HostOrIpAddr[256], int* PortNum)
@@ -135,6 +138,21 @@ int LoadPropertyFile(wchar_t HostOrIpAddr[256], int* PortNum)
 	return 0;
 }
 
+void StartXxx(wchar_t HostOrIpAddr[256], int PortNum)
+{
+	SendObjPostAgentInfo = new StkWebAppSend(2, HostOrIpAddr, PortNum);
+	SendObjGetStatusCommand = new StkWebAppSend(3, HostOrIpAddr, PortNum);
+	SendObjPostAgentInfo->SetTimeoutInterval(60000 * 16);
+	SendObjGetStatusCommand->SetTimeoutInterval(60000 * 16);
+
+	int Result = 0;
+	StkObject* ResObj = SendObjPostAgentInfo->SendRequestRecvResponse(StkWebAppSend::STKWEBAPP_METHOD_POST, "/api/agent/", GetAgentInfo(0), &Result);
+	delete ResObj;
+
+	AddStkThread(1, L"Loop", L"", NULL, NULL, StatusLoop, NULL, NULL);
+	StartAllOfStkThreads();
+}
+
 int main(int argc, char* argv[])
 {
 	wchar_t HostOrIpAddr[256] = L"";
@@ -143,13 +161,15 @@ int main(int argc, char* argv[])
 		StkPlPrintf("%s command execution...\r\n", argv[0]);
 		StkPlConvUtf8ToWideChar(HostOrIpAddr, 256, argv[1]);
 		PortNum = StkPlAtoi(argv[2]);
-		StatusLoop(HostOrIpAddr, PortNum);
+		StartXxx(HostOrIpAddr, PortNum);
+		while (true) { StkPlSleepMs(1000); }
 	} else {
 #ifdef WIN32
 		StartServiceCtrlDispatcher(ServiceTable);
 #else
 		LoadPropertyFile(HostOrIpAddr, &PortNum); 
-		StatusLoop(HostOrIpAddr, PortNum);
+		StartXxx(HostOrIpAddr, PortNum);
+		while (true) { StkPlSleepMs(1000); }
 #endif
 	}
 
@@ -157,16 +177,6 @@ int main(int argc, char* argv[])
 }
 
 #ifdef WIN32
-int TheLoop(int Id)
-{
-	wchar_t HostOrIpAddr[256] = L"";
-	int PortNum = 0;
-	LoadPropertyFile(HostOrIpAddr, &PortNum);
-
-	StatusLoop(HostOrIpAddr, PortNum);
-	return 0;
-}
-
 DWORD WINAPI HandlerEx(DWORD dwControl, DWORD dwEventType, LPVOID lpEventData, LPVOID lpContext)
 {
 	// Initialize Variables for Service Control
@@ -303,8 +313,10 @@ VOID WINAPI ServiceMain(DWORD dwArgc, PTSTR* pszArgv)
 		return;
 	}
 
-	AddStkThread(1, L"Loop", L"", NULL, NULL, TheLoop, NULL, NULL);
-	StartAllOfStkThreads();
+	wchar_t HostOrIpAddr[256] = L"";
+	int PortNum = 0;
+	LoadPropertyFile(HostOrIpAddr, &PortNum);
+	StartXxx(HostOrIpAddr, PortNum);
 
 	while (g_bService) {
 		if (!g_bRun) {

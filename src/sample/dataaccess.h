@@ -25,7 +25,8 @@ public:
 
 	bool CheckExistenceOfTargetAgent(wchar_t[DA_MAXLEN_OF_AGTNAME]);
 	void SetAgentInfo(wchar_t[DA_MAXLEN_OF_AGTNAME], int, wchar_t[DA_MAXLEN_OF_TIME], wchar_t[DA_MAXLEN_OF_TIME]);
-	void SetAgentInfo(wchar_t[DA_MAXLEN_OF_AGTNAME], int);
+	void SetAgentInfoForStatusCmd(wchar_t[DA_MAXLEN_OF_AGTNAME], int);
+	void SetAgentInfoForOpCmd(wchar_t[DA_MAXLEN_OF_AGTNAME], int);
 	int GetAgentInfo(wchar_t[DA_MAXNUM_OF_AGTRECORDS][DA_MAXLEN_OF_AGTNAME],
 		int[DA_MAXNUM_OF_AGTRECORDS],
 		int[DA_MAXNUM_OF_AGTRECORDS],
