@@ -29,10 +29,12 @@ StkObject* ApiGetCommandForStatus::Execute(StkObject* ReqObj, int Method, wchar_
 		int Sec = 0;
 		StkPlGetTime(&Year, &Mon, &Day, &Hour, &Min, &Sec, false);
 
-		if ((SaInterval == 300 && Min % 5 == 0 && Sec == 0) ||
-			(SaInterval == 900 && Min % 15 == 0 && Sec == 0) ||
+		if ((SaInterval == 300  && Min % 5 == 0  && Sec == 0) ||
+			(SaInterval == 900  && Min % 15 == 0 && Sec == 0) ||
 			(SaInterval == 1800 && Min % 30 == 0 && Sec == 0) ||
-			(SaInterval == 3600 && Min == 0 && Sec == 0)) {
+			(SaInterval == 3600 && Min == 0      && Sec == 0)) {
+
+			TmpObj->AppendChildElement(new StkObject(L"Msg0", L"Execution"));
 
 			int Id[DA_MAXNUM_OF_CMDRECORDS];
 			wchar_t Name[DA_MAXNUM_OF_CMDRECORDS][DA_MAXLEN_OF_CMDNAME];
@@ -50,6 +52,8 @@ StkObject* ApiGetCommandForStatus::Execute(StkObject* ReqObj, int Method, wchar_
 			wchar_t UdTimeUtc[DA_MAXNUM_OF_AGTRECORDS][DA_MAXLEN_OF_TIME];
 			wchar_t UdTimeLocal[DA_MAXNUM_OF_AGTRECORDS][DA_MAXLEN_OF_TIME];
 			int ReAgtCount = DataAccess::GetInstance()->GetAgentInfo(AgtName, Status, StatusCmd, TimeUtc, TimeLocal, UdTimeUtc, UdTimeLocal);
+
+			// Check the agent specified in URI is managed by server
 			int TargetAgtIndex = -1;
 			for (int Loop = 0; Loop < ReAgtCount; Loop++) {
 				if (StkPlWcsCmp(AgtName[Loop], TargetAgtName) == 0) {
@@ -85,7 +89,6 @@ StkObject* ApiGetCommandForStatus::Execute(StkObject* ReqObj, int Method, wchar_
 					}
 					*Ptr = L'\0';
 
-					TmpObj->AppendChildElement(new StkObject(L"Msg0", L"Execution"));
 					StkObject* CommandObj = new StkObject(L"Command");
 					CommandObj->AppendChildElement(new StkObject(L"Id", Id[FoundIndex]));
 					CommandObj->AppendChildElement(new StkObject(L"Name", Name[FoundIndex]));

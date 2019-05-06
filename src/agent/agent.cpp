@@ -75,7 +75,7 @@ int OperationLoop(int TargetId)
 		StkObject* TargetObj = ResGetCommandForOp->GetFirstChildElement();
 		while (TargetObj) {
 			char TmpTime[64] = "";
-			StkPlGetTimeInIso8601(TmpTime, false);
+			StkPlGetTimeInIso8601(TmpTime, true);
 			if (StkPlWcsCmp(TargetObj->GetName(), L"Msg0") == 0 && StkPlWcsCmp(TargetObj->GetStringValue(), L"Timeout") == 0) {
 				StkPlPrintf("Get Command For Operation >> Timeout [%s]\r\n", TmpTime);
 			} else if (StkPlWcsCmp(TargetObj->GetName(), L"Msg0") == 0 && StkPlWcsCmp(TargetObj->GetStringValue(), L"Execution") == 0) {
@@ -118,7 +118,10 @@ int OperationLoop(int TargetId)
 			TargetObj = TargetObj->GetNext();
 		}
 	} else {
-		StkPlPrintf("Error[%d]\r\n", Result);
+		char TmpTime[64] = "";
+		StkPlGetTimeInIso8601(TmpTime, true);
+		StkPlPrintf("Get Command For Operation >> Error(%d) [%s]\r\n", Result, TmpTime);
+		StkPlSleepMs(30000);
 	}
 	delete ResGetCommandForOp;
 	return 0;
@@ -140,7 +143,7 @@ int StatusLoop(int TargetId)
 		StkObject* TargetObj = ResGetCommandForStatus->GetFirstChildElement();
 		while (TargetObj) {
 			char TmpTime[64] = "";
-			StkPlGetTimeInIso8601(TmpTime, false);
+			StkPlGetTimeInIso8601(TmpTime, true);
 			if (StkPlWcsCmp(TargetObj->GetName(), L"Msg0") == 0 && StkPlWcsCmp(TargetObj->GetStringValue(), L"Timeout") == 0) {
 				StkPlPrintf("Get Command For Status >> Timeout [%s]\r\n", TmpTime);
 			} else if (StkPlWcsCmp(TargetObj->GetName(), L"Msg0") == 0 && StkPlWcsCmp(TargetObj->GetStringValue(), L"Execution") == 0) {
@@ -185,7 +188,10 @@ int StatusLoop(int TargetId)
 			TargetObj = TargetObj->GetNext();
 		}
 	} else {
-		StkPlPrintf("Error[%d]\r\n", Result);
+		char TmpTime[64] = "";
+		StkPlGetTimeInIso8601(TmpTime, true);
+		StkPlPrintf("Get Command For Status >> Error(%d) [%s]\r\n", Result, TmpTime);
+		StkPlSleepMs(30000);
 	}
 	delete ResGetCommandForStatus;
 	return 0;
