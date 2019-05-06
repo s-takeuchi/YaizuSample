@@ -54,12 +54,12 @@
         logData.addClass('table table-striped');
 
         var tHead = $('<thead>');
-        tHead.append('<tr><th>Server UTC Time</th><th>Server Local Time</th><th>Message</th></tr>');
+        tHead.append('<tr><th>Event Occurrence Time</th><th>Event</th></tr>');
         logData.append(tHead);
 
         var tBody = $('<tbody>');
         for (var Loop = 0; Loop < Log.length; Loop++) {
-            tBody.append('<tr><td>' + Log[Loop].TimeUtc + '</td><td>' + Log[Loop].TimeLocal + '</td><td>' + Log[Loop].Msg + '</td></tr>');
+            tBody.append('<tr><td>' + Log[Loop].TimeUtc + '<br/>' + Log[Loop].TimeLocal + '</td><td>' + Log[Loop].Msg + '</td></tr>');
         }
         logData.append(tBody);
         $('#workspace_loginfo').append(logData);
@@ -81,7 +81,7 @@
         agentInfoData.addClass('table table-striped');
 
         var tHead = $('<thead>');
-        tHead.append('<tr><th>Name</th><th>Status</th><th>Command for Status</th><th>Status Acquisition Time</th><th>Update Time</th></tr>');
+        tHead.append('<tr><th>Name</th><th>Status</th><th class="hidden-xs">Command for Status</th><th>Status Acquisition Time</th><th class="hidden-xs">Status Update Time</th></tr>');
         agentInfoData.append(tHead);
 
         var tBody = $('<tbody>');
@@ -92,7 +92,7 @@
                     cmdNameStatus = commandList[loopcmd].Name
                 }
             }
-            tBody.append('<tr><td><div class="checkbox"><label><input type="checkbox" id="agtInfoId' + Loop + '" value="" onclick="switchAgentInfoButton()"/>' + AgentInfo[Loop].Name + '</label></div></td><td>' + AgentInfo[Loop].Status + '</td><td>' + cmdNameStatus + '</td><td>' + AgentInfo[Loop].TimeUtc + '<br/>' + AgentInfo[Loop].TimeLocal + '</td><td>' + AgentInfo[Loop].UdTimeUtc + '<br/>' + AgentInfo[Loop].UdTimeLocal + '</td></tr>');
+            tBody.append('<tr><td><div class="checkbox"><label><input type="checkbox" id="agtInfoId' + Loop + '" value="" onclick="switchAgentInfoButton()"/>' + AgentInfo[Loop].Name + '</label></div></td><td>' + AgentInfo[Loop].Status + '</td><td class="hidden-xs">' + cmdNameStatus + '</td><td>' + AgentInfo[Loop].TimeUtc + '<br/>' + AgentInfo[Loop].TimeLocal + '</td><td  class="hidden-xs">' + AgentInfo[Loop].UdTimeUtc + '<br/>' + AgentInfo[Loop].UdTimeLocal + '</td></tr>');
         }
         agentInfoData.append(tBody);
         $('#workspace_agtinfo').append(agentInfoData);
