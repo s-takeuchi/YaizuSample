@@ -144,10 +144,10 @@ systemctl enable sample.service
 %preun
 systemctl stop nginx.service
 systemctl stop sample.service
-systemctl disable sample.service
-systemctl start nginx.service
 firewall-cmd --remove-port=8080/tcp --permanent
 firewall-cmd --reload
+systemctl disable sample.service
+systemctl start nginx.service
 
 EOF
 
