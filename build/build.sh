@@ -134,6 +134,7 @@ install -p -m 644 %{SOURCE25} %{buildroot}/%{_datarootdir}/nginx/html
 setsebool httpd_can_network_connect on -P
 firewall-cmd --add-port=8080/tcp --permanent
 firewall-cmd --reload
+systemctl daemon-reload
 systemctl stop nginx.service
 systemctl start nginx.service
 systemctl enable nginx.service
@@ -143,12 +144,10 @@ systemctl enable sample.service
 %preun
 systemctl stop nginx.service
 systemctl stop sample.service
-
-%postun
-firewall-cmd --remove-port=8080/tcp --permanent
-firewall-cmd --reload
 systemctl disable sample.service
 systemctl start nginx.service
+firewall-cmd --remove-port=8080/tcp --permanent
+firewall-cmd --reload
 
 EOF
 

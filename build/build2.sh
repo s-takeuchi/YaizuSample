@@ -39,22 +39,19 @@ install -p -m 755 %{SOURCE1} %{buildroot}/%{_bindir}
 install -p -m 644 %{SOURCE2} %{buildroot}/%{_sysconfdir}
 install -p -m 644 %{SOURCE3} %{buildroot}/%{_sysconfdir}/systemd/system
 
-
 %files
 %{_bindir}/agent
 %{_sysconfdir}/agent.conf
 %{_sysconfdir}/systemd/system/agent.service
 
-
 %post
 setsebool httpd_can_network_connect on -P
+systemctl daemon-reload
 systemctl start agent.service
 systemctl enable agent.service
 
 %preun
 systemctl stop agent.service
-
-%postun
 systemctl disable agent.service
 
 EOF
