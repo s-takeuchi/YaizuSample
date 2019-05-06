@@ -34,6 +34,7 @@ public:
 		wchar_t[DA_MAXNUM_OF_AGTRECORDS][DA_MAXLEN_OF_TIME],
 		wchar_t[DA_MAXNUM_OF_AGTRECORDS][DA_MAXLEN_OF_TIME],
 		wchar_t[DA_MAXNUM_OF_AGTRECORDS][DA_MAXLEN_OF_TIME]);
+	int GetAgentInfoForOpCmd(wchar_t[DA_MAXLEN_OF_AGTNAME]);
 
 	int GetServerInfo(int*, int*);
 	int SetServerInfo(int, int);

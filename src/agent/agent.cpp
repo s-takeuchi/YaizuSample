@@ -23,6 +23,7 @@ SERVICE_TABLE_ENTRY ServiceTable[] = {
 
 StkWebAppSend* SendObjPostAgentInfo = NULL;
 StkWebAppSend* SendObjGetStatusCommand = NULL;
+StkWebAppSend* SendObjGetOperationCommand = NULL;
 
 StkObject* GetAgentInfo(int Status)
 {
@@ -42,8 +43,84 @@ StkObject* GetAgentInfo(int Status)
 	return NewObj;
 }
 
+StkObject* GetAgentInfoForOpCmd()
+{
+	wchar_t StatusTimeUtc[64];
+	wchar_t StatusTimeLocal[64];
+	wchar_t HostName[256];
+	StkPlGetHostName(HostName, 256);
+	StkObject* NewObj = new StkObject(L"");
+	StkPlGetWTimeInIso8601(StatusTimeUtc, false);
+	StkPlGetWTimeInIso8601(StatusTimeLocal, true);
+	StkObject* AgentInfo = new StkObject(L"AgentInfo");
+	AgentInfo->AppendChildElement(new StkObject(L"Name", HostName));
+	AgentInfo->AppendChildElement(new StkObject(L"OpCmd", -1));
+	NewObj->AppendChildElement(AgentInfo);
+	return NewObj;
+}
+
 int OperationLoop(int TargetId)
 {
+	int Result = 0;
+
+	wchar_t HostName[256] = L"";
+	wchar_t Url[512] = L"";
+	char Urlc[512] = "";
+	StkPlGetHostName(HostName, 256);
+	StkPlSwPrintf(Url, 512, L"/api/opcommand/%ls/", HostName);
+	StkPlConvWideCharToUtf8(Urlc, 512, Url);
+	StkObject* ResGetCommandForOp = SendObjGetOperationCommand->SendRequestRecvResponse(StkWebAppSend::STKWEBAPP_METHOD_GET, Urlc, NULL, &Result);
+
+	if (Result == 200 && ResGetCommandForOp != NULL) {
+		StkObject* TargetObj = ResGetCommandForOp->GetFirstChildElement();
+		while (TargetObj) {
+			char TmpTime[64] = "";
+			StkPlGetTimeInIso8601(TmpTime, false);
+			if (StkPlWcsCmp(TargetObj->GetName(), L"Msg0") == 0 && StkPlWcsCmp(TargetObj->GetStringValue(), L"Timeout") == 0) {
+				StkPlPrintf("Get Command For Operation >> Timeout [%s]\r\n", TmpTime);
+			} else if (StkPlWcsCmp(TargetObj->GetName(), L"Msg0") == 0 && StkPlWcsCmp(TargetObj->GetStringValue(), L"Execution") == 0) {
+				StkPlPrintf("Get Command For Operation >> Execution [%s]\r\n", TmpTime);
+				int ReturnCode = 0;
+				StkObject* CommandSearch = ResGetCommandForOp->GetFirstChildElement();
+				while (CommandSearch) {
+					if (StkPlWcsCmp(CommandSearch->GetName(), L"Command") == 0) {
+						char* TmpScript = NULL;
+						int TmpType = -1;
+						StkObject* ScriptSearch = CommandSearch->GetFirstChildElement();
+						while (ScriptSearch) {
+							if (StkPlWcsCmp(ScriptSearch->GetName(), L"Script") == 0) {
+								TmpScript = StkPlCreateUtf8FromWideChar(ScriptSearch->GetStringValue());
+							} else if (StkPlWcsCmp(ScriptSearch->GetName(), L"Type") == 0) {
+								TmpType = ScriptSearch->GetIntValue();
+							}
+							ScriptSearch = ScriptSearch->GetNext();
+						}
+						if (TmpScript != NULL) {
+							if (TmpType == 0) {
+								StkPlWriteFile(L"aaa-operation.sh", TmpScript, StkPlStrLen(TmpScript));
+							} else if (TmpType == 1) {
+								StkPlWriteFile(L"aaa-operation.bat", TmpScript, StkPlStrLen(TmpScript));
+							}
+							delete TmpScript;
+
+							if (TmpType == 0) {
+								ReturnCode = StkPlSystem("/usr/bin/bash aaa-operation.sh");
+							} else if (TmpType == 1) {
+								ReturnCode = StkPlSystem("cmd /c aaa-operation.bat");
+							}
+						}
+					}
+					CommandSearch = CommandSearch->GetNext();
+				}
+				StkObject* ResObj = SendObjPostAgentInfo->SendRequestRecvResponse(StkWebAppSend::STKWEBAPP_METHOD_POST, "/api/agent/", GetAgentInfoForOpCmd(), &Result);
+				delete ResObj;
+			}
+			TargetObj = TargetObj->GetNext();
+		}
+	} else {
+		StkPlPrintf("Error[%d]\r\n", Result);
+	}
+	delete ResGetCommandForOp;
 	return 0;
 }
 
@@ -85,16 +162,16 @@ int StatusLoop(int TargetId)
 						}
 						if (TmpScript != NULL) {
 							if (TmpType == 0) {
-								StkPlWriteFile(L"aaa.sh", TmpScript, StkPlStrLen(TmpScript));
+								StkPlWriteFile(L"aaa-status.sh", TmpScript, StkPlStrLen(TmpScript));
 							} else if (TmpType == 1) {
-								StkPlWriteFile(L"aaa.bat", TmpScript, StkPlStrLen(TmpScript));
+								StkPlWriteFile(L"aaa-status.bat", TmpScript, StkPlStrLen(TmpScript));
 							}
 							delete TmpScript;
 
 							if (TmpType == 0) {
-								ReturnCode = StkPlSystem("/usr/bin/bash aaa.sh");
+								ReturnCode = StkPlSystem("/usr/bin/bash aaa-status.sh");
 							} else if (TmpType == 1) {
-								ReturnCode = StkPlSystem("cmd /c aaa.bat");
+								ReturnCode = StkPlSystem("cmd /c aaa-status.bat");
 							}
 						}
 					}
@@ -140,16 +217,19 @@ int LoadPropertyFile(wchar_t HostOrIpAddr[256], int* PortNum)
 
 void StartXxx(wchar_t HostOrIpAddr[256], int PortNum)
 {
-	SendObjPostAgentInfo = new StkWebAppSend(2, HostOrIpAddr, PortNum);
-	SendObjGetStatusCommand = new StkWebAppSend(3, HostOrIpAddr, PortNum);
+	SendObjPostAgentInfo = new StkWebAppSend(1, HostOrIpAddr, PortNum);
+	SendObjGetStatusCommand = new StkWebAppSend(2, HostOrIpAddr, PortNum);
+	SendObjGetOperationCommand = new StkWebAppSend(3, HostOrIpAddr, PortNum);
 	SendObjPostAgentInfo->SetTimeoutInterval(60000 * 16);
 	SendObjGetStatusCommand->SetTimeoutInterval(60000 * 16);
+	SendObjGetOperationCommand->SetTimeoutInterval(60000 * 16);
 
 	int Result = 0;
 	StkObject* ResObj = SendObjPostAgentInfo->SendRequestRecvResponse(StkWebAppSend::STKWEBAPP_METHOD_POST, "/api/agent/", GetAgentInfo(0), &Result);
 	delete ResObj;
 
-	AddStkThread(1, L"Loop", L"", NULL, NULL, StatusLoop, NULL, NULL);
+	AddStkThread(1, L"StatusLoop", L"", NULL, NULL, StatusLoop, NULL, NULL);
+	AddStkThread(2, L"OperationLoop", L"", NULL, NULL, OperationLoop, NULL, NULL);
 	StartAllOfStkThreads();
 }
 

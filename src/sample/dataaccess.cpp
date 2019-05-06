@@ -304,14 +304,14 @@ int DataAccess::GetAgentInfo(wchar_t AgtName[DA_MAXNUM_OF_AGTRECORDS][DA_MAXLEN_
 			AgtStatusCmd[NumOfRec] = -1;
 		}
 		if (ColDatOpStatus != NULL) {
-			//AgtOpStatus[NumOfRec] = ColDatOpStatus->GetValue();
+			//
 		} else {
-			//AgtOpStatus[NumOfRec] = -1;
+			//
 		}
 		if (ColDatOpCmd != NULL) {
-			//AgtOpCmd[NumOfRec] = ColDatOpCmd->GetValue();
+			//
 		} else {
-			//AgtOpCmd[NumOfRec] = -1;
+			//
 		}
 		if (ColDatTimeLocal != NULL && ColDatTimeLocal->GetValue() != NULL) {
 			StkPlSwPrintf(TimeLocal[NumOfRec], DA_MAXLEN_OF_TIME, ColDatTimeLocal->GetValue());
@@ -338,6 +338,30 @@ int DataAccess::GetAgentInfo(wchar_t AgtName[DA_MAXNUM_OF_AGTRECORDS][DA_MAXLEN_
 	}
 	delete RecDatLog;
 	return NumOfRec;
+}
+
+int DataAccess::GetAgentInfoForOpCmd(wchar_t AgtName[DA_MAXLEN_OF_AGTNAME])
+{
+	ColumnData *ColDatAgtFind[1];
+	ColDatAgtFind[0] = new ColumnDataWStr(L"Name", AgtName);
+	RecordData* RecDatAgtFind = new RecordData(L"AgentInfo", ColDatAgtFind, 1);
+
+	LockTable(L"AgentInfo", LOCK_SHARE);
+	RecordData* RecDatAgt = GetRecord(RecDatAgtFind);
+	UnlockTable(L"AgentInfo");
+
+	int OpCmd = -1;
+	if (RecDatAgt != NULL) {
+		ColumnDataInt* ColDatOpCmd = (ColumnDataInt*)RecDatAgt->GetColumn(4);
+		if (ColDatOpCmd != NULL) {
+			OpCmd = ColDatOpCmd->GetValue();
+		}
+	}
+
+	delete RecDatAgtFind;
+	delete RecDatAgt;
+
+	return OpCmd;
 }
 
 int  DataAccess::GetServerInfo(int* PInterval, int* SaInterval)

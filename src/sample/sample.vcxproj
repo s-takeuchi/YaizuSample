@@ -105,6 +105,7 @@
     <ClCompile Include="ApiDeleteCommand.cpp" />
     <ClCompile Include="ApiGetAgentInfo.cpp" />
     <ClCompile Include="ApiGetCommand.cpp" />
+    <ClCompile Include="ApiGetCommandForOperation.cpp" />
     <ClCompile Include="ApiGetCommandForStatus.cpp" />
     <ClCompile Include="ApiGetLogInfo.cpp" />
     <ClCompile Include="ApiGetServerInfo.cpp" />
@@ -118,6 +119,7 @@
     <ClInclude Include="ApiDeleteCommand.h" />
     <ClInclude Include="ApiGetAgentInfo.h" />
     <ClInclude Include="ApiGetCommand.h" />
+    <ClInclude Include="ApiGetCommandForOperation.h" />
     <ClInclude Include="ApiGetCommandForStatus.h" />
     <ClInclude Include="ApiGetLogInfo.h" />
     <ClInclude Include="ApiGetServerInfo.h" />

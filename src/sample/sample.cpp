@@ -14,6 +14,7 @@
 #include "ApiGetCommand.h"
 #include "ApiPostCommand.h"
 #include "ApiDeleteCommand.h"
+#include "ApiGetCommandForOperation.h"
 #include "dataaccess.h"
 
 void Sample(wchar_t* IpAddr, int Port)
@@ -40,6 +41,8 @@ void Sample(wchar_t* IpAddr, int Port)
 	int Add8 = Soc->AddReqHandler(StkWebAppExec::STKWEBAPP_METHOD_POST, L"/api/command/", (StkWebAppExec*)ApiPostCommandObj);
 	ApiDeleteCommand* ApiDeleteCommandObj = new ApiDeleteCommand();
 	int Add9 = Soc->AddReqHandler(StkWebAppExec::STKWEBAPP_METHOD_DELETE, L"/api/command/$/", (StkWebAppExec*)ApiDeleteCommandObj);
+	ApiGetCommandForOperation* ApiGetCommandForOperationObj = new ApiGetCommandForOperation();
+	int Add10 = Soc->AddReqHandler(StkWebAppExec::STKWEBAPP_METHOD_GET, L"/api/opcommand/$/", (StkWebAppExec*)ApiGetCommandForOperationObj);
 
 	////////// Main logic starts
 	Soc->TheLoop();
@@ -49,11 +52,12 @@ void Sample(wchar_t* IpAddr, int Port)
 	int Del2 = Soc->DeleteReqHandler(StkWebAppExec::STKWEBAPP_METHOD_GET, L"/api/server/");
 	int Del3 = Soc->DeleteReqHandler(StkWebAppExec::STKWEBAPP_METHOD_GET, L"/api/agent/");
 	int Del4 = Soc->DeleteReqHandler(StkWebAppExec::STKWEBAPP_METHOD_POST, L"/api/agent/");
-	int Del5 = Soc->DeleteReqHandler(StkWebAppExec::STKWEBAPP_METHOD_GET, L"/api/statuscommand/");
+	int Del5 = Soc->DeleteReqHandler(StkWebAppExec::STKWEBAPP_METHOD_GET, L"/api/statuscommand/$/");
 	int Del6 = Soc->DeleteReqHandler(StkWebAppExec::STKWEBAPP_METHOD_POST, L"/api/server/");
 	int Del7 = Soc->DeleteReqHandler(StkWebAppExec::STKWEBAPP_METHOD_GET, L"/api/command/");
 	int Del8 = Soc->DeleteReqHandler(StkWebAppExec::STKWEBAPP_METHOD_POST, L"/api/command/");
-	int Del9 = Soc->DeleteReqHandler(StkWebAppExec::STKWEBAPP_METHOD_DELETE, L"/api/command/");
+	int Del9 = Soc->DeleteReqHandler(StkWebAppExec::STKWEBAPP_METHOD_DELETE, L"/api/command/$/");
+	int Del10 = Soc->DeleteReqHandler(StkWebAppExec::STKWEBAPP_METHOD_GET, L"/api/opcommand/$/");
 
 	delete Soc;
 }

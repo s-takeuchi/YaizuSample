@@ -138,7 +138,7 @@
         $('#inputDlgModalTitle').append('<h3 class="modal-title">Select execution command</h3>');
 
         var btnGrp = $('<div class="btn-group">');
-        btnGrp.append('<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><span id="selectedExecCommand"></span><span class="caret"></span></button>');
+        btnGrp.append('<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><span id="selectedExecCommand">Select Command </span><span class="caret"></span></button>');
         var ddMenu = $('<ul class="dropdown-menu" role="menu">');
         for (var loop = 0; commandList != null && loop < commandList.length; loop++) {
             ddMenu.append('<li role="presentation"><a onclick="selectExecCommand(' + loop + ')" role="menuitem" tabindex="-1" href="#">' + commandList[loop].Name + '</a></li>');
