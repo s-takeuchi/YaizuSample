@@ -114,6 +114,27 @@ int OperationLoop(int TargetId)
 				}
 				StkObject* ResObj = SendObjPostAgentInfo->SendRequestRecvResponse(StkWebAppSend::STKWEBAPP_METHOD_POST, "/api/agent/", GetAgentInfoForOpCmd(), &Result);
 				delete ResObj;
+				StkObject* ResObj2 = SendObjPostAgentInfo->SendRequestRecvResponse(StkWebAppSend::STKWEBAPP_METHOD_GET, "/api/file/d:\\dummy_addr_1.txt/0/", NULL, &Result);
+				StkObject* CurResObj2 = NULL;
+				CurResObj2 = ResObj2->GetFirstChildElement();
+				size_t FileSize = -1;
+				while (CurResObj2) {
+					if (StkPlWcsCmp(CurResObj2->GetName(), L"FileSize") == 0) {
+						FileSize = CurResObj2->GetIntValue();
+					}
+					CurResObj2 = CurResObj2->GetNext();
+				}
+				CurResObj2 = ResObj2->GetFirstChildElement();
+				while (CurResObj2) {
+					if (StkPlWcsCmp(CurResObj2->GetName(), L"FileData") == 0) {
+						wchar_t* FileData = CurResObj2->GetStringValue();
+						for (size_t Loop = 0; Loop < FileSize; Loop++) {
+
+						}
+					}
+					CurResObj2 = CurResObj2->GetNext();
+				}
+				delete ResObj2;
 			}
 			TargetObj = TargetObj->GetNext();
 		}
@@ -229,6 +250,10 @@ void StartXxx(wchar_t HostOrIpAddr[256], int PortNum)
 	SendObjPostAgentInfo->SetTimeoutInterval(60000 * 16);
 	SendObjGetStatusCommand->SetTimeoutInterval(60000 * 16);
 	SendObjGetOperationCommand->SetTimeoutInterval(60000 * 16);
+	SendObjGetStatusCommand->SetSendBufSize(5000000);
+	SendObjGetStatusCommand->SetRecvBufSize(5000000);
+	SendObjGetOperationCommand->SetSendBufSize(5000000);
+	SendObjGetOperationCommand->SetRecvBufSize(5000000);
 
 	int Result = 0;
 	StkObject* ResObj = SendObjPostAgentInfo->SendRequestRecvResponse(StkWebAppSend::STKWEBAPP_METHOD_POST, "/api/agent/", GetAgentInfo(0), &Result);

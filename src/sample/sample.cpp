@@ -15,6 +15,7 @@
 #include "ApiPostCommand.h"
 #include "ApiDeleteCommand.h"
 #include "ApiGetCommandForOperation.h"
+#include "ApiGetFile.h"
 #include "dataaccess.h"
 
 void Sample(wchar_t* IpAddr, int Port)
@@ -22,6 +23,8 @@ void Sample(wchar_t* IpAddr, int Port)
 	int Ids[32] = {10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31};
 
 	StkWebApp* Soc = new StkWebApp(Ids, 32, IpAddr, Port);
+	Soc->SetSendBufSize(5000000);
+	Soc->SetRecvBufSize(5000000);
 
 	ApiGetLogInfo* ApiGetLogInfoObj = new ApiGetLogInfo();
 	int Add1 = Soc->AddReqHandler(StkWebAppExec::STKWEBAPP_METHOD_GET, L"/api/log/", (StkWebAppExec*)ApiGetLogInfoObj);
@@ -43,6 +46,8 @@ void Sample(wchar_t* IpAddr, int Port)
 	int Add9 = Soc->AddReqHandler(StkWebAppExec::STKWEBAPP_METHOD_DELETE, L"/api/command/$/", (StkWebAppExec*)ApiDeleteCommandObj);
 	ApiGetCommandForOperation* ApiGetCommandForOperationObj = new ApiGetCommandForOperation();
 	int Add10 = Soc->AddReqHandler(StkWebAppExec::STKWEBAPP_METHOD_GET, L"/api/opcommand/$/", (StkWebAppExec*)ApiGetCommandForOperationObj);
+	ApiGetFile* ApiGetFileObj = new ApiGetFile();
+	int Add11 = Soc->AddReqHandler(StkWebAppExec::STKWEBAPP_METHOD_GET, L"/api/file/$/$/", (StkWebAppExec*)ApiGetFileObj);
 
 	////////// Main logic starts
 	Soc->TheLoop();
@@ -58,6 +63,7 @@ void Sample(wchar_t* IpAddr, int Port)
 	int Del8 = Soc->DeleteReqHandler(StkWebAppExec::STKWEBAPP_METHOD_POST, L"/api/command/");
 	int Del9 = Soc->DeleteReqHandler(StkWebAppExec::STKWEBAPP_METHOD_DELETE, L"/api/command/$/");
 	int Del10 = Soc->DeleteReqHandler(StkWebAppExec::STKWEBAPP_METHOD_GET, L"/api/opcommand/$/");
+	int Del11 = Soc->DeleteReqHandler(StkWebAppExec::STKWEBAPP_METHOD_GET, L"/api/file/$/$/");
 
 	delete Soc;
 }
