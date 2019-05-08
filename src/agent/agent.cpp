@@ -21,9 +21,8 @@ SERVICE_TABLE_ENTRY ServiceTable[] = {
 }; 
 #endif
 
-StkWebAppSend* SendObjPostAgentInfo = NULL;
-StkWebAppSend* SendObjGetStatusCommand = NULL;
-StkWebAppSend* SendObjGetOperationCommand = NULL;
+StkWebAppSend* SoForTh1 = NULL;
+StkWebAppSend* SoForTh2 = NULL;
 
 StkObject* GetAgentInfo(int Status)
 {
@@ -59,6 +58,69 @@ StkObject* GetAgentInfoForOpCmd()
 	return NewObj;
 }
 
+int GetAndSaveFile(char* FileName, size_t FileSize)
+{
+	int Result = 0;
+
+	int LoopCnt = FileSize / 1000000 + 1;
+
+	for (int Loop = 0; Loop < LoopCnt; Loop++) {
+		char Url[128] = "";
+		StkPlSPrintf(Url, 128, "/api/file/%s/%d/", FileName, Loop * 1000000);
+		StkObject* ResObj2 = SoForTh2->SendRequestRecvResponse(StkWebAppSend::STKWEBAPP_METHOD_GET, Url, NULL, &Result);
+
+		StkObject* CurResObj2 = ResObj2->GetFirstChildElement();
+		while (CurResObj2) {
+			if (StkPlWcsCmp(CurResObj2->GetName(), L"FileData") == 0) {
+				wchar_t* FileData = CurResObj2->GetStringValue();
+				wchar_t* FileDataPtr = FileData;
+				int FileDataLen = StkPlWcsLen(FileData);
+				unsigned char DataChar[1000001];
+				int DataCharIndex = 0;
+				wchar_t HexNum[128];
+				HexNum[L'0'] = 0;
+				HexNum[L'1'] = 1;
+				HexNum[L'2'] = 2;
+				HexNum[L'3'] = 3;
+				HexNum[L'4'] = 4;
+				HexNum[L'5'] = 5;
+				HexNum[L'6'] = 6;
+				HexNum[L'7'] = 7;
+				HexNum[L'8'] = 8;
+				HexNum[L'9'] = 9;
+				HexNum[L'A'] = 10;
+				HexNum[L'B'] = 11;
+				HexNum[L'C'] = 12;
+				HexNum[L'D'] = 13;
+				HexNum[L'E'] = 14;
+				HexNum[L'F'] = 15;
+				while (*FileDataPtr != L'\0') {
+					if (DataCharIndex >= 1000000) {
+						break;
+					}
+					DataChar[DataCharIndex] = HexNum[*FileDataPtr] * 16 + HexNum[*(FileDataPtr + 1)];
+					DataCharIndex++;
+					FileDataPtr += 2;
+				}
+				DataChar[DataCharIndex] = '\0';
+				void* FilePtr = NULL;
+				if (Loop == 0) {
+					FilePtr = StkPlOpenFileForWrite(L"bbb.txt");
+				} else {
+					FilePtr = StkPlOpenFileForWrite(L"bbb.txt", true);
+				}
+				StkPlSeekFromEnd(FilePtr, 0);
+				size_t ActSize = 0;
+				StkPlWrite(FilePtr, (char*)DataChar, DataCharIndex, &ActSize);
+				StkPlCloseFile(FilePtr);
+			}
+			CurResObj2 = CurResObj2->GetNext();
+		}
+		delete ResObj2;
+	}
+	return Result;
+}
+
 int OperationLoop(int TargetId)
 {
 	int Result = 0;
@@ -69,7 +131,7 @@ int OperationLoop(int TargetId)
 	StkPlGetHostName(HostName, 256);
 	StkPlSwPrintf(Url, 512, L"/api/opcommand/%ls/", HostName);
 	StkPlConvWideCharToUtf8(Urlc, 512, Url);
-	StkObject* ResGetCommandForOp = SendObjGetOperationCommand->SendRequestRecvResponse(StkWebAppSend::STKWEBAPP_METHOD_GET, Urlc, NULL, &Result);
+	StkObject* ResGetCommandForOp = SoForTh2->SendRequestRecvResponse(StkWebAppSend::STKWEBAPP_METHOD_GET, Urlc, NULL, &Result);
 
 	if (Result == 200 && ResGetCommandForOp != NULL) {
 		StkObject* TargetObj = ResGetCommandForOp->GetFirstChildElement();
@@ -86,14 +148,24 @@ int OperationLoop(int TargetId)
 					if (StkPlWcsCmp(CommandSearch->GetName(), L"Command") == 0) {
 						char* TmpScript = NULL;
 						int TmpType = -1;
+						char TmpServerFileName[FILENAME_MAX] = "";
+						int TmpServerFileSize = -1;
 						StkObject* ScriptSearch = CommandSearch->GetFirstChildElement();
 						while (ScriptSearch) {
 							if (StkPlWcsCmp(ScriptSearch->GetName(), L"Script") == 0) {
 								TmpScript = StkPlCreateUtf8FromWideChar(ScriptSearch->GetStringValue());
 							} else if (StkPlWcsCmp(ScriptSearch->GetName(), L"Type") == 0) {
 								TmpType = ScriptSearch->GetIntValue();
+							} else if (StkPlWcsCmp(ScriptSearch->GetName(), L"ServerFileName") == 0) {
+								StkPlConvWideCharToUtf8(TmpServerFileName, FILENAME_MAX, ScriptSearch->GetStringValue());
+							} else if (StkPlWcsCmp(ScriptSearch->GetName(), L"ServerFileSize") == 0) {
+								TmpServerFileSize = ScriptSearch->GetIntValue();
 							}
 							ScriptSearch = ScriptSearch->GetNext();
+						}
+						// Get and save file
+						if (TmpServerFileName != NULL && TmpServerFileSize >= 0 && StkPlStrCmp(TmpServerFileName, "") != 0) {
+							GetAndSaveFile(TmpServerFileName, TmpServerFileSize);
 						}
 						if (TmpScript != NULL) {
 							if (TmpType == 0) {
@@ -112,29 +184,8 @@ int OperationLoop(int TargetId)
 					}
 					CommandSearch = CommandSearch->GetNext();
 				}
-				StkObject* ResObj = SendObjPostAgentInfo->SendRequestRecvResponse(StkWebAppSend::STKWEBAPP_METHOD_POST, "/api/agent/", GetAgentInfoForOpCmd(), &Result);
+				StkObject* ResObj = SoForTh2->SendRequestRecvResponse(StkWebAppSend::STKWEBAPP_METHOD_POST, "/api/agent/", GetAgentInfoForOpCmd(), &Result);
 				delete ResObj;
-				StkObject* ResObj2 = SendObjPostAgentInfo->SendRequestRecvResponse(StkWebAppSend::STKWEBAPP_METHOD_GET, "/api/file/d:\\dummy_addr_1.txt/0/", NULL, &Result);
-				StkObject* CurResObj2 = NULL;
-				CurResObj2 = ResObj2->GetFirstChildElement();
-				size_t FileSize = -1;
-				while (CurResObj2) {
-					if (StkPlWcsCmp(CurResObj2->GetName(), L"FileSize") == 0) {
-						FileSize = CurResObj2->GetIntValue();
-					}
-					CurResObj2 = CurResObj2->GetNext();
-				}
-				CurResObj2 = ResObj2->GetFirstChildElement();
-				while (CurResObj2) {
-					if (StkPlWcsCmp(CurResObj2->GetName(), L"FileData") == 0) {
-						wchar_t* FileData = CurResObj2->GetStringValue();
-						for (size_t Loop = 0; Loop < FileSize; Loop++) {
-
-						}
-					}
-					CurResObj2 = CurResObj2->GetNext();
-				}
-				delete ResObj2;
 			}
 			TargetObj = TargetObj->GetNext();
 		}
@@ -158,7 +209,7 @@ int StatusLoop(int TargetId)
 	StkPlGetHostName(HostName, 256);
 	StkPlSwPrintf(Url, 512, L"/api/statuscommand/%ls/", HostName);
 	StkPlConvWideCharToUtf8(Urlc, 512, Url);
-	StkObject* ResGetCommandForStatus = SendObjGetStatusCommand->SendRequestRecvResponse(StkWebAppSend::STKWEBAPP_METHOD_GET, Urlc, NULL, &Result);
+	StkObject* ResGetCommandForStatus = SoForTh1->SendRequestRecvResponse(StkWebAppSend::STKWEBAPP_METHOD_GET, Urlc, NULL, &Result);
 
 	if (Result == 200 && ResGetCommandForStatus != NULL) {
 		StkObject* TargetObj = ResGetCommandForStatus->GetFirstChildElement();
@@ -201,7 +252,7 @@ int StatusLoop(int TargetId)
 					}
 					CommandSearch = CommandSearch->GetNext();
 				}
-				StkObject* ResObj = SendObjPostAgentInfo->SendRequestRecvResponse(StkWebAppSend::STKWEBAPP_METHOD_POST, "/api/agent/", GetAgentInfo(ReturnCode), &Result);
+				StkObject* ResObj = SoForTh1->SendRequestRecvResponse(StkWebAppSend::STKWEBAPP_METHOD_POST, "/api/agent/", GetAgentInfo(ReturnCode), &Result);
 				delete ResObj;
 			} else {
 				//
@@ -244,19 +295,17 @@ int LoadPropertyFile(wchar_t HostOrIpAddr[256], int* PortNum)
 
 void StartXxx(wchar_t HostOrIpAddr[256], int PortNum)
 {
-	SendObjPostAgentInfo = new StkWebAppSend(1, HostOrIpAddr, PortNum);
-	SendObjGetStatusCommand = new StkWebAppSend(2, HostOrIpAddr, PortNum);
-	SendObjGetOperationCommand = new StkWebAppSend(3, HostOrIpAddr, PortNum);
-	SendObjPostAgentInfo->SetTimeoutInterval(60000 * 16);
-	SendObjGetStatusCommand->SetTimeoutInterval(60000 * 16);
-	SendObjGetOperationCommand->SetTimeoutInterval(60000 * 16);
-	SendObjGetStatusCommand->SetSendBufSize(5000000);
-	SendObjGetStatusCommand->SetRecvBufSize(5000000);
-	SendObjGetOperationCommand->SetSendBufSize(5000000);
-	SendObjGetOperationCommand->SetRecvBufSize(5000000);
+	SoForTh1 = new StkWebAppSend(1, HostOrIpAddr, PortNum);
+	SoForTh2 = new StkWebAppSend(2, HostOrIpAddr, PortNum);
+	SoForTh1->SetTimeoutInterval(60000 * 16);
+	SoForTh2->SetTimeoutInterval(60000 * 16);
+	SoForTh1->SetSendBufSize(5000000);
+	SoForTh1->SetRecvBufSize(5000000);
+	SoForTh2->SetSendBufSize(5000000);
+	SoForTh2->SetRecvBufSize(5000000);
 
 	int Result = 0;
-	StkObject* ResObj = SendObjPostAgentInfo->SendRequestRecvResponse(StkWebAppSend::STKWEBAPP_METHOD_POST, "/api/agent/", GetAgentInfo(0), &Result);
+	StkObject* ResObj = SoForTh1->SendRequestRecvResponse(StkWebAppSend::STKWEBAPP_METHOD_POST, "/api/agent/", GetAgentInfo(0), &Result);
 	delete ResObj;
 
 	AddStkThread(1, L"StatusLoop", L"", NULL, NULL, StatusLoop, NULL, NULL);

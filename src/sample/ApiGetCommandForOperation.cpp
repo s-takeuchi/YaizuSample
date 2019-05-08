@@ -64,6 +64,9 @@ StkObject* ApiGetCommandForOperation::Execute(StkObject* ReqObj, int Method, wch
 					CommandObj->AppendChildElement(new StkObject(L"Name", Name[Loop]));
 					CommandObj->AppendChildElement(new StkObject(L"Type", Type[Loop]));
 					CommandObj->AppendChildElement(new StkObject(L"Script", WScript));
+					CommandObj->AppendChildElement(new StkObject(L"ServerFileName", L"d:\\10MB_lesser.txt"));
+					size_t FileSize = StkPlGetFileSize(L"d:\\10MB_lesser.txt");
+					CommandObj->AppendChildElement(new StkObject(L"ServerFileSize", (int)FileSize));
 					TmpObj->AppendChildElement(CommandObj);
 					*ResultCode = 200;
 					break;

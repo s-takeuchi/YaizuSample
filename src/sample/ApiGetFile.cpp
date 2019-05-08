@@ -7,8 +7,8 @@ StkObject* ApiGetFile::Execute(StkObject* ReqObj, int Method, wchar_t UrlPath[St
 {
 	wchar_t TargetFileName[FILENAME_MAX];
 	wchar_t OffsetStr[16];
-	size_t Offset = StkPlWcsToL(OffsetStr);
 	StkStringParser::ParseInto2Params(UrlPath, L"/api/file/$/$/", L'$', TargetFileName, FILENAME_MAX, OffsetStr, 16);
+	size_t Offset = StkPlWcsToL(OffsetStr);
 	size_t FileSize = StkPlGetFileSize(TargetFileName);
 	if (FileSize < 0) {
 		StkObject* TmpObj = new StkObject(L"");
@@ -24,7 +24,7 @@ StkObject* ApiGetFile::Execute(StkObject* ReqObj, int Method, wchar_t UrlPath[St
 	}
 
 	char Buffer[1000000];
-	wchar_t HexBuf[2000000];
+	wchar_t HexBuf[2000001];
 	size_t ActSize;
 	void* FilePtr = StkPlOpenFileForRead(TargetFileName);
 	StkPlSeekFromBegin(FilePtr, Offset);
@@ -39,7 +39,6 @@ StkObject* ApiGetFile::Execute(StkObject* ReqObj, int Method, wchar_t UrlPath[St
 	HexBuf[Loop * 2] = '\0';
 
 	StkObject* TmpObj = new StkObject(L"");
-	TmpObj->AppendChildElement(new StkObject(L"FileSize", (int)ActSize));
 	TmpObj->AppendChildElement(new StkObject(L"FileData", HexBuf));
 	TmpObj->AppendChildElement(new StkObject(L"Msg0", L""));
 	*ResultCode = 200;
