@@ -395,8 +395,10 @@
         }
 
         $('#workspace_command').append('<div class="form-group"><label for="commandName">Command Name</label><input type="text" class="form-control" id="commandName" placeholder="Command Name"></div>');
+        $('#workspace_command').append('<div class="form-group"><label for="serverFileName">File To Be Copied To Agent (Only file name. Do not specify directory path.)</label><input type="text" class="form-control" id="serverFileName" placeholder="File Placed In Server"></div>');
         $('#workspace_command').append('<div class="form-group"><label for="commandType">Command Type</label><select class="form-control" id="commandType"><option>Linux /usr/bin/bash</option><option>Windows cmd.exe /c</option></select></div>');
         $('#workspace_command').append('<div class="form-group"><label for="commandScript">Script</label><textarea class="form-control" id="commandScript" rows="3" style="margin-top: 0px; margin-bottom: 0px; height: 185px;"></textarea></div>');
+        $('#workspace_command').append('<div class="form-group"><label for="agentFileName">File To Be Copied To Server (Only file name. Do not specify directory path.)</label><input type="text" class="form-control" id="agentFileName" placeholder="File Placed In Agent"></div>');
         $('#workspace_command').append('<button type="button" id="commandBtnAdd" class="btn btn-primary" onclick="updateCommand(false)">Add</button> ');
         $('#workspace_command').append('<button type="button" id="commandBtnUpdate" class="btn btn-primary disabled" onclick="updateCommand(true)">Update</button> ');
         $('#workspace_command').append('<button type="button" id="commandBtnDelete" class="btn btn-primary disabled" onclick="deleteCommand()">Delete</button> ');
@@ -415,21 +417,19 @@
             comTypeInt = 1;
         }
         if (updateFlag == false) {
-            var ReqObj = { Command : { Name : $("#commandName").val(), Type : comTypeInt, Script : $("#commandScript").val() }};
-            apiCall('POST', './api/command/', ReqObj, API_POST_COMMAND, null);
+            var ReqObj = { Command : { Name : $("#commandName").val(), Type : comTypeInt, Script : $("#commandScript").val(), ServerFileName : $("#serverFileName").val(), AgentFileName : $("#agentFileName").val() }};
+            apiCall('POST', './api/command/', ReqObj, API_POST_COMMAND, refreshAfterCommandOperation);
         } else {
-            var ReqObj = { Command : { Id : selectedCommand, Name : $("#commandName").val(), Type : comTypeInt, Script : $("#commandScript").val() }};
-            apiCall('POST', './api/command/', ReqObj, API_POST_COMMAND, null);
+            var ReqObj = { Command : { Id : selectedCommand, Name : $("#commandName").val(), Type : comTypeInt, Script : $("#commandScript").val(), ServerFileName : $("#serverFileName").val(), AgentFileName : $("#agentFileName").val() }};
+            apiCall('POST', './api/command/', ReqObj, API_POST_COMMAND, refreshAfterCommandOperation);
         }
-        refreshInfo();
     }
 
     function deleteCommand() {
         if (selectedCommand == -1) {
             return;
         }
-        apiCall('DELETE', './api/command/' + selectedCommand + '/', null, API_DELETE_COMMAND, null);
-        refreshInfo();
+        apiCall('DELETE', './api/command/' + selectedCommand + '/', null, API_DELETE_COMMAND, refreshAfterCommandOperation);
     }
 
     function selectCommand(targetId) {
@@ -444,12 +444,18 @@
                     typeStr = 'Windows cmd.exe /c';
                 }
                 $('#commandName').val(commandList[loop].Name);
+                $('#serverFileName').val(commandList[loop].ServerFileName);
                 $('#commandType').val(typeStr);
                 $('#commandScript').val(commandList[loop].Script);
+                $('#agentFileName').val(commandList[loop].AgentFileName);
                 $('#commandBtnUpdate').removeClass('disabled');
                 $('#commandBtnDelete').removeClass('disabled');
             }
         }
+    }
+
+    function refreshAfterCommandOperation() {
+        refreshInfo();
     }
 
     window.onload = function() {

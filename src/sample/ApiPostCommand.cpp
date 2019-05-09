@@ -20,6 +20,8 @@ StkObject* ApiPostCommand::Execute(StkObject* ReqObj, int Method, wchar_t UrlPat
 	wchar_t Name[DA_MAXLEN_OF_CMDNAME] = L"";
 	int Type = 0;
 	wchar_t Script[DA_MAXLEN_OF_CMDSCRIPT] = L"";
+	wchar_t ServerFileName[DA_MAXLEN_OF_SERVERFILENAME] = L"";
+	wchar_t AgentFileName[DA_MAXLEN_OF_SERVERFILENAME] = L"";
 	StkObject* CurObj = CommandObj->GetFirstChildElement();
 	while (CurObj) {
 		if (StkPlWcsCmp(CurObj->GetName(), L"Id") == 0) {
@@ -30,6 +32,10 @@ StkObject* ApiPostCommand::Execute(StkObject* ReqObj, int Method, wchar_t UrlPat
 			Type = CurObj->GetIntValue();
 		} else if (StkPlWcsCmp(CurObj->GetName(), L"Script") == 0) {
 			StkPlWcsCpy(Script, DA_MAXLEN_OF_CMDSCRIPT, CurObj->GetStringValue());
+		} else if (StkPlWcsCmp(CurObj->GetName(), L"ServerFileName") == 0) {
+			StkPlWcsCpy(ServerFileName, DA_MAXLEN_OF_SERVERFILENAME, CurObj->GetStringValue());
+		} else if (StkPlWcsCmp(CurObj->GetName(), L"AgentFileName") == 0) {
+			StkPlWcsCpy(AgentFileName, DA_MAXLEN_OF_AGENTFILENAME, CurObj->GetStringValue());
 		}
 		CurObj = CurObj->GetNext();
 	}
@@ -38,7 +44,7 @@ StkObject* ApiPostCommand::Execute(StkObject* ReqObj, int Method, wchar_t UrlPat
 		Id++;
 		DataAccess::GetInstance()->SetMaxCommandId(Id);
 	}
-	DataAccess::GetInstance()->SetCommand(Id, Name, Type, (char*)Script);
+	DataAccess::GetInstance()->SetCommand(Id, Name, Type, (char*)Script, ServerFileName, AgentFileName);
 
 	StkObject* TmpObj = new StkObject(L"");
 	TmpObj->AppendChildElement(new StkObject(L"Msg0", L""));

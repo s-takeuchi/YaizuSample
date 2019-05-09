@@ -32,7 +32,10 @@ StkObject* ApiGetCommandForOperation::Execute(StkObject* ReqObj, int Method, wch
 			wchar_t Name[DA_MAXNUM_OF_CMDRECORDS][DA_MAXLEN_OF_CMDNAME];
 			int Type[DA_MAXNUM_OF_CMDRECORDS];
 			char Script[DA_MAXNUM_OF_CMDRECORDS][DA_MAXLEN_OF_CMDSCRIPT];
-			int ResCmdCount = DataAccess::GetInstance()->GetCommand(Id, Name, Type, Script);
+			wchar_t ServerFileName[DA_MAXNUM_OF_CMDRECORDS][DA_MAXLEN_OF_SERVERFILENAME];
+			wchar_t AgentFileName[DA_MAXNUM_OF_CMDRECORDS][DA_MAXLEN_OF_AGENTFILENAME];
+
+			int ResCmdCount = DataAccess::GetInstance()->GetCommand(Id, Name, Type, Script, ServerFileName, AgentFileName);
 
 			for (int Loop = 0; Loop < ResCmdCount; Loop++) {
 				if (OpCmd == Id[Loop]) {
@@ -64,8 +67,8 @@ StkObject* ApiGetCommandForOperation::Execute(StkObject* ReqObj, int Method, wch
 					CommandObj->AppendChildElement(new StkObject(L"Name", Name[Loop]));
 					CommandObj->AppendChildElement(new StkObject(L"Type", Type[Loop]));
 					CommandObj->AppendChildElement(new StkObject(L"Script", WScript));
-					CommandObj->AppendChildElement(new StkObject(L"ServerFileName", L"d:\\10MB_lesser.txt"));
-					size_t FileSize = StkPlGetFileSize(L"d:\\10MB_lesser.txt");
+					CommandObj->AppendChildElement(new StkObject(L"ServerFileName", ServerFileName[Loop]));
+					size_t FileSize = StkPlGetFileSize(ServerFileName[Loop]);
 					CommandObj->AppendChildElement(new StkObject(L"ServerFileSize", (int)FileSize));
 					TmpObj->AppendChildElement(CommandObj);
 					*ResultCode = 200;

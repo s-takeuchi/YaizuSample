@@ -40,9 +40,11 @@ StkObject* ApiGetCommandForStatus::Execute(StkObject* ReqObj, int Method, wchar_
 			wchar_t Name[DA_MAXNUM_OF_CMDRECORDS][DA_MAXLEN_OF_CMDNAME];
 			int Type[DA_MAXNUM_OF_CMDRECORDS];
 			char Script[DA_MAXNUM_OF_CMDRECORDS][DA_MAXLEN_OF_CMDSCRIPT];
+			wchar_t ServerFileName[DA_MAXNUM_OF_CMDRECORDS][DA_MAXLEN_OF_SERVERFILENAME];
+			wchar_t AgentFileName[DA_MAXNUM_OF_CMDRECORDS][DA_MAXLEN_OF_AGENTFILENAME];
 			wchar_t WScript[DA_MAXLEN_OF_CMDSCRIPT / 2] = L"";
 			wchar_t* Ptr = WScript;
-			int ResCmdCount = DataAccess::GetInstance()->GetCommand(Id, Name, Type, Script);
+			int ResCmdCount = DataAccess::GetInstance()->GetCommand(Id, Name, Type, Script, ServerFileName, AgentFileName);
 
 			wchar_t AgtName[DA_MAXNUM_OF_AGTRECORDS][DA_MAXLEN_OF_AGTNAME];
 			int Status[DA_MAXNUM_OF_AGTRECORDS];

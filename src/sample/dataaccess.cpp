@@ -123,11 +123,15 @@ int DataAccess::CreateTables(const wchar_t* DataFileName)
 			ColumnDefWStr ColDefComName(L"Name", DA_MAXLEN_OF_CMDNAME);
 			ColumnDefInt ColDefComType(L"Type");
 			ColumnDefBin ColDefComScript(L"Script", DA_MAXLEN_OF_CMDSCRIPT);
+			ColumnDefWStr ColDefComServerFileName(L"ServerFileName", DA_MAXLEN_OF_SERVERFILENAME);
+			ColumnDefWStr ColDefComAgentFileName(L"AgentFileName", DA_MAXLEN_OF_AGENTFILENAME);
 			TableDef TabDefCommand(L"Command", DA_MAXNUM_OF_CMDRECORDS);
 			TabDefCommand.AddColumnDef(&ColDefComId);
 			TabDefCommand.AddColumnDef(&ColDefComName);
 			TabDefCommand.AddColumnDef(&ColDefComType);
 			TabDefCommand.AddColumnDef(&ColDefComScript);
+			TabDefCommand.AddColumnDef(&ColDefComServerFileName);
+			TabDefCommand.AddColumnDef(&ColDefComAgentFileName);
 			if (CreateTable(&TabDefCommand) != 0) {
 				UnlockAllTable();
 				return -1;
@@ -408,7 +412,7 @@ int DataAccess::SetServerInfo(int PInterval, int SaInterval)
 	return 0;
 }
 
-int DataAccess::GetCommand(int Id[DA_MAXNUM_OF_CMDRECORDS], wchar_t Name[DA_MAXNUM_OF_CMDRECORDS][DA_MAXLEN_OF_CMDNAME], int Type[DA_MAXNUM_OF_CMDRECORDS], char Script[DA_MAXNUM_OF_CMDRECORDS][DA_MAXLEN_OF_CMDSCRIPT])
+int DataAccess::GetCommand(int Id[DA_MAXNUM_OF_CMDRECORDS], wchar_t Name[DA_MAXNUM_OF_CMDRECORDS][DA_MAXLEN_OF_CMDNAME], int Type[DA_MAXNUM_OF_CMDRECORDS], char Script[DA_MAXNUM_OF_CMDRECORDS][DA_MAXLEN_OF_CMDSCRIPT], wchar_t ServerFileName[DA_MAXNUM_OF_CMDRECORDS][DA_MAXLEN_OF_SERVERFILENAME], wchar_t AgentFileName[DA_MAXNUM_OF_CMDRECORDS][DA_MAXLEN_OF_AGENTFILENAME])
 {
 	LockTable(L"Command", LOCK_SHARE);
 	RecordData* RecDatCmdRes = GetRecord(L"Command");
@@ -421,13 +425,17 @@ int DataAccess::GetCommand(int Id[DA_MAXNUM_OF_CMDRECORDS], wchar_t Name[DA_MAXN
 		ColumnDataWStr* ColDatCmdResName = (ColumnDataWStr*)CurDat->GetColumn(1);
 		ColumnDataInt* ColDatCmdResType = (ColumnDataInt*)CurDat->GetColumn(2);
 		ColumnDataBin* ColDatCmdResScript = (ColumnDataBin*)CurDat->GetColumn(3);
-		if (ColDatCmdResId == NULL || ColDatCmdResName == NULL || ColDatCmdResType == NULL || ColDatCmdResScript == NULL) {
+		ColumnDataWStr* ColDatCmdResServerFileName = (ColumnDataWStr*)CurDat->GetColumn(4);
+		ColumnDataWStr* ColDatCmdResAgentFileName = (ColumnDataWStr*)CurDat->GetColumn(5);
+		if (ColDatCmdResId == NULL || ColDatCmdResName == NULL || ColDatCmdResType == NULL || ColDatCmdResScript == NULL || ColDatCmdResServerFileName == NULL || ColDatCmdResAgentFileName == NULL) {
 			break;
 		}
 		Id[NumOfRec] = ColDatCmdResId->GetValue();
 		StkPlWcsCpy(Name[NumOfRec], DA_MAXLEN_OF_CMDNAME, ColDatCmdResName->GetValue());
 		Type[NumOfRec] = ColDatCmdResType->GetValue();
 		StkPlMemCpy(Script[NumOfRec], ColDatCmdResScript->GetValue(), DA_MAXLEN_OF_CMDSCRIPT);
+		StkPlWcsCpy(ServerFileName[NumOfRec], DA_MAXLEN_OF_SERVERFILENAME, ColDatCmdResServerFileName->GetValue());
+		StkPlWcsCpy(AgentFileName[NumOfRec], DA_MAXLEN_OF_AGENTFILENAME, ColDatCmdResAgentFileName->GetValue());
 
 		NumOfRec++;
 		CurDat = CurDat->GetNextRecord();
@@ -437,7 +445,7 @@ int DataAccess::GetCommand(int Id[DA_MAXNUM_OF_CMDRECORDS], wchar_t Name[DA_MAXN
 	return NumOfRec;
 }
 
-int DataAccess::SetCommand(int Id, wchar_t Name[DA_MAXLEN_OF_CMDNAME], int Type, char Script[DA_MAXLEN_OF_CMDSCRIPT])
+int DataAccess::SetCommand(int Id, wchar_t Name[DA_MAXLEN_OF_CMDNAME], int Type, char Script[DA_MAXLEN_OF_CMDSCRIPT], wchar_t ServerFileName[DA_MAXLEN_OF_SERVERFILENAME], wchar_t AgentFileName[DA_MAXLEN_OF_AGENTFILENAME])
 {
 	ColumnData *ColDatCmdFind[1];
 	ColDatCmdFind[0] = new ColumnDataInt(L"Id", Id);
@@ -446,12 +454,14 @@ int DataAccess::SetCommand(int Id, wchar_t Name[DA_MAXLEN_OF_CMDNAME], int Type,
 	RecordData* RecDatCmdFindRes = GetRecord(RecDatCmdFind);
 	UnlockTable(L"Command");
 
-	ColumnData *ColDatCmd[4];
+	ColumnData *ColDatCmd[6];
 	ColDatCmd[0] = new ColumnDataInt(L"Id", Id);
 	ColDatCmd[1] = new ColumnDataWStr(L"Name", Name);
 	ColDatCmd[2] = new ColumnDataInt(L"Type", Type);
 	ColDatCmd[3] = new ColumnDataBin(L"Script", (unsigned char*)Script, DA_MAXLEN_OF_CMDSCRIPT);
-	RecordData* RecDatCmd = new RecordData(L"Command", ColDatCmd, 4);
+	ColDatCmd[4] = new ColumnDataWStr(L"ServerFileName", ServerFileName);
+	ColDatCmd[5] = new ColumnDataWStr(L"AgentFileName", AgentFileName);
+	RecordData* RecDatCmd = new RecordData(L"Command", ColDatCmd, 6);
 	LockTable(L"Command", LOCK_EXCLUSIVE);
 	wchar_t LogMsg[256] = L"";
 	if (RecDatCmdFindRes == NULL) {
