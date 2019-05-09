@@ -44,13 +44,9 @@ StkObject* GetAgentInfo(int Status)
 
 StkObject* GetAgentInfoForOpCmd()
 {
-	wchar_t StatusTimeUtc[64];
-	wchar_t StatusTimeLocal[64];
 	wchar_t HostName[256];
 	StkPlGetHostName(HostName, 256);
 	StkObject* NewObj = new StkObject(L"");
-	StkPlGetWTimeInIso8601(StatusTimeUtc, false);
-	StkPlGetWTimeInIso8601(StatusTimeLocal, true);
 	StkObject* AgentInfo = new StkObject(L"AgentInfo");
 	AgentInfo->AppendChildElement(new StkObject(L"Name", HostName));
 	AgentInfo->AppendChildElement(new StkObject(L"OpCmd", -1));
@@ -58,7 +54,7 @@ StkObject* GetAgentInfoForOpCmd()
 	return NewObj;
 }
 
-int GetAndSaveFile(char* FileName, size_t FileSize)
+int GetAndSaveFile(char* FileName, size_t FileSize, StkWebAppSend* SndObj)
 {
 	int Result = 0;
 
@@ -67,7 +63,7 @@ int GetAndSaveFile(char* FileName, size_t FileSize)
 	for (int Loop = 0; Loop < LoopCnt; Loop++) {
 		char Url[128] = "";
 		StkPlSPrintf(Url, 128, "/api/file/%s/%d/", FileName, Loop * 1000000);
-		StkObject* ResObj2 = SoForTh2->SendRequestRecvResponse(StkWebAppSend::STKWEBAPP_METHOD_GET, Url, NULL, &Result);
+		StkObject* ResObj2 = SndObj->SendRequestRecvResponse(StkWebAppSend::STKWEBAPP_METHOD_GET, Url, NULL, &Result);
 
 		StkObject* CurResObj2 = ResObj2->GetFirstChildElement();
 		while (CurResObj2) {
@@ -121,6 +117,67 @@ int GetAndSaveFile(char* FileName, size_t FileSize)
 	return Result;
 }
 
+int CommonProcess(StkObject* CommandSearch, char TmpTime[64], StkWebAppSend* SndObj)
+{
+	int ReturnCode = 0;
+	while (CommandSearch) {
+		if (StkPlWcsCmp(CommandSearch->GetName(), L"Command") == 0) {
+			char* TmpName = NULL;
+			char* TmpScript = NULL;
+			int TmpType = -1;
+			char TmpServerFileName[FILENAME_MAX] = "";
+			int TmpServerFileSize = -1;
+			StkObject* ScriptSearch = CommandSearch->GetFirstChildElement();
+			while (ScriptSearch) {
+				if (StkPlWcsCmp(ScriptSearch->GetName(), L"Script") == 0) {
+					TmpScript = StkPlCreateUtf8FromWideChar(ScriptSearch->GetStringValue());
+				} else if (StkPlWcsCmp(ScriptSearch->GetName(), L"Type") == 0) {
+					TmpType = ScriptSearch->GetIntValue();
+				} else if (StkPlWcsCmp(ScriptSearch->GetName(), L"ServerFileName") == 0) {
+					StkPlConvWideCharToUtf8(TmpServerFileName, FILENAME_MAX, ScriptSearch->GetStringValue());
+				} else if (StkPlWcsCmp(ScriptSearch->GetName(), L"ServerFileSize") == 0) {
+					TmpServerFileSize = ScriptSearch->GetIntValue();
+				} else if (StkPlWcsCmp(ScriptSearch->GetName(), L"Name") == 0) {
+					TmpName = StkPlCreateUtf8FromWideChar(ScriptSearch->GetStringValue());
+				}
+				ScriptSearch = ScriptSearch->GetNext();
+			}
+			// Name
+			StkPlPrintf("Name=%s, ", TmpName != NULL ? TmpName : "null");
+			if (TmpName != NULL) {
+				delete TmpName;
+			}
+			// Get and save file
+			StkPlPrintf("FileName=%s, ", TmpServerFileName != NULL ? TmpServerFileName : "null");
+			StkPlPrintf("FileSize=%d, ", TmpServerFileSize);
+			if (TmpServerFileName != NULL && TmpServerFileSize >= 0 && StkPlStrCmp(TmpServerFileName, "") != 0) {
+				GetAndSaveFile(TmpServerFileName, TmpServerFileSize, SndObj);
+			}
+
+			// Execute script
+			if (TmpScript != NULL && StkPlStrCmp(TmpScript, "") != 0 && (TmpType == 0 || TmpType == 1)) {
+				StkPlPrintf("Execute script...\r\n");
+				if (TmpType == 0) {
+					StkPlWriteFile(L"aaa-operation.sh", TmpScript, StkPlStrLen(TmpScript));
+				} else if (TmpType == 1) {
+					StkPlWriteFile(L"aaa-operation.bat", TmpScript, StkPlStrLen(TmpScript));
+				}
+				delete TmpScript;
+
+				if (TmpType == 0) {
+					ReturnCode = StkPlSystem("/usr/bin/bash aaa-operation.sh");
+				} else if (TmpType == 1) {
+					ReturnCode = StkPlSystem("cmd /c aaa-operation.bat");
+				}
+			} else {
+				StkPlPrintf("No script is presented.\r\n");
+			}
+		}
+		CommandSearch = CommandSearch->GetNext();
+	}
+	return ReturnCode;
+}
+
 int OperationLoop(int TargetId)
 {
 	int Result = 0;
@@ -141,49 +198,11 @@ int OperationLoop(int TargetId)
 			if (StkPlWcsCmp(TargetObj->GetName(), L"Msg0") == 0 && StkPlWcsCmp(TargetObj->GetStringValue(), L"Timeout") == 0) {
 				StkPlPrintf("Get Command For Operation >> Timeout [%s]\r\n", TmpTime);
 			} else if (StkPlWcsCmp(TargetObj->GetName(), L"Msg0") == 0 && StkPlWcsCmp(TargetObj->GetStringValue(), L"Execution") == 0) {
-				StkPlPrintf("Get Command For Operation >> Execution [%s]\r\n", TmpTime);
-				int ReturnCode = 0;
+				StkPlPrintf("Get Command For Operation >> Execute [%s]\r\n", TmpTime);
 				StkObject* CommandSearch = ResGetCommandForOp->GetFirstChildElement();
-				while (CommandSearch) {
-					if (StkPlWcsCmp(CommandSearch->GetName(), L"Command") == 0) {
-						char* TmpScript = NULL;
-						int TmpType = -1;
-						char TmpServerFileName[FILENAME_MAX] = "";
-						int TmpServerFileSize = -1;
-						StkObject* ScriptSearch = CommandSearch->GetFirstChildElement();
-						while (ScriptSearch) {
-							if (StkPlWcsCmp(ScriptSearch->GetName(), L"Script") == 0) {
-								TmpScript = StkPlCreateUtf8FromWideChar(ScriptSearch->GetStringValue());
-							} else if (StkPlWcsCmp(ScriptSearch->GetName(), L"Type") == 0) {
-								TmpType = ScriptSearch->GetIntValue();
-							} else if (StkPlWcsCmp(ScriptSearch->GetName(), L"ServerFileName") == 0) {
-								StkPlConvWideCharToUtf8(TmpServerFileName, FILENAME_MAX, ScriptSearch->GetStringValue());
-							} else if (StkPlWcsCmp(ScriptSearch->GetName(), L"ServerFileSize") == 0) {
-								TmpServerFileSize = ScriptSearch->GetIntValue();
-							}
-							ScriptSearch = ScriptSearch->GetNext();
-						}
-						// Get and save file
-						if (TmpServerFileName != NULL && TmpServerFileSize >= 0 && StkPlStrCmp(TmpServerFileName, "") != 0) {
-							GetAndSaveFile(TmpServerFileName, TmpServerFileSize);
-						}
-						if (TmpScript != NULL) {
-							if (TmpType == 0) {
-								StkPlWriteFile(L"aaa-operation.sh", TmpScript, StkPlStrLen(TmpScript));
-							} else if (TmpType == 1) {
-								StkPlWriteFile(L"aaa-operation.bat", TmpScript, StkPlStrLen(TmpScript));
-							}
-							delete TmpScript;
 
-							if (TmpType == 0) {
-								ReturnCode = StkPlSystem("/usr/bin/bash aaa-operation.sh");
-							} else if (TmpType == 1) {
-								ReturnCode = StkPlSystem("cmd /c aaa-operation.bat");
-							}
-						}
-					}
-					CommandSearch = CommandSearch->GetNext();
-				}
+				int ReturnCode = CommonProcess(CommandSearch, TmpTime, SoForTh2);
+
 				StkObject* ResObj = SoForTh2->SendRequestRecvResponse(StkWebAppSend::STKWEBAPP_METHOD_POST, "/api/agent/", GetAgentInfoForOpCmd(), &Result);
 				delete ResObj;
 			}
@@ -219,39 +238,11 @@ int StatusLoop(int TargetId)
 			if (StkPlWcsCmp(TargetObj->GetName(), L"Msg0") == 0 && StkPlWcsCmp(TargetObj->GetStringValue(), L"Timeout") == 0) {
 				StkPlPrintf("Get Command For Status >> Timeout [%s]\r\n", TmpTime);
 			} else if (StkPlWcsCmp(TargetObj->GetName(), L"Msg0") == 0 && StkPlWcsCmp(TargetObj->GetStringValue(), L"Execution") == 0) {
-				StkPlPrintf("Get Command For Status >> Execution [%s]\r\n", TmpTime);
-				int ReturnCode = 0;
+				StkPlPrintf("Get Command For Status >> Execute [%s]\r\n", TmpTime);
 				StkObject* CommandSearch = ResGetCommandForStatus->GetFirstChildElement();
-				while (CommandSearch) {
-					if (StkPlWcsCmp(CommandSearch->GetName(), L"Command") == 0) {
-						char* TmpScript = NULL;
-						int TmpType = -1;
-						StkObject* ScriptSearch = CommandSearch->GetFirstChildElement();
-						while (ScriptSearch) {
-							if (StkPlWcsCmp(ScriptSearch->GetName(), L"Script") == 0) {
-								TmpScript = StkPlCreateUtf8FromWideChar(ScriptSearch->GetStringValue());
-							} else if (StkPlWcsCmp(ScriptSearch->GetName(), L"Type") == 0) {
-								TmpType = ScriptSearch->GetIntValue();
-							}
-							ScriptSearch = ScriptSearch->GetNext();
-						}
-						if (TmpScript != NULL) {
-							if (TmpType == 0) {
-								StkPlWriteFile(L"aaa-status.sh", TmpScript, StkPlStrLen(TmpScript));
-							} else if (TmpType == 1) {
-								StkPlWriteFile(L"aaa-status.bat", TmpScript, StkPlStrLen(TmpScript));
-							}
-							delete TmpScript;
 
-							if (TmpType == 0) {
-								ReturnCode = StkPlSystem("/usr/bin/bash aaa-status.sh");
-							} else if (TmpType == 1) {
-								ReturnCode = StkPlSystem("cmd /c aaa-status.bat");
-							}
-						}
-					}
-					CommandSearch = CommandSearch->GetNext();
-				}
+				int ReturnCode = CommonProcess(CommandSearch, TmpTime, SoForTh1);
+
 				StkObject* ResObj = SoForTh1->SendRequestRecvResponse(StkWebAppSend::STKWEBAPP_METHOD_POST, "/api/agent/", GetAgentInfo(ReturnCode), &Result);
 				delete ResObj;
 			} else {
@@ -318,7 +309,7 @@ int main(int argc, char* argv[])
 	wchar_t HostOrIpAddr[256] = L"";
 	int PortNum = 0;
 	if (argc == 3) {
-		StkPlPrintf("%s command execution...\r\n", argv[0]);
+		StkPlPrintf("Agent starts\r\n");
 		StkPlConvUtf8ToWideChar(HostOrIpAddr, 256, argv[1]);
 		PortNum = StkPlAtoi(argv[2]);
 		StartXxx(HostOrIpAddr, PortNum);
