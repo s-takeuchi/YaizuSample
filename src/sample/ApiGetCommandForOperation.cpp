@@ -75,7 +75,6 @@ StkObject* ApiGetCommandForOperation::Execute(StkObject* ReqObj, int Method, wch
 					break;
 				}
 			}
-			DataAccess::GetInstance()->SetAgentInfoForOpCmd(TargetAgtName, -1);
 			break;
 		}
 

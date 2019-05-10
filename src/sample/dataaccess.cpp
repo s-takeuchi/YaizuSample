@@ -249,6 +249,13 @@ void DataAccess::SetAgentInfoForStatusCmd(wchar_t AgtName[DA_MAXLEN_OF_AGTNAME],
 	UnlockTable(L"AgentInfo");
 	delete RecDatAgt;
 	delete RecDatAgtFind;
+
+	wchar_t CmdName[DA_MAXLEN_OF_CMDNAME] = L"";
+	GetCommandNameById(StatusCmd, CmdName);
+
+	wchar_t LogMsg[512] = L"";
+	StkPlSwPrintf(LogMsg, 256, L"Command for status acquisition has been changed. [%ls, %ls]", AgtName, CmdName);
+	AddLogMsg(LogMsg);
 }
 
 void DataAccess::SetAgentInfoForOpCmd(wchar_t AgtName[DA_MAXLEN_OF_AGTNAME], int OpCmd)
@@ -266,6 +273,17 @@ void DataAccess::SetAgentInfoForOpCmd(wchar_t AgtName[DA_MAXLEN_OF_AGTNAME], int
 	UnlockTable(L"AgentInfo");
 	delete RecDatAgt;
 	delete RecDatAgtFind;
+
+	wchar_t CmdName[DA_MAXLEN_OF_CMDNAME] = L"";
+	GetCommandNameById(OpCmd, CmdName);
+
+	wchar_t LogMsg[512] = L"";
+	if (OpCmd == -1) {
+		StkPlSwPrintf(LogMsg, 256, L"Command for operation has ended. [%ls]", AgtName);
+	} else {
+		StkPlSwPrintf(LogMsg, 256, L"Command for operation has started. [%ls, %ls]", AgtName, CmdName);
+	}
+	AddLogMsg(LogMsg);
 }
 
 int DataAccess::GetAgentInfo(wchar_t AgtName[DA_MAXNUM_OF_AGTRECORDS][DA_MAXLEN_OF_AGTNAME],
@@ -443,6 +461,25 @@ int DataAccess::GetCommand(int Id[DA_MAXNUM_OF_CMDRECORDS], wchar_t Name[DA_MAXN
 
 	delete RecDatCmdRes;
 	return NumOfRec;
+}
+
+int DataAccess::GetCommandNameById(int Id, wchar_t Name[DA_MAXLEN_OF_CMDNAME])
+{
+	ColumnData *ColDatCmdFind[1];
+	ColDatCmdFind[0] = new ColumnDataInt(L"Id", Id);
+	RecordData* RecDatCmdFind = new RecordData(L"Command", ColDatCmdFind, 1);
+
+	LockTable(L"Command", LOCK_SHARE);
+	RecordData* RecDatCmdFindRes = GetRecord(RecDatCmdFind);
+	UnlockTable(L"Command");
+	if (RecDatCmdFindRes != NULL) {
+		ColumnDataWStr* NameObj = (ColumnDataWStr*)RecDatCmdFindRes->GetColumn(L"Name");
+		StkPlWcsCpy(Name, DA_MAXLEN_OF_CMDNAME, NameObj->GetValue());
+		delete RecDatCmdFindRes;
+	}
+	delete RecDatCmdFind;
+
+	return 0;
 }
 
 int DataAccess::SetCommand(int Id, wchar_t Name[DA_MAXLEN_OF_CMDNAME], int Type, char Script[DA_MAXLEN_OF_CMDSCRIPT], wchar_t ServerFileName[DA_MAXLEN_OF_SERVERFILENAME], wchar_t AgentFileName[DA_MAXLEN_OF_AGENTFILENAME])
