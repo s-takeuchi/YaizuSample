@@ -71,7 +71,7 @@ int GetAndSaveFile(char* FileName, size_t FileSize, StkWebAppSend* SndObj)
 				wchar_t* FileData = CurResObj2->GetStringValue();
 				wchar_t* FileDataPtr = FileData;
 				int FileDataLen = StkPlWcsLen(FileData);
-				unsigned char DataChar[1000001];
+				unsigned char* DataChar = new unsigned char[1000001];
 				int DataCharIndex = 0;
 				wchar_t HexNum[128];
 				HexNum[L'0'] = 0;
@@ -111,6 +111,7 @@ int GetAndSaveFile(char* FileName, size_t FileSize, StkWebAppSend* SndObj)
 				size_t ActSize = 0;
 				StkPlWrite(FilePtr, (char*)DataChar, DataCharIndex, &ActSize);
 				StkPlCloseFile(FilePtr);
+				delete DataChar;
 			}
 			CurResObj2 = CurResObj2->GetNext();
 		}

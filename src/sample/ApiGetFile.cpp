@@ -25,8 +25,8 @@ StkObject* ApiGetFile::Execute(StkObject* ReqObj, int Method, wchar_t UrlPath[St
 		return TmpObj;
 	}
 
-	char Buffer[1000000];
-	wchar_t HexBuf[2000001];
+	char* Buffer = new char[1000000];
+	wchar_t* HexBuf = new wchar_t[2000001];
 	size_t ActSize;
 	void* FilePtr = StkPlOpenFileForRead(TargetFullPath);
 	StkPlSeekFromBegin(FilePtr, Offset);
@@ -39,10 +39,12 @@ StkObject* ApiGetFile::Execute(StkObject* ReqObj, int Method, wchar_t UrlPath[St
 		HexBuf[Loop * 2 + 1] = HexChar[(unsigned char)Buffer[Loop] % 16];
 	}
 	HexBuf[Loop * 2] = '\0';
+	delete Buffer;
 
 	StkObject* TmpObj = new StkObject(L"");
 	TmpObj->AppendChildElement(new StkObject(L"FileData", HexBuf));
 	TmpObj->AppendChildElement(new StkObject(L"Msg0", L""));
+	delete HexBuf;
 	*ResultCode = 200;
 	return TmpObj;
 }
