@@ -222,9 +222,9 @@
                     apiCall('POST', './api/agent/', ReqObj, API_POST_AGTINFO, null);
                 }
             }
+            apiCall(null, null, null, API_DUMMY, refreshInfo);
         }
         $('#inputDlgModal').modal('hide');
-        apiCall(null, null, null, API_DUMMY, refreshInfo());
     }
 
     function getAgentStatusCommand() {
@@ -325,7 +325,7 @@
         $('#workspace_svrinfo').append('</p>');
 
         $('#workspace_svrinfo').append('<p>');
-        $('#workspace_svrinfo').append('<div class="form-group"><label for="bucketPath">Bucket Path</label><input type="text" class="form-control" id="bucketPath" placeholder="Bucket Path"></div>');
+        $('#workspace_svrinfo').append('<div class="form-group"><label for="bucketPath">Path to bucket</label><input type="text" class="form-control" id="bucketPath" placeholder="Path to bucket"></div>');
         $('#workspace_svrinfo').append('</p>');
         $('#bucketPath').val(responseData[API_GET_SVRINFO].ServerInfo.BucketPath);
 

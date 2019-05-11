@@ -100,11 +100,13 @@ int GetAndSaveFile(char* FileName, size_t FileSize, StkWebAppSend* SndObj)
 				}
 				DataChar[DataCharIndex] = '\0';
 				void* FilePtr = NULL;
+				wchar_t* FileNameTmp = StkPlCreateWideCharFromUtf8(FileName);
 				if (Loop == 0) {
-					FilePtr = StkPlOpenFileForWrite(L"bbb.txt");
+					FilePtr = StkPlOpenFileForWrite(FileNameTmp);
 				} else {
-					FilePtr = StkPlOpenFileForWrite(L"bbb.txt", true);
+					FilePtr = StkPlOpenFileForWrite(FileNameTmp, true);
 				}
+				delete FileNameTmp;
 				StkPlSeekFromEnd(FilePtr, 0);
 				size_t ActSize = 0;
 				StkPlWrite(FilePtr, (char*)DataChar, DataCharIndex, &ActSize);
@@ -117,7 +119,7 @@ int GetAndSaveFile(char* FileName, size_t FileSize, StkWebAppSend* SndObj)
 	return Result;
 }
 
-int CommonProcess(StkObject* CommandSearch, char TmpTime[64], StkWebAppSend* SndObj)
+int CommonProcess(StkObject* CommandSearch, char TmpTime[64], StkWebAppSend* SndObj, bool OperationFlag)
 {
 	int ReturnCode = 0;
 	while (CommandSearch) {
@@ -158,16 +160,32 @@ int CommonProcess(StkObject* CommandSearch, char TmpTime[64], StkWebAppSend* Snd
 			if (TmpScript != NULL && StkPlStrCmp(TmpScript, "") != 0 && (TmpType == 0 || TmpType == 1)) {
 				StkPlPrintf("Execute script...\r\n");
 				if (TmpType == 0) {
-					StkPlWriteFile(L"aaa-operation.sh", TmpScript, StkPlStrLen(TmpScript));
+					if (OperationFlag) {
+						StkPlWriteFile(L"aaa-operation.sh", TmpScript, StkPlStrLen(TmpScript));
+					} else {
+						StkPlWriteFile(L"aaa-status.sh", TmpScript, StkPlStrLen(TmpScript));
+					}
 				} else if (TmpType == 1) {
-					StkPlWriteFile(L"aaa-operation.bat", TmpScript, StkPlStrLen(TmpScript));
+					if (OperationFlag) {
+						StkPlWriteFile(L"aaa-operation.bat", TmpScript, StkPlStrLen(TmpScript));
+					} else {
+						StkPlWriteFile(L"aaa-status.bat", TmpScript, StkPlStrLen(TmpScript));
+					}
 				}
 				delete TmpScript;
 
 				if (TmpType == 0) {
-					ReturnCode = StkPlSystem("/usr/bin/bash aaa-operation.sh");
+					if (OperationFlag) {
+						ReturnCode = StkPlSystem("/usr/bin/bash aaa-operation.sh");
+					} else {
+						ReturnCode = StkPlSystem("/usr/bin/bash aaa-status.sh");
+					}
 				} else if (TmpType == 1) {
-					ReturnCode = StkPlSystem("cmd /c aaa-operation.bat");
+					if (OperationFlag) {
+						ReturnCode = StkPlSystem("cmd /c aaa-operation.bat");
+					} else {
+						ReturnCode = StkPlSystem("cmd /c aaa-status.bat");
+					}
 				}
 			} else {
 				StkPlPrintf("No script is presented.\r\n");
@@ -201,7 +219,7 @@ int OperationLoop(int TargetId)
 				StkPlPrintf("Get Command For Operation >> Execute [%s]\r\n", TmpTime);
 				StkObject* CommandSearch = ResGetCommandForOp->GetFirstChildElement();
 
-				int ReturnCode = CommonProcess(CommandSearch, TmpTime, SoForTh2);
+				int ReturnCode = CommonProcess(CommandSearch, TmpTime, SoForTh2, true);
 
 				StkObject* ResObj = SoForTh2->SendRequestRecvResponse(StkWebAppSend::STKWEBAPP_METHOD_POST, "/api/agent/", GetAgentInfoForOpCmd(), &Result);
 				delete ResObj;
@@ -241,7 +259,7 @@ int StatusLoop(int TargetId)
 				StkPlPrintf("Get Command For Status >> Execute [%s]\r\n", TmpTime);
 				StkObject* CommandSearch = ResGetCommandForStatus->GetFirstChildElement();
 
-				int ReturnCode = CommonProcess(CommandSearch, TmpTime, SoForTh1);
+				int ReturnCode = CommonProcess(CommandSearch, TmpTime, SoForTh1, false);
 
 				StkObject* ResObj = SoForTh1->SendRequestRecvResponse(StkWebAppSend::STKWEBAPP_METHOD_POST, "/api/agent/", GetAgentInfo(ReturnCode), &Result);
 				delete ResObj;
@@ -260,11 +278,13 @@ int StatusLoop(int TargetId)
 	return 0;
 }
 
-int LoadPropertyFile(wchar_t HostOrIpAddr[256], int* PortNum)
+int LoadPropertyFile(wchar_t HostOrIpAddr[256], int* PortNum, wchar_t PathToBucket[256])
 {
 	char TmpHostOrIpAddr[256] = "";
+	char TmpPathToBucket[256] = "";
 	StkProperties *Prop = new StkProperties();
 	if (Prop->GetProperties(L"agent.conf") == 0) {
+		// For targethost
 		if (Prop->GetPropertyStr("targethost", TmpHostOrIpAddr) != 0) {
 			StkPlPrintf("targethost property is not found.\r\n");
 			return -1;
@@ -272,11 +292,20 @@ int LoadPropertyFile(wchar_t HostOrIpAddr[256], int* PortNum)
 		StkPlPrintf("targethost property = %s\r\n", TmpHostOrIpAddr);
 		StkPlConvUtf8ToWideChar(HostOrIpAddr, 256, TmpHostOrIpAddr);
 
+		// For targetport
 		if (Prop->GetPropertyInt("targetport", PortNum) != 0) {
 			StkPlPrintf("targetport property is not found.\r\n");
 			return -1;
 		}
 		StkPlPrintf("targetport property = %d\r\n", *PortNum);
+
+		// For pathtobucket
+		if (Prop->GetPropertyStr("pathtobucket", TmpPathToBucket) != 0) {
+			StkPlPrintf("pathtobucket property is not found.\r\n");
+			return -1;
+		}
+		StkPlPrintf("pathtobucket property = %s\r\n", TmpPathToBucket);
+		StkPlConvUtf8ToWideChar(PathToBucket, 256, TmpPathToBucket);
 	} else {
 		StkPlPrintf("agent.conf is not found.\r\n");
 		return -1;
@@ -308,17 +337,21 @@ int main(int argc, char* argv[])
 {
 	wchar_t HostOrIpAddr[256] = L"";
 	int PortNum = 0;
-	if (argc == 3) {
+	wchar_t PathToBucket[256] = L"";
+	if (argc == 4) {
 		StkPlPrintf("Agent starts\r\n");
 		StkPlConvUtf8ToWideChar(HostOrIpAddr, 256, argv[1]);
 		PortNum = StkPlAtoi(argv[2]);
+		StkPlConvUtf8ToWideChar(PathToBucket, 256, argv[3]);
+		ChangeCurrentDirectory(PathToBucket);
 		StartXxx(HostOrIpAddr, PortNum);
 		while (true) { StkPlSleepMs(1000); }
 	} else {
 #ifdef WIN32
 		StartServiceCtrlDispatcher(ServiceTable);
 #else
-		LoadPropertyFile(HostOrIpAddr, &PortNum); 
+		LoadPropertyFile(HostOrIpAddr, &PortNum, PathToBucket);
+		ChangeCurrentDirectory(PathToBucket);
 		StartXxx(HostOrIpAddr, PortNum);
 		while (true) { StkPlSleepMs(1000); }
 #endif
@@ -466,7 +499,9 @@ VOID WINAPI ServiceMain(DWORD dwArgc, PTSTR* pszArgv)
 
 	wchar_t HostOrIpAddr[256] = L"";
 	int PortNum = 0;
-	LoadPropertyFile(HostOrIpAddr, &PortNum);
+	wchar_t PathToBucket[256] = L"";
+	LoadPropertyFile(HostOrIpAddr, &PortNum, PathToBucket);
+	ChangeCurrentDirectory(PathToBucket);
 	StartXxx(HostOrIpAddr, PortNum);
 
 	while (g_bService) {

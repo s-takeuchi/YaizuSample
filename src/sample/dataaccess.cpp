@@ -440,7 +440,7 @@ int DataAccess::SetServerInfo(int PInterval, int SaInterval, wchar_t BucketPath[
 	return 0;
 }
 
-void DataAccess::GetFullPathFromFileName(wchar_t FullPath[DA_MAXLEN_OF_SERVERFILENAME], const wchar_t FileNme[DA_MAXLEN_OF_SERVERFILENAME])
+void DataAccess::GetFullPathFromFileName(wchar_t FullPath[DA_MAXLEN_OF_SERVERFILENAME], const wchar_t FileName[DA_MAXLEN_OF_SERVERFILENAME])
 {
 	LockTable(L"ServerInfo", LOCK_SHARE);
 	RecordData* RecDatSvrInfo = GetRecord(L"ServerInfo");
@@ -462,7 +462,7 @@ void DataAccess::GetFullPathFromFileName(wchar_t FullPath[DA_MAXLEN_OF_SERVERFIL
 				}
 #endif
 			}
-			StkPlWcsCat(FullPath, DA_MAXLEN_OF_SERVERFILENAME, FileNme);
+			StkPlWcsCat(FullPath, DA_MAXLEN_OF_SERVERFILENAME, FileName);
 		}
 	}
 	delete RecDatSvrInfo;
