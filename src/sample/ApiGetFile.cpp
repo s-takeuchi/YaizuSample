@@ -9,7 +9,9 @@ StkObject* ApiGetFile::Execute(StkObject* ReqObj, int Method, wchar_t UrlPath[St
 	wchar_t OffsetStr[16];
 	StkStringParser::ParseInto2Params(UrlPath, L"/api/file/$/$/", L'$', TargetFileName, FILENAME_MAX, OffsetStr, 16);
 	size_t Offset = StkPlWcsToL(OffsetStr);
-	size_t FileSize = StkPlGetFileSize(TargetFileName);
+	wchar_t TargetFullPath[DA_MAXLEN_OF_SERVERFILENAME];
+	DataAccess::GetInstance()->GetFullPathFromFileName(TargetFullPath, TargetFileName);
+	size_t FileSize = StkPlGetFileSize(TargetFullPath);
 	if (FileSize < 0) {
 		StkObject* TmpObj = new StkObject(L"");
 		TmpObj->AppendChildElement(new StkObject(L"Msg0", L"Target File does not exist."));
@@ -26,7 +28,7 @@ StkObject* ApiGetFile::Execute(StkObject* ReqObj, int Method, wchar_t UrlPath[St
 	char Buffer[1000000];
 	wchar_t HexBuf[2000001];
 	size_t ActSize;
-	void* FilePtr = StkPlOpenFileForRead(TargetFileName);
+	void* FilePtr = StkPlOpenFileForRead(TargetFullPath);
 	StkPlSeekFromBegin(FilePtr, Offset);
 	StkPlRead(FilePtr, Buffer, 1000000, &ActSize);
 	StkPlCloseFile(FilePtr);

@@ -107,11 +107,13 @@ int DataAccess::CreateTables(const wchar_t* DataFileName)
 			ColumnDefInt ColDefSvrPi(L"PInterval");
 			ColumnDefInt ColDefSvrSai(L"SaInterval");
 			ColumnDefInt ColDefSvrMaxComId(L"MaxCommandId");
+			ColumnDefWStr ColDefSvrBucketPath(L"BucketPath", DA_MAXLEN_OF_BUCKETPATH);
 			TableDef TabDefSvrInfo(L"ServerInfo", 1);
 			TabDefSvrInfo.AddColumnDef(&ColDefSvrId);
 			TabDefSvrInfo.AddColumnDef(&ColDefSvrPi);
 			TabDefSvrInfo.AddColumnDef(&ColDefSvrSai);
 			TabDefSvrInfo.AddColumnDef(&ColDefSvrMaxComId);
+			TabDefSvrInfo.AddColumnDef(&ColDefSvrBucketPath);
 			if (CreateTable(&TabDefSvrInfo) != 0) {
 				UnlockAllTable();
 				return -1;
@@ -140,12 +142,17 @@ int DataAccess::CreateTables(const wchar_t* DataFileName)
 		UnlockAllTable();
 
 		{
-			ColumnData *ColDatSvr[4];
+			ColumnData *ColDatSvr[5];
 			ColDatSvr[0] = new ColumnDataInt(L"Id", 0);
 			ColDatSvr[1] = new ColumnDataInt(L"PInterval", 300);
 			ColDatSvr[2] = new ColumnDataInt(L"SaInterval", 1800);
 			ColDatSvr[3] = new ColumnDataInt(L"MaxCommandId", 1);
-			RecordData* RecSvrInfo = new RecordData(L"ServerInfo", ColDatSvr, 4);
+#ifdef WIN32
+			ColDatSvr[4] = new ColumnDataWStr(L"BucketPath", L"\\");
+#else
+			ColDatSvr[4] = new ColumnDataWStr(L"BucketPath", L"/");
+#endif
+			RecordData* RecSvrInfo = new RecordData(L"ServerInfo", ColDatSvr, 5);
 			// Add record
 			LockTable(L"ServerInfo", LOCK_EXCLUSIVE);
 			int Ret = InsertRecord(RecSvrInfo);
@@ -386,7 +393,7 @@ int DataAccess::GetAgentInfoForOpCmd(wchar_t AgtName[DA_MAXLEN_OF_AGTNAME])
 	return OpCmd;
 }
 
-int  DataAccess::GetServerInfo(int* PInterval, int* SaInterval)
+int  DataAccess::GetServerInfo(int* PInterval, int* SaInterval, wchar_t BucketPath[DA_MAXLEN_OF_BUCKETPATH])
 {
 	LockTable(L"ServerInfo", LOCK_SHARE);
 	RecordData* RecDatSvr = GetRecord(L"ServerInfo");
@@ -396,26 +403,29 @@ int  DataAccess::GetServerInfo(int* PInterval, int* SaInterval)
 	}
 	ColumnDataInt* ColDatPInterval = (ColumnDataInt*)RecDatSvr->GetColumn(1);
 	ColumnDataInt* ColDatSaInterval = (ColumnDataInt*)RecDatSvr->GetColumn(2);
-	if (ColDatPInterval == NULL || ColDatSaInterval == NULL) {
+	ColumnDataWStr* ColDatBucketPath = (ColumnDataWStr*)RecDatSvr->GetColumn(4);
+	if (ColDatPInterval == NULL || ColDatSaInterval == NULL || ColDatBucketPath == NULL) {
 		delete RecDatSvr;
 		return -1;
 	}
 	*PInterval = ColDatPInterval->GetValue();
 	*SaInterval = ColDatSaInterval->GetValue();
+	StkPlWcsCpy(BucketPath, DA_MAXLEN_OF_BUCKETPATH, ColDatBucketPath->GetValue());
 	delete RecDatSvr;
 	return 0;
 }
 
-int DataAccess::SetServerInfo(int PInterval, int SaInterval)
+int DataAccess::SetServerInfo(int PInterval, int SaInterval, wchar_t BucketPath[DA_MAXLEN_OF_BUCKETPATH])
 {
 	ColumnData *ColDatSvrFind[1];
 	ColDatSvrFind[0] = new ColumnDataInt(L"Id", 0);
 	RecordData* RecDatSvrFind = new RecordData(L"ServerInfo", ColDatSvrFind, 1);
 
-	ColumnData *ColDatSvr[2];
+	ColumnData *ColDatSvr[3];
 	ColDatSvr[0] = new ColumnDataInt(L"PInterval", PInterval);
 	ColDatSvr[1] = new ColumnDataInt(L"SaInterval", SaInterval);
-	RecordData* RecDatSvr = new RecordData(L"ServerInfo", ColDatSvr, 2);
+	ColDatSvr[2] = new ColumnDataWStr(L"BucketPath", BucketPath);
+	RecordData* RecDatSvr = new RecordData(L"ServerInfo", ColDatSvr, 3);
 
 	LockTable(L"ServerInfo", LOCK_EXCLUSIVE);
 	int Ret = UpdateRecord(RecDatSvrFind, RecDatSvr);
@@ -424,10 +434,38 @@ int DataAccess::SetServerInfo(int PInterval, int SaInterval)
 	delete RecDatSvrFind;
 
 	wchar_t LogMsg[256] = L"";
-	StkPlSwPrintf(LogMsg, 256, L"Server information has been changed. [Polling Interval=%d sec, Status Acquisition Interval=%d sec]", PInterval, SaInterval);
+	StkPlSwPrintf(LogMsg, 256, L"Server information has been changed. [Polling Interval=%d sec, Status Acquisition Interval=%d sec, Bucket Path=%ls]", PInterval, SaInterval, BucketPath);
 	AddLogMsg(LogMsg);
 
 	return 0;
+}
+
+void DataAccess::GetFullPathFromFileName(wchar_t FullPath[DA_MAXLEN_OF_SERVERFILENAME], const wchar_t FileNme[DA_MAXLEN_OF_SERVERFILENAME])
+{
+	LockTable(L"ServerInfo", LOCK_SHARE);
+	RecordData* RecDatSvrInfo = GetRecord(L"ServerInfo");
+	UnlockTable(L"ServerInfo");
+	int MaxCommandId = 0;
+	if (RecDatSvrInfo != NULL) {
+		ColumnDataWStr* ColDat = (ColumnDataWStr*)RecDatSvrInfo->GetColumn(4);
+		if (ColDat != NULL) {
+			StkPlWcsCpy(FullPath, DA_MAXLEN_OF_SERVERFILENAME, ColDat->GetValue());
+			int FullPathLen = StkPlWcsLen(FullPath);
+			if (FullPathLen >= 1) {
+#ifdef WIN32
+				if (FullPath[FullPathLen - 1] != L'\\') {
+					StkPlWcsCat(FullPath, DA_MAXLEN_OF_SERVERFILENAME, L"\\");
+				}
+#else
+				if (FullPath[FullPathLen - 1] != L'/') {
+					StkPlWcsCat(FullPath, DA_MAXLEN_OF_SERVERFILENAME, L"/");
+				}
+#endif
+			}
+			StkPlWcsCat(FullPath, DA_MAXLEN_OF_SERVERFILENAME, FileNme);
+		}
+	}
+	delete RecDatSvrInfo;
 }
 
 int DataAccess::GetCommand(int Id[DA_MAXNUM_OF_CMDRECORDS], wchar_t Name[DA_MAXNUM_OF_CMDRECORDS][DA_MAXLEN_OF_CMDNAME], int Type[DA_MAXNUM_OF_CMDRECORDS], char Script[DA_MAXNUM_OF_CMDRECORDS][DA_MAXLEN_OF_CMDSCRIPT], wchar_t ServerFileName[DA_MAXNUM_OF_CMDRECORDS][DA_MAXLEN_OF_SERVERFILENAME], wchar_t AgentFileName[DA_MAXNUM_OF_CMDRECORDS][DA_MAXLEN_OF_AGENTFILENAME])

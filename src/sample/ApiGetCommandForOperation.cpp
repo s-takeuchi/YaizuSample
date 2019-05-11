@@ -13,7 +13,8 @@ StkObject* ApiGetCommandForOperation::Execute(StkObject* ReqObj, int Method, wch
 
 		int PInterval = 0;
 		int SaInterval = 0;
-		DataAccess::GetInstance()->GetServerInfo(&PInterval, &SaInterval);
+		wchar_t BucketPath[DA_MAXLEN_OF_BUCKETPATH] = L"";
+		DataAccess::GetInstance()->GetServerInfo(&PInterval, &SaInterval, BucketPath);
 		if (PInterval <= 0) {
 			PInterval = 30;
 		}
@@ -68,7 +69,9 @@ StkObject* ApiGetCommandForOperation::Execute(StkObject* ReqObj, int Method, wch
 					CommandObj->AppendChildElement(new StkObject(L"Type", Type[Loop]));
 					CommandObj->AppendChildElement(new StkObject(L"Script", WScript));
 					CommandObj->AppendChildElement(new StkObject(L"ServerFileName", ServerFileName[Loop]));
-					size_t FileSize = StkPlGetFileSize(ServerFileName[Loop]);
+					wchar_t TargetFullPath[DA_MAXLEN_OF_SERVERFILENAME];
+					DataAccess::GetInstance()->GetFullPathFromFileName(TargetFullPath, ServerFileName[Loop]);
+					size_t FileSize = StkPlGetFileSize(TargetFullPath);
 					CommandObj->AppendChildElement(new StkObject(L"ServerFileSize", (int)FileSize));
 					TmpObj->AppendChildElement(CommandObj);
 					*ResultCode = 200;

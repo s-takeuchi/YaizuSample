@@ -8,8 +8,9 @@
 #define DA_MAXLEN_OF_CMDSCRIPT 8192
 #define DA_MAXLEN_OF_CMDNAME 32
 #define DA_MAXNUM_OF_CMDRECORDS 16
-#define DA_MAXLEN_OF_SERVERFILENAME 32
-#define DA_MAXLEN_OF_AGENTFILENAME 32
+#define DA_MAXLEN_OF_SERVERFILENAME 256
+#define DA_MAXLEN_OF_AGENTFILENAME 256
+#define DA_MAXLEN_OF_BUCKETPATH 256
 
 class DataAccess
 {
@@ -38,10 +39,11 @@ public:
 		wchar_t[DA_MAXNUM_OF_AGTRECORDS][DA_MAXLEN_OF_TIME]);
 	int GetAgentInfoForOpCmd(wchar_t[DA_MAXLEN_OF_AGTNAME]);
 
-	int GetServerInfo(int*, int*);
-	int SetServerInfo(int, int);
+	int GetServerInfo(int*, int*, wchar_t [DA_MAXLEN_OF_BUCKETPATH]);
+	int SetServerInfo(int, int, wchar_t[DA_MAXLEN_OF_BUCKETPATH]);
 	int GetMaxCommandId();
 	int SetMaxCommandId(int);
+	void GetFullPathFromFileName(wchar_t[DA_MAXLEN_OF_SERVERFILENAME], const wchar_t[DA_MAXLEN_OF_SERVERFILENAME]);
 
 	int GetCommand(int[DA_MAXNUM_OF_CMDRECORDS], wchar_t[DA_MAXNUM_OF_CMDRECORDS][DA_MAXLEN_OF_CMDNAME], int[DA_MAXNUM_OF_CMDRECORDS], char[DA_MAXNUM_OF_CMDRECORDS][DA_MAXLEN_OF_CMDSCRIPT], wchar_t[DA_MAXNUM_OF_CMDRECORDS][DA_MAXLEN_OF_SERVERFILENAME], wchar_t[DA_MAXNUM_OF_CMDRECORDS][DA_MAXLEN_OF_AGENTFILENAME]);
 	int GetCommandNameById(int, wchar_t[DA_MAXLEN_OF_CMDNAME]);

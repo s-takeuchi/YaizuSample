@@ -11,7 +11,9 @@ var responseData = [{},{},{},{},{},{},{},{},{},{},{},{},{},{}];
 
 
 function apiCall(method, url, request, index, targetFunc) {
-    sendRequestRecvResponse(method, url, request, index);
+    if (method != null && url != null && index != -1) {
+        sendRequestRecvResponse(method, url, request, index);
+    }
     if (targetFunc != null) {
         setTimeout(function() {waitForResponse(0, targetFunc);}, 1);
     }

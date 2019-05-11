@@ -12,6 +12,7 @@
 
     <script>
 
+    var API_DUMMY                   = -1;
     var API_GET_SVRINFO             = 1;
     var API_GET_LOGS                = 2;
     var API_GET_AGTINFO             = 3;
@@ -218,15 +219,12 @@
             for (var loop = 0; loop < AgentInfo.length; loop++) {
                 if ($('#agtInfoId' + loop).prop('checked') == true) {
                     var ReqObj = { AgentInfo : { Name : AgentInfo[loop].Name, StatusCmd : commandList[selectedAgentStatusCommand].Id }};
-                    apiCall('POST', './api/agent/', ReqObj, API_POST_AGTINFO, refreshAfterStatusCommandOperation);
+                    apiCall('POST', './api/agent/', ReqObj, API_POST_AGTINFO, null);
                 }
             }
         }
         $('#inputDlgModal').modal('hide');
-    }
-
-    function refreshAfterStatusCommandOperation() {
-        refreshInfo();
+        apiCall(null, null, null, API_DUMMY, refreshInfo());
     }
 
     function getAgentStatusCommand() {
@@ -320,26 +318,30 @@
         ddMenu.append('<li role="presentation"><a onclick="selectStatusAcquisitionInterval(2)" role="menuitem" tabindex="-1" href="#">' + statusAcquisitionIntervalStr[2] + '</a></li>');
         ddMenu.append('<li role="presentation"><a onclick="selectStatusAcquisitionInterval(3)" role="menuitem" tabindex="-1" href="#">' + statusAcquisitionIntervalStr[3] + '</a></li>');
         btnGrp.append(ddMenu);
+
         $('#workspace_svrinfo').append('<p>');
         $('#workspace_svrinfo').append('Status Acquisition Interval : ');
         $('#workspace_svrinfo').append(btnGrp);
+        $('#workspace_svrinfo').append('</p>');
+
+        $('#workspace_svrinfo').append('<p>');
+        $('#workspace_svrinfo').append('<div class="form-group"><label for="bucketPath">Bucket Path</label><input type="text" class="form-control" id="bucketPath" placeholder="Bucket Path"></div>');
+        $('#workspace_svrinfo').append('</p>');
+        $('#bucketPath').val(responseData[API_GET_SVRINFO].ServerInfo.BucketPath);
+
+        $('#workspace_svrinfo').append('<p>');
+        $('#workspace_svrinfo').append('<button type="button" id="serverInfoBtnUpdate" class="btn btn-primary" onclick="updateServerInfo()">Update</button> ');
         $('#workspace_svrinfo').append('</p>');
     }
 
     function selectPollingInterval(interval) {
         selectedPollingInterval = interval;
         $('#selectedPI').text(pollingIntervalStr[selectedPollingInterval]);
-        var pInterval = getPollingInterval(selectedPollingInterval);
-        var saInterval = getStatusAcquisitionInterval(selectedStatusAcquisitionInterval);
-        apiCall('POST', './api/server/', {"ServerInfo":{"PInterval":pInterval, "SaInterval":saInterval}}, API_POST_SVRINFO, null);
     }
 
     function selectStatusAcquisitionInterval(interval) {
         selectedStatusAcquisitionInterval = interval;
         $('#selectedSAI').text(statusAcquisitionIntervalStr[selectedStatusAcquisitionInterval]);
-        var pInterval = getPollingInterval(selectedPollingInterval);
-        var saInterval = getStatusAcquisitionInterval(selectedStatusAcquisitionInterval);
-        apiCall('POST', './api/server/', {"ServerInfo":{"PInterval":pInterval, "SaInterval":saInterval}}, API_POST_SVRINFO, null);
     }
 
     function getPollingInterval(interval) {
@@ -364,6 +366,12 @@
         } else if (interval == 3) {
             return 3600;
         }
+    }
+
+    function updateServerInfo() {
+        var pInterval = getPollingInterval(selectedPollingInterval);
+        var saInterval = getStatusAcquisitionInterval(selectedStatusAcquisitionInterval);
+        apiCall('POST', './api/server/', {"ServerInfo":{"PInterval":pInterval, "SaInterval":saInterval, "BucketPath":$('#bucketPath').val()}}, API_POST_SVRINFO, refreshInfo);
     }
 
     function displayCommand() {

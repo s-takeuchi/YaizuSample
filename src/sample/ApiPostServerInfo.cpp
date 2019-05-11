@@ -6,11 +6,25 @@ StkObject* ApiPostServerInfo::Execute(StkObject* ReqObj, int Method, wchar_t Url
 {
 	int PInterval = 0;
 	int SaInterval = 0;
+	wchar_t BucketPath[DA_MAXLEN_OF_BUCKETPATH] = L"";
 	if (ReqObj != NULL) {
 		*ResultCode = 200;
 		StkObject* ServerInfo = ReqObj->GetFirstChildElement();
 		if (ServerInfo == NULL) {
 			return NULL;
+		}
+		StkObject* CurObj = ServerInfo->GetFirstChildElement();
+		while (CurObj) {
+			if (StkPlWcsCmp(CurObj->GetName(), L"PollingInterval") == 0) {
+				PInterval = CurObj->GetIntValue();
+			}
+			if (StkPlWcsCmp(CurObj->GetName(), L"StatusAcquisitionInterval") == 0) {
+				SaInterval = CurObj->GetIntValue();
+			}
+			if (StkPlWcsCmp(CurObj->GetName(), L"BucketPath") == 0) {
+				StkPlWcsCpy(BucketPath, DA_MAXLEN_OF_BUCKETPATH, CurObj->GetStringValue());
+			}
+			CurObj = CurObj->GetNext();
 		}
 		StkObject* PIntervalObj = ServerInfo->GetFirstChildElement();
 		if (PIntervalObj == NULL) {
@@ -22,7 +36,7 @@ StkObject* ApiPostServerInfo::Execute(StkObject* ReqObj, int Method, wchar_t Url
 		}
 		PInterval = PIntervalObj->GetIntValue();
 		SaInterval = SaIntervalObj->GetIntValue();
-		DataAccess::GetInstance()->SetServerInfo(PInterval, SaInterval);
+		DataAccess::GetInstance()->SetServerInfo(PInterval, SaInterval, BucketPath);
 	}
 
 	StkObject* TmpObj = new StkObject(L"");
