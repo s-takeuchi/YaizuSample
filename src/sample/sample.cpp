@@ -16,6 +16,7 @@
 #include "ApiDeleteCommand.h"
 #include "ApiGetCommandForOperation.h"
 #include "ApiGetFile.h"
+#include "ApiPostFile.h"
 #include "dataaccess.h"
 
 void Sample(wchar_t* IpAddr, int Port)
@@ -51,6 +52,8 @@ void Sample(wchar_t* IpAddr, int Port)
 	int Add10 = Soc->AddReqHandler(StkWebAppExec::STKWEBAPP_METHOD_GET, L"/api/opcommand/$/", (StkWebAppExec*)ApiGetCommandForOperationObj);
 	ApiGetFile* ApiGetFileObj = new ApiGetFile();
 	int Add11 = Soc->AddReqHandler(StkWebAppExec::STKWEBAPP_METHOD_GET, L"/api/file/$/$/", (StkWebAppExec*)ApiGetFileObj);
+	ApiPostFile* ApiPostFileObj = new ApiPostFile();
+	int Add12 = Soc->AddReqHandler(StkWebAppExec::STKWEBAPP_METHOD_POST, L"/api/file/", (StkWebAppExec*)ApiPostFileObj);
 
 	////////// Main logic starts
 	Soc->TheLoop();
@@ -67,6 +70,7 @@ void Sample(wchar_t* IpAddr, int Port)
 	int Del9 = Soc->DeleteReqHandler(StkWebAppExec::STKWEBAPP_METHOD_DELETE, L"/api/command/$/");
 	int Del10 = Soc->DeleteReqHandler(StkWebAppExec::STKWEBAPP_METHOD_GET, L"/api/opcommand/$/");
 	int Del11 = Soc->DeleteReqHandler(StkWebAppExec::STKWEBAPP_METHOD_GET, L"/api/file/$/$/");
+	int Del12 = Soc->DeleteReqHandler(StkWebAppExec::STKWEBAPP_METHOD_POST, L"/api/file/");
 
 	ApiGetCommandForStatus::StopFlag = true;
 	ApiGetCommandForOperation::StopFlag = true;

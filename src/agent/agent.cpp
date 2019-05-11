@@ -54,6 +54,49 @@ StkObject* GetAgentInfoForOpCmd()
 	return NewObj;
 }
 
+int LoadAndPostFile(char* FileName, StkWebAppSend* SndObj)
+{
+	wchar_t* FileNameWc = StkPlCreateWideCharFromUtf8(FileName);
+	int FileSize = StkPlGetFileSize(FileNameWc);
+	if (FileSize < 0) {
+		return -1;
+	}
+
+	int LoopCnt = FileSize / 1000000 + 1;
+
+	int Result = 0;
+	for (int LoopChunk = 0; LoopChunk < LoopCnt; LoopChunk++) {
+		int Offset = LoopChunk * 1000000;
+		char* Buffer = new char[1000000];
+		wchar_t* HexBuf = new wchar_t[2000001];
+		size_t ActSize;
+		void* FilePtr = StkPlOpenFileForRead(FileNameWc);
+		StkPlSeekFromBegin(FilePtr, Offset);
+		StkPlRead(FilePtr, Buffer, 1000000, &ActSize);
+		StkPlCloseFile(FilePtr);
+		wchar_t HexChar[16] = { L'0', L'1', L'2', L'3', L'4', L'5', L'6', L'7', L'8', L'9', L'A', L'B', L'C', L'D', L'E', L'F' };
+		size_t Loop = 0;
+		for (; Loop < ActSize; Loop++) {
+			HexBuf[Loop * 2] = HexChar[(unsigned char)Buffer[Loop] / 16];
+			HexBuf[Loop * 2 + 1] = HexChar[(unsigned char)Buffer[Loop] % 16];
+		}
+		HexBuf[Loop * 2] = '\0';
+		delete Buffer;
+
+		StkObject* TmpObj = new StkObject(L"");
+		TmpObj->AppendChildElement(new StkObject(L"FileName", FileNameWc));
+		TmpObj->AppendChildElement(new StkObject(L"FileOffset", Offset));
+		TmpObj->AppendChildElement(new StkObject(L"FileData", HexBuf));
+		delete HexBuf;
+		StkObject* ResObj = SndObj->SendRequestRecvResponse(StkWebAppSend::STKWEBAPP_METHOD_POST, "/api/file/", TmpObj, &Result);
+		delete TmpObj;
+		delete ResObj;
+	}
+
+	delete FileNameWc;
+	return Result;
+}
+
 int GetAndSaveFile(char* FileName, size_t FileSize, StkWebAppSend* SndObj)
 {
 	int Result = 0;
@@ -129,6 +172,7 @@ int CommonProcess(StkObject* CommandSearch, char TmpTime[64], StkWebAppSend* Snd
 			char* TmpScript = NULL;
 			int TmpType = -1;
 			char TmpServerFileName[FILENAME_MAX] = "";
+			char TmpAgentFileName[FILENAME_MAX] = "";
 			int TmpServerFileSize = -1;
 			StkObject* ScriptSearch = CommandSearch->GetFirstChildElement();
 			while (ScriptSearch) {
@@ -142,6 +186,8 @@ int CommonProcess(StkObject* CommandSearch, char TmpTime[64], StkWebAppSend* Snd
 					TmpServerFileSize = ScriptSearch->GetIntValue();
 				} else if (StkPlWcsCmp(ScriptSearch->GetName(), L"Name") == 0) {
 					TmpName = StkPlCreateUtf8FromWideChar(ScriptSearch->GetStringValue());
+				} else if (StkPlWcsCmp(ScriptSearch->GetName(), L"AgentFileName") == 0) {
+					StkPlConvWideCharToUtf8(TmpAgentFileName, FILENAME_MAX, ScriptSearch->GetStringValue());
 				}
 				ScriptSearch = ScriptSearch->GetNext();
 			}
@@ -151,15 +197,15 @@ int CommonProcess(StkObject* CommandSearch, char TmpTime[64], StkWebAppSend* Snd
 				delete TmpName;
 			}
 			// Get and save file
-			StkPlPrintf("FileName=%s, ", TmpServerFileName != NULL ? TmpServerFileName : "null");
-			StkPlPrintf("FileSize=%d, ", TmpServerFileSize);
+			StkPlPrintf("ServerFileName=%s, ", TmpServerFileName != NULL ? TmpServerFileName : "null");
+			StkPlPrintf("ServerFileSize=%d\r\n", TmpServerFileSize);
 			if (TmpServerFileName != NULL && TmpServerFileSize >= 0 && StkPlStrCmp(TmpServerFileName, "") != 0) {
 				GetAndSaveFile(TmpServerFileName, TmpServerFileSize, SndObj);
 			}
 
 			// Execute script
 			if (TmpScript != NULL && StkPlStrCmp(TmpScript, "") != 0 && (TmpType == 0 || TmpType == 1)) {
-				StkPlPrintf("Execute script...\r\n");
+				StkPlPrintf("Execute script:\r\n");
 				if (TmpType == 0) {
 					if (OperationFlag) {
 						StkPlWriteFile(L"aaa-operation.sh", TmpScript, StkPlStrLen(TmpScript));
@@ -190,6 +236,12 @@ int CommonProcess(StkObject* CommandSearch, char TmpTime[64], StkWebAppSend* Snd
 				}
 			} else {
 				StkPlPrintf("No script is presented.\r\n");
+			}
+
+			// Load and post file
+			StkPlPrintf("AgentFileName=%s\r\n", TmpAgentFileName != NULL ? TmpAgentFileName : "null");
+			if (TmpAgentFileName != NULL && StkPlStrCmp(TmpAgentFileName, "") != 0) {
+				LoadAndPostFile(TmpAgentFileName, SndObj);
 			}
 		}
 		CommandSearch = CommandSearch->GetNext();

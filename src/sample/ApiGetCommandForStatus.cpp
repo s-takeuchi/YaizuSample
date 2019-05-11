@@ -108,6 +108,7 @@ StkObject* ApiGetCommandForStatus::Execute(StkObject* ReqObj, int Method, wchar_
 					DataAccess::GetInstance()->GetFullPathFromFileName(TargetFullPath, ServerFileName[FoundIndex]);
 					size_t FileSize = StkPlGetFileSize(TargetFullPath);
 					CommandObj->AppendChildElement(new StkObject(L"ServerFileSize", (int)FileSize));
+					CommandObj->AppendChildElement(new StkObject(L"AgentFileName", AgentFileName[FoundIndex]));
 					TmpObj->AppendChildElement(CommandObj);
 				}
 			}
