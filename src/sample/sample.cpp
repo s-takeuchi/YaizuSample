@@ -26,6 +26,9 @@ void Sample(wchar_t* IpAddr, int Port)
 	Soc->SetSendBufSize(5000000);
 	Soc->SetRecvBufSize(5000000);
 
+	ApiGetCommandForStatus::StopFlag = false;
+	ApiGetCommandForOperation::StopFlag = false;
+
 	ApiGetLogInfo* ApiGetLogInfoObj = new ApiGetLogInfo();
 	int Add1 = Soc->AddReqHandler(StkWebAppExec::STKWEBAPP_METHOD_GET, L"/api/log/", (StkWebAppExec*)ApiGetLogInfoObj);
 	ApiGetServerInfo* ApiGetServerInfoObj = new ApiGetServerInfo();
@@ -64,6 +67,9 @@ void Sample(wchar_t* IpAddr, int Port)
 	int Del9 = Soc->DeleteReqHandler(StkWebAppExec::STKWEBAPP_METHOD_DELETE, L"/api/command/$/");
 	int Del10 = Soc->DeleteReqHandler(StkWebAppExec::STKWEBAPP_METHOD_GET, L"/api/opcommand/$/");
 	int Del11 = Soc->DeleteReqHandler(StkWebAppExec::STKWEBAPP_METHOD_GET, L"/api/file/$/$/");
+
+	ApiGetCommandForStatus::StopFlag = true;
+	ApiGetCommandForOperation::StopFlag = true;
 
 	delete Soc;
 }

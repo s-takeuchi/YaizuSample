@@ -3,6 +3,8 @@
 #include "../../../YaizuComLib/src/commonfunc/StkStringParser.h"
 #include "ApiGetCommandForStatus.h"
 
+bool ApiGetCommandForStatus::StopFlag;
+
 StkObject* ApiGetCommandForStatus::Execute(StkObject* ReqObj, int Method, wchar_t UrlPath[StkWebAppExec::URL_PATH_LENGTH], int* ResultCode, wchar_t Locale[3])
 {
 	wchar_t TargetAgtName[DA_MAXLEN_OF_AGTNAME];
@@ -10,6 +12,9 @@ StkObject* ApiGetCommandForStatus::Execute(StkObject* ReqObj, int Method, wchar_
 	StkObject* TmpObj = new StkObject(L"");
 	while (true) {
 		StkPlSleepMs(1000);
+		if (StopFlag) {
+			break;
+		}
 
 		int PInterval = 0;
 		int SaInterval = 0;
