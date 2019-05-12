@@ -84,7 +84,7 @@ echo;
 echo Making installer...
 %DEVENV% "setup2\setup2.sln" /rebuild Release
 mkdir deployment
-copy setup2\Release\agent.msi deployment
+copy setup2\Release\YaizuSampleAgent.msi deployment
 
 
 rem ########## build complete ##########

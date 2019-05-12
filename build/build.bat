@@ -110,7 +110,7 @@ echo;
 echo Making installer...
 %DEVENV% "setup\setup.sln" /rebuild Release
 mkdir deployment
-copy setup\Release\stkwebapp.msi deployment
+copy setup\Release\YaizuSample.msi deployment
 
 
 rem ########## build complete ##########
