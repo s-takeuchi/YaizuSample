@@ -64,6 +64,7 @@
         }
         logData.append(tBody);
         $('#workspace_loginfo').append(logData);
+        $('td').css('vertical-align', 'middle');
     }
 
     function displayAgentInfo() {
@@ -82,24 +83,65 @@
         agentInfoData.addClass('table table-striped');
 
         var tHead = $('<thead>');
-        tHead.append('<tr><th>Name</th><th>Status</th><th class="hidden-xs">Command for Status</th><th>Status Acquisition Time</th><th class="hidden-xs">Status Update Time</th></tr>');
+        tHead.append('<tr>' +
+                     '<th>Name</th>' +
+                     '<th>Status</th>' +
+                     '<th class="hidden-xs">Command for Status</th>' +
+                     '<th>Status Acquisition Time</th>' +
+                     '<th class="hidden-xs">Status Update Time</th>' +
+                     '<th class="hidden-xs hidden-sm">OpStatus</th>' +
+                     '<th class="hidden-xs hidden-sm">Command for Op</th>' +
+                     '</tr>');
         agentInfoData.append(tHead);
 
         var tBody = $('<tbody>');
+        agentInfoData.append(tBody);
+        $('#workspace_agtinfo').append(agentInfoData);
         for (var Loop = 0; Loop < AgentInfo.length; Loop++) {
             var cmdNameStatus = '';
             for (var loopcmd = 0; commandList != null && loopcmd < commandList.length; loopcmd++) {
                 if (AgentInfo[Loop].StatusCmd == commandList[loopcmd].Id) {
-                    cmdNameStatus = commandList[loopcmd].Name
+                    cmdNameStatus = commandList[loopcmd].Name;
+                    break;
                 }
             }
-            tBody.append('<tr><td><div class="checkbox"><label><input type="checkbox" id="agtInfoId' + Loop + '" value="" onclick="switchAgentInfoButton()"/>' + AgentInfo[Loop].Name + '</label></div></td><td>' + AgentInfo[Loop].Status + '</td><td class="hidden-xs">' + cmdNameStatus + '</td><td>' + AgentInfo[Loop].TimeUtc + '<br/>' + AgentInfo[Loop].TimeLocal + '</td><td  class="hidden-xs">' + AgentInfo[Loop].UdTimeUtc + '<br/>' + AgentInfo[Loop].UdTimeLocal + '</td></tr>');
+            var cmdNameOp = '';
+            for (var loopcmd = 0; commandList != null && loopcmd < commandList.length; loopcmd++) {
+                if (AgentInfo[Loop].OpCmd == commandList[loopcmd].Id) {
+                    cmdNameOp = commandList[loopcmd].Name;
+                    break;
+                }
+            }
+            tBody.append('<tr>' +
+                         '<td><div class="checkbox"><label><input type="checkbox" id="agtInfoId' + Loop + '" value="" onclick="switchAgentInfoButton()"/>' + AgentInfo[Loop].Name + '</label></div></td>' +
+                         '<td><div align="center" id="statusTd' + Loop + '">' + AgentInfo[Loop].Status + '</div></td>' +
+                         '<td class="hidden-xs">' + cmdNameStatus + '</td>' +
+                         '<td>' + AgentInfo[Loop].TimeUtc + '<br/>' + AgentInfo[Loop].TimeLocal + '</td>' +
+                         '<td  class="hidden-xs">' + AgentInfo[Loop].UdTimeUtc + '<br/>' + AgentInfo[Loop].UdTimeLocal + '</td>' +
+                         '<td class="hidden-xs hidden-sm"><div align="center" id="opStatusTd' + Loop + '">' + AgentInfo[Loop].OpStatus + '</div></td>' +
+                         '<td class="hidden-xs hidden-sm">' + cmdNameOp + '</td>' +
+                         '</tr>');
+            // Draw rectangle for agent status
+            if (AgentInfo[Loop].Status == 0) {
+                $('#statusTd' + Loop).css('background-color', 'LightGreen');
+            } else if (AgentInfo[Loop].Status <= -980 && AgentInfo[Loop].Status >= -989) {
+                $('#statusTd' + Loop).css('background-color', 'LightBlue');
+            } else {
+                $('#statusTd' + Loop).css('background-color', 'LightCoral');
+            }
+            // Draw rectangle for operation status
+            if (AgentInfo[Loop].OpStatus == 0) {
+                $('#opStatusTd' + Loop).css('background-color', 'LightGreen');
+            } else if (AgentInfo[Loop].OpStatus <= -980 && AgentInfo[Loop].Status >= -989) {
+                $('#opStatusTd' + Loop).css('background-color', 'LightBlue');
+            } else {
+                $('#opStatusTd' + Loop).css('background-color', 'LightCoral');
+            }
         }
-        agentInfoData.append(tBody);
-        $('#workspace_agtinfo').append(agentInfoData);
         $('#workspace_agtinfo').append('<button type="button" id="setAgentStatusCommand" class="btn btn-primary disabled" onclick="displayAgentStatusCommandDlg()">Set Status Command</button> ');
         $('#workspace_agtinfo').append('<button type="button" id="execOpeCommand" class="btn btn-primary disabled" onclick="displayExecCommandDlg()">Execute Command</button> ');
         $('#workspace_agtinfo').append('<p></p>');
+        $('td').css('vertical-align', 'middle');
     }
 
     function switchAgentInfoButton() {
@@ -332,6 +374,7 @@
         $('#workspace_svrinfo').append('<p>');
         $('#workspace_svrinfo').append('<button type="button" id="serverInfoBtnUpdate" class="btn btn-primary" onclick="updateServerInfo()">Update</button> ');
         $('#workspace_svrinfo').append('</p>');
+        $('td').css('vertical-align', 'middle');
     }
 
     function selectPollingInterval(interval) {
@@ -414,6 +457,7 @@
         $('#workspace_command').append('<button type="button" id="commandBtnUpdate" class="btn btn-primary disabled" onclick="updateCommand(true)">Update</button> ');
         $('#workspace_command').append('<button type="button" id="commandBtnDelete" class="btn btn-primary disabled" onclick="deleteCommand()">Delete</button> ');
         $('#workspace_command').append('<p></p>');
+        $('td').css('vertical-align', 'middle');
     }
 
     function updateCommand(updateFlag) {

@@ -165,7 +165,7 @@ int GetAndSaveFile(char* FileName, size_t FileSize, StkWebAppSend* SndObj)
 
 int CommonProcess(StkObject* CommandSearch, char TmpTime[64], StkWebAppSend* SndObj, bool OperationFlag)
 {
-	int ReturnCode = 0;
+	int ReturnCode = -981;
 	while (CommandSearch) {
 		if (StkPlWcsCmp(CommandSearch->GetName(), L"Command") == 0) {
 			char* TmpName = NULL;
@@ -378,7 +378,7 @@ void StartXxx(wchar_t HostOrIpAddr[256], int PortNum)
 	SoForTh2->SetRecvBufSize(5000000);
 
 	int Result = 0;
-	StkObject* ResObj = SoForTh1->SendRequestRecvResponse(StkWebAppSend::STKWEBAPP_METHOD_POST, "/api/agent/", GetAgentInfo(0), &Result);
+	StkObject* ResObj = SoForTh1->SendRequestRecvResponse(StkWebAppSend::STKWEBAPP_METHOD_POST, "/api/agent/", GetAgentInfo(-980), &Result);
 	delete ResObj;
 
 	AddStkThread(1, L"StatusLoop", L"", NULL, NULL, StatusLoop, NULL, NULL);

@@ -56,11 +56,13 @@ StkObject* ApiGetCommandForStatus::Execute(StkObject* ReqObj, int Method, wchar_
 			wchar_t AgtName[DA_MAXNUM_OF_AGTRECORDS][DA_MAXLEN_OF_AGTNAME];
 			int Status[DA_MAXNUM_OF_AGTRECORDS];
 			int StatusCmd[DA_MAXNUM_OF_AGTRECORDS];
+			int OpStatus[DA_MAXNUM_OF_AGTRECORDS];
+			int OpCmd[DA_MAXNUM_OF_AGTRECORDS];
 			wchar_t TimeUtc[DA_MAXNUM_OF_AGTRECORDS][DA_MAXLEN_OF_TIME];
 			wchar_t TimeLocal[DA_MAXNUM_OF_AGTRECORDS][DA_MAXLEN_OF_TIME];
 			wchar_t UdTimeUtc[DA_MAXNUM_OF_AGTRECORDS][DA_MAXLEN_OF_TIME];
 			wchar_t UdTimeLocal[DA_MAXNUM_OF_AGTRECORDS][DA_MAXLEN_OF_TIME];
-			int ReAgtCount = DataAccess::GetInstance()->GetAgentInfo(AgtName, Status, StatusCmd, TimeUtc, TimeLocal, UdTimeUtc, UdTimeLocal);
+			int ReAgtCount = DataAccess::GetInstance()->GetAgentInfo(AgtName, Status, StatusCmd, OpStatus, OpCmd, TimeUtc, TimeLocal, UdTimeUtc, UdTimeLocal);
 
 			// Check the agent specified in URI is managed by server
 			int TargetAgtIndex = -1;

@@ -1513,7 +1513,7 @@
                 {
                     "{9EF0B969-E518-4E46-987F-47570745A589}:_B88B15C7562246DE8BD9E370E9C156A5"
                     {
-                    "Name" = "8:StkWebApp"
+                    "Name" = "8:YaizuSample"
                     "AlwaysCreate" = "11:FALSE"
                     "Condition" = "8:"
                     "Transitive" = "11:FALSE"

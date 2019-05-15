@@ -293,9 +293,28 @@ void DataAccess::SetAgentInfoForOpCmd(wchar_t AgtName[DA_MAXLEN_OF_AGTNAME], int
 	AddLogMsg(LogMsg);
 }
 
+void DataAccess::SetAgentInfoForOpStatus(wchar_t AgtName[DA_MAXLEN_OF_AGTNAME], int OpStatus)
+{
+	ColumnData *ColDatAgtFind[1];
+	ColDatAgtFind[0] = new ColumnDataWStr(L"Name", AgtName);
+	RecordData* RecDatAgtFind = new RecordData(L"AgentInfo", ColDatAgtFind, 1);
+
+	ColumnData *ColDatAgt[1];
+	ColDatAgt[0] = new ColumnDataInt(L"OpStatus", OpStatus);
+	RecordData* RecDatAgt = new RecordData(L"AgentInfo", ColDatAgt, 1);
+
+	LockTable(L"AgentInfo", LOCK_EXCLUSIVE);
+	int Ret = UpdateRecord(RecDatAgtFind, RecDatAgt);
+	UnlockTable(L"AgentInfo");
+	delete RecDatAgt;
+	delete RecDatAgtFind;
+}
+
 int DataAccess::GetAgentInfo(wchar_t AgtName[DA_MAXNUM_OF_AGTRECORDS][DA_MAXLEN_OF_AGTNAME],
 							int AgtStatus[DA_MAXNUM_OF_AGTRECORDS],
 							int AgtStatusCmd[DA_MAXNUM_OF_AGTRECORDS],
+	                        int OpStatus[DA_MAXNUM_OF_AGTRECORDS],
+	                        int OpCmd[DA_MAXNUM_OF_AGTRECORDS],
 							wchar_t TimeUtc[DA_MAXNUM_OF_AGTRECORDS][DA_MAXLEN_OF_TIME],
 							wchar_t TimeLocal[DA_MAXNUM_OF_AGTRECORDS][DA_MAXLEN_OF_TIME],
 							wchar_t UdTimeUtc[DA_MAXNUM_OF_AGTRECORDS][DA_MAXLEN_OF_TIME],
@@ -333,14 +352,14 @@ int DataAccess::GetAgentInfo(wchar_t AgtName[DA_MAXNUM_OF_AGTRECORDS][DA_MAXLEN_
 			AgtStatusCmd[NumOfRec] = -1;
 		}
 		if (ColDatOpStatus != NULL) {
-			//
+			OpStatus[NumOfRec] = ColDatOpStatus->GetValue();
 		} else {
-			//
+			OpStatus[NumOfRec] = -1;
 		}
 		if (ColDatOpCmd != NULL) {
-			//
+			OpCmd[NumOfRec] = ColDatOpCmd->GetValue();
 		} else {
-			//
+			OpCmd[NumOfRec] = -1;
 		}
 		if (ColDatTimeLocal != NULL && ColDatTimeLocal->GetValue() != NULL) {
 			StkPlSwPrintf(TimeLocal[NumOfRec], DA_MAXLEN_OF_TIME, ColDatTimeLocal->GetValue());
