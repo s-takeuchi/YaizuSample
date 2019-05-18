@@ -297,9 +297,11 @@
         if (commandId == -1 || allSame == false) {
             return '';
         } else {
-            for (var loop = 0; loop < commandList.length; loop++) {
-                if (commandId == commandList[loop].Id) {
-                    return commandList[loop].Name;
+            if (commandList != null) {
+                for (var loop = 0; loop < commandList.length; loop++) {
+                    if (commandId == commandList[loop].Id) {
+                        return commandList[loop].Name;
+                    }
                 }
             }
         }
