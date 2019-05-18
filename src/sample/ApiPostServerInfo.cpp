@@ -37,6 +37,10 @@ StkObject* ApiPostServerInfo::Execute(StkObject* ReqObj, int Method, wchar_t Url
 		PInterval = PIntervalObj->GetIntValue();
 		SaInterval = SaIntervalObj->GetIntValue();
 		DataAccess::GetInstance()->SetServerInfo(PInterval, SaInterval, BucketPath);
+
+		wchar_t LogMsg[256] = L"";
+		StkPlSwPrintf(LogMsg, 256, L"Server information has been changed. [Polling Interval=%d sec, Status Acquisition Interval=%d sec, Bucket Path=%ls]", PInterval, SaInterval, BucketPath);
+		DataAccess::GetInstance()->AddLogMsg(LogMsg);
 	}
 
 	StkObject* TmpObj = new StkObject(L"");

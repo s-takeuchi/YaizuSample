@@ -33,7 +33,8 @@ StkObject* ApiGetCommandForOperation::Execute(StkObject* ReqObj, int Method, wch
 		StkPlGetTime(&Year, &Mon, &Day, &Hour, &Min, &Sec, false);
 
 		int OpCmd = DataAccess::GetInstance()->GetAgentInfoForOpCmd(TargetAgtName);
-		if (OpCmd != -1) {
+		int OpStatus = DataAccess::GetInstance()->GetAgentInfoForOpStatus(TargetAgtName);
+		if (OpCmd != -1 && OpStatus == -983) {
 			int Id[DA_MAXNUM_OF_CMDRECORDS];
 			wchar_t Name[DA_MAXNUM_OF_CMDRECORDS][DA_MAXLEN_OF_CMDNAME];
 			int Type[DA_MAXNUM_OF_CMDRECORDS];

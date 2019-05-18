@@ -27,7 +27,7 @@ public:
 	int CreateTables(const wchar_t*);
 
 	bool CheckExistenceOfTargetAgent(wchar_t[DA_MAXLEN_OF_AGTNAME]);
-	void SetAgentInfo(wchar_t[DA_MAXLEN_OF_AGTNAME], int, wchar_t[DA_MAXLEN_OF_TIME], wchar_t[DA_MAXLEN_OF_TIME]);
+	int SetAgentInfo(wchar_t[DA_MAXLEN_OF_AGTNAME], int, wchar_t[DA_MAXLEN_OF_TIME], wchar_t[DA_MAXLEN_OF_TIME]);
 	void SetAgentInfoForStatusCmd(wchar_t[DA_MAXLEN_OF_AGTNAME], int);
 	void SetAgentInfoForOpCmd(wchar_t[DA_MAXLEN_OF_AGTNAME], int);
 	void SetAgentInfoForOpStatus(wchar_t[DA_MAXLEN_OF_AGTNAME], int);
@@ -41,6 +41,7 @@ public:
 		wchar_t[DA_MAXNUM_OF_AGTRECORDS][DA_MAXLEN_OF_TIME],
 		wchar_t[DA_MAXNUM_OF_AGTRECORDS][DA_MAXLEN_OF_TIME]);
 	int GetAgentInfoForOpCmd(wchar_t[DA_MAXLEN_OF_AGTNAME]);
+	int GetAgentInfoForOpStatus(wchar_t[DA_MAXLEN_OF_AGTNAME]);
 
 	int GetServerInfo(int*, int*, wchar_t [DA_MAXLEN_OF_BUCKETPATH]);
 	int SetServerInfo(int, int, wchar_t[DA_MAXLEN_OF_BUCKETPATH]);

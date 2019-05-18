@@ -190,7 +190,8 @@ bool DataAccess::CheckExistenceOfTargetAgent(wchar_t AgtName[DA_MAXLEN_OF_AGTNAM
 	return true;
 }
 
-void DataAccess::SetAgentInfo(wchar_t AgtName[DA_MAXLEN_OF_AGTNAME], int AgtStatus, wchar_t TimeUtc[DA_MAXLEN_OF_TIME], wchar_t TimeLocal[DA_MAXLEN_OF_TIME])
+// Return 0:New Agent, 1:Existing Agent
+int DataAccess::SetAgentInfo(wchar_t AgtName[DA_MAXLEN_OF_AGTNAME], int AgtStatus, wchar_t TimeUtc[DA_MAXLEN_OF_TIME], wchar_t TimeLocal[DA_MAXLEN_OF_TIME])
 {
 	wchar_t UdTimeUtc[DA_MAXLEN_OF_TIME] = L"";
 	wchar_t UdTimeLocal[DA_MAXLEN_OF_TIME] = L"";
@@ -198,6 +199,7 @@ void DataAccess::SetAgentInfo(wchar_t AgtName[DA_MAXLEN_OF_AGTNAME], int AgtStat
 	StkPlGetWTimeInIso8601(UdTimeLocal, true);
 	// Record information
 	ColumnData *ColDatAgt[9];
+	int RetMode = 0;
 	if (CheckExistenceOfTargetAgent(AgtName) == false) {
 		// Add record
 		ColDatAgt[0] = new ColumnDataWStr(L"Name", AgtName);
@@ -215,10 +217,7 @@ void DataAccess::SetAgentInfo(wchar_t AgtName[DA_MAXLEN_OF_AGTNAME], int AgtStat
 		int Ret = InsertRecord(RecDatAgt);
 		UnlockTable(L"AgentInfo");
 		delete RecDatAgt;
-
-		wchar_t LogMsg[512] = L"";
-		StkPlSwPrintf(LogMsg, 256, L"New agent information has been notified. [%ls]", AgtName);
-		AddLogMsg(LogMsg);
+		RetMode = 0;
 	} else {
 		// Update record
 		ColumnData *ColDatAgtFind[1];
@@ -238,7 +237,9 @@ void DataAccess::SetAgentInfo(wchar_t AgtName[DA_MAXLEN_OF_AGTNAME], int AgtStat
 		UnlockTable(L"AgentInfo");
 		delete RecDatAgt;
 		delete RecDatAgtFind;
+		RetMode = 1;
 	}
+	return RetMode;
 }
 
 void DataAccess::SetAgentInfoForStatusCmd(wchar_t AgtName[DA_MAXLEN_OF_AGTNAME], int StatusCmd)
@@ -247,22 +248,16 @@ void DataAccess::SetAgentInfoForStatusCmd(wchar_t AgtName[DA_MAXLEN_OF_AGTNAME],
 	ColDatAgtFind[0] = new ColumnDataWStr(L"Name", AgtName);
 	RecordData* RecDatAgtFind = new RecordData(L"AgentInfo", ColDatAgtFind, 1);
 
-	ColumnData *ColDatAgt[1];
+	ColumnData *ColDatAgt[2];
 	ColDatAgt[0] = new ColumnDataInt(L"StatusCmd", StatusCmd);
-	RecordData* RecDatAgt = new RecordData(L"AgentInfo", ColDatAgt, 1);
+	ColDatAgt[1] = new ColumnDataInt(L"Status", -982);
+	RecordData* RecDatAgt = new RecordData(L"AgentInfo", ColDatAgt, 2);
 
 	LockTable(L"AgentInfo", LOCK_EXCLUSIVE);
 	int Ret = UpdateRecord(RecDatAgtFind, RecDatAgt);
 	UnlockTable(L"AgentInfo");
 	delete RecDatAgt;
 	delete RecDatAgtFind;
-
-	wchar_t CmdName[DA_MAXLEN_OF_CMDNAME] = L"";
-	GetCommandNameById(StatusCmd, CmdName);
-
-	wchar_t LogMsg[512] = L"";
-	StkPlSwPrintf(LogMsg, 256, L"Command for status acquisition has been changed. [%ls, %ls]", AgtName, CmdName);
-	AddLogMsg(LogMsg);
 }
 
 void DataAccess::SetAgentInfoForOpCmd(wchar_t AgtName[DA_MAXLEN_OF_AGTNAME], int OpCmd)
@@ -271,9 +266,10 @@ void DataAccess::SetAgentInfoForOpCmd(wchar_t AgtName[DA_MAXLEN_OF_AGTNAME], int
 	ColDatAgtFind[0] = new ColumnDataWStr(L"Name", AgtName);
 	RecordData* RecDatAgtFind = new RecordData(L"AgentInfo", ColDatAgtFind, 1);
 
-	ColumnData *ColDatAgt[1];
+	ColumnData *ColDatAgt[2];
 	ColDatAgt[0] = new ColumnDataInt(L"OpCmd", OpCmd);
-	RecordData* RecDatAgt = new RecordData(L"AgentInfo", ColDatAgt, 1);
+	ColDatAgt[1] = new ColumnDataInt(L"OpStatus", -983);
+	RecordData* RecDatAgt = new RecordData(L"AgentInfo", ColDatAgt, 2);
 
 	LockTable(L"AgentInfo", LOCK_EXCLUSIVE);
 	int Ret = UpdateRecord(RecDatAgtFind, RecDatAgt);
@@ -283,14 +279,6 @@ void DataAccess::SetAgentInfoForOpCmd(wchar_t AgtName[DA_MAXLEN_OF_AGTNAME], int
 
 	wchar_t CmdName[DA_MAXLEN_OF_CMDNAME] = L"";
 	GetCommandNameById(OpCmd, CmdName);
-
-	wchar_t LogMsg[512] = L"";
-	if (OpCmd == -1) {
-		StkPlSwPrintf(LogMsg, 256, L"Command for operation has ended. [%ls]", AgtName);
-	} else {
-		StkPlSwPrintf(LogMsg, 256, L"Command for operation has started. [%ls, %ls]", AgtName, CmdName);
-	}
-	AddLogMsg(LogMsg);
 }
 
 void DataAccess::SetAgentInfoForOpStatus(wchar_t AgtName[DA_MAXLEN_OF_AGTNAME], int OpStatus)
@@ -412,6 +400,30 @@ int DataAccess::GetAgentInfoForOpCmd(wchar_t AgtName[DA_MAXLEN_OF_AGTNAME])
 	return OpCmd;
 }
 
+int DataAccess::GetAgentInfoForOpStatus(wchar_t AgtName[DA_MAXLEN_OF_AGTNAME])
+{
+	ColumnData *ColDatAgtFind[1];
+	ColDatAgtFind[0] = new ColumnDataWStr(L"Name", AgtName);
+	RecordData* RecDatAgtFind = new RecordData(L"AgentInfo", ColDatAgtFind, 1);
+
+	LockTable(L"AgentInfo", LOCK_SHARE);
+	RecordData* RecDatAgt = GetRecord(RecDatAgtFind);
+	UnlockTable(L"AgentInfo");
+
+	int OpStatus = -1;
+	if (RecDatAgt != NULL) {
+		ColumnDataInt* ColDatOpStatus = (ColumnDataInt*)RecDatAgt->GetColumn(3);
+		if (ColDatOpStatus != NULL) {
+			OpStatus = ColDatOpStatus->GetValue();
+		}
+	}
+
+	delete RecDatAgtFind;
+	delete RecDatAgt;
+
+	return OpStatus;
+}
+
 int  DataAccess::GetServerInfo(int* PInterval, int* SaInterval, wchar_t BucketPath[DA_MAXLEN_OF_BUCKETPATH])
 {
 	LockTable(L"ServerInfo", LOCK_SHARE);
@@ -451,10 +463,6 @@ int DataAccess::SetServerInfo(int PInterval, int SaInterval, wchar_t BucketPath[
 	UnlockTable(L"ServerInfo");
 	delete RecDatSvr;
 	delete RecDatSvrFind;
-
-	wchar_t LogMsg[256] = L"";
-	StkPlSwPrintf(LogMsg, 256, L"Server information has been changed. [Polling Interval=%d sec, Status Acquisition Interval=%d sec, Bucket Path=%ls]", PInterval, SaInterval, BucketPath);
-	AddLogMsg(LogMsg);
 
 	return 0;
 }
@@ -539,6 +547,7 @@ int DataAccess::GetCommandNameById(int Id, wchar_t Name[DA_MAXLEN_OF_CMDNAME])
 	return 0;
 }
 
+// Return: 0:Added, 1:Modified
 int DataAccess::SetCommand(int Id, wchar_t Name[DA_MAXLEN_OF_CMDNAME], int Type, char Script[DA_MAXLEN_OF_CMDSCRIPT], wchar_t ServerFileName[DA_MAXLEN_OF_SERVERFILENAME], wchar_t AgentFileName[DA_MAXLEN_OF_AGENTFILENAME])
 {
 	ColumnData *ColDatCmdFind[1];
@@ -557,13 +566,13 @@ int DataAccess::SetCommand(int Id, wchar_t Name[DA_MAXLEN_OF_CMDNAME], int Type,
 	ColDatCmd[5] = new ColumnDataWStr(L"AgentFileName", AgentFileName);
 	RecordData* RecDatCmd = new RecordData(L"Command", ColDatCmd, 6);
 	LockTable(L"Command", LOCK_EXCLUSIVE);
-	wchar_t LogMsg[256] = L"";
+	int Ret = 0;
 	if (RecDatCmdFindRes == NULL) {
 		InsertRecord(RecDatCmd);
-		StkPlSwPrintf(LogMsg, 256, L"A command has been added. [%ls]", Name);
+		Ret = 0;
 	} else {
 		UpdateRecord(RecDatCmdFind, RecDatCmd);
-		StkPlSwPrintf(LogMsg, 256, L"A command has been modified. [%ls]", Name);
+		Ret = 1;
 	}
 	UnlockTable(L"Command");
 	delete RecDatCmd;
@@ -571,9 +580,7 @@ int DataAccess::SetCommand(int Id, wchar_t Name[DA_MAXLEN_OF_CMDNAME], int Type,
 	delete RecDatCmdFind;
 	delete RecDatCmdFindRes;
 
-	AddLogMsg(LogMsg);
-
-	return 0;
+	return Ret;
 }
 
 int DataAccess::DeleteCommand(int Id)
@@ -587,9 +594,6 @@ int DataAccess::DeleteCommand(int Id)
 	UnlockTable(L"Command");
 	if (RecDatCmdFindRes != NULL) {
 		ColumnDataWStr* Name = (ColumnDataWStr*)RecDatCmdFindRes->GetColumn(L"Name");
-		wchar_t LogMsg[256] = L"";
-		StkPlSwPrintf(LogMsg, 256, L"A command has been deleted. [%ls]", Name->GetValue());
-		AddLogMsg(LogMsg);
 		delete RecDatCmdFindRes;
 
 		LockTable(L"Command", LOCK_EXCLUSIVE);

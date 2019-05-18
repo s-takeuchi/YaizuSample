@@ -44,7 +44,14 @@ StkObject* ApiPostCommand::Execute(StkObject* ReqObj, int Method, wchar_t UrlPat
 		Id++;
 		DataAccess::GetInstance()->SetMaxCommandId(Id);
 	}
-	DataAccess::GetInstance()->SetCommand(Id, Name, Type, (char*)Script, ServerFileName, AgentFileName);
+	int RetSetCom = DataAccess::GetInstance()->SetCommand(Id, Name, Type, (char*)Script, ServerFileName, AgentFileName);
+	wchar_t LogMsg[256] = L"";
+	if (RetSetCom == 0) {
+		StkPlSwPrintf(LogMsg, 256, L"A command has been added. [%ls]", Name);
+	} else if (RetSetCom == 1) {
+		StkPlSwPrintf(LogMsg, 256, L"A command has been modified. [%ls]", Name);
+	}
+	DataAccess::GetInstance()->AddLogMsg(LogMsg);
 
 	StkObject* TmpObj = new StkObject(L"");
 	TmpObj->AppendChildElement(new StkObject(L"Msg0", L""));

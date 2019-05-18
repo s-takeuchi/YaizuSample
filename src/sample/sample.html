@@ -114,11 +114,11 @@
             }
             tBody.append('<tr>' +
                          '<td><div class="checkbox"><label><input type="checkbox" id="agtInfoId' + Loop + '" value="" onclick="switchAgentInfoButton()"/>' + AgentInfo[Loop].Name + '</label></div></td>' +
-                         '<td><div align="center" id="statusTd' + Loop + '">' + AgentInfo[Loop].Status + '</div></td>' +
+                         '<td><div align="center" id="statusTd' + Loop + '" data-toggle="tooltip" title="' + getTooltipStr() + '">' + AgentInfo[Loop].Status + '</div></td>' +
                          '<td class="hidden-xs">' + cmdNameStatus + '</td>' +
                          '<td>' + AgentInfo[Loop].TimeUtc + '<br/>' + AgentInfo[Loop].TimeLocal + '</td>' +
-                         '<td  class="hidden-xs">' + AgentInfo[Loop].UdTimeUtc + '<br/>' + AgentInfo[Loop].UdTimeLocal + '</td>' +
-                         '<td class="hidden-xs hidden-sm"><div align="center" id="opStatusTd' + Loop + '">' + AgentInfo[Loop].OpStatus + '</div></td>' +
+                         '<td class="hidden-xs">' + AgentInfo[Loop].UdTimeUtc + '<br/>' + AgentInfo[Loop].UdTimeLocal + '</td>' +
+                         '<td class="hidden-xs hidden-sm"><div align="center" id="opStatusTd' + Loop + '" data-toggle="tooltip" title="' + getTooltipStr() + '">' + AgentInfo[Loop].OpStatus + '</div></td>' +
                          '<td class="hidden-xs hidden-sm">' + cmdNameOp + '</td>' +
                          '</tr>');
             // Draw rectangle for agent status
@@ -142,6 +142,16 @@
         $('#workspace_agtinfo').append('<button type="button" id="execOpeCommand" class="btn btn-primary disabled" onclick="displayExecCommandDlg()">Execute Command</button> ');
         $('#workspace_agtinfo').append('<p></p>');
         $('td').css('vertical-align', 'middle');
+    }
+
+    function getTooltipStr() {
+        var tooltipStr = "-980 : Agent service has started.\r\n" +
+                         "-981 : No script is defined.\r\n" +
+                         "-982 : A command for status acquisition has been selected.\r\n" +
+                         "-983 : A command for operation has been selected.\r\n" +
+                         "-984 : Waiting for a request.\r\n" +
+                         "-985 : A command for operation has started.";
+        return tooltipStr;
     }
 
     function switchAgentInfoButton() {

@@ -7,8 +7,10 @@ StkObject* ApiPostAgentInfo::Execute(StkObject* ReqObj, int Method, wchar_t UrlP
 	wchar_t Name[DA_MAXLEN_OF_AGTNAME] = L"";
 	int Status = 0;
 	int StatusCmd = -1;
+	int OpStatus = 0;
 	int OpCmd = -1;
 	bool StatusCmdFlag = false;
+	bool OpStatusFlag = false;
 	bool OpCmdFlag = false;
 	wchar_t StatusTimeUtc[DA_MAXLEN_OF_TIME] = L"";
 	wchar_t StatusTimeLocal[DA_MAXLEN_OF_TIME] = L"";
@@ -30,6 +32,10 @@ StkObject* ApiPostAgentInfo::Execute(StkObject* ReqObj, int Method, wchar_t UrlP
 				StatusCmd = CurrAgentInfo->GetIntValue();
 				StatusCmdFlag = true;
 			}
+			if (StkPlWcsCmp(CurrAgentInfo->GetName(), L"OpStatus") == 0) {
+				OpStatus = CurrAgentInfo->GetIntValue();
+				OpStatusFlag = true;
+			}
 			if (StkPlWcsCmp(CurrAgentInfo->GetName(), L"OpCmd") == 0) {
 				OpCmd = CurrAgentInfo->GetIntValue();
 				OpCmdFlag = true;
@@ -44,12 +50,42 @@ StkObject* ApiPostAgentInfo::Execute(StkObject* ReqObj, int Method, wchar_t UrlP
 		}
 		if (StatusCmdFlag) {
 			DataAccess::GetInstance()->SetAgentInfoForStatusCmd(Name, StatusCmd);
+
+			wchar_t CmdName[DA_MAXLEN_OF_CMDNAME] = L"";
+			DataAccess::GetInstance()->GetCommandNameById(StatusCmd, CmdName);
+			wchar_t LogMsg[512] = L"";
+			StkPlSwPrintf(LogMsg, 256, L"Command for status acquisition has been changed. [%ls, %ls]", Name, CmdName);
+			DataAccess::GetInstance()->AddLogMsg(LogMsg);
+		}
+		if (OpStatusFlag) {
+			DataAccess::GetInstance()->SetAgentInfoForOpStatus(Name, OpStatus);
+
+			if (OpStatus == -985) {
+				int TmpOpCmd = DataAccess::GetInstance()->GetAgentInfoForOpCmd(Name);
+				wchar_t CmdName[DA_MAXLEN_OF_CMDNAME] = L"";
+				DataAccess::GetInstance()->GetCommandNameById(TmpOpCmd, CmdName);
+				wchar_t LogMsg[512] = L"";
+				StkPlSwPrintf(LogMsg, 256, L"Command for operation has started. [%ls, %ls]", Name, CmdName);
+				DataAccess::GetInstance()->AddLogMsg(LogMsg);
+			} else {
+				wchar_t LogMsg[512] = L"";
+				StkPlSwPrintf(LogMsg, 256, L"Command for operation has ended. [%ls, %d]", Name, OpStatus);
+				DataAccess::GetInstance()->AddLogMsg(LogMsg);
+			}
 		}
 		if (OpCmdFlag) {
 			DataAccess::GetInstance()->SetAgentInfoForOpCmd(Name, OpCmd);
 		}
-		if (!StatusCmdFlag && !OpCmdFlag) {
-			DataAccess::GetInstance()->SetAgentInfo(Name, Status, StatusTimeUtc, StatusTimeLocal);
+		if (!StatusCmdFlag && !OpCmdFlag && !OpStatusFlag) {
+			int RetSetAgtInfo = DataAccess::GetInstance()->SetAgentInfo(Name, Status, StatusTimeUtc, StatusTimeLocal);
+			if (RetSetAgtInfo == 0) {
+				DataAccess::GetInstance()->SetAgentInfoForOpStatus(Name, -984);
+				wchar_t LogMsg[512] = L"";
+				StkPlSwPrintf(LogMsg, 256, L"New agent information has been notified. [%ls]", Name);
+				DataAccess::GetInstance()->AddLogMsg(LogMsg);
+			} else if (RetSetAgtInfo == 1) {
+				//
+			}
 		}
 	}
 

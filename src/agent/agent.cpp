@@ -42,14 +42,14 @@ StkObject* GetAgentInfo(int Status)
 	return NewObj;
 }
 
-StkObject* GetAgentInfoForOpCmd()
+StkObject* GetAgentInfoForOpStatus(int Status)
 {
 	wchar_t HostName[256];
 	StkPlGetHostName(HostName, 256);
 	StkObject* NewObj = new StkObject(L"");
 	StkObject* AgentInfo = new StkObject(L"AgentInfo");
 	AgentInfo->AppendChildElement(new StkObject(L"Name", HostName));
-	AgentInfo->AppendChildElement(new StkObject(L"OpCmd", -1));
+	AgentInfo->AppendChildElement(new StkObject(L"OpStatus", Status));
 	NewObj->AppendChildElement(AgentInfo);
 	return NewObj;
 }
@@ -272,10 +272,13 @@ int OperationLoop(int TargetId)
 				StkPlPrintf("Get Command For Operation >> Execute [%s]\r\n", TmpTime);
 				StkObject* CommandSearch = ResGetCommandForOp->GetFirstChildElement();
 
+				StkObject* ResObjStart = SoForTh2->SendRequestRecvResponse(StkWebAppSend::STKWEBAPP_METHOD_POST, "/api/agent/", GetAgentInfoForOpStatus(-985), &Result);
+				delete ResObjStart;
+
 				int ReturnCode = CommonProcess(CommandSearch, TmpTime, SoForTh2, true);
 
-				StkObject* ResObj = SoForTh2->SendRequestRecvResponse(StkWebAppSend::STKWEBAPP_METHOD_POST, "/api/agent/", GetAgentInfoForOpCmd(), &Result);
-				delete ResObj;
+				StkObject* ResObjEnd = SoForTh2->SendRequestRecvResponse(StkWebAppSend::STKWEBAPP_METHOD_POST, "/api/agent/", GetAgentInfoForOpStatus(ReturnCode), &Result);
+				delete ResObjEnd;
 			}
 			TargetObj = TargetObj->GetNext();
 		}

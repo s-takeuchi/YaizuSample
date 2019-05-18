@@ -52,6 +52,7 @@ function sendRequestRecvResponse(method, url, request, index) {
             timeout: timeout,
             success: function(msg, textStatus, xhr) {
                 statusCode[index] = xhr.status;
+                responseData[index] = {};
                 $.extend(responseData[index], msg);
                 underComm--;
             },
@@ -76,6 +77,7 @@ function sendRequestRecvResponse(method, url, request, index) {
             timeout: timeout,
             success: function(msg, textStatus, xhr) {
                 statusCode[index] = xhr.status;
+                responseData[index] = {};
                 $.extend(responseData[index], msg);
                 underComm--;
             },
