@@ -132,7 +132,7 @@
             // Draw rectangle for operation status
             if (AgentInfo[Loop].OpStatus == 0) {
                 $('#opStatusTd' + Loop).css('background-color', 'LightGreen');
-            } else if (AgentInfo[Loop].OpStatus <= -980 && AgentInfo[Loop].Status >= -989) {
+            } else if (AgentInfo[Loop].OpStatus <= -980 && AgentInfo[Loop].OpStatus >= -989) {
                 $('#opStatusTd' + Loop).css('background-color', 'LightBlue');
             } else {
                 $('#opStatusTd' + Loop).css('background-color', 'LightCoral');
@@ -150,7 +150,9 @@
                          "-982 : A command for status acquisition has been selected.\r\n" +
                          "-983 : A command for operation has been selected.\r\n" +
                          "-984 : Waiting for a request.\r\n" +
-                         "-985 : A command for operation has started.";
+                         "-985 : A command for operation has started.\r\n" +
+                         "-990 : Server file handling error.\r\n" +
+                         "-991 : Agent file handling error.\r\n";
         return tooltipStr;
     }
 
