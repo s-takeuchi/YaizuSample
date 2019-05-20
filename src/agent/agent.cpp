@@ -21,11 +21,18 @@ SERVICE_TABLE_ENTRY ServiceTable[] = {
 }; 
 #endif
 
+#ifdef WIN32
+#define AGT_PLATFORM 1
+#else
+#define AGT_PLATFORM 0
+#endif
+
 #define RESULTCODE_AGENTSTART            -980
 #define RESULTCODE_NOSCRIPT              -981
 #define RESULTCODE_OPCOMMANDSTART        -985
 #define RESULTCODE_ERROR_SERVERFILE      -990
 #define RESULTCODE_ERROR_AGENTFILE       -991
+#define RESULTCODE_ERROR_PLATFORM        -992
 
 StkWebAppSend* SoForTh1 = NULL;
 StkWebAppSend* SoForTh2 = NULL;
@@ -242,6 +249,9 @@ int CommonProcess(StkObject* CommandSearch, char TmpTime[64], StkWebAppSend* Snd
 			// Execute script
 			if (TmpScript != NULL && StkPlStrCmp(TmpScript, "") != 0 && (TmpType == 0 || TmpType == 1)) {
 				StkPlPrintf("Execute script:\r\n");
+				if (TmpType != AGT_PLATFORM) {
+					return RESULTCODE_ERROR_PLATFORM;
+				}
 				if (TmpType == 0) {
 					if (OperationFlag) {
 						StkPlWriteFile(L"aaa-operation.sh", TmpScript, StkPlStrLen(TmpScript));
