@@ -1,6 +1,7 @@
 ﻿#pragma once
 
 #define DA_MAXLEN_OF_TIME 32
+#define DA_MAXLEN_OF_REQTIME 16
 #define DA_MAXLEN_OF_LOGMSG 256
 #define DA_MAXNUM_OF_LOGRECORDS 512
 #define DA_MAXLEN_OF_AGTNAME 256
@@ -29,8 +30,10 @@ public:
 	bool CheckExistenceOfTargetAgent(wchar_t[DA_MAXLEN_OF_AGTNAME]);
 	int SetAgentInfo(wchar_t[DA_MAXLEN_OF_AGTNAME], int, wchar_t[DA_MAXLEN_OF_TIME], wchar_t[DA_MAXLEN_OF_TIME]);
 	void SetAgentInfoForStatusCmd(wchar_t[DA_MAXLEN_OF_AGTNAME], int);
+	void SetAgentInfoForStatus(wchar_t[DA_MAXLEN_OF_AGTNAME], int);
 	void SetAgentInfoForOpCmd(wchar_t[DA_MAXLEN_OF_AGTNAME], int);
 	void SetAgentInfoForOpStatus(wchar_t[DA_MAXLEN_OF_AGTNAME], int);
+	void SetAgentInfoForReqTime(wchar_t AgtName[DA_MAXLEN_OF_AGTNAME]);
 	int GetAgentInfo(wchar_t[DA_MAXNUM_OF_AGTRECORDS][DA_MAXLEN_OF_AGTNAME],
 		int[DA_MAXNUM_OF_AGTRECORDS],
 		int[DA_MAXNUM_OF_AGTRECORDS],
@@ -42,6 +45,8 @@ public:
 		wchar_t[DA_MAXNUM_OF_AGTRECORDS][DA_MAXLEN_OF_TIME]);
 	int GetAgentInfoForOpCmd(wchar_t[DA_MAXLEN_OF_AGTNAME]);
 	int GetAgentInfoForOpStatus(wchar_t[DA_MAXLEN_OF_AGTNAME]);
+	long long GetAgentInfoForReqTime(wchar_t[DA_MAXLEN_OF_AGTNAME]);
+
 
 	int GetServerInfo(int*, int*, wchar_t [DA_MAXLEN_OF_BUCKETPATH]);
 	int SetServerInfo(int, int, wchar_t[DA_MAXLEN_OF_BUCKETPATH]);

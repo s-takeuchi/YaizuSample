@@ -19,6 +19,40 @@
 #include "ApiPostFile.h"
 #include "dataaccess.h"
 
+int StatusChecker(int Id)
+{
+	StkPlSleepMs(15000);
+
+	int PInterval = 0;
+	int SaInterval = 0;
+	wchar_t BucketPath[DA_MAXLEN_OF_BUCKETPATH] = L"";
+	DataAccess::GetInstance()->GetServerInfo(&PInterval, &SaInterval, BucketPath);
+
+	wchar_t AgtName[DA_MAXNUM_OF_AGTRECORDS][DA_MAXLEN_OF_AGTNAME];
+	int Status[DA_MAXNUM_OF_AGTRECORDS];
+	int StatusCmd[DA_MAXNUM_OF_AGTRECORDS];
+	int OpStatus[DA_MAXNUM_OF_AGTRECORDS];
+	int OpCmd[DA_MAXNUM_OF_AGTRECORDS];
+	wchar_t TimeUtc[DA_MAXNUM_OF_AGTRECORDS][DA_MAXLEN_OF_TIME];
+	wchar_t TimeLocal[DA_MAXNUM_OF_AGTRECORDS][DA_MAXLEN_OF_TIME];
+	wchar_t UdTimeUtc[DA_MAXNUM_OF_AGTRECORDS][DA_MAXLEN_OF_TIME];
+	wchar_t UdTimeLocal[DA_MAXNUM_OF_AGTRECORDS][DA_MAXLEN_OF_TIME];
+	int ReAgtCount = DataAccess::GetInstance()->GetAgentInfo(AgtName, Status, StatusCmd, OpStatus, OpCmd, TimeUtc, TimeLocal, UdTimeUtc, UdTimeLocal);
+
+	for (int Loop = 0; Loop < ReAgtCount; Loop++) {
+		long long ReqTime = DataAccess::GetInstance()->GetAgentInfoForReqTime(AgtName[Loop]);
+		if (ReqTime != 0) {
+			long long CurTime = StkPlGetTime();
+			long long DifTime = CurTime - ReqTime;
+			if (DifTime > SaInterval + 60) {
+				DataAccess::GetInstance()->SetAgentInfoForStatus(AgtName[Loop], -993);
+			}
+		}
+	}
+
+	return 0;
+}
+
 void Sample(wchar_t* IpAddr, int Port)
 {
 	int Ids[32] = {10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31};
@@ -26,6 +60,10 @@ void Sample(wchar_t* IpAddr, int Port)
 	StkWebApp* Soc = new StkWebApp(Ids, 32, IpAddr, Port);
 	Soc->SetSendBufSize(5000000);
 	Soc->SetRecvBufSize(5000000);
+
+	int TargetId[1] = { 100 };
+	AddStkThread(100, L"StatusChecker", L"", NULL, NULL, StatusChecker, NULL, NULL);
+	StartSpecifiedStkThreads(TargetId, 1);
 
 	ApiGetCommandForStatus::StopFlag = false;
 	ApiGetCommandForOperation::StopFlag = false;
@@ -74,6 +112,9 @@ void Sample(wchar_t* IpAddr, int Port)
 
 	ApiGetCommandForStatus::StopFlag = true;
 	ApiGetCommandForOperation::StopFlag = true;
+
+	StopSpecifiedStkThreads(TargetId, 1);
+	DeleteStkThread(100);
 
 	delete Soc;
 }

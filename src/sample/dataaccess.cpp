@@ -82,6 +82,7 @@ int DataAccess::CreateTables(const wchar_t* DataFileName)
 			ColumnDefInt  ColDefAgtStatusCmd(L"StatusCmd");
 			ColumnDefInt  ColDefAgtOpStatus(L"OpStatus");
 			ColumnDefInt  ColDefAgtOpCmd(L"OpCmd");
+			ColumnDefBin  ColDefAgtReqTime(L"ReqTime", DA_MAXLEN_OF_REQTIME);
 			ColumnDefWStr ColDefAgtTimeUtc(L"TimeUtc", DA_MAXLEN_OF_TIME);
 			ColumnDefWStr ColDefAgtTimeLocal(L"TimeLocal", DA_MAXLEN_OF_TIME);
 			ColumnDefWStr ColDefAgtUdTimeUtc(L"UdTimeUtc", DA_MAXLEN_OF_TIME);
@@ -92,6 +93,7 @@ int DataAccess::CreateTables(const wchar_t* DataFileName)
 			TabDefAgtInfo.AddColumnDef(&ColDefAgtStatusCmd);
 			TabDefAgtInfo.AddColumnDef(&ColDefAgtOpStatus);
 			TabDefAgtInfo.AddColumnDef(&ColDefAgtOpCmd);
+			TabDefAgtInfo.AddColumnDef(&ColDefAgtReqTime);
 			TabDefAgtInfo.AddColumnDef(&ColDefAgtTimeUtc);
 			TabDefAgtInfo.AddColumnDef(&ColDefAgtTimeLocal);
 			TabDefAgtInfo.AddColumnDef(&ColDefAgtUdTimeUtc);
@@ -198,7 +200,7 @@ int DataAccess::SetAgentInfo(wchar_t AgtName[DA_MAXLEN_OF_AGTNAME], int AgtStatu
 	StkPlGetWTimeInIso8601(UdTimeUtc, false);
 	StkPlGetWTimeInIso8601(UdTimeLocal, true);
 	// Record information
-	ColumnData *ColDatAgt[9];
+	ColumnData *ColDatAgt[10];
 	int RetMode = 0;
 	if (CheckExistenceOfTargetAgent(AgtName) == false) {
 		// Add record
@@ -207,11 +209,12 @@ int DataAccess::SetAgentInfo(wchar_t AgtName[DA_MAXLEN_OF_AGTNAME], int AgtStatu
 		ColDatAgt[2] = new ColumnDataInt(L"StatusCmd", -1);
 		ColDatAgt[3] = new ColumnDataInt(L"OpStatus", -1);
 		ColDatAgt[4] = new ColumnDataInt(L"OpCmd", -1);
-		ColDatAgt[5] = new ColumnDataWStr(L"TimeUtc", TimeUtc);
-		ColDatAgt[6] = new ColumnDataWStr(L"TimeLocal", TimeLocal);
-		ColDatAgt[7] = new ColumnDataWStr(L"UdTimeUtc", UdTimeUtc);
-		ColDatAgt[8] = new ColumnDataWStr(L"UdTimeLocal", UdTimeLocal);
-		RecordData* RecDatAgt = new RecordData(L"AgentInfo", ColDatAgt, 9);
+		ColDatAgt[5] = new ColumnDataBin(L"ReqTime", (unsigned char*)"\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0", DA_MAXLEN_OF_REQTIME);
+		ColDatAgt[6] = new ColumnDataWStr(L"TimeUtc", TimeUtc);
+		ColDatAgt[7] = new ColumnDataWStr(L"TimeLocal", TimeLocal);
+		ColDatAgt[8] = new ColumnDataWStr(L"UdTimeUtc", UdTimeUtc);
+		ColDatAgt[9] = new ColumnDataWStr(L"UdTimeLocal", UdTimeLocal);
+		RecordData* RecDatAgt = new RecordData(L"AgentInfo", ColDatAgt, 10);
 
 		LockTable(L"AgentInfo", LOCK_EXCLUSIVE);
 		int Ret = InsertRecord(RecDatAgt);
@@ -260,6 +263,23 @@ void DataAccess::SetAgentInfoForStatusCmd(wchar_t AgtName[DA_MAXLEN_OF_AGTNAME],
 	delete RecDatAgtFind;
 }
 
+void DataAccess::SetAgentInfoForStatus(wchar_t AgtName[DA_MAXLEN_OF_AGTNAME], int Status)
+{
+	ColumnData *ColDatAgtFind[1];
+	ColDatAgtFind[0] = new ColumnDataWStr(L"Name", AgtName);
+	RecordData* RecDatAgtFind = new RecordData(L"AgentInfo", ColDatAgtFind, 1);
+
+	ColumnData *ColDatAgt[1];
+	ColDatAgt[0] = new ColumnDataInt(L"Status", Status);
+	RecordData* RecDatAgt = new RecordData(L"AgentInfo", ColDatAgt, 1);
+
+	LockTable(L"AgentInfo", LOCK_EXCLUSIVE);
+	int Ret = UpdateRecord(RecDatAgtFind, RecDatAgt);
+	UnlockTable(L"AgentInfo");
+	delete RecDatAgt;
+	delete RecDatAgtFind;
+}
+
 void DataAccess::SetAgentInfoForOpCmd(wchar_t AgtName[DA_MAXLEN_OF_AGTNAME], int OpCmd)
 {
 	ColumnData *ColDatAgtFind[1];
@@ -298,6 +318,26 @@ void DataAccess::SetAgentInfoForOpStatus(wchar_t AgtName[DA_MAXLEN_OF_AGTNAME], 
 	delete RecDatAgtFind;
 }
 
+void DataAccess::SetAgentInfoForReqTime(wchar_t AgtName[DA_MAXLEN_OF_AGTNAME])
+{
+	ColumnData *ColDatAgtFind[1];
+	ColDatAgtFind[0] = new ColumnDataWStr(L"Name", AgtName);
+	RecordData* RecDatAgtFind = new RecordData(L"AgentInfo", ColDatAgtFind, 1);
+
+	long long ReqTime = StkPlGetTime();
+	unsigned char ReqTimeBin[DA_MAXLEN_OF_REQTIME] = "\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0";
+	StkPlMemCpy((void*)ReqTimeBin, (void*)&ReqTime, 8);
+	ColumnData *ColDatAgt[1];
+	ColDatAgt[0] = new ColumnDataBin(L"ReqTime", ReqTimeBin, DA_MAXLEN_OF_REQTIME);
+	RecordData* RecDatAgt = new RecordData(L"AgentInfo", ColDatAgt, 1);
+
+	LockTable(L"AgentInfo", LOCK_EXCLUSIVE);
+	int Ret = UpdateRecord(RecDatAgtFind, RecDatAgt);
+	UnlockTable(L"AgentInfo");
+	delete RecDatAgt;
+	delete RecDatAgtFind;
+}
+
 int DataAccess::GetAgentInfo(wchar_t AgtName[DA_MAXNUM_OF_AGTRECORDS][DA_MAXLEN_OF_AGTNAME],
 							int AgtStatus[DA_MAXNUM_OF_AGTRECORDS],
 							int AgtStatusCmd[DA_MAXNUM_OF_AGTRECORDS],
@@ -320,10 +360,11 @@ int DataAccess::GetAgentInfo(wchar_t AgtName[DA_MAXNUM_OF_AGTRECORDS][DA_MAXLEN_
 		ColumnDataInt* ColDatStatusCmd = (ColumnDataInt*)CurrRecDat->GetColumn(2);
 		ColumnDataInt* ColDatOpStatus = (ColumnDataInt*)CurrRecDat->GetColumn(3);
 		ColumnDataInt* ColDatOpCmd = (ColumnDataInt*)CurrRecDat->GetColumn(4);
-		ColumnDataWStr* ColDatTimeUtc = (ColumnDataWStr*)CurrRecDat->GetColumn(5);
-		ColumnDataWStr* ColDatTimeLocal = (ColumnDataWStr*)CurrRecDat->GetColumn(6);
-		ColumnDataWStr* ColDatUdTimeUtc = (ColumnDataWStr*)CurrRecDat->GetColumn(7);
-		ColumnDataWStr* ColDatUdTimeLocal = (ColumnDataWStr*)CurrRecDat->GetColumn(8);
+		ColumnDataBin* ColDatReqTime = (ColumnDataBin*)CurrRecDat->GetColumn(5);
+		ColumnDataWStr* ColDatTimeUtc = (ColumnDataWStr*)CurrRecDat->GetColumn(6);
+		ColumnDataWStr* ColDatTimeLocal = (ColumnDataWStr*)CurrRecDat->GetColumn(7);
+		ColumnDataWStr* ColDatUdTimeUtc = (ColumnDataWStr*)CurrRecDat->GetColumn(8);
+		ColumnDataWStr* ColDatUdTimeLocal = (ColumnDataWStr*)CurrRecDat->GetColumn(9);
 		if (ColDatTimeUtc != NULL && ColDatTimeUtc->GetValue() != NULL) {
 			StkPlSwPrintf(TimeUtc[NumOfRec], DA_MAXLEN_OF_TIME, ColDatTimeUtc->GetValue());
 		} else {
@@ -422,6 +463,31 @@ int DataAccess::GetAgentInfoForOpStatus(wchar_t AgtName[DA_MAXLEN_OF_AGTNAME])
 	delete RecDatAgt;
 
 	return OpStatus;
+}
+
+long long DataAccess::GetAgentInfoForReqTime(wchar_t AgtName[DA_MAXLEN_OF_AGTNAME])
+{
+	ColumnData *ColDatAgtFind[1];
+	ColDatAgtFind[0] = new ColumnDataWStr(L"Name", AgtName);
+	RecordData* RecDatAgtFind = new RecordData(L"AgentInfo", ColDatAgtFind, 1);
+
+	LockTable(L"AgentInfo", LOCK_SHARE);
+	RecordData* RecDatAgt = GetRecord(RecDatAgtFind);
+	UnlockTable(L"AgentInfo");
+
+	long long ReqTime = -1;
+	if (RecDatAgt != NULL) {
+		ColumnDataBin* ColDatReqTime = (ColumnDataBin*)RecDatAgt->GetColumn(5);
+		if (ColDatReqTime != NULL) {
+			long long *ReqTimePtr = (long long*)ColDatReqTime->GetValue();
+			ReqTime = *ReqTimePtr;
+		}
+	}
+
+	delete RecDatAgtFind;
+	delete RecDatAgt;
+
+	return ReqTime;
 }
 
 int  DataAccess::GetServerInfo(int* PInterval, int* SaInterval, wchar_t BucketPath[DA_MAXLEN_OF_BUCKETPATH])

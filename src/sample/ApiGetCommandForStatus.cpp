@@ -10,6 +10,9 @@ StkObject* ApiGetCommandForStatus::Execute(StkObject* ReqObj, int Method, wchar_
 	wchar_t TargetAgtName[DA_MAXLEN_OF_AGTNAME];
 	StkStringParser::ParseInto1Param(UrlPath, L"/api/statuscommand/$/", L'$', TargetAgtName, DA_MAXLEN_OF_AGTNAME);
 	StkObject* TmpObj = new StkObject(L"");
+
+	DataAccess::GetInstance()->SetAgentInfoForReqTime(TargetAgtName);
+
 	while (true) {
 		StkPlSleepMs(1000);
 		if (StopFlag) {

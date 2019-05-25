@@ -125,7 +125,7 @@
             if (AgentInfo[Loop].Status == 0) {
                 $('#statusTd' + Loop).css('background-color', 'LightGreen');
             } else if (AgentInfo[Loop].Status <= -980 && AgentInfo[Loop].Status >= -989) {
-                $('#statusTd' + Loop).css('background-color', 'LightBlue');
+                $('#statusTd' + Loop).css('background-color', 'LightGreen');
             } else {
                 $('#statusTd' + Loop).css('background-color', 'LightCoral');
             }
@@ -133,7 +133,7 @@
             if (AgentInfo[Loop].OpStatus == 0) {
                 $('#opStatusTd' + Loop).css('background-color', 'LightGreen');
             } else if (AgentInfo[Loop].OpStatus <= -980 && AgentInfo[Loop].OpStatus >= -989) {
-                $('#opStatusTd' + Loop).css('background-color', 'LightBlue');
+                $('#opStatusTd' + Loop).css('background-color', 'LightGreen');
             } else {
                 $('#opStatusTd' + Loop).css('background-color', 'LightCoral');
             }
@@ -147,13 +147,14 @@
     function getTooltipStr() {
         var tooltipStr = "-980 : Agent service has started.\r\n" +
                          "-981 : No script is defined.\r\n" +
-                         "-982 : A command for status acquisition has been selected.\r\n" +
-                         "-983 : A command for operation has been selected.\r\n" +
+                         "-982 : Status acquisition cmd has been changed.\r\n" +
+                         "-983 : Operation cmd has been changed.\r\n" +
                          "-984 : Waiting for a request.\r\n" +
                          "-985 : A command for operation has started.\r\n" +
                          "-990 : Server file handling error.\r\n" +
                          "-991 : Agent file handling error.\r\n" +
-                         "-992 : Platform error.\r\n";
+                         "-992 : Platform error.\r\n" +
+                         "-993 : No request from agent\r\n";
         return tooltipStr;
     }
 
