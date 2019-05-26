@@ -44,7 +44,7 @@ int StatusChecker(int Id)
 		if (ReqTime != 0) {
 			long long CurTime = StkPlGetTime();
 			long long DifTime = CurTime - ReqTime;
-			if (DifTime > SaInterval + 60) {
+			if (DifTime > PInterval + 60) {
 				DataAccess::GetInstance()->SetAgentInfoForStatus(AgtName[Loop], -993);
 			}
 		}
