@@ -33,6 +33,7 @@ SERVICE_TABLE_ENTRY ServiceTable[] = {
 #define RESULTCODE_ERROR_SERVERFILE      -990
 #define RESULTCODE_ERROR_AGENTFILE       -991
 #define RESULTCODE_ERROR_PLATFORM        -992
+#define RESULTCODE_ERROR_INVALIDAGTDIR   -994
 
 StkWebAppSend* SoForTh1 = NULL;
 StkWebAppSend* SoForTh2 = NULL;
@@ -417,7 +418,7 @@ int LoadPropertyFile(wchar_t HostOrIpAddr[256], int* PortNum, wchar_t PathToBuck
 	return 0;
 }
 
-void StartXxx(wchar_t HostOrIpAddr[256], int PortNum)
+void StartXxx(wchar_t HostOrIpAddr[256], int PortNum, int InvalidDirectory)
 {
 	SoForTh1 = new StkWebAppSend(1, HostOrIpAddr, PortNum);
 	SoForTh2 = new StkWebAppSend(2, HostOrIpAddr, PortNum);
@@ -428,13 +429,19 @@ void StartXxx(wchar_t HostOrIpAddr[256], int PortNum)
 	SoForTh2->SetSendBufSize(5000000);
 	SoForTh2->SetRecvBufSize(5000000);
 
-	int Result = 0;
-	StkObject* ResObj = SoForTh1->SendRequestRecvResponse(StkWebAppSend::STKWEBAPP_METHOD_POST, "/api/agent/", GetAgentInfo(RESULTCODE_AGENTSTART), &Result);
-	delete ResObj;
+	if (InvalidDirectory != 0) {
+		int Result = 0;
+		StkObject* ResObj = SoForTh1->SendRequestRecvResponse(StkWebAppSend::STKWEBAPP_METHOD_POST, "/api/agent/", GetAgentInfo(RESULTCODE_ERROR_INVALIDAGTDIR), &Result);
+		delete ResObj;
+	} else {
+		int Result = 0;
+		StkObject* ResObj = SoForTh1->SendRequestRecvResponse(StkWebAppSend::STKWEBAPP_METHOD_POST, "/api/agent/", GetAgentInfo(RESULTCODE_AGENTSTART), &Result);
+		delete ResObj;
 
-	AddStkThread(1, L"StatusLoop", L"", NULL, NULL, StatusLoop, NULL, NULL);
-	AddStkThread(2, L"OperationLoop", L"", NULL, NULL, OperationLoop, NULL, NULL);
-	StartAllOfStkThreads();
+		AddStkThread(1, L"StatusLoop", L"", NULL, NULL, StatusLoop, NULL, NULL);
+		AddStkThread(2, L"OperationLoop", L"", NULL, NULL, OperationLoop, NULL, NULL);
+		StartAllOfStkThreads();
+	}
 }
 
 int main(int argc, char* argv[])
@@ -447,16 +454,22 @@ int main(int argc, char* argv[])
 		StkPlConvUtf8ToWideChar(HostOrIpAddr, 256, argv[1]);
 		PortNum = StkPlAtoi(argv[2]);
 		StkPlConvUtf8ToWideChar(PathToBucket, 256, argv[3]);
-		ChangeCurrentDirectory(PathToBucket);
-		StartXxx(HostOrIpAddr, PortNum);
+		int InvalidDirectory = 0;
+		if (StkPlWcsCmp(PathToBucket, L"") != 0) {
+			InvalidDirectory = ChangeCurrentDirectory(PathToBucket);
+		}
+		StartXxx(HostOrIpAddr, PortNum, InvalidDirectory);
 		while (true) { StkPlSleepMs(1000); }
 	} else {
 #ifdef WIN32
 		StartServiceCtrlDispatcher(ServiceTable);
 #else
 		LoadPropertyFile(HostOrIpAddr, &PortNum, PathToBucket);
-		ChangeCurrentDirectory(PathToBucket);
-		StartXxx(HostOrIpAddr, PortNum);
+		int InvalidDirectory = 0;
+		if (StkPlWcsCmp(PathToBucket, L"") != 0) {
+			InvalidDirectory = ChangeCurrentDirectory(PathToBucket);
+		}
+		StartXxx(HostOrIpAddr, PortNum, InvalidDirectory);
 		while (true) { StkPlSleepMs(1000); }
 #endif
 	}
@@ -605,8 +618,11 @@ VOID WINAPI ServiceMain(DWORD dwArgc, PTSTR* pszArgv)
 	int PortNum = 0;
 	wchar_t PathToBucket[256] = L"";
 	LoadPropertyFile(HostOrIpAddr, &PortNum, PathToBucket);
-	ChangeCurrentDirectory(PathToBucket);
-	StartXxx(HostOrIpAddr, PortNum);
+	int InvalidDirectory = 0;
+	if (StkPlWcsCmp(PathToBucket, L"") != 0) {
+		InvalidDirectory = ChangeCurrentDirectory(PathToBucket);
+	}
+	StartXxx(HostOrIpAddr, PortNum, InvalidDirectory);
 
 	while (g_bService) {
 		if (!g_bRun) {
