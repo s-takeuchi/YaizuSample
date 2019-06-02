@@ -713,14 +713,14 @@ int DataAccess::AddLogMsg(const wchar_t LogMsg[DA_MAXLEN_OF_LOGMSG])
 	static int MaxLogId = 0;
 	if (MaxLogId == 0) {
 		MaxLogId = GetMaxLogId() + 1;
+	}
+	static int DelCnt = 0;
+	if (DelCnt == 0) {
 		DeleteOldLogs();
 	}
-	static int DelFlag = 0;
-	if (DelFlag == 10) {
-		DeleteOldLogs();
-		DelFlag = 0;
-	} else {
-		DelFlag++;
+	DelCnt++;
+	if (DelCnt == 10) {
+		DelCnt = 0;
 	}
 
 	wchar_t TimeLocalBuf[64] = L"";
@@ -833,12 +833,12 @@ int DataAccess::GetLogs(
 int DataAccess::DeleteOldLogs()
 {
 	int NumOfLogs = GetNumOfLogs();
-	if (NumOfLogs >= DA_MAXNUM_OF_LOGRECORDS - 100) {
+	if (NumOfLogs >= DA_MAXNUM_OF_LOGRECORDS - 10) {
 		LockTable(L"Log", LOCK_EXCLUSIVE);
 		AzSortRecord(L"Log", L"Id");
 		RecordData* RecDatLog = GetRecord(L"Log");
 		UnlockTable(L"Log");
-		int ExceededNumOfLogs = NumOfLogs - (DA_MAXNUM_OF_LOGRECORDS - 101);
+		int ExceededNumOfLogs = NumOfLogs - (DA_MAXNUM_OF_LOGRECORDS - 10);
 		RecordData* CurrRecDat = RecDatLog;
 		for (int Loop = 0; Loop < ExceededNumOfLogs; Loop++) {
 			ColumnDataInt* ColDatId = (ColumnDataInt*)CurrRecDat->GetColumn(0);
