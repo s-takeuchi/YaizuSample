@@ -532,6 +532,12 @@
 
     window.onload = function() {
         refreshInfo();
+        $(function() {
+            $(".modal-dialog").css({
+                "width" : "98%",
+                "padding" : "1%"
+            });
+        });
     }
 
     function refreshInfo() {
@@ -602,7 +608,7 @@
     </div>
 
     <div id="inputDlgModal" class="modal fade" tabindex="-1" role="dialog" data-keyboard="false" data-backdrop="static">
-        <div class="modal-dialog modal-sm">
+        <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header" id="inputDlgModalTitle">
                 </div>
@@ -613,7 +619,7 @@
     </div>
 
     <div id="loading_Modal" class="modal fade" tabindex="-1" role="dialog" data-keyboard="false" data-backdrop="static">
-        <div class="modal-dialog  modal-sm">
+        <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header" style="padding: 0px; text-align: center;">
                     <h3 style="margin-top: 5px;">Now loading ...</h3>
