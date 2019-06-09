@@ -31,9 +31,23 @@
     var selectedOperationCommand = -1;
 
     function initClientMessage() {
-        addClientMessage('NOLOGINFO', {'en':'No log information', 'ja':'ログはありません。'});
-        addClientMessage('NOAGTINFO', {'en':'No agent information', 'ja':'エージェント情報はありません。'});
-        addClientMessage('NOCMDEXIST', {'en':'<p>No command exists</p>', 'ja':'コマンドはありません。'});
+        addClientMessage('AGENTINFO', {'en':' Agent Info', 'ja':' Agent Info'});
+        addClientMessage('SERVERINFO', {'en':' Server Info', 'ja':' Server Info'});
+        addClientMessage('COMMAND', {'en':' Command', 'ja':' Command'});
+        addClientMessage('AUDITLOG', {'en':' Audit Log', 'ja':' Audit Log'});
+
+        addClientMessage('NOLOGINFO', {'en':'<p>No log information</p>', 'ja':'<p>ログはありません</p>'});
+        addClientMessage('NOAGTINFO', {'en':'<p>No agent information</p>', 'ja':'<p>エージェント情報はありません</p>'});
+        addClientMessage('NOCMDEXIST', {'en':'<p>No command exists</p>', 'ja':'<p>コマンドはありません</p>'});
+        addClientMessage('AINAME', {'en':'Name', 'ja':'名称'});
+        addClientMessage('AISTATUS', {'en':'Status', 'ja':'状態'});
+        addClientMessage('AISTATUSCMD', {'en':'Command for Status', 'ja':'状態取得コマンド'});
+        addClientMessage('AISTATUSTIME', {'en':'Status Acquisition Time', 'ja':'状態取得時刻'});
+        addClientMessage('AISTATUSUPTIME', {'en':'Status Update Time', 'ja':'状態更新時刻'});
+        addClientMessage('AIOPSTATUS', {'en':'OpStatus', 'ja':'操作状態'});
+        addClientMessage('AIOPSTATUSCMD', {'en':'Command for Op', 'ja':'操作状態取得コマンド'});
+        addClientMessage('LOGEVENTTIME', {'en':'Event Occurrence Time', 'ja':'イベント発生時刻'});
+        addClientMessage('LOGEVENT', {'en':'Event', 'ja':'イベント'});
 
         addClientMessage('CONNERR', {
             'en':'Connection with REST API service failed. This may be caused by one of the following issues:<br>(1) REST API service cannot be started.<br>(2) REST API service is not registered as a firewall exception.<br>(3) The definition file [nginx.conf and/or sample.conf] for the host name and port number in the network connectivity settings is invalid.<br>(4) A timeout has occurred when waiting for data from REST API server.<br>',
@@ -55,7 +69,7 @@
     }
 
     function displayLogInfo() {
-        $('#workspace_loginfo').append('<h2><span class="glyphicon glyphicon-time"></span> Audit Log</h2>');
+        $('#workspace_loginfo').append('<h2><span class="glyphicon glyphicon-time"></span>' + getClientMessage('AUDITLOG') + '</h2>');
         if (statusCode[API_GET_LOGS] == -1 || statusCode[API_GET_LOGS] == 0) {
             displayAlertDanger('#workspace_loginfo', 'CONNERR');
             return;
@@ -70,7 +84,7 @@
         logData.addClass('table table-striped');
 
         var tHead = $('<thead>');
-        tHead.append('<tr><th>Event Occurrence Time</th><th>Event</th></tr>');
+        tHead.append('<tr><th>' + getClientMessage('LOGEVENTTIME') + '</th><th>' + getClientMessage('LOGEVENT') + '</th></tr>');
         logData.append(tHead);
 
         var tBody = $('<tbody>');
@@ -83,14 +97,14 @@
     }
 
     function displayAgentInfo() {
-        $('#workspace_agtinfo').append('<h2><span class="glyphicon glyphicon-eye-open"></span> Agent Info</h2>');
+        $('#workspace_agtinfo').append('<h2><span class="glyphicon glyphicon-eye-open"></span>' + getClientMessage('AGENTINFO') + '</h2>');
         if (statusCode[API_GET_AGTINFO] == -1 || statusCode[API_GET_AGTINFO] == 0) {
             displayAlertDanger('#workspace_agtinfo', 'CONNERR');
             return;
         }
         var AgentInfo = getArray(responseData[API_GET_AGTINFO].AgentInfo);
         if (AgentInfo == null) {
-            $('#workspace_agtinfo').append(getClientMessage('NOAGTINFO') + '<br/>');
+            $('#workspace_agtinfo').append(getClientMessage('NOAGTINFO'));
             return;
         }
         var commandList = getArray(responseData[API_GET_COMMAND].Command);
@@ -103,13 +117,13 @@
 
         var tHead = $('<thead>');
         tHead.append('<tr>' +
-                     '<th>Name</th>' +
-                     '<th>Status</th>' +
-                     '<th class="hidden-xs">Command for Status</th>' +
-                     '<th>Status Acquisition Time</th>' +
-                     '<th class="hidden-xs">Status Update Time</th>' +
-                     '<th class="hidden-xs hidden-sm">OpStatus</th>' +
-                     '<th class="hidden-xs hidden-sm">Command for Op</th>' +
+                     '<th>' + getClientMessage('AINAME') + '</th>' +
+                     '<th>' + getClientMessage('AISTATUS') + '</th>' +
+                     '<th class="hidden-xs">' + getClientMessage('AISTATUSCMD') + '</th>' +
+                     '<th>' + getClientMessage('AISTATUSTIME') + '</th>' +
+                     '<th class="hidden-xs">' + getClientMessage('AISTATUSUPTIME') + '</th>' +
+                     '<th class="hidden-xs hidden-sm">' + getClientMessage('AIOPSTATUS') + '</th>' +
+                     '<th class="hidden-xs hidden-sm">' + getClientMessage('AIOPSTATUSCMD') + '</th>' +
                      '</tr>');
         agentInfoData.append(tHead);
 
@@ -339,7 +353,7 @@
     }
 
     function displayServerInfo() {
-        $('#workspace_svrinfo').append('<h2><span class="glyphicon glyphicon-tower"></span> Server Info</h2>');
+        $('#workspace_svrinfo').append('<h2><span class="glyphicon glyphicon-tower"></span>' + getClientMessage('SERVERINFO') + '</h2>');
         if (statusCode[API_GET_SVRINFO] == -1 || statusCode[API_GET_SVRINFO] == 0) {
             displayAlertDanger('#workspace_svrinfo', 'CONNERR');
             return;
@@ -457,7 +471,7 @@
     }
 
     function displayCommand() {
-        $('#workspace_command').append('<h2><span class="glyphicon glyphicon-flash"></span> Command</h2>');
+        $('#workspace_command').append('<h2><span class="glyphicon glyphicon-flash"></span>' + getClientMessage('COMMAND') + '</h2>');
         if (statusCode[API_GET_COMMAND] == -1 || statusCode[API_GET_COMMAND] == 0) {
             displayAlertDanger('#workspace_command', 'CONNERR');
             return;
