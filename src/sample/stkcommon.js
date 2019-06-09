@@ -12,6 +12,10 @@ var responseData = [{},{},{},{},{},{},{},{},{},{},{},{},{},{}];
 // Init flag of loading modal
 var initLoadingModalFlag = false;
 
+// Client messages
+var clientMsg = {};
+var clientLanguage = 0;
+
 function initLoadingModal() {
     var loadingModal = $('<div id="loading_Modal" class="modal fade" tabindex="-1" role="dialog" data-keyboard="false" data-backdrop="static">');
     var modalDialog = $('<div class="modal-dialog">');
@@ -24,6 +28,53 @@ function initLoadingModal() {
     modalDialog.append(modalContent);
     loadingModal.append(modalDialog);
     $('body').append(loadingModal);
+}
+
+function addClientMessage(code, msg) {
+    if (msg.en !== undefined && msg.ja !== undefined) {
+        clientMsg[code] = msg;
+    }
+}
+
+function deleteClientMessage(code) {
+    delete clientMsg[code];
+}
+
+function getClientMessageEn(code) {
+    return clientMsg[code].en;
+}
+
+function getClientMessageJa(code) {
+    return clientMsg[code].ja;
+}
+
+function setClientLanguage(lang) {
+    clientLanguage = lang;
+}
+
+function getClientMessage(code) {
+    if (clientLanguage == 0) {
+        return clientMsg[code].en;
+    }
+    if (clientLanguage == 1) {
+        return clientMsg[code].ja;
+    }
+}
+
+function displayAlertSuccess(parent, msgCode) {
+    $(parent).append('<div class="alert alert-success" role="alert">' + getClientMessage(msgCode) + '</div>');
+}
+
+function displayAlertDanger(parent, msgCode) {
+    $(parent).append('<div class="alert alert-danger" role="alert">' + getClientMessage(msgCode) + '</div>');
+}
+
+function displayAlertWarning(parent, msgCode) {
+    $(parent).append('<div class="alert alert-warning" role="alert">' + getClientMessage(msgCode) + '</div>');
+}
+
+function displayAlertInfo(parent, msgCode) {
+    $(parent).append('<div class="alert alert-info" role="alert">' + getClientMessage(msgCode) + '</div>');
 }
 
 function apiCall(method, url, request, index, targetFunc) {

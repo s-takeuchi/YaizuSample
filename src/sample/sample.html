@@ -30,6 +30,17 @@
     var selectedAgentStatusCommand = -1;
     var selectedOperationCommand = -1;
 
+    function initClientMessage() {
+        addClientMessage('NOLOGINFO', {'en':'No log information', 'ja':'ログはありません。'});
+        addClientMessage('NOAGTINFO', {'en':'No agent information', 'ja':'エージェント情報はありません。'});
+        addClientMessage('NOCMDEXIST', {'en':'<p>No command exists</p>', 'ja':'コマンドはありません。'});
+
+        addClientMessage('CONNERR', {
+            'en':'Connection with REST API service failed. This may be caused by one of the following issues:<br>(1) REST API service cannot be started.<br>(2) REST API service is not registered as a firewall exception.<br>(3) The definition file [nginx.conf and/or sample.conf] for the host name and port number in the network connectivity settings is invalid.<br>(4) A timeout has occurred when waiting for data from REST API server.<br>',
+            'ja':'REST APIサービスとの通信が失敗しました。次の要因が考えられます。<br>(1) REST APIサービスが開始されていない。<br>(2) REST APIサービスがファイアウォールに例外登録されていない。<br>(3) 接続先ホスト名およびポート番号の定義ファイル [nginx.conf , sample.conf] が不正。<br>(4) REST APIサーバからのデータ取得中にタイムアウトが発生した。<br>'
+        });
+    }
+
     function getArray(targetObject) {
         if (targetObject === undefined) {
             return null;
@@ -45,9 +56,13 @@
 
     function displayLogInfo() {
         $('#workspace_loginfo').append('<h2><span class="glyphicon glyphicon-time"></span> Audit Log</h2>');
+        if (statusCode[API_GET_LOGS] == -1 || statusCode[API_GET_LOGS] == 0) {
+            displayAlertDanger('#workspace_loginfo', 'CONNERR');
+            return;
+        }
         var Log = getArray(responseData[API_GET_LOGS].Log);
         if (Log == null) {
-            $('#workspace_loginfo').append('No log information<br/>');
+            $('#workspace_loginfo').append(getClientMessage('NOLOGINFO'));
             return;
         }
 
@@ -69,9 +84,13 @@
 
     function displayAgentInfo() {
         $('#workspace_agtinfo').append('<h2><span class="glyphicon glyphicon-eye-open"></span> Agent Info</h2>');
+        if (statusCode[API_GET_AGTINFO] == -1 || statusCode[API_GET_AGTINFO] == 0) {
+            displayAlertDanger('#workspace_agtinfo', 'CONNERR');
+            return;
+        }
         var AgentInfo = getArray(responseData[API_GET_AGTINFO].AgentInfo);
         if (AgentInfo == null) {
-            $('#workspace_agtinfo').append('No agent information<br/>');
+            $('#workspace_agtinfo').append(getClientMessage('NOAGTINFO') + '<br/>');
             return;
         }
         var commandList = getArray(responseData[API_GET_COMMAND].Command);
@@ -321,7 +340,10 @@
 
     function displayServerInfo() {
         $('#workspace_svrinfo').append('<h2><span class="glyphicon glyphicon-tower"></span> Server Info</h2>');
-
+        if (statusCode[API_GET_SVRINFO] == -1 || statusCode[API_GET_SVRINFO] == 0) {
+            displayAlertDanger('#workspace_svrinfo', 'CONNERR');
+            return;
+        }
         var StartTimeTbl = $('<table>');
         StartTimeTbl.addClass('table table-striped');
 
@@ -436,9 +458,13 @@
 
     function displayCommand() {
         $('#workspace_command').append('<h2><span class="glyphicon glyphicon-flash"></span> Command</h2>');
+        if (statusCode[API_GET_COMMAND] == -1 || statusCode[API_GET_COMMAND] == 0) {
+            displayAlertDanger('#workspace_command', 'CONNERR');
+            return;
+        }
         var commandList = getArray(responseData[API_GET_COMMAND].Command);
         if (commandList == null) {
-            $('#workspace_command').append('<p>No command exists</p>');
+            $('#workspace_command').append(getClientMessage('NOCMDEXIST'));
         }
 
         selectedCommand = -1;
@@ -530,16 +556,6 @@
         refreshInfo();
     }
 
-    window.onload = function() {
-        refreshInfo();
-        $(function() {
-            $(".modal-dialog").css({
-                "width" : "98%",
-                "padding" : "1%"
-            });
-        });
-    }
-
     function refreshInfo() {
         $('#workspace_agtinfo').empty();
         $('#workspace_svrinfo').empty();
@@ -559,6 +575,17 @@
         }
         var activateTarget = document.getElementById(id);
         activateTarget.style.display = 'block'
+    }
+
+    window.onload = function() {
+        initClientMessage();
+        refreshInfo();
+        $(function() {
+            $(".modal-dialog").css({
+                "width" : "98%",
+                "padding" : "1%"
+            });
+        });
     }
 
     </script>
