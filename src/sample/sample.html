@@ -45,7 +45,22 @@
         addClientMessage('AISTATUSTIME', {'en':'Status Acquisition Time', 'ja':'状態取得時刻'});
         addClientMessage('AISTATUSUPTIME', {'en':'Status Update Time', 'ja':'状態更新時刻'});
         addClientMessage('AIOPSTATUS', {'en':'OpStatus', 'ja':'操作状態'});
-        addClientMessage('AIOPSTATUSCMD', {'en':'Command for Op', 'ja':'操作状態取得コマンド'});
+        addClientMessage('AIOPSTATUSCMD', {'en':'Command for Op', 'ja':'操作コマンド'});
+        addClientMessage('AISETSTATUSCMD', {'en':'Set Status Command', 'ja':'状態取得コマンドの設定'});
+        addClientMessage('AIEXECCMD', {'en':'Execute Op Command', 'ja':'操作コマンドの実行'});
+        addClientMessage('SELOPCMD', {'en':'Select operation command', 'ja':'操作コマンドを選択してください'});
+        addClientMessage('SELSTATUSCMD', {'en':'Select status acquisition command', 'ja':'状態取得コマンドを選択してください'});
+        addClientMessage('RESCODE-980', {'en':'-980 : Agent service has started.\r\n', 'ja':'-980 : エージェントサービスが起動した\r\n'});
+        addClientMessage('RESCODE-981', {'en':'-981 : No script is defined.\r\n', 'ja':'-981 : スクリプトが定義されていない\r\n'});
+        addClientMessage('RESCODE-982', {'en':'-982 : Status acquisition cmd has been changed.\r\n', 'ja':'-982 : 状態取得コマンドが変更された\r\n'});
+        addClientMessage('RESCODE-983', {'en':'-983 : Operation cmd has been changed.\r\n', 'ja':'-983 : 操作コマンドが変更された\r\n'});
+        addClientMessage('RESCODE-984', {'en':'-984 : Waiting for a request.\r\n', 'ja':'-984 : 要求待ち\r\n'});
+        addClientMessage('RESCODE-985', {'en':'-985 : A command for operation has started.\r\n', 'ja':'-985 : 操作コマンドが実行された\r\n'});
+        addClientMessage('RESCODE-990', {'en':'-990 : Server file handling error.\r\n', 'ja':'-990 : サーバファイルハンドリングエラー\r\n'});
+        addClientMessage('RESCODE-991', {'en':'-991 : Agent file handling error.\r\n', 'ja':'-991 : エージェントファイルハンドリングエラー\r\n'});
+        addClientMessage('RESCODE-992', {'en':'-992 : Platform error.\r\n', 'ja':'-992 : プラットフォームエラー\r\n'});
+        addClientMessage('RESCODE-993', {'en':'-993 : No request from agent.\r\n', 'ja':'-993 : エージェントからの要求がない\r\n'});
+        addClientMessage('RESCODE-994', {'en':'-994 : Invalid agent directory.\r\n', 'ja':'-994 : エージェントディレクトリが不正\r\n'});
         addClientMessage('LOGEVENTTIME', {'en':'Event Occurrence Time', 'ja':'イベント発生時刻'});
         addClientMessage('LOGEVENT', {'en':'Event', 'ja':'イベント'});
 
@@ -171,24 +186,24 @@
                 $('#opStatusTd' + Loop).css('background-color', 'LightCoral');
             }
         }
-        $('#workspace_agtinfo').append('<button type="button" id="setAgentStatusCommand" class="btn btn-primary disabled" onclick="displayAgentStatusCommandDlg()">Set Status Command</button> ');
-        $('#workspace_agtinfo').append('<button type="button" id="execOpeCommand" class="btn btn-primary disabled" onclick="displayExecCommandDlg()">Execute Command</button> ');
+        $('#workspace_agtinfo').append('<button type="button" id="setAgentStatusCommand" class="btn btn-primary disabled" onclick="displayAgentStatusCommandDlg()">' + getClientMessage('AISETSTATUSCMD') + '</button> ');
+        $('#workspace_agtinfo').append('<button type="button" id="execOpeCommand" class="btn btn-primary disabled" onclick="displayExecCommandDlg()">' + getClientMessage('AIEXECCMD') + '</button> ');
         $('#workspace_agtinfo').append('<p></p>');
         $('td').css('vertical-align', 'middle');
     }
 
     function getTooltipStr() {
-        var tooltipStr = "-980 : Agent service has started.\r\n" +
-                         "-981 : No script is defined.\r\n" +
-                         "-982 : Status acquisition cmd has been changed.\r\n" +
-                         "-983 : Operation cmd has been changed.\r\n" +
-                         "-984 : Waiting for a request.\r\n" +
-                         "-985 : A command for operation has started.\r\n" +
-                         "-990 : Server file handling error.\r\n" +
-                         "-991 : Agent file handling error.\r\n" +
-                         "-992 : Platform error.\r\n" +
-                         "-993 : No request from agent\r\n" +
-                         "-994 : Invalid agent directory\r\n";
+        var tooltipStr = getClientMessage('RESCODE-980') +
+                         getClientMessage('RESCODE-981') +
+                         getClientMessage('RESCODE-982') +
+                         getClientMessage('RESCODE-983') +
+                         getClientMessage('RESCODE-984') +
+                         getClientMessage('RESCODE-985') +
+                         getClientMessage('RESCODE-990') +
+                         getClientMessage('RESCODE-991') +
+                         getClientMessage('RESCODE-992') +
+                         getClientMessage('RESCODE-993') +
+                         getClientMessage('RESCODE-994');
         return tooltipStr;
     }
 
@@ -226,7 +241,7 @@
         $('#inputDlgModalTitle').empty();
         $('#inputDlgModalBody').empty();
 
-        $('#inputDlgModalTitle').append('<h3 class="modal-title">Select execution command</h3>');
+        $('#inputDlgModalTitle').append('<h3 class="modal-title">' + getClientMessage('SELOPCMD') + '</h3>');
 
         var btnGrp = $('<div class="btn-group">');
         btnGrp.append('<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><span id="selectedExecCommand">Select Command </span><span class="caret"></span></button>');
@@ -283,7 +298,7 @@
         $('#inputDlgModalTitle').empty();
         $('#inputDlgModalBody').empty();
 
-        $('#inputDlgModalTitle').append('<h3 class="modal-title">Select status acquisition command</h3>');
+        $('#inputDlgModalTitle').append('<h3 class="modal-title">' + getClientMessage('SELSTATUSCMD') + '</h3>');
 
         var btnGrp = $('<div class="btn-group">');
         btnGrp.append('<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><span id="selectedAgentStatus">' + getAgentStatusCommand() + '</span><span class="caret"></span></button>');
