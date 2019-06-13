@@ -39,6 +39,7 @@
         addClientMessage('NOLOGINFO', {'en':'<p>No log information</p>', 'ja':'<p>ログはありません</p>'});
         addClientMessage('NOAGTINFO', {'en':'<p>No agent information</p>', 'ja':'<p>エージェント情報はありません</p>'});
         addClientMessage('NOCMDEXIST', {'en':'<p>No command exists</p>', 'ja':'<p>コマンドはありません</p>'});
+
         addClientMessage('AINAME', {'en':'Name', 'ja':'名称'});
         addClientMessage('AISTATUS', {'en':'Status', 'ja':'状態'});
         addClientMessage('AISTATUSCMD', {'en':'Command for Status', 'ja':'状態取得コマンド'});
@@ -50,6 +51,7 @@
         addClientMessage('AIEXECCMD', {'en':'Execute Op Command', 'ja':'操作コマンドの実行'});
         addClientMessage('SELOPCMD', {'en':'Select operation command', 'ja':'操作コマンドを選択してください'});
         addClientMessage('SELSTATUSCMD', {'en':'Select status acquisition command', 'ja':'状態取得コマンドを選択してください'});
+        addClientMessage('SELCMD', {'en':'Select Command ', 'ja':'コマンドを選択してください'});
         addClientMessage('RESCODE-980', {'en':'-980 : Agent service has started.\r\n', 'ja':'-980 : エージェントサービスが起動した\r\n'});
         addClientMessage('RESCODE-981', {'en':'-981 : No script is defined.\r\n', 'ja':'-981 : スクリプトが定義されていない\r\n'});
         addClientMessage('RESCODE-982', {'en':'-982 : Status acquisition cmd has been changed.\r\n', 'ja':'-982 : 状態取得コマンドが変更された\r\n'});
@@ -61,6 +63,26 @@
         addClientMessage('RESCODE-992', {'en':'-992 : Platform error.\r\n', 'ja':'-992 : プラットフォームエラー\r\n'});
         addClientMessage('RESCODE-993', {'en':'-993 : No request from agent.\r\n', 'ja':'-993 : エージェントからの要求がない\r\n'});
         addClientMessage('RESCODE-994', {'en':'-994 : Invalid agent directory.\r\n', 'ja':'-994 : エージェントディレクトリが不正\r\n'});
+
+        addClientMessage('SISTARTTIMEUTC', {'en':'Service Start Time (UTC)', 'ja':'サービス開始時刻 (UTC)'});
+        addClientMessage('SISTARTTIMELOC', {'en':'Service Start Time (Local)', 'ja':'サービス開始時刻 (Local)'});
+        addClientMessage('SISVRVERSION', {'en':'Server Version : ', 'ja':'サーバーバージョン : '});
+        addClientMessage('SIPOLLINTVL', {'en':'Polling Interval : ', 'ja':'ポーリング間隔 : '});
+        addClientMessage('SISTACQINTVL', {'en':'Status Acquisition Interval : ', 'ja':'状態取得間隔 : '});
+        addClientMessage('SIPATHTOBUCKET', {'en':'Path to bucket : ', 'ja':'バケットのパス : '});
+        addClientMessage('SIUPDATEBTN', {'en':'Update', 'ja':'更新'});
+
+        addClientMessage('COMNAME', {'en':'Command Name', 'ja':'コマンド名'});
+        addClientMessage('COMCOPYTOAGT', {'en':'File To Be Copied To Agent (Only file name. Do not specify directory path.)', 'ja':'エージェントにコピーされるファイル (ファイル名のみ)'});
+        addClientMessage('COMTYPE', {'en':'Command Type', 'ja':'コマンド種別'});
+        addClientMessage('COMSCRIPT', {'en':'Script', 'ja':'スクリプト'});
+        addClientMessage('COMCOPYTOSVR', {'en':'File To Be Copied To Server (Only file name. Do not specify directory path.)', 'ja':'サーバーにコピーされるファイル (ファイル名のみ)'});
+        addClientMessage('COMPLACESVR', {'en':'File Placed In Server', 'ja':'サーバーに配置されたファイル'});
+        addClientMessage('COMPLACEAGT', {'en':'File Placed In Agent', 'ja':'エージェントに配置されたファイル'});
+        addClientMessage('COMADD', {'en':'Add', 'ja':'追加'});
+        addClientMessage('COMUPDATE', {'en':'Update', 'ja':'更新'});
+        addClientMessage('COMDELETE', {'en':'Delete', 'ja':'削除'});
+
         addClientMessage('LOGEVENTTIME', {'en':'Event Occurrence Time', 'ja':'イベント発生時刻'});
         addClientMessage('LOGEVENT', {'en':'Event', 'ja':'イベント'});
 
@@ -244,7 +266,7 @@
         $('#inputDlgModalTitle').append('<h3 class="modal-title">' + getClientMessage('SELOPCMD') + '</h3>');
 
         var btnGrp = $('<div class="btn-group">');
-        btnGrp.append('<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><span id="selectedExecCommand">Select Command </span><span class="caret"></span></button>');
+        btnGrp.append('<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><span id="selectedExecCommand">' + getClientMessage('SELCMD') + '</span><span class="caret"></span></button>');
         var ddMenu = $('<ul class="dropdown-menu" role="menu">');
         for (var loop = 0; commandList != null && loop < commandList.length; loop++) {
             ddMenu.append('<li role="presentation"><a onclick="selectExecCommand(' + loop + ')" role="menuitem" tabindex="-1" href="#">' + commandList[loop].Name + '</a></li>');
@@ -377,14 +399,14 @@
         StartTimeTbl.addClass('table table-striped');
 
         var tHead = $('<thead>');
-        tHead.append('<tr><th>Service Start Time (UTC)</th><th>Service Start Time (Local)</th></tr>');
+        tHead.append('<tr><th>' + getClientMessage('SISTARTTIMEUTC') + '</th><th>' + getClientMessage('SISTARTTIMELOC') + '</th></tr>');
         StartTimeTbl.append(tHead);
 
         var tBody = $('<tbody>');
         tBody.append('<tr><td>' + responseData[API_GET_SVRINFO].ServerInfo.StartTimeUtc + '</td><td>' + responseData[API_GET_SVRINFO].ServerInfo.StartTimeLocal + '</td></tr>');
         StartTimeTbl.append(tBody);
 
-        $('#workspace_svrinfo').append('<h4>Version : ' + responseData[API_GET_SVRINFO].ServerInfo.Version + '</h4>');
+        $('#workspace_svrinfo').append('<h4>' + getClientMessage('SISVRVERSION') + responseData[API_GET_SVRINFO].ServerInfo.Version + '</h4>');
         $('#workspace_svrinfo').append(StartTimeTbl);
 
         // Polling Interval
@@ -406,7 +428,7 @@
         ddMenu.append('<li role="presentation"><a onclick="selectPollingInterval(3)" role="menuitem" tabindex="-1" href="#">' + pollingIntervalStr[3] + '</a></li>');
         btnGrp.append(ddMenu);
         $('#workspace_svrinfo').append('<p>');
-        $('#workspace_svrinfo').append('Polling Interval : ');
+        $('#workspace_svrinfo').append(getClientMessage('SIPOLLINTVL'));
         $('#workspace_svrinfo').append(btnGrp);
         $('#workspace_svrinfo').append('</p>');
 
@@ -430,17 +452,17 @@
         btnGrp.append(ddMenu);
 
         $('#workspace_svrinfo').append('<p>');
-        $('#workspace_svrinfo').append('Status Acquisition Interval : ');
+        $('#workspace_svrinfo').append(getClientMessage('SISTACQINTVL'));
         $('#workspace_svrinfo').append(btnGrp);
         $('#workspace_svrinfo').append('</p>');
 
         $('#workspace_svrinfo').append('<p>');
-        $('#workspace_svrinfo').append('<div class="form-group"><label for="bucketPath">Path to bucket</label><input type="text" class="form-control" id="bucketPath" placeholder="Path to bucket"></div>');
+        $('#workspace_svrinfo').append('<div class="form-group"><label for="bucketPath">' + getClientMessage('SIPATHTOBUCKET') + '</label><input type="text" class="form-control" id="bucketPath" placeholder="Path to bucket"></div>');
         $('#workspace_svrinfo').append('</p>');
         $('#bucketPath').val(responseData[API_GET_SVRINFO].ServerInfo.BucketPath);
 
         $('#workspace_svrinfo').append('<p>');
-        $('#workspace_svrinfo').append('<button type="button" id="serverInfoBtnUpdate" class="btn btn-primary" onclick="updateServerInfo()">Update</button> ');
+        $('#workspace_svrinfo').append('<button type="button" id="serverInfoBtnUpdate" class="btn btn-primary" onclick="updateServerInfo()">' + getClientMessage('SIUPDATEBTN') + '</button> ');
         $('#workspace_svrinfo').append('</p>');
         $('td').css('vertical-align', 'middle');
     }
@@ -520,14 +542,14 @@
             $('#workspace_command').append(commandListTable);
         }
 
-        $('#workspace_command').append('<div class="form-group"><label for="commandName">Command Name</label><input type="text" class="form-control" id="commandName" placeholder="Command Name"></div>');
-        $('#workspace_command').append('<div class="form-group"><label for="serverFileName">File To Be Copied To Agent (Only file name. Do not specify directory path.)</label><input type="text" class="form-control" id="serverFileName" placeholder="File Placed In Server"></div>');
-        $('#workspace_command').append('<div class="form-group"><label for="commandType">Command Type</label><select class="form-control" id="commandType"><option>Linux /usr/bin/bash</option><option>Windows cmd.exe /c</option></select></div>');
-        $('#workspace_command').append('<div class="form-group"><label for="commandScript">Script</label><textarea class="form-control" id="commandScript" rows="3" style="margin-top: 0px; margin-bottom: 0px; height: 185px;"></textarea></div>');
-        $('#workspace_command').append('<div class="form-group"><label for="agentFileName">File To Be Copied To Server (Only file name. Do not specify directory path.)</label><input type="text" class="form-control" id="agentFileName" placeholder="File Placed In Agent"></div>');
-        $('#workspace_command').append('<button type="button" id="commandBtnAdd" class="btn btn-primary" onclick="updateCommand(false)">Add</button> ');
-        $('#workspace_command').append('<button type="button" id="commandBtnUpdate" class="btn btn-primary disabled" onclick="updateCommand(true)">Update</button> ');
-        $('#workspace_command').append('<button type="button" id="commandBtnDelete" class="btn btn-primary disabled" onclick="deleteCommand()">Delete</button> ');
+        $('#workspace_command').append('<div class="form-group"><label for="commandName">' + getClientMessage('COMNAME') + '</label><input type="text" class="form-control" id="commandName" placeholder="' + getClientMessage('COMNAME') + '"></div>');
+        $('#workspace_command').append('<div class="form-group"><label for="serverFileName">' + getClientMessage('COMCOPYTOAGT') + '</label><input type="text" class="form-control" id="serverFileName" placeholder="' + getClientMessage('COMPLACESVR') + '"></div>');
+        $('#workspace_command').append('<div class="form-group"><label for="commandType">' + getClientMessage('COMTYPE') + '</label><select class="form-control" id="commandType"><option>Linux /usr/bin/bash</option><option>Windows cmd.exe /c</option></select></div>');
+        $('#workspace_command').append('<div class="form-group"><label for="commandScript">' + getClientMessage('COMSCRIPT') + '</label><textarea class="form-control" id="commandScript" rows="3" style="margin-top: 0px; margin-bottom: 0px; height: 185px;"></textarea></div>');
+        $('#workspace_command').append('<div class="form-group"><label for="agentFileName">' + getClientMessage('COMCOPYTOSVR') + '</label><input type="text" class="form-control" id="agentFileName" placeholder="' + getClientMessage('COMPLACEAGT') + '"></div>');
+        $('#workspace_command').append('<button type="button" id="commandBtnAdd" class="btn btn-primary" onclick="updateCommand(false)">' + getClientMessage('COMADD') + '</button> ');
+        $('#workspace_command').append('<button type="button" id="commandBtnUpdate" class="btn btn-primary disabled" onclick="updateCommand(true)">' + getClientMessage('COMUPDATE') + '</button> ');
+        $('#workspace_command').append('<button type="button" id="commandBtnDelete" class="btn btn-primary disabled" onclick="deleteCommand()">' + getClientMessage('COMDELETE') + '</button> ');
         $('#workspace_command').append('<p></p>');
         $('td').css('vertical-align', 'middle');
     }
