@@ -6,8 +6,8 @@ var timeout = 10000;
 var underComm = 0;
 
 // [0] : for API-1, [1] : for API-2, [2] : for API-3, ...
-var statusCode = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
-var responseData = [{},{},{},{},{},{},{},{},{},{},{},{},{},{}];
+var statusCode = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+var responseData = [{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}];
 
 // Init flag of loading modal
 var initLoadingModalFlag = false;

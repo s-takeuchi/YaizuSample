@@ -17,6 +17,7 @@
 #include "ApiGetCommandForOperation.h"
 #include "ApiGetFile.h"
 #include "ApiPostFile.h"
+#include "ApiGetLanguage.h"
 #include "dataaccess.h"
 
 int StatusChecker(int Id)
@@ -92,6 +93,8 @@ void Sample(wchar_t* IpAddr, int Port)
 	int Add11 = Soc->AddReqHandler(StkWebAppExec::STKWEBAPP_METHOD_GET, L"/api/file/$/$/", (StkWebAppExec*)ApiGetFileObj);
 	ApiPostFile* ApiPostFileObj = new ApiPostFile();
 	int Add12 = Soc->AddReqHandler(StkWebAppExec::STKWEBAPP_METHOD_POST, L"/api/file/", (StkWebAppExec*)ApiPostFileObj);
+	ApiGetLanguage* ApiGetLanguageObj = new ApiGetLanguage();
+	int Add13 = Soc->AddReqHandler(StkWebAppExec::STKWEBAPP_METHOD_GET, L"/api/language/", (StkWebAppExec*)ApiGetLanguageObj);
 
 	////////// Main logic starts
 	Soc->TheLoop();
@@ -109,6 +112,7 @@ void Sample(wchar_t* IpAddr, int Port)
 	int Del10 = Soc->DeleteReqHandler(StkWebAppExec::STKWEBAPP_METHOD_GET, L"/api/opcommand/$/");
 	int Del11 = Soc->DeleteReqHandler(StkWebAppExec::STKWEBAPP_METHOD_GET, L"/api/file/$/$/");
 	int Del12 = Soc->DeleteReqHandler(StkWebAppExec::STKWEBAPP_METHOD_POST, L"/api/file/");
+	int Del13 = Soc->DeleteReqHandler(StkWebAppExec::STKWEBAPP_METHOD_GET, L"/api/language/");
 
 	ApiGetCommandForStatus::StopFlag = true;
 	ApiGetCommandForOperation::StopFlag = true;

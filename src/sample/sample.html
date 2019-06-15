@@ -21,6 +21,7 @@
     var API_POST_COMMAND            = 6;
     var API_DELETE_COMMAND          = 7;
     var API_POST_AGTINFO            = 8;
+    var API_GET_LANG                = 9;
 
     var selectedPollingInterval = 1;
     var pollingIntervalStr = ['30 sec ', '1 min ', '5 min ', '15 min '];
@@ -603,6 +604,18 @@
         }
     }
 
+    function getLanguage() {
+        if (statusCode[API_GET_LANG] == -1 || statusCode[API_GET_LANG] == 0) {
+            return;
+        }
+        if (responseData[API_GET_LANG].ClientLanguage == 'ja') {
+            setClientLanguage(1);
+        } else {
+            setClientLanguage(0);
+        }
+        refreshInfo();
+    }
+
     function refreshAfterCommandOperation() {
         refreshInfo();
     }
@@ -630,13 +643,14 @@
 
     window.onload = function() {
         initClientMessage();
-        refreshInfo();
+        apiCall('GET', './api/language/', null, API_GET_LANG, getLanguage);
         $(function() {
             $(".modal-dialog").css({
                 "width" : "98%",
                 "padding" : "1%"
             });
         });
+        refreshInfo();
     }
 
     </script>
