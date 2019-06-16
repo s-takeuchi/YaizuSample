@@ -1,7 +1,10 @@
 #pragma once
 
-#define MSG_COMDELETE      4000
-#define MSG_COMADD         4001
-#define MSG_COMMODIFY      4002
-#define MSG_SERVICESTARTED 4010
-#define MSG_SERVICESTOPPED 4011
+#define MSG_COMDELETE        4000
+#define MSG_COMADD           4001
+#define MSG_COMMODIFY        4002
+#define MSG_CMDSTATUSACQCHGD 4005
+#define MSG_CMDOPSTARTED     4006
+#define MSG_CMDOPENDED       4007
+#define MSG_SERVICESTARTED   4010
+#define MSG_SERVICESTOPPED   4011

@@ -48,12 +48,15 @@ StkObject* ApiPostCommand::Execute(StkObject* ReqObj, int Method, wchar_t UrlPat
 	}
 	int RetSetCom = DataAccess::GetInstance()->SetCommand(Id, Name, Type, (char*)Script, ServerFileName, AgentFileName);
 	wchar_t LogMsg[256] = L"";
+	wchar_t LogMsgJa[256] = L"";
 	if (RetSetCom == 0) {
 		StkPlSwPrintf(LogMsg, 256, L"%ls [%ls]", MessageProc::GetMsgEng(MSG_COMADD), Name);
+		StkPlSwPrintf(LogMsgJa, 256, L"%ls [%ls]", MessageProc::GetMsgJpn(MSG_COMADD), Name);
 	} else if (RetSetCom == 1) {
 		StkPlSwPrintf(LogMsg, 256, L"%ls [%ls]", MessageProc::GetMsgEng(MSG_COMMODIFY), Name);
+		StkPlSwPrintf(LogMsgJa, 256, L"%ls [%ls]", MessageProc::GetMsgJpn(MSG_COMMODIFY), Name);
 	}
-	DataAccess::GetInstance()->AddLogMsg(LogMsg);
+	DataAccess::GetInstance()->AddLogMsg(LogMsg, LogMsgJa);
 
 	StkObject* TmpObj = new StkObject(L"");
 	TmpObj->AppendChildElement(new StkObject(L"Msg0", L""));

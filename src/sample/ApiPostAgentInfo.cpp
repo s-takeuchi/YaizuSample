@@ -1,5 +1,7 @@
 #include "../../../YaizuComLib/src/stkpl/StkPl.h"
+#include "../../../YaizuComLib/src/commonfunc/msgproc.h"
 #include "dataaccess.h"
+#include "MessageCode.h"
 #include "ApiPostAgentInfo.h"
 
 StkObject* ApiPostAgentInfo::Execute(StkObject* ReqObj, int Method, wchar_t UrlPath[StkWebAppExec::URL_PATH_LENGTH], int* ResultCode, wchar_t Locale[3])
@@ -54,8 +56,10 @@ StkObject* ApiPostAgentInfo::Execute(StkObject* ReqObj, int Method, wchar_t UrlP
 			wchar_t CmdName[DA_MAXLEN_OF_CMDNAME] = L"";
 			DataAccess::GetInstance()->GetCommandNameById(StatusCmd, CmdName);
 			wchar_t LogMsg[512] = L"";
-			StkPlSwPrintf(LogMsg, 256, L"Command for status acquisition has been changed. [%ls, %ls]", Name, CmdName);
-			DataAccess::GetInstance()->AddLogMsg(LogMsg);
+			wchar_t LogMsgJa[512] = L"";
+			StkPlSwPrintf(LogMsg, 256, L"%ls [%ls, %ls]", MessageProc::GetMsgEng(MSG_CMDSTATUSACQCHGD), Name, CmdName);
+			StkPlSwPrintf(LogMsgJa, 256, L"%ls [%ls, %ls]", MessageProc::GetMsgJpn(MSG_CMDSTATUSACQCHGD), Name, CmdName);
+			DataAccess::GetInstance()->AddLogMsg(LogMsg, LogMsgJa);
 		}
 		if (OpStatusFlag) {
 			DataAccess::GetInstance()->SetAgentInfoForOpStatus(Name, OpStatus);
@@ -65,12 +69,16 @@ StkObject* ApiPostAgentInfo::Execute(StkObject* ReqObj, int Method, wchar_t UrlP
 				wchar_t CmdName[DA_MAXLEN_OF_CMDNAME] = L"";
 				DataAccess::GetInstance()->GetCommandNameById(TmpOpCmd, CmdName);
 				wchar_t LogMsg[512] = L"";
-				StkPlSwPrintf(LogMsg, 256, L"Command for operation has started. [%ls, %ls]", Name, CmdName);
-				DataAccess::GetInstance()->AddLogMsg(LogMsg);
+				wchar_t LogMsgJa[512] = L"";
+				StkPlSwPrintf(LogMsg, 256, L"%ls [%ls, %ls]", MessageProc::GetMsgEng(MSG_CMDOPSTARTED), Name, CmdName);
+				StkPlSwPrintf(LogMsgJa, 256, L"%ls [%ls, %ls]", MessageProc::GetMsgJpn(MSG_CMDOPSTARTED), Name, CmdName);
+				DataAccess::GetInstance()->AddLogMsg(LogMsg, LogMsgJa);
 			} else {
 				wchar_t LogMsg[512] = L"";
-				StkPlSwPrintf(LogMsg, 256, L"Command for operation has ended. [%ls, %d]", Name, OpStatus);
-				DataAccess::GetInstance()->AddLogMsg(LogMsg);
+				wchar_t LogMsgJa[512] = L"";
+				StkPlSwPrintf(LogMsg, 256, L"%ls [%ls, %d]", MessageProc::GetMsgEng(MSG_CMDOPENDED), Name, OpStatus);
+				StkPlSwPrintf(LogMsgJa, 256, L"%ls [%ls, %d]", MessageProc::GetMsgJpn(MSG_CMDOPENDED), Name, OpStatus);
+				DataAccess::GetInstance()->AddLogMsg(LogMsg, LogMsgJa);
 			}
 		}
 		if (OpCmdFlag) {
@@ -82,7 +90,7 @@ StkObject* ApiPostAgentInfo::Execute(StkObject* ReqObj, int Method, wchar_t UrlP
 				DataAccess::GetInstance()->SetAgentInfoForOpStatus(Name, -984);
 				wchar_t LogMsg[512] = L"";
 				StkPlSwPrintf(LogMsg, 256, L"New agent information has been notified. [%ls]", Name);
-				DataAccess::GetInstance()->AddLogMsg(LogMsg);
+				DataAccess::GetInstance()->AddLogMsg(LogMsg, LogMsg);
 			} else if (RetSetAgtInfo == 1) {
 				//
 			}

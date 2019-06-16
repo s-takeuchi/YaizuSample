@@ -65,11 +65,13 @@ int DataAccess::CreateTables(const wchar_t* DataFileName)
 			ColumnDefWStr ColDefLogTimeUtc(L"TimeUtc", DA_MAXLEN_OF_TIME);
 			ColumnDefWStr ColDefLogTimeLocal(L"TimeLocal", DA_MAXLEN_OF_TIME);
 			ColumnDefWStr ColDefLogMsg(L"Message", DA_MAXLEN_OF_LOGMSG);
+			ColumnDefWStr ColDefLogMsgJa(L"MessageJa", DA_MAXLEN_OF_LOGMSG);
 			TableDef TabDefLog(L"Log", DA_MAXNUM_OF_LOGRECORDS);
 			TabDefLog.AddColumnDef(&ColDefLogId);
 			TabDefLog.AddColumnDef(&ColDefLogTimeUtc);
 			TabDefLog.AddColumnDef(&ColDefLogTimeLocal);
 			TabDefLog.AddColumnDef(&ColDefLogMsg);
+			TabDefLog.AddColumnDef(&ColDefLogMsgJa);
 			if (CreateTable(&TabDefLog) != 0) {
 				UnlockAllTable();
 				return -1;
@@ -708,7 +710,7 @@ int DataAccess::SetMaxCommandId(int Id)
 // Add log message
 // LogMsg [in] : Message which you want to insert
 // Return : always zero returned.
-int DataAccess::AddLogMsg(const wchar_t LogMsg[DA_MAXLEN_OF_LOGMSG])
+int DataAccess::AddLogMsg(const wchar_t LogMsg[DA_MAXLEN_OF_LOGMSG], const wchar_t LogMsgJa[DA_MAXLEN_OF_LOGMSG])
 {
 	static int MaxLogId = 0;
 	if (MaxLogId == 0) {
@@ -728,12 +730,13 @@ int DataAccess::AddLogMsg(const wchar_t LogMsg[DA_MAXLEN_OF_LOGMSG])
 	StkPlGetWTimeInIso8601(TimeLocalBuf, true);
 	StkPlGetWTimeInIso8601(TimeUtcBuf, false);
 	// New record information
-	ColumnData *ColDatLog[4];
+	ColumnData *ColDatLog[5];
 	ColDatLog[0] = new ColumnDataInt(L"Id", MaxLogId);
 	ColDatLog[1] = new ColumnDataWStr(L"TimeUtc", TimeUtcBuf);
 	ColDatLog[2] = new ColumnDataWStr(L"TimeLocal", TimeLocalBuf);
 	ColDatLog[3] = new ColumnDataWStr(L"Message", LogMsg);
-	RecordData* RecDatLog = new RecordData(L"Log", ColDatLog, 4);
+	ColDatLog[4] = new ColumnDataWStr(L"MessageJa", LogMsgJa);
+	RecordData* RecDatLog = new RecordData(L"Log", ColDatLog, 5);
 	// Add record
 	LockTable(L"Log", LOCK_EXCLUSIVE);
 	int Ret = InsertRecord(RecDatLog);
@@ -793,7 +796,8 @@ int DataAccess::GetNumOfLogs()
 int DataAccess::GetLogs(
 	wchar_t LogMsgTimeUtc[DA_MAXNUM_OF_LOGRECORDS][DA_MAXLEN_OF_TIME],
 	wchar_t LogMsgTimeLocal[DA_MAXNUM_OF_LOGRECORDS][DA_MAXLEN_OF_TIME],
-	wchar_t LogMsg[DA_MAXNUM_OF_LOGRECORDS][DA_MAXLEN_OF_LOGMSG])
+	wchar_t LogMsg[DA_MAXNUM_OF_LOGRECORDS][DA_MAXLEN_OF_LOGMSG],
+	wchar_t LogMsgJa[DA_MAXNUM_OF_LOGRECORDS][DA_MAXLEN_OF_LOGMSG])
 {
 	LockTable(L"Log", LOCK_EXCLUSIVE);
 	AzSortRecord(L"Log", L"Id");
@@ -806,6 +810,7 @@ int DataAccess::GetLogs(
 		ColumnDataWStr* ColDatTimeUtc = (ColumnDataWStr*)CurrRecDat->GetColumn(1);
 		ColumnDataWStr* ColDatTimeLocal = (ColumnDataWStr*)CurrRecDat->GetColumn(2);
 		ColumnDataWStr* ColDatMsg = (ColumnDataWStr*)CurrRecDat->GetColumn(3);
+		ColumnDataWStr* ColDatMsgJa = (ColumnDataWStr*)CurrRecDat->GetColumn(4);
 		if (ColDatTimeUtc != NULL && ColDatTimeUtc->GetValue() != NULL) {
 			StkPlSwPrintf(LogMsgTimeUtc[NumOfRec], DA_MAXLEN_OF_TIME, ColDatTimeUtc->GetValue());
 		} else {
@@ -820,6 +825,11 @@ int DataAccess::GetLogs(
 			StkPlSwPrintf(LogMsg[NumOfRec], DA_MAXLEN_OF_LOGMSG, ColDatMsg->GetValue());
 		} else {
 			StkPlSwPrintf(LogMsg[NumOfRec], DA_MAXLEN_OF_LOGMSG, L"");
+		}
+		if (ColDatMsgJa != NULL && ColDatMsgJa->GetValue() != NULL) {
+			StkPlSwPrintf(LogMsgJa[NumOfRec], DA_MAXLEN_OF_LOGMSG, ColDatMsgJa->GetValue());
+		} else {
+			StkPlSwPrintf(LogMsgJa[NumOfRec], DA_MAXLEN_OF_LOGMSG, L"");
 		}
 		NumOfRec++;
 		CurrRecDat = CurrRecDat->GetNextRecord();

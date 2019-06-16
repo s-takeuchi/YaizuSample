@@ -65,6 +65,12 @@ void InitMessageResource()
 	MessageProc::AddJpn(MSG_COMADD, L"コマンドを追加しました。");
 	MessageProc::AddEng(MSG_COMMODIFY, L"A command has been modified.");
 	MessageProc::AddJpn(MSG_COMMODIFY, L"コマンドを変更しました。");
+	MessageProc::AddEng(MSG_CMDSTATUSACQCHGD, L"Command for status acquisition has been changed.");
+	MessageProc::AddJpn(MSG_CMDSTATUSACQCHGD, L"状態取得コマンドが変更されました。");
+	MessageProc::AddEng(MSG_CMDOPSTARTED, L"Command for operation has started.");
+	MessageProc::AddJpn(MSG_CMDOPSTARTED, L"操作コマンドが開始しました。");
+	MessageProc::AddEng(MSG_CMDOPENDED, L"Command for operation has ended.");
+	MessageProc::AddJpn(MSG_CMDOPENDED, L"操作コマンドが終了しました。");
 	MessageProc::AddEng(MSG_SERVICESTARTED, L"Service has started.");
 	MessageProc::AddJpn(MSG_SERVICESTARTED, L"サービスが開始されました。");
 	MessageProc::AddEng(MSG_SERVICESTOPPED, L"Service has stopped.");
@@ -165,11 +171,11 @@ int main(int Argc, char* Argv[])
 	}
 
 	DataAccess::GetInstance()->CreateTables(L"sample.dat");
-	DataAccess::GetInstance()->AddLogMsg(MessageProc::GetMsgEng(MSG_SERVICESTARTED));
+	DataAccess::GetInstance()->AddLogMsg(MessageProc::GetMsgEng(MSG_SERVICESTARTED), MessageProc::GetMsgJpn(MSG_SERVICESTARTED));
 	wchar_t* IpAddr = StkPlCreateWideCharFromUtf8(IpAddrTmp);
 	Sample(IpAddr, Port);
 	delete IpAddr;
-	DataAccess::GetInstance()->AddLogMsg(MessageProc::GetMsgEng(MSG_SERVICESTOPPED));
+	DataAccess::GetInstance()->AddLogMsg(MessageProc::GetMsgEng(MSG_SERVICESTOPPED), MessageProc::GetMsgJpn(MSG_SERVICESTOPPED));
 	DataAccess::GetInstance()->StopAutoSave(L"sample.dat");
 
 	return 0;

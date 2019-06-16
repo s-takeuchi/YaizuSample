@@ -15,8 +15,10 @@ StkObject* ApiDeleteCommand::Execute(StkObject* ReqObj, int Method, wchar_t UrlP
 	DataAccess::GetInstance()->DeleteCommand(TargetId);
 
 	wchar_t LogMsg[256] = L"";
+	wchar_t LogMsgJa[256] = L"";
 	StkPlSwPrintf(LogMsg, 256, L"%ls [%ls]", MessageProc::GetMsgEng(MSG_COMDELETE), CmdName);
-	DataAccess::GetInstance()->AddLogMsg(LogMsg);
+	StkPlSwPrintf(LogMsgJa, 256, L"%ls [%ls]", MessageProc::GetMsgJpn(MSG_COMDELETE), CmdName);
+	DataAccess::GetInstance()->AddLogMsg(LogMsg, LogMsgJa);
 
 	StkObject* TmpObj = new StkObject(L"");
 	TmpObj->AppendChildElement(new StkObject(L"Msg0", L""));

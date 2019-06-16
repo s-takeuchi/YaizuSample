@@ -59,9 +59,9 @@ public:
 	int SetCommand(int, wchar_t[DA_MAXLEN_OF_CMDNAME], int, char[DA_MAXLEN_OF_CMDSCRIPT], wchar_t[DA_MAXLEN_OF_SERVERFILENAME], wchar_t[DA_MAXLEN_OF_AGENTFILENAME]);
 	int DeleteCommand(int);
 
-	int AddLogMsg(const wchar_t[DA_MAXLEN_OF_LOGMSG]);
+	int AddLogMsg(const wchar_t[DA_MAXLEN_OF_LOGMSG], const wchar_t[DA_MAXLEN_OF_LOGMSG]);
 	int GetMaxLogId();
 	int GetNumOfLogs();
-	int GetLogs(wchar_t[DA_MAXNUM_OF_LOGRECORDS][DA_MAXLEN_OF_TIME], wchar_t[DA_MAXNUM_OF_LOGRECORDS][DA_MAXLEN_OF_TIME], wchar_t[DA_MAXNUM_OF_LOGRECORDS][DA_MAXLEN_OF_LOGMSG]);
+	int GetLogs(wchar_t[DA_MAXNUM_OF_LOGRECORDS][DA_MAXLEN_OF_TIME], wchar_t[DA_MAXNUM_OF_LOGRECORDS][DA_MAXLEN_OF_TIME], wchar_t[DA_MAXNUM_OF_LOGRECORDS][DA_MAXLEN_OF_LOGMSG], wchar_t[DA_MAXNUM_OF_LOGRECORDS][DA_MAXLEN_OF_LOGMSG]);
 	int DeleteOldLogs();
 };
