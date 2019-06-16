@@ -1,6 +1,7 @@
 ﻿#include "../../../YaizuComLib/src/stkpl/StkPl.h"
 #include "../../../YaizuComLib/src/commonfunc/StkObject.h"
 #include "../../../YaizuComLib/src/commonfunc/StkProperties.h"
+#include "../../../YaizuComLib/src/commonfunc/msgproc.h"
 #include "../../../YaizuComLib/src/stkthread/stkthread.h"
 #include "../../../YaizuComLib/src/stksocket/stksocket.h"
 #include "../../../YaizuComLib/src/stkwebapp/StkWebApp.h"
@@ -19,6 +20,7 @@
 #include "ApiPostFile.h"
 #include "ApiGetLanguage.h"
 #include "dataaccess.h"
+#include "MessageCode.h"
 
 int StatusChecker(int Id)
 {
@@ -52,6 +54,21 @@ int StatusChecker(int Id)
 	}
 
 	return 0;
+}
+
+void InitMessageResource()
+{
+	MessageProc::ClearAllMsg();
+	MessageProc::AddEng(MSG_COMDELETE, L"A command has been deleted.");
+	MessageProc::AddJpn(MSG_COMDELETE, L"コマンドを削除しました。");
+	MessageProc::AddEng(MSG_COMADD, L"A command has been added.");
+	MessageProc::AddJpn(MSG_COMADD, L"コマンドを追加しました。");
+	MessageProc::AddEng(MSG_COMMODIFY, L"A command has been modified.");
+	MessageProc::AddJpn(MSG_COMMODIFY, L"コマンドを変更しました。");
+	MessageProc::AddEng(MSG_SERVICESTARTED, L"Service has started.");
+	MessageProc::AddJpn(MSG_SERVICESTARTED, L"サービスが開始されました。");
+	MessageProc::AddEng(MSG_SERVICESTOPPED, L"Service has stopped.");
+	MessageProc::AddJpn(MSG_SERVICESTOPPED, L"サービスが停止しました。");
 }
 
 void Sample(wchar_t* IpAddr, int Port)
@@ -125,6 +142,8 @@ void Sample(wchar_t* IpAddr, int Port)
 
 int main(int Argc, char* Argv[])
 {
+	InitMessageResource();
+
 	char IpAddrTmp[256];
 	int Port;
 	StkProperties *Prop = new StkProperties();
@@ -146,11 +165,11 @@ int main(int Argc, char* Argv[])
 	}
 
 	DataAccess::GetInstance()->CreateTables(L"sample.dat");
-	DataAccess::GetInstance()->AddLogMsg(L"Service has started.");
+	DataAccess::GetInstance()->AddLogMsg(MessageProc::GetMsgEng(MSG_SERVICESTARTED));
 	wchar_t* IpAddr = StkPlCreateWideCharFromUtf8(IpAddrTmp);
 	Sample(IpAddr, Port);
 	delete IpAddr;
-	DataAccess::GetInstance()->AddLogMsg(L"Service has stopped.");
+	DataAccess::GetInstance()->AddLogMsg(MessageProc::GetMsgEng(MSG_SERVICESTOPPED));
 	DataAccess::GetInstance()->StopAutoSave(L"sample.dat");
 
 	return 0;

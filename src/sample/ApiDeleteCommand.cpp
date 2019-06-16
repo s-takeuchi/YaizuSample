@@ -1,6 +1,8 @@
 #include "../../../YaizuComLib/src/stkpl/StkPl.h"
 #include "../../../YaizuComLib/src/commonfunc/StkStringParser.h"
+#include "../../../YaizuComLib/src/commonfunc/msgproc.h"
 #include "dataaccess.h"
+#include "MessageCode.h"
 #include "ApiDeleteCommand.h"
 
 StkObject* ApiDeleteCommand::Execute(StkObject* ReqObj, int Method, wchar_t UrlPath[StkWebAppExec::URL_PATH_LENGTH], int* ResultCode, wchar_t Locale[3])
@@ -13,7 +15,7 @@ StkObject* ApiDeleteCommand::Execute(StkObject* ReqObj, int Method, wchar_t UrlP
 	DataAccess::GetInstance()->DeleteCommand(TargetId);
 
 	wchar_t LogMsg[256] = L"";
-	StkPlSwPrintf(LogMsg, 256, L"A command has been deleted. [%ls]", CmdName);
+	StkPlSwPrintf(LogMsg, 256, L"%ls [%ls]", MessageProc::GetMsgEng(MSG_COMDELETE), CmdName);
 	DataAccess::GetInstance()->AddLogMsg(LogMsg);
 
 	StkObject* TmpObj = new StkObject(L"");

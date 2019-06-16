@@ -133,6 +133,7 @@
     <ClInclude Include="ApiPostFile.h" />
     <ClInclude Include="ApiPostServerInfo.h" />
     <ClInclude Include="dataaccess.h" />
+    <ClInclude Include="MessageCode.h" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\YaizuComLib\src\commonfunc\commonfunc.vcxproj">
