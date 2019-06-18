@@ -89,8 +89,10 @@ StkObject* ApiPostAgentInfo::Execute(StkObject* ReqObj, int Method, wchar_t UrlP
 			if (RetSetAgtInfo == 0) {
 				DataAccess::GetInstance()->SetAgentInfoForOpStatus(Name, -984);
 				wchar_t LogMsg[512] = L"";
-				StkPlSwPrintf(LogMsg, 256, L"New agent information has been notified. [%ls]", Name);
-				DataAccess::GetInstance()->AddLogMsg(LogMsg, LogMsg);
+				wchar_t LogMsgJa[512] = L"";
+				StkPlSwPrintf(LogMsg, 256, L"%ls [%ls]", MessageProc::GetMsgEng(MSG_NEWAGTNOTIFIED), Name);
+				StkPlSwPrintf(LogMsgJa, 256, L"%ls [%ls]", MessageProc::GetMsgJpn(MSG_NEWAGTNOTIFIED), Name);
+				DataAccess::GetInstance()->AddLogMsg(LogMsg, LogMsgJa);
 			} else if (RetSetAgtInfo == 1) {
 				//
 			}

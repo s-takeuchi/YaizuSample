@@ -1,5 +1,7 @@
 #include "../../../YaizuComLib/src/stkpl/StkPl.h"
+#include "../../../YaizuComLib/src/commonfunc/msgproc.h"
 #include "dataaccess.h"
+#include "MessageCode.h"
 #include "ApiPostServerInfo.h"
 
 StkObject* ApiPostServerInfo::Execute(StkObject* ReqObj, int Method, wchar_t UrlPath[StkWebAppExec::URL_PATH_LENGTH], int* ResultCode, wchar_t Locale[3])
@@ -39,8 +41,10 @@ StkObject* ApiPostServerInfo::Execute(StkObject* ReqObj, int Method, wchar_t Url
 		DataAccess::GetInstance()->SetServerInfo(PInterval, SaInterval, BucketPath);
 
 		wchar_t LogMsg[256] = L"";
-		StkPlSwPrintf(LogMsg, 256, L"Server information has been changed. [Polling Interval=%d sec, Status Acquisition Interval=%d sec, Bucket Path=%ls]", PInterval, SaInterval, BucketPath);
-		DataAccess::GetInstance()->AddLogMsg(LogMsg, LogMsg);
+		wchar_t LogMsgJa[256] = L"";
+		StkPlSwPrintf(LogMsg, 256, L"%ls [Polling Interval=%d sec, Status Acquisition Interval=%d sec, Bucket Path=%ls]", MessageProc::GetMsgEng(MSG_SVRINFOUPDATED), PInterval, SaInterval, BucketPath);
+		StkPlSwPrintf(LogMsgJa, 256, L"%ls [Polling Interval=%d sec, Status Acquisition Interval=%d sec, Bucket Path=%ls]", MessageProc::GetMsgJpn(MSG_SVRINFOUPDATED), PInterval, SaInterval, BucketPath);
+		DataAccess::GetInstance()->AddLogMsg(LogMsg, LogMsgJa);
 	}
 
 	StkObject* TmpObj = new StkObject(L"");

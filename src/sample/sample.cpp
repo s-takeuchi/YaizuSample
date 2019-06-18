@@ -75,6 +75,10 @@ void InitMessageResource()
 	MessageProc::AddJpn(MSG_SERVICESTARTED, L"サービスが開始されました。");
 	MessageProc::AddEng(MSG_SERVICESTOPPED, L"Service has stopped.");
 	MessageProc::AddJpn(MSG_SERVICESTOPPED, L"サービスが停止しました。");
+	MessageProc::AddEng(MSG_NEWAGTNOTIFIED, L"New agent information has been notified.");
+	MessageProc::AddJpn(MSG_NEWAGTNOTIFIED, L"新規にエージェント情報が通知されました。");
+	MessageProc::AddEng(MSG_SVRINFOUPDATED, L"Server information has been changed.");
+	MessageProc::AddJpn(MSG_SVRINFOUPDATED, L"サーバー情報が更新されました。");
 }
 
 void Sample(wchar_t* IpAddr, int Port)
