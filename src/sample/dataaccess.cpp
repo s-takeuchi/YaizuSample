@@ -605,12 +605,14 @@ int DataAccess::GetCommandNameById(int Id, wchar_t Name[DA_MAXLEN_OF_CMDNAME])
 	LockTable(L"Command", LOCK_SHARE);
 	RecordData* RecDatCmdFindRes = GetRecord(RecDatCmdFind);
 	UnlockTable(L"Command");
+	delete RecDatCmdFind;
 	if (RecDatCmdFindRes != NULL) {
 		ColumnDataWStr* NameObj = (ColumnDataWStr*)RecDatCmdFindRes->GetColumn(L"Name");
 		StkPlWcsCpy(Name, DA_MAXLEN_OF_CMDNAME, NameObj->GetValue());
 		delete RecDatCmdFindRes;
+	} else {
+		return -1;
 	}
-	delete RecDatCmdFind;
 
 	return 0;
 }
@@ -660,6 +662,7 @@ int DataAccess::DeleteCommand(int Id)
 	LockTable(L"Command", LOCK_SHARE);
 	RecordData* RecDatCmdFindRes = GetRecord(RecDatCmdFind);
 	UnlockTable(L"Command");
+	delete RecDatCmdFind;
 	if (RecDatCmdFindRes != NULL) {
 		ColumnDataWStr* Name = (ColumnDataWStr*)RecDatCmdFindRes->GetColumn(L"Name");
 		delete RecDatCmdFindRes;
@@ -667,8 +670,9 @@ int DataAccess::DeleteCommand(int Id)
 		LockTable(L"Command", LOCK_EXCLUSIVE);
 		DeleteRecord(RecDatCmdFind);
 		UnlockTable(L"Command");
+	} else {
+		return -1;
 	}
-	delete RecDatCmdFind;
 
 	return 0;
 }

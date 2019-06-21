@@ -61,20 +61,20 @@ function getClientMessage(code) {
     }
 }
 
-function displayAlertSuccess(parent, msgCode) {
-    $(parent).append('<div class="alert alert-success" role="alert">' + getClientMessage(msgCode) + '</div>');
+function displayAlertSuccess(parent, msg) {
+    $(parent).append('<div class="alert alert-success" role="alert">' + msg + '</div>');
 }
 
-function displayAlertDanger(parent, msgCode) {
-    $(parent).append('<div class="alert alert-danger" role="alert">' + getClientMessage(msgCode) + '</div>');
+function displayAlertDanger(parent, msg) {
+    $(parent).append('<div class="alert alert-danger" role="alert">' + msg + '</div>');
 }
 
-function displayAlertWarning(parent, msgCode) {
-    $(parent).append('<div class="alert alert-warning" role="alert">' + getClientMessage(msgCode) + '</div>');
+function displayAlertWarning(parent, msg) {
+    $(parent).append('<div class="alert alert-warning" role="alert">' + msg + '</div>');
 }
 
-function displayAlertInfo(parent, msgCode) {
-    $(parent).append('<div class="alert alert-info" role="alert">' + getClientMessage(msgCode) + '</div>');
+function displayAlertInfo(parent, msg) {
+    $(parent).append('<div class="alert alert-info" role="alert">' + msg + '</div>');
 }
 
 function apiCall(method, url, request, index, targetFunc) {

@@ -79,6 +79,8 @@ void InitMessageResource()
 	MessageProc::AddJpn(MSG_NEWAGTNOTIFIED, L"新規にエージェント情報が通知されました。");
 	MessageProc::AddEng(MSG_SVRINFOUPDATED, L"Server information has been changed.");
 	MessageProc::AddJpn(MSG_SVRINFOUPDATED, L"サーバー情報が更新されました。");
+	MessageProc::AddEng(MSG_COMMANDNOTEXIST, L"The specified command does not exist.");
+	MessageProc::AddJpn(MSG_COMMANDNOTEXIST, L"指定したコマンドは存在しません。");
 }
 
 void Sample(wchar_t* IpAddr, int Port)

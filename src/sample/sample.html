@@ -109,7 +109,7 @@
     function displayLogInfo() {
         $('#workspace_loginfo').append('<h2><span class="glyphicon glyphicon-time"></span>' + getClientMessage('AUDITLOG') + '</h2>');
         if (statusCode[API_GET_LOGS] == -1 || statusCode[API_GET_LOGS] == 0) {
-            displayAlertDanger('#workspace_loginfo', 'CONNERR');
+            displayAlertDanger('#workspace_loginfo', getClientMessage('CONNERR'));
             return;
         }
         var Log = getArray(responseData[API_GET_LOGS].Log);
@@ -137,7 +137,7 @@
     function displayAgentInfo() {
         $('#workspace_agtinfo').append('<h2><span class="glyphicon glyphicon-eye-open"></span>' + getClientMessage('AGENTINFO') + '</h2>');
         if (statusCode[API_GET_AGTINFO] == -1 || statusCode[API_GET_AGTINFO] == 0) {
-            displayAlertDanger('#workspace_agtinfo', 'CONNERR');
+            displayAlertDanger('#workspace_agtinfo', getClientMessage('CONNERR'));
             return;
         }
         var AgentInfo = getArray(responseData[API_GET_AGTINFO].AgentInfo);
@@ -393,7 +393,7 @@
     function displayServerInfo() {
         $('#workspace_svrinfo').append('<h2><span class="glyphicon glyphicon-tower"></span>' + getClientMessage('SERVERINFO') + '</h2>');
         if (statusCode[API_GET_SVRINFO] == -1 || statusCode[API_GET_SVRINFO] == 0) {
-            displayAlertDanger('#workspace_svrinfo', 'CONNERR');
+            displayAlertDanger('#workspace_svrinfo', getClientMessage('CONNERR'));
             return;
         }
         var StartTimeTbl = $('<table>');
@@ -511,7 +511,7 @@
     function displayCommand() {
         $('#workspace_command').append('<h2><span class="glyphicon glyphicon-flash"></span>' + getClientMessage('COMMAND') + '</h2>');
         if (statusCode[API_GET_COMMAND] == -1 || statusCode[API_GET_COMMAND] == 0) {
-            displayAlertDanger('#workspace_command', 'CONNERR');
+            displayAlertDanger('#workspace_command', getClientMessage('CONNERR'));
             return;
         }
         var commandList = getArray(responseData[API_GET_COMMAND].Command);
@@ -568,10 +568,10 @@
         }
         if (updateFlag == false) {
             var ReqObj = { Command : { Name : $("#commandName").val(), Type : comTypeInt, Script : $("#commandScript").val(), ServerFileName : $("#serverFileName").val(), AgentFileName : $("#agentFileName").val() }};
-            apiCall('POST', './api/command/', ReqObj, API_POST_COMMAND, refreshAfterCommandOperation);
+            apiCall('POST', './api/command/', ReqObj, API_POST_COMMAND, refreshAfterPostCommand);
         } else {
             var ReqObj = { Command : { Id : selectedCommand, Name : $("#commandName").val(), Type : comTypeInt, Script : $("#commandScript").val(), ServerFileName : $("#serverFileName").val(), AgentFileName : $("#agentFileName").val() }};
-            apiCall('POST', './api/command/', ReqObj, API_POST_COMMAND, refreshAfterCommandOperation);
+            apiCall('POST', './api/command/', ReqObj, API_POST_COMMAND, refreshAfterPostCommand);
         }
     }
 
@@ -579,7 +579,7 @@
         if (selectedCommand == -1) {
             return;
         }
-        apiCall('DELETE', './api/command/' + selectedCommand + '/', null, API_DELETE_COMMAND, refreshAfterCommandOperation);
+        apiCall('DELETE', './api/command/' + selectedCommand + '/', null, API_DELETE_COMMAND, refreshAfterDeleteCommand);
     }
 
     function selectCommand(targetId) {
@@ -616,7 +616,23 @@
         refreshInfo();
     }
 
-    function refreshAfterCommandOperation() {
+    function refreshAfterPostCommand() {
+        if (statusCode[API_POST_COMMAND] == -1 || statusCode[API_POST_COMMAND] == 0) {
+            displayAlertDanger('#workspace_command', getClientMessage('CONNERR'));
+            return;
+        }
+        refreshInfo();
+    }
+
+    function refreshAfterDeleteCommand() {
+        if (statusCode[API_DELETE_COMMAND] == -1 || statusCode[API_DELETE_COMMAND] == 0) {
+            displayAlertDanger('#workspace_command', getClientMessage('CONNERR'));
+            return;
+        }
+        if (statusCode[API_DELETE_COMMAND] == 400) {
+            displayAlertDanger('#workspace_command', responseData[API_DELETE_COMMAND].Msg0);
+            return;
+        }
         refreshInfo();
     }
 

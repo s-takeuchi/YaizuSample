@@ -11,17 +11,26 @@ StkObject* ApiDeleteCommand::Execute(StkObject* ReqObj, int Method, wchar_t UrlP
 	StkStringParser::ParseInto1Param(UrlPath, L"/api/command/$/", L'$', TargetIdStr, 16);
 	int TargetId = StkPlWcsToL(TargetIdStr);
 	wchar_t CmdName[DA_MAXLEN_OF_CMDNAME];
-	DataAccess::GetInstance()->GetCommandNameById(TargetId, CmdName);
-	DataAccess::GetInstance()->DeleteCommand(TargetId);
-
-	wchar_t LogMsg[256] = L"";
-	wchar_t LogMsgJa[256] = L"";
-	StkPlSwPrintf(LogMsg, 256, L"%ls [%ls]", MessageProc::GetMsgEng(MSG_COMDELETE), CmdName);
-	StkPlSwPrintf(LogMsgJa, 256, L"%ls [%ls]", MessageProc::GetMsgJpn(MSG_COMDELETE), CmdName);
-	DataAccess::GetInstance()->AddLogMsg(LogMsg, LogMsgJa);
+	int RetName = DataAccess::GetInstance()->GetCommandNameById(TargetId, CmdName);
+	int RetDel = DataAccess::GetInstance()->DeleteCommand(TargetId);
 
 	StkObject* TmpObj = new StkObject(L"");
-	TmpObj->AppendChildElement(new StkObject(L"Msg0", L""));
-	*ResultCode = 200;
+	if (RetName == 0 && RetDel == 0) {
+		TmpObj->AppendChildElement(new StkObject(L"Msg0", L""));
+		*ResultCode = 200;
+
+		wchar_t LogMsg[256] = L"";
+		wchar_t LogMsgJa[256] = L"";
+		StkPlSwPrintf(LogMsg, 256, L"%ls [%ls]", MessageProc::GetMsgEng(MSG_COMDELETE), CmdName);
+		StkPlSwPrintf(LogMsgJa, 256, L"%ls [%ls]", MessageProc::GetMsgJpn(MSG_COMDELETE), CmdName);
+		DataAccess::GetInstance()->AddLogMsg(LogMsg, LogMsgJa);
+	} else {
+		if (Locale != NULL && Locale[2] == '\0' && Locale[0] != '\0' && StkPlWcsCmp(Locale, L"ja") == 0) {
+			TmpObj->AppendChildElement(new StkObject(L"Msg0", MessageProc::GetMsgJpn(MSG_COMMANDNOTEXIST)));
+		} else {
+			TmpObj->AppendChildElement(new StkObject(L"Msg0", MessageProc::GetMsgEng(MSG_COMMANDNOTEXIST)));
+		}
+		*ResultCode = 400;
+	}
 	return TmpObj;
 }
