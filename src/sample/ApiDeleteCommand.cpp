@@ -7,6 +7,12 @@
 
 StkObject* ApiDeleteCommand::Execute(StkObject* ReqObj, int Method, wchar_t UrlPath[StkWebAppExec::URL_PATH_LENGTH], int* ResultCode, wchar_t Locale[3])
 {
+	if (Locale != NULL && Locale[2] == '\0' && Locale[0] != '\0' && StkPlWcsCmp(Locale, L"ja") == 0) {
+		MessageProc::SetLocaleMode(MessageProc::LOCALE_MODE_JAPANESE);
+	} else {
+		MessageProc::SetLocaleMode(MessageProc::LOCALE_MODE_ENGLISH);
+	}
+
 	wchar_t TargetIdStr[16] = L"";
 	StkStringParser::ParseInto1Param(UrlPath, L"/api/command/$/", L'$', TargetIdStr, 16);
 	int TargetId = StkPlWcsToL(TargetIdStr);
@@ -25,11 +31,7 @@ StkObject* ApiDeleteCommand::Execute(StkObject* ReqObj, int Method, wchar_t UrlP
 		StkPlSwPrintf(LogMsgJa, 256, L"%ls [%ls]", MessageProc::GetMsgJpn(MSG_COMDELETE), CmdName);
 		DataAccess::GetInstance()->AddLogMsg(LogMsg, LogMsgJa);
 	} else {
-		if (Locale != NULL && Locale[2] == '\0' && Locale[0] != '\0' && StkPlWcsCmp(Locale, L"ja") == 0) {
-			TmpObj->AppendChildElement(new StkObject(L"Msg0", MessageProc::GetMsgJpn(MSG_COMMANDNOTEXIST)));
-		} else {
-			TmpObj->AppendChildElement(new StkObject(L"Msg0", MessageProc::GetMsgEng(MSG_COMMANDNOTEXIST)));
-		}
+		TmpObj->AppendChildElement(new StkObject(L"Msg0", MessageProc::GetMsg(MSG_COMMANDNOTEXIST)));
 		*ResultCode = 400;
 	}
 	return TmpObj;

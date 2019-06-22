@@ -621,6 +621,10 @@
             displayAlertDanger('#workspace_command', getClientMessage('CONNERR'));
             return;
         }
+        if (statusCode[API_POST_COMMAND] == 400) {
+            displayAlertDanger('#workspace_command', responseData[API_POST_COMMAND].Msg0);
+            return;
+        }
         refreshInfo();
     }
 

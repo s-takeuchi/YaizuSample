@@ -662,15 +662,15 @@ int DataAccess::DeleteCommand(int Id)
 	LockTable(L"Command", LOCK_SHARE);
 	RecordData* RecDatCmdFindRes = GetRecord(RecDatCmdFind);
 	UnlockTable(L"Command");
-	delete RecDatCmdFind;
 	if (RecDatCmdFindRes != NULL) {
-		ColumnDataWStr* Name = (ColumnDataWStr*)RecDatCmdFindRes->GetColumn(L"Name");
 		delete RecDatCmdFindRes;
 
 		LockTable(L"Command", LOCK_EXCLUSIVE);
 		DeleteRecord(RecDatCmdFind);
 		UnlockTable(L"Command");
+		delete RecDatCmdFind;
 	} else {
+		delete RecDatCmdFind;
 		return -1;
 	}
 

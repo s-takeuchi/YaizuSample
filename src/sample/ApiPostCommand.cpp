@@ -6,15 +6,20 @@
 
 StkObject* ApiPostCommand::Execute(StkObject* ReqObj, int Method, wchar_t UrlPath[StkWebAppExec::URL_PATH_LENGTH], int* ResultCode, wchar_t Locale[3])
 {
+	if (Locale != NULL && Locale[2] == '\0' && Locale[0] != '\0' && StkPlWcsCmp(Locale, L"ja") == 0) {
+		MessageProc::SetLocaleMode(MessageProc::LOCALE_MODE_JAPANESE);
+	} else {
+		MessageProc::SetLocaleMode(MessageProc::LOCALE_MODE_ENGLISH);
+	}
 	StkObject* ResObj = new StkObject(L"");
 	if (ReqObj == NULL) {
-		ResObj->AppendChildElement(new StkObject(L"Msg0", L"No request has been presented."));
+		ResObj->AppendChildElement(new StkObject(L"Msg0", MessageProc::GetMsg(MSG_NOREQUEST)));
 		*ResultCode = 400;
 		return ResObj;
 	}
 	StkObject* CommandObj = ReqObj->GetFirstChildElement();
 	if (CommandObj == NULL) {
-		ResObj->AppendChildElement(new StkObject(L"Msg0", L"No \"Command\" element has been presented."));
+		ResObj->AppendChildElement(new StkObject(L"Msg0", MessageProc::GetMsg(MSG_NOCOMMANDREQUEST)));
 		*ResultCode = 400;
 		return ResObj;
 	}
@@ -46,6 +51,11 @@ StkObject* ApiPostCommand::Execute(StkObject* ReqObj, int Method, wchar_t UrlPat
 		Id++;
 		DataAccess::GetInstance()->SetMaxCommandId(Id);
 	}
+	if (StkPlWcsCmp(Name, L"") == 0) {
+		ResObj->AppendChildElement(new StkObject(L"Msg0", MessageProc::GetMsg(MSG_NOCOMMANDNAME)));
+		*ResultCode = 400;
+		return ResObj;
+	}
 	int RetSetCom = DataAccess::GetInstance()->SetCommand(Id, Name, Type, (char*)Script, ServerFileName, AgentFileName);
 	wchar_t LogMsg[256] = L"";
 	wchar_t LogMsgJa[256] = L"";
@@ -58,8 +68,7 @@ StkObject* ApiPostCommand::Execute(StkObject* ReqObj, int Method, wchar_t UrlPat
 	}
 	DataAccess::GetInstance()->AddLogMsg(LogMsg, LogMsgJa);
 
-	StkObject* TmpObj = new StkObject(L"");
-	TmpObj->AppendChildElement(new StkObject(L"Msg0", L""));
+	ResObj->AppendChildElement(new StkObject(L"Msg0", L""));
 	*ResultCode = 200;
-	return TmpObj;
+	return ResObj;
 }
