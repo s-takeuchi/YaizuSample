@@ -89,10 +89,12 @@ void InitMessageResource()
 	MessageProc::AddJpn(MSG_NOCOMMANDNAME, L"コマンド名が指定されていません。");
 	MessageProc::AddEng(MSG_COMNAMELENGTHERR, L"Length of command name exceeds the limitation. Maximum 31 characters can be specified as a command name.");
 	MessageProc::AddJpn(MSG_COMNAMELENGTHERR, L"コマンド名の長さが最大を超えました。コマンド名として最大31文字まで指定可能です。");
-	MessageProc::AddEng(MSG_COMSCRIPTLENERR, L"Length of script exceeds the limitation. Maximum 8192 characters can be specified as a script.");
-	MessageProc::AddJpn(MSG_COMSCRIPTLENERR, L"スクリプトの長さが最大を超えました。スクリプトとして最大8192文字まで指定可能です。");
+	MessageProc::AddEng(MSG_COMSCRIPTLENERR, L"Length of script exceeds the limitation. Maximum 4096 characters can be specified as a script.");
+	MessageProc::AddJpn(MSG_COMSCRIPTLENERR, L"スクリプトの長さが最大を超えました。スクリプトとして最大4096文字まで指定可能です。");
 	MessageProc::AddEng(MSG_FILENAMELENERR, L"Length of file name exceeds the limitation. Maximum 256 characters can be specified as a file name.");
 	MessageProc::AddJpn(MSG_FILENAMELENERR, L"ファイル名の長さが最大を超えました。ファイル名として最大256文字まで指定可能です。");
+	MessageProc::AddEng(MSG_FILENAMEFBDNCHAR, L"File name includes forbidden character(s) for use. [\\ / : * ? \" < > | & %] and space");
+	MessageProc::AddJpn(MSG_FILENAMEFBDNCHAR, L"ファイル名に使用禁止文字が含まれています。[\\ / : * ? \" < > | & %] and space");
 }
 
 void Sample(wchar_t* IpAddr, int Port)

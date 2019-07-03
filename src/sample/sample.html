@@ -78,11 +78,14 @@
         addClientMessage('COMTYPE', {'en':'Command Type', 'ja':'コマンド種別'});
         addClientMessage('COMSCRIPT', {'en':'Script', 'ja':'スクリプト'});
         addClientMessage('COMCOPYTOSVR', {'en':'File To Be Copied To Server (Only file name. Do not specify directory path.)', 'ja':'サーバーにコピーされるファイル (ファイル名のみ)'});
-        addClientMessage('COMPLACESVR', {'en':'File Placed In Server', 'ja':'サーバーに配置されたファイル'});
-        addClientMessage('COMPLACEAGT', {'en':'File Placed In Agent', 'ja':'エージェントに配置されたファイル'});
+        addClientMessage('COMPLACESVR', {'en':'Name of file Placed In Server', 'ja':'サーバーに配置されたファイルの名称'});
+        addClientMessage('COMPLACEAGT', {'en':'Name of file Placed In Agent', 'ja':'エージェントに配置されたファイルの名称'});
         addClientMessage('COMADD', {'en':'Add', 'ja':'追加'});
         addClientMessage('COMUPDATE', {'en':'Update', 'ja':'更新'});
         addClientMessage('COMDELETE', {'en':'Delete', 'ja':'削除'});
+        addClientMessage('COMADDED', {'en':'New command has been added.', 'ja':'新規にコマンドが追加されました。'});
+        addClientMessage('COMUPDATED', {'en':'The specified command has been updated.', 'ja':'指定したコマンドが更新されました。'});
+        addClientMessage('COMDELETED', {'en':'The specified command has been deleted', 'ja':'指定したコマンドが削除されました。'});
 
         addClientMessage('LOGEVENTTIME', {'en':'Event Occurrence Time', 'ja':'イベント発生時刻'});
         addClientMessage('LOGEVENT', {'en':'Event', 'ja':'イベント'});
@@ -568,10 +571,10 @@
         }
         if (updateFlag == false) {
             var ReqObj = { Command : { Name : $("#commandName").val(), Type : comTypeInt, Script : $("#commandScript").val(), ServerFileName : $("#serverFileName").val(), AgentFileName : $("#agentFileName").val() }};
-            apiCall('POST', './api/command/', ReqObj, API_POST_COMMAND, refreshAfterPostCommand);
+            apiCall('POST', './api/command/', ReqObj, API_POST_COMMAND, refreshAfterAddCommand);
         } else {
             var ReqObj = { Command : { Id : selectedCommand, Name : $("#commandName").val(), Type : comTypeInt, Script : $("#commandScript").val(), ServerFileName : $("#serverFileName").val(), AgentFileName : $("#agentFileName").val() }};
-            apiCall('POST', './api/command/', ReqObj, API_POST_COMMAND, refreshAfterPostCommand);
+            apiCall('POST', './api/command/', ReqObj, API_POST_COMMAND, refreshAfterUpdateCommand);
         }
     }
 
@@ -616,7 +619,7 @@
         refreshInfo();
     }
 
-    function refreshAfterPostCommand() {
+    function refreshAfterAddCommand() {
         if (statusCode[API_POST_COMMAND] == -1 || statusCode[API_POST_COMMAND] == 0) {
             displayAlertDanger('#workspace_command', getClientMessage('CONNERR'));
             return;
@@ -626,6 +629,20 @@
             return;
         }
         refreshInfo();
+        displayAlertSuccess('#workspace_command', getClientMessage('COMADDED'));
+    }
+
+    function refreshAfterUpdateCommand() {
+        if (statusCode[API_POST_COMMAND] == -1 || statusCode[API_POST_COMMAND] == 0) {
+            displayAlertDanger('#workspace_command', getClientMessage('CONNERR'));
+            return;
+        }
+        if (statusCode[API_POST_COMMAND] == 400) {
+            displayAlertDanger('#workspace_command', responseData[API_POST_COMMAND].Msg0);
+            return;
+        }
+        refreshInfo();
+        displayAlertSuccess('#workspace_command', getClientMessage('COMUPDATED'));
     }
 
     function refreshAfterDeleteCommand() {
@@ -638,6 +655,7 @@
             return;
         }
         refreshInfo();
+        displayAlertSuccess('#workspace_command', getClientMessage('COMDELETED'));
     }
 
     function refreshInfo() {

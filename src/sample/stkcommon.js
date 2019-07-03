@@ -62,18 +62,22 @@ function getClientMessage(code) {
 }
 
 function displayAlertSuccess(parent, msg) {
+    $(parent + ' .alert').remove();
     $(parent).append('<div class="alert alert-success" role="alert">' + msg + '</div>');
 }
 
 function displayAlertDanger(parent, msg) {
+    $(parent + ' .alert').remove();
     $(parent).append('<div class="alert alert-danger" role="alert">' + msg + '</div>');
 }
 
 function displayAlertWarning(parent, msg) {
+    $(parent + ' .alert').remove();
     $(parent).append('<div class="alert alert-warning" role="alert">' + msg + '</div>');
 }
 
 function displayAlertInfo(parent, msg) {
+    $(parent + ' .alert').remove();
     $(parent).append('<div class="alert alert-info" role="alert">' + msg + '</div>');
 }
 

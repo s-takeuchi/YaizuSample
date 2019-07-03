@@ -1,8 +1,19 @@
-#include "../../../YaizuComLib/src/stkpl/StkPl.h"
+﻿#include "../../../YaizuComLib/src/stkpl/StkPl.h"
 #include "../../../YaizuComLib/src/commonfunc/msgproc.h"
 #include "dataaccess.h"
 #include "MessageCode.h"
 #include "ApiPostCommand.h"
+
+bool ApiPostCommand::CheckFileNameChar(wchar_t* Ptr)
+{
+	while (*Ptr != NULL) {
+		if (*Ptr == L'\\' || *Ptr == L'/' || *Ptr == L':' || *Ptr == L'*' || *Ptr == L'?' || *Ptr == L'\"' || *Ptr == L'<' || *Ptr == L'>' || *Ptr == L'|' || *Ptr == L'&' || *Ptr == L'%') {
+			return false;
+		}
+		Ptr++;
+	}
+	return true;
+}
 
 StkObject* ApiPostCommand::Execute(StkObject* ReqObj, int Method, wchar_t UrlPath[StkWebAppExec::URL_PATH_LENGTH], int* ResultCode, wchar_t Locale[3])
 {
@@ -43,7 +54,7 @@ StkObject* ApiPostCommand::Execute(StkObject* ReqObj, int Method, wchar_t UrlPat
 		} else if (StkPlWcsCmp(CurObj->GetName(), L"Type") == 0) {
 			Type = CurObj->GetIntValue();
 		} else if (StkPlWcsCmp(CurObj->GetName(), L"Script") == 0) {
-			if (StkPlWcsLen(CurObj->GetStringValue()) >= DA_MAXLEN_OF_CMDSCRIPT) {
+			if (StkPlWcsLen(CurObj->GetStringValue()) >= DA_MAXLEN_OF_CMDSCRIPT / 2) {
 				ResObj->AppendChildElement(new StkObject(L"Msg0", MessageProc::GetMsg(MSG_COMSCRIPTLENERR)));
 				*ResultCode = 400;
 				return ResObj;
@@ -55,10 +66,20 @@ StkObject* ApiPostCommand::Execute(StkObject* ReqObj, int Method, wchar_t UrlPat
 				*ResultCode = 400;
 				return ResObj;
 			}
+			if (!CheckFileNameChar(CurObj->GetStringValue())) {
+				ResObj->AppendChildElement(new StkObject(L"Msg0", MessageProc::GetMsg(MSG_FILENAMEFBDNCHAR)));
+				*ResultCode = 400;
+				return ResObj;
+			}
 			StkPlWcsCpy(ServerFileName, DA_MAXLEN_OF_SERVERFILENAME, CurObj->GetStringValue());
 		} else if (StkPlWcsCmp(CurObj->GetName(), L"AgentFileName") == 0) {
 			if (StkPlWcsLen(CurObj->GetStringValue()) >= DA_MAXLEN_OF_AGENTFILENAME) {
 				ResObj->AppendChildElement(new StkObject(L"Msg0", MessageProc::GetMsg(MSG_FILENAMELENERR)));
+				*ResultCode = 400;
+				return ResObj;
+			}
+			if (!CheckFileNameChar(CurObj->GetStringValue())) {
+				ResObj->AppendChildElement(new StkObject(L"Msg0", MessageProc::GetMsg(MSG_FILENAMEFBDNCHAR)));
 				*ResultCode = 400;
 				return ResObj;
 			}
