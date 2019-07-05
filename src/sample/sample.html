@@ -627,6 +627,7 @@
     }
 
     function refreshAfterAddCommand() {
+        $('#workspace_command .alert').remove();
         if (statusCode[API_POST_COMMAND] == -1 || statusCode[API_POST_COMMAND] == 0) {
             displayAlertDanger('#workspace_command_errmsg', getClientMessage('CONNERR'));
             return;
@@ -640,6 +641,7 @@
     }
 
     function refreshAfterUpdateCommand() {
+        $('#workspace_command .alert').remove();
         if (statusCode[API_POST_COMMAND] == -1 || statusCode[API_POST_COMMAND] == 0) {
             displayAlertDanger('#workspace_command_errmsg', getClientMessage('CONNERR'));
             return;
@@ -653,6 +655,7 @@
     }
 
     function refreshAfterDeleteCommand() {
+        $('#workspace_command .alert').remove();
         if (statusCode[API_DELETE_COMMAND] == -1 || statusCode[API_DELETE_COMMAND] == 0) {
             displayAlertDanger('#workspace_command_errmsg', getClientMessage('CONNERR'));
             return;

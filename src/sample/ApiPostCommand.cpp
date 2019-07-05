@@ -88,9 +88,26 @@ StkObject* ApiPostCommand::Execute(StkObject* ReqObj, int Method, wchar_t UrlPat
 		CurObj = CurObj->GetNext();
 	}
 	if (Id == -1) {
+		// Command addition
+		if (DataAccess::GetInstance()->CheckCommandExistenceByName(Name)) {
+			ResObj->AppendChildElement(new StkObject(L"Msg0", MessageProc::GetMsg(MSG_DUPCMDNAME)));
+			*ResultCode = 400;
+			return ResObj;
+		}
 		Id = DataAccess::GetInstance()->GetMaxCommandId();
 		Id++;
 		DataAccess::GetInstance()->SetMaxCommandId(Id);
+	} else {
+		// command updation
+		wchar_t TmpName[DA_MAXLEN_OF_CMDNAME];
+		DataAccess::GetInstance()->GetCommandNameById(Id, TmpName);
+		if (StkPlWcsCmp(TmpName, Name) != 0) {
+			if (DataAccess::GetInstance()->CheckCommandExistenceByName(Name)) {
+				ResObj->AppendChildElement(new StkObject(L"Msg0", MessageProc::GetMsg(MSG_DUPCMDNAME)));
+				*ResultCode = 400;
+				return ResObj;
+			}
+		}
 	}
 	if (StkPlWcsCmp(Name, L"") == 0) {
 		ResObj->AppendChildElement(new StkObject(L"Msg0", MessageProc::GetMsg(MSG_NOCOMMANDNAME)));

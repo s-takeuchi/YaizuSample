@@ -617,6 +617,24 @@ int DataAccess::GetCommandNameById(int Id, wchar_t Name[DA_MAXLEN_OF_CMDNAME])
 	return 0;
 }
 
+bool DataAccess::CheckCommandExistenceByName(wchar_t Name[DA_MAXLEN_OF_CMDNAME])
+{
+	ColumnData *ColDatCmdFind[1];
+	ColDatCmdFind[0] = new ColumnDataWStr(L"Name", Name);
+	RecordData* RecDatCmdFind = new RecordData(L"Command", ColDatCmdFind, 1);
+
+	LockTable(L"Command", LOCK_SHARE);
+	RecordData* RecDatCmdFindRes = GetRecord(RecDatCmdFind);
+	UnlockTable(L"Command");
+	delete RecDatCmdFind;
+	if (RecDatCmdFindRes != NULL) {
+		delete RecDatCmdFindRes;
+		return true;
+	}
+	delete RecDatCmdFindRes;
+	return false;
+}
+
 // Return: 0:Added, 1:Modified
 int DataAccess::SetCommand(int Id, wchar_t Name[DA_MAXLEN_OF_CMDNAME], int Type, char Script[DA_MAXLEN_OF_CMDSCRIPT], wchar_t ServerFileName[DA_MAXLEN_OF_SERVERFILENAME], wchar_t AgentFileName[DA_MAXLEN_OF_AGENTFILENAME])
 {
