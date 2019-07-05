@@ -27,9 +27,17 @@
     var pollingIntervalStr = ['30 sec ', '1 min ', '5 min ', '15 min '];
     var selectedStatusAcquisitionInterval = 2;
     var statusAcquisitionIntervalStr = ['5 min ', '15 min ', '30 min ', '60 min '];
+
+    // Selected command ID on command page
     var selectedCommand = -1;
+
+    // Selected index number of status acquisition command on agent info page.
     var selectedAgentStatusCommand = -1;
+    // Selected index number of operation command on agent info page.
     var selectedOperationCommand = -1;
+
+    var workplace_command_msg = '';
+    var workspace_svrinfo_msg = '';
 
     function initClientMessage() {
         addClientMessage('AGENTINFO', {'en':' Agent Info', 'ja':' Agent Info'});
@@ -72,6 +80,7 @@
         addClientMessage('SISTACQINTVL', {'en':'Status Acquisition Interval : ', 'ja':'状態取得間隔 : '});
         addClientMessage('SIPATHTOBUCKET', {'en':'Path to bucket : ', 'ja':'バケットのパス : '});
         addClientMessage('SIUPDATEBTN', {'en':'Update', 'ja':'更新'});
+        addClientMessage('SIUPDATED', {'en':'The server information has been updated.', 'ja':'サーバー情報が更新されました。'});
 
         addClientMessage('COMNAME', {'en':'Command Name', 'ja':'コマンド名'});
         addClientMessage('COMCOPYTOAGT', {'en':'File To Be Copied To Agent (Only file name. Do not specify directory path.)', 'ja':'エージェントにコピーされるファイル (ファイル名のみ)'});
@@ -399,6 +408,10 @@
             displayAlertDanger('#workspace_svrinfo', getClientMessage('CONNERR'));
             return;
         }
+        if (workspace_svrinfo_msg !== '') {
+            displayAlertSuccess('#workspace_svrinfo', workspace_svrinfo_msg);
+            workspace_svrinfo_msg = '';
+        }
         var StartTimeTbl = $('<table>');
         StartTimeTbl.addClass('table table-striped');
 
@@ -509,6 +522,7 @@
         var pInterval = getPollingInterval(selectedPollingInterval);
         var saInterval = getStatusAcquisitionInterval(selectedStatusAcquisitionInterval);
         apiCall('POST', './api/server/', {"ServerInfo":{"PInterval":pInterval, "SaInterval":saInterval, "BucketPath":$('#bucketPath').val()}}, API_POST_SVRINFO, refreshInfo);
+        workspace_svrinfo_msg = getClientMessage('SIUPDATED');
     }
 
     function displayCommand() {
@@ -516,6 +530,10 @@
         if (statusCode[API_GET_COMMAND] == -1 || statusCode[API_GET_COMMAND] == 0) {
             displayAlertDanger('#workspace_command', getClientMessage('CONNERR'));
             return;
+        }
+        if (workplace_command_msg !== '') {
+            displayAlertSuccess('#workspace_command', workplace_command_msg);
+            workplace_command_msg = '';
         }
         var commandList = getArray(responseData[API_GET_COMMAND].Command);
         if (commandList == null) {
@@ -551,6 +569,7 @@
         $('#workspace_command').append('<div class="form-group"><label for="commandType">' + getClientMessage('COMTYPE') + '</label><select class="form-control" id="commandType"><option>Linux /usr/bin/bash</option><option>Windows cmd.exe /c</option></select></div>');
         $('#workspace_command').append('<div class="form-group"><label for="commandScript">' + getClientMessage('COMSCRIPT') + '</label><textarea class="form-control" id="commandScript" rows="3" style="margin-top: 0px; margin-bottom: 0px; height: 185px;"></textarea></div>');
         $('#workspace_command').append('<div class="form-group"><label for="agentFileName">' + getClientMessage('COMCOPYTOSVR') + '</label><input type="text" class="form-control" id="agentFileName" placeholder="' + getClientMessage('COMPLACEAGT') + '"></div>');
+        $('#workspace_command').append('<div id="workspace_command_errmsg">');
         $('#workspace_command').append('<button type="button" id="commandBtnAdd" class="btn btn-primary" onclick="updateCommand(false)">' + getClientMessage('COMADD') + '</button> ');
         $('#workspace_command').append('<button type="button" id="commandBtnUpdate" class="btn btn-primary disabled" onclick="updateCommand(true)">' + getClientMessage('COMUPDATE') + '</button> ');
         $('#workspace_command').append('<button type="button" id="commandBtnDelete" class="btn btn-primary disabled" onclick="deleteCommand()">' + getClientMessage('COMDELETE') + '</button> ');
@@ -607,6 +626,46 @@
         }
     }
 
+    function refreshAfterAddCommand() {
+        if (statusCode[API_POST_COMMAND] == -1 || statusCode[API_POST_COMMAND] == 0) {
+            displayAlertDanger('#workspace_command_errmsg', getClientMessage('CONNERR'));
+            return;
+        }
+        if (statusCode[API_POST_COMMAND] == 400) {
+            displayAlertDanger('#workspace_command_errmsg', responseData[API_POST_COMMAND].Msg0);
+            return;
+        }
+        refreshInfo();
+        workplace_command_msg = getClientMessage('COMADDED');
+    }
+
+    function refreshAfterUpdateCommand() {
+        if (statusCode[API_POST_COMMAND] == -1 || statusCode[API_POST_COMMAND] == 0) {
+            displayAlertDanger('#workspace_command_errmsg', getClientMessage('CONNERR'));
+            return;
+        }
+        if (statusCode[API_POST_COMMAND] == 400) {
+            displayAlertDanger('#workspace_command_errmsg', responseData[API_POST_COMMAND].Msg0);
+            return;
+        }
+        refreshInfo();
+        workplace_command_msg = getClientMessage('COMUPDATED');
+    }
+
+    function refreshAfterDeleteCommand() {
+        if (statusCode[API_DELETE_COMMAND] == -1 || statusCode[API_DELETE_COMMAND] == 0) {
+            displayAlertDanger('#workspace_command_errmsg', getClientMessage('CONNERR'));
+            return;
+        }
+        if (statusCode[API_DELETE_COMMAND] == 400) {
+            displayAlertDanger('#workspace_command_errmsg', responseData[API_DELETE_COMMAND].Msg0);
+            return;
+        }
+        refreshInfo();
+        workplace_command_msg = getClientMessage('COMDELETED');
+    }
+
+
     function getLanguage() {
         if (statusCode[API_GET_LANG] == -1 || statusCode[API_GET_LANG] == 0) {
             return;
@@ -617,45 +676,6 @@
             setClientLanguage(0);
         }
         refreshInfo();
-    }
-
-    function refreshAfterAddCommand() {
-        if (statusCode[API_POST_COMMAND] == -1 || statusCode[API_POST_COMMAND] == 0) {
-            displayAlertDanger('#workspace_command', getClientMessage('CONNERR'));
-            return;
-        }
-        if (statusCode[API_POST_COMMAND] == 400) {
-            displayAlertDanger('#workspace_command', responseData[API_POST_COMMAND].Msg0);
-            return;
-        }
-        refreshInfo();
-        displayAlertSuccess('#workspace_command', getClientMessage('COMADDED'));
-    }
-
-    function refreshAfterUpdateCommand() {
-        if (statusCode[API_POST_COMMAND] == -1 || statusCode[API_POST_COMMAND] == 0) {
-            displayAlertDanger('#workspace_command', getClientMessage('CONNERR'));
-            return;
-        }
-        if (statusCode[API_POST_COMMAND] == 400) {
-            displayAlertDanger('#workspace_command', responseData[API_POST_COMMAND].Msg0);
-            return;
-        }
-        refreshInfo();
-        displayAlertSuccess('#workspace_command', getClientMessage('COMUPDATED'));
-    }
-
-    function refreshAfterDeleteCommand() {
-        if (statusCode[API_DELETE_COMMAND] == -1 || statusCode[API_DELETE_COMMAND] == 0) {
-            displayAlertDanger('#workspace_command', getClientMessage('CONNERR'));
-            return;
-        }
-        if (statusCode[API_DELETE_COMMAND] == 400) {
-            displayAlertDanger('#workspace_command', responseData[API_DELETE_COMMAND].Msg0);
-            return;
-        }
-        refreshInfo();
-        displayAlertSuccess('#workspace_command', getClientMessage('COMDELETED'));
     }
 
     function refreshInfo() {
