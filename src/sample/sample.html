@@ -95,6 +95,7 @@
         addClientMessage('COMADDED', {'en':'New command has been added.', 'ja':'新規にコマンドが追加されました。'});
         addClientMessage('COMUPDATED', {'en':'The specified command has been updated.', 'ja':'指定したコマンドが更新されました。'});
         addClientMessage('COMDELETED', {'en':'The specified command has been deleted', 'ja':'指定したコマンドが削除されました。'});
+        addClientMessage('COMMAND', {'en':'Command : ', 'ja':'コマンド : '});
 
         addClientMessage('LOGEVENTTIME', {'en':'Event Occurrence Time', 'ja':'イベント発生時刻'});
         addClientMessage('LOGEVENT', {'en':'Event', 'ja':'イベント'});
@@ -296,7 +297,7 @@
         }
         btnGrp.append(ddMenu);
         $('#inputDlgModalBody').append('<p>');
-        $('#inputDlgModalBody').append('Command : ');
+        $('#inputDlgModalBody').append(getClientMessage('COMMAND'));
         $('#inputDlgModalBody').append(btnGrp);
         $('#inputDlgModalBody').append('</p>');
 
@@ -353,7 +354,7 @@
         }
         btnGrp.append(ddMenu);
         $('#inputDlgModalBody').append('<p>');
-        $('#inputDlgModalBody').append('Command : ');
+        $('#inputDlgModalBody').append(getClientMessage('COMMAND'));
         $('#inputDlgModalBody').append(btnGrp);
         $('#inputDlgModalBody').append('</p>');
 
@@ -582,7 +583,7 @@
             commandListTable.addClass('table table-striped');
 
             var tHead = $('<thead>');
-            tHead.append('<tr><th>Name</th><th>Type</th></tr>');
+            tHead.append('<tr><th>' + getClientMessage('COMNAME') + '</th><th>' + getClientMessage('COMTYPE') + '</th></tr>');
             commandListTable.append(tHead);
 
             var tBody = $('<tbody>');
