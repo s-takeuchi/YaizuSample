@@ -118,6 +118,11 @@
         }
     }
 
+    ////////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////////
+
     function displayLogInfo() {
         $('#workspace_loginfo').append('<h2><span class="glyphicon glyphicon-time"></span>' + getClientMessage('AUDITLOG') + '</h2>');
         if (statusCode[API_GET_LOGS] == -1 || statusCode[API_GET_LOGS] == 0) {
@@ -145,6 +150,11 @@
         $('#workspace_loginfo').append(logData);
         $('td').css('vertical-align', 'middle');
     }
+
+    ////////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////////
 
     function displayAgentInfo() {
         $('#workspace_agtinfo').append('<h2><span class="glyphicon glyphicon-eye-open"></span>' + getClientMessage('AGENTINFO') + '</h2>');
@@ -402,6 +412,11 @@
         selectedAgentStatusCommand = agentStatusCommand;
     }
 
+    ////////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////////
+
     function displayServerInfo() {
         $('#workspace_svrinfo').append('<h2><span class="glyphicon glyphicon-tower"></span>' + getClientMessage('SERVERINFO') + '</h2>');
         if (statusCode[API_GET_SVRINFO] == -1 || statusCode[API_GET_SVRINFO] == 0) {
@@ -478,6 +493,8 @@
         $('#workspace_svrinfo').append('</p>');
         $('#bucketPath').val(responseData[API_GET_SVRINFO].ServerInfo.BucketPath);
 
+        $('#workspace_svrinfo').append('<div id="workspace_svrinfo_errmsg">');
+
         $('#workspace_svrinfo').append('<p>');
         $('#workspace_svrinfo').append('<button type="button" id="serverInfoBtnUpdate" class="btn btn-primary" onclick="updateServerInfo()">' + getClientMessage('SIUPDATEBTN') + '</button> ');
         $('#workspace_svrinfo').append('</p>');
@@ -521,9 +538,27 @@
     function updateServerInfo() {
         var pInterval = getPollingInterval(selectedPollingInterval);
         var saInterval = getStatusAcquisitionInterval(selectedStatusAcquisitionInterval);
-        apiCall('POST', './api/server/', {"ServerInfo":{"PInterval":pInterval, "SaInterval":saInterval, "BucketPath":$('#bucketPath').val()}}, API_POST_SVRINFO, refreshInfo);
+        apiCall('POST', './api/server/', {"ServerInfo":{"PInterval":pInterval, "SaInterval":saInterval, "BucketPath":$('#bucketPath').val()}}, API_POST_SVRINFO, refreshAfterUpdateServerInfo);
+    }
+
+    function refreshAfterUpdateServerInfo() {
+        $('#workspace_svrinfo .alert').remove();
+        if (statusCode[API_POST_SVRINFO] == -1 || statusCode[API_POST_SVRINFO] == 0) {
+            displayAlertDanger('#workspace_svrinfo_errmsg', getClientMessage('CONNERR'));
+            return;
+        }
+        if (statusCode[API_POST_SVRINFO] == 400) {
+            displayAlertDanger('#workspace_svrinfo_errmsg', responseData[API_POST_SVRINFO].Msg0);
+            return;
+        }
+        refreshInfo();
         workspace_svrinfo_msg = getClientMessage('SIUPDATED');
     }
+
+    ////////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////////
 
     function displayCommand() {
         $('#workspace_command').append('<h2><span class="glyphicon glyphicon-flash"></span>' + getClientMessage('COMMAND') + '</h2>');
@@ -668,6 +703,10 @@
         workplace_command_msg = getClientMessage('COMDELETED');
     }
 
+    ////////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////////
 
     function getLanguage() {
         if (statusCode[API_GET_LANG] == -1 || statusCode[API_GET_LANG] == 0) {

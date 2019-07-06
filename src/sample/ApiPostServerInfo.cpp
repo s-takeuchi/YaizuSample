@@ -6,14 +6,23 @@
 
 StkObject* ApiPostServerInfo::Execute(StkObject* ReqObj, int Method, wchar_t UrlPath[StkWebAppExec::URL_PATH_LENGTH], int* ResultCode, wchar_t Locale[3])
 {
+	if (Locale != NULL && Locale[2] == '\0' && Locale[0] != '\0' && StkPlWcsCmp(Locale, L"ja") == 0) {
+		MessageProc::SetLocaleMode(MessageProc::LOCALE_MODE_JAPANESE);
+	} else {
+		MessageProc::SetLocaleMode(MessageProc::LOCALE_MODE_ENGLISH);
+	}
+
 	int PInterval = 0;
 	int SaInterval = 0;
 	wchar_t BucketPath[DA_MAXLEN_OF_BUCKETPATH] = L"";
+	StkObject* TmpObj = new StkObject(L"");
 	if (ReqObj != NULL) {
 		*ResultCode = 200;
 		StkObject* ServerInfo = ReqObj->GetFirstChildElement();
 		if (ServerInfo == NULL) {
-			return NULL;
+			TmpObj->AppendChildElement(new StkObject(L"Msg0", MessageProc::GetMsg(MSG_NOSVRINFOREQUEST)));
+			*ResultCode = 400;
+			return TmpObj;
 		}
 		StkObject* CurObj = ServerInfo->GetFirstChildElement();
 		while (CurObj) {
@@ -30,14 +39,28 @@ StkObject* ApiPostServerInfo::Execute(StkObject* ReqObj, int Method, wchar_t Url
 		}
 		StkObject* PIntervalObj = ServerInfo->GetFirstChildElement();
 		if (PIntervalObj == NULL) {
-			return NULL;
+			TmpObj->AppendChildElement(new StkObject(L"Msg0", MessageProc::GetMsg(MSG_NOPOLLINGINTVL)));
+			*ResultCode = 400;
+			return TmpObj;
 		}
 		StkObject* SaIntervalObj = PIntervalObj->GetNext();
 		if (SaIntervalObj == NULL) {
-			return NULL;
+			TmpObj->AppendChildElement(new StkObject(L"Msg0", MessageProc::GetMsg(MSG_NOSAINTVL)));
+			*ResultCode = 400;
+			return TmpObj;
 		}
 		PInterval = PIntervalObj->GetIntValue();
 		SaInterval = SaIntervalObj->GetIntValue();
+		if (PInterval < 30 || PInterval > 900) {
+			TmpObj->AppendChildElement(new StkObject(L"Msg0", MessageProc::GetMsg(MSG_INVALIDPOINTVL)));
+			*ResultCode = 400;
+			return TmpObj;
+		}
+		if (SaInterval < 300 || SaInterval > 3600) {
+			TmpObj->AppendChildElement(new StkObject(L"Msg0", MessageProc::GetMsg(MSG_INVALIDSVINTVL)));
+			*ResultCode = 400;
+			return TmpObj;
+		}
 		DataAccess::GetInstance()->SetServerInfo(PInterval, SaInterval, BucketPath);
 
 		wchar_t LogMsg[256] = L"";
@@ -45,9 +68,12 @@ StkObject* ApiPostServerInfo::Execute(StkObject* ReqObj, int Method, wchar_t Url
 		StkPlSwPrintf(LogMsg, 256, L"%ls [Polling Interval=%d sec, Status Acquisition Interval=%d sec, Bucket Path=%ls]", MessageProc::GetMsgEng(MSG_SVRINFOUPDATED), PInterval, SaInterval, BucketPath);
 		StkPlSwPrintf(LogMsgJa, 256, L"%ls [Polling Interval=%d sec, Status Acquisition Interval=%d sec, Bucket Path=%ls]", MessageProc::GetMsgJpn(MSG_SVRINFOUPDATED), PInterval, SaInterval, BucketPath);
 		DataAccess::GetInstance()->AddLogMsg(LogMsg, LogMsgJa);
+	} else {
+		TmpObj->AppendChildElement(new StkObject(L"Msg0", MessageProc::GetMsg(MSG_NOREQUEST)));
+		*ResultCode = 400;
+		return TmpObj;
 	}
 
-	StkObject* TmpObj = new StkObject(L"");
 	TmpObj->AppendChildElement(new StkObject(L"Msg0", L""));
 	*ResultCode = 200;
 	return TmpObj;

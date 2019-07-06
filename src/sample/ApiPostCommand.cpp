@@ -22,6 +22,7 @@ StkObject* ApiPostCommand::Execute(StkObject* ReqObj, int Method, wchar_t UrlPat
 	} else {
 		MessageProc::SetLocaleMode(MessageProc::LOCALE_MODE_ENGLISH);
 	}
+
 	StkObject* ResObj = new StkObject(L"");
 	if (ReqObj == NULL) {
 		ResObj->AppendChildElement(new StkObject(L"Msg0", MessageProc::GetMsg(MSG_NOREQUEST)));
@@ -88,7 +89,7 @@ StkObject* ApiPostCommand::Execute(StkObject* ReqObj, int Method, wchar_t UrlPat
 		CurObj = CurObj->GetNext();
 	}
 	if (Id == -1) {
-		// Command addition
+		// for command addition
 		if (DataAccess::GetInstance()->CheckCommandExistenceByName(Name)) {
 			ResObj->AppendChildElement(new StkObject(L"Msg0", MessageProc::GetMsg(MSG_DUPCMDNAME)));
 			*ResultCode = 400;
@@ -98,7 +99,7 @@ StkObject* ApiPostCommand::Execute(StkObject* ReqObj, int Method, wchar_t UrlPat
 		Id++;
 		DataAccess::GetInstance()->SetMaxCommandId(Id);
 	} else {
-		// command updation
+		// for command updation
 		wchar_t TmpName[DA_MAXLEN_OF_CMDNAME];
 		DataAccess::GetInstance()->GetCommandNameById(Id, TmpName);
 		if (StkPlWcsCmp(TmpName, Name) != 0) {
@@ -107,6 +108,11 @@ StkObject* ApiPostCommand::Execute(StkObject* ReqObj, int Method, wchar_t UrlPat
 				*ResultCode = 400;
 				return ResObj;
 			}
+		}
+		if (DataAccess::GetInstance()->GetCommandNameById(Id, TmpName) != 0) {
+			ResObj->AppendChildElement(new StkObject(L"Msg0", MessageProc::GetMsg(MSG_COMMANDNOTEXIST)));
+			*ResultCode = 400;
+			return ResObj;
 		}
 	}
 	if (StkPlWcsCmp(Name, L"") == 0) {
