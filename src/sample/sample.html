@@ -316,7 +316,7 @@
                     apiCall('POST', './api/agent/', ReqObj, API_POST_AGTINFO, null);
                 }
             }
-            refreshInfo();
+            apiCall(null, null, null, API_DUMMY, refreshInfo);
         }
         $('#inputDlgModal').modal('hide');
     }
