@@ -7,7 +7,7 @@
 bool ApiPostCommand::CheckFileNameChar(wchar_t* Ptr)
 {
 	while (*Ptr != NULL) {
-		if (*Ptr == L'\\' || *Ptr == L'/' || *Ptr == L':' || *Ptr == L'*' || *Ptr == L'?' || *Ptr == L'\"' || *Ptr == L'<' || *Ptr == L'>' || *Ptr == L'|' || *Ptr == L'&' || *Ptr == L'%') {
+		if (*Ptr == L'\\' || *Ptr == L'/' || *Ptr == L':' || *Ptr == L'*' || *Ptr == L'?' || *Ptr == L'\"' || *Ptr == L'<' || *Ptr == L'>' || *Ptr == L'|' || *Ptr == L'&' || *Ptr == L'%' || *Ptr == L' ') {
 			return false;
 		}
 		Ptr++;
