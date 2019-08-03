@@ -1,8 +1,9 @@
 ﻿#pragma once
 #include "dataaccess.h"
 #include "../../../YaizuComLib/src/stkwebapp/StkWebAppExec.h"
+#include "ApiBase.h"
 
-class ApiGetServerInfo : StkWebAppExec
+class ApiGetServerInfo : ApiBase
 {
 private:
 	wchar_t StartTimeUtc[DA_MAXLEN_OF_TIME];

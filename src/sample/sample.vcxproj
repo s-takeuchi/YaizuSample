@@ -102,6 +102,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="ApiBase .cpp" />
     <ClCompile Include="ApiDeleteCommand.cpp" />
     <ClCompile Include="ApiGetAgentInfo.cpp" />
     <ClCompile Include="ApiGetCommand.cpp" />
@@ -119,6 +120,7 @@
     <ClCompile Include="sample.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="ApiBase.h" />
     <ClInclude Include="ApiDeleteCommand.h" />
     <ClInclude Include="ApiGetAgentInfo.h" />
     <ClInclude Include="ApiGetCommand.h" />
