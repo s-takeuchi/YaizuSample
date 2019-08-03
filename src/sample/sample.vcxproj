@@ -102,7 +102,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="ApiBase .cpp" />
+    <ClCompile Include="ApiBase.cpp" />
     <ClCompile Include="ApiDeleteCommand.cpp" />
     <ClCompile Include="ApiGetAgentInfo.cpp" />
     <ClCompile Include="ApiGetCommand.cpp" />
