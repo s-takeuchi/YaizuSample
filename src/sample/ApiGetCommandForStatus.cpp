@@ -5,7 +5,7 @@
 
 bool ApiGetCommandForStatus::StopFlag;
 
-StkObject* ApiGetCommandForStatus::Execute(StkObject* ReqObj, int Method, wchar_t UrlPath[StkWebAppExec::URL_PATH_LENGTH], int* ResultCode, wchar_t Locale[3])
+StkObject* ApiGetCommandForStatus::ExecuteImpl(StkObject* ReqObj, int Method, wchar_t UrlPath[StkWebAppExec::URL_PATH_LENGTH], int* ResultCode, int LocaleType)
 {
 	wchar_t TargetAgtName[DA_MAXLEN_OF_AGTNAME];
 	StkStringParser::ParseInto1Param(UrlPath, L"/api/statuscommand/$/", L'$', TargetAgtName, DA_MAXLEN_OF_AGTNAME);

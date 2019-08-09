@@ -4,5 +4,5 @@
 
 class ApiPostAgentInfo : ApiBase
 {
-	StkObject* Execute(StkObject*, int, wchar_t[StkWebAppExec::URL_PATH_LENGTH], int*, wchar_t[3]);
+	StkObject* ExecuteImpl(StkObject*, int, wchar_t[StkWebAppExec::URL_PATH_LENGTH], int*, int);
 };

@@ -2,7 +2,7 @@
 #include "../../../YaizuComLib/src/stkpl/StkPl.h"
 #include "ApiGetAgentInfo.h"
 
-StkObject* ApiGetAgentInfo::Execute(StkObject* ReqObj, int Method, wchar_t UrlPath[StkWebAppExec::URL_PATH_LENGTH], int* ResultCode, wchar_t Locale[3])
+StkObject* ApiGetAgentInfo::ExecuteImpl(StkObject* ReqObj, int Method, wchar_t UrlPath[StkWebAppExec::URL_PATH_LENGTH], int* ResultCode, int LocaleType)
 {
 	wchar_t Name[DA_MAXNUM_OF_AGTRECORDS][DA_MAXLEN_OF_AGTNAME];
 	int Status[DA_MAXNUM_OF_AGTRECORDS];

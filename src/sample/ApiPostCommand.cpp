@@ -15,14 +15,8 @@ bool ApiPostCommand::CheckFileNameChar(wchar_t* Ptr)
 	return true;
 }
 
-StkObject* ApiPostCommand::Execute(StkObject* ReqObj, int Method, wchar_t UrlPath[StkWebAppExec::URL_PATH_LENGTH], int* ResultCode, wchar_t Locale[3])
+StkObject* ApiPostCommand::ExecuteImpl(StkObject* ReqObj, int Method, wchar_t UrlPath[StkWebAppExec::URL_PATH_LENGTH], int* ResultCode, int LocaleType)
 {
-	if (Locale != NULL && Locale[2] == '\0' && Locale[0] != '\0' && StkPlWcsCmp(Locale, L"ja") == 0) {
-		MessageProc::SetLocaleMode(MessageProc::LOCALE_MODE_JAPANESE);
-	} else {
-		MessageProc::SetLocaleMode(MessageProc::LOCALE_MODE_ENGLISH);
-	}
-
 	StkObject* ResObj = new StkObject(L"");
 	if (ReqObj == NULL) {
 		ResObj->AppendChildElement(new StkObject(L"Msg0", MessageProc::GetMsg(MSG_NOREQUEST)));

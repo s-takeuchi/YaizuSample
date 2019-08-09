@@ -2,7 +2,7 @@
 #include "../../../YaizuComLib/src/stkpl/StkPl.h"
 #include "ApiPostFile.h"
 
-StkObject* ApiPostFile::Execute(StkObject* ReqObj, int Method, wchar_t UrlPath[StkWebAppExec::URL_PATH_LENGTH], int* ResultCode, wchar_t Locale[3])
+StkObject* ApiPostFile::ExecuteImpl(StkObject* ReqObj, int Method, wchar_t UrlPath[StkWebAppExec::URL_PATH_LENGTH], int* ResultCode, int LocaleType)
 {
 	if (ReqObj != NULL) {
 		*ResultCode = 200;

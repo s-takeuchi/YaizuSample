@@ -8,7 +8,7 @@ ApiGetServerInfo::ApiGetServerInfo()
 	StkPlGetWTimeInIso8601(StartTimeLocal, true);
 }
 
-StkObject* ApiGetServerInfo::Execute(StkObject* ReqObj, int Method, wchar_t UrlPath[StkWebAppExec::URL_PATH_LENGTH], int* ResultCode, wchar_t Locale[3])
+StkObject* ApiGetServerInfo::ExecuteImpl(StkObject* ReqObj, int Method, wchar_t UrlPath[StkWebAppExec::URL_PATH_LENGTH], int* ResultCode, int LocaleType)
 {
 	int PInterval = 0;
 	int SaInterval = 0;

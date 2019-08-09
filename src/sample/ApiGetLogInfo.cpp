@@ -2,7 +2,7 @@
 #include "dataaccess.h"
 #include "ApiGetLogInfo.h"
 
-StkObject* ApiGetLogInfo::Execute(StkObject* ReqObj, int Method, wchar_t UrlPath[StkWebAppExec::URL_PATH_LENGTH], int* ResultCode, wchar_t Locale[3])
+StkObject* ApiGetLogInfo::ExecuteImpl(StkObject* ReqObj, int Method, wchar_t UrlPath[StkWebAppExec::URL_PATH_LENGTH], int* ResultCode, int LocaleType)
 {
 	wchar_t TimeUtc[DA_MAXNUM_OF_LOGRECORDS][DA_MAXLEN_OF_TIME];
 	wchar_t TimeLocal[DA_MAXNUM_OF_LOGRECORDS][DA_MAXLEN_OF_TIME];
@@ -15,7 +15,7 @@ StkObject* ApiGetLogInfo::Execute(StkObject* ReqObj, int Method, wchar_t UrlPath
 		StkObject* TmpObjC = new StkObject(L"Log");
 		TmpObjC->AppendChildElement(new StkObject(L"TimeUtc", TimeUtc[Loop]));
 		TmpObjC->AppendChildElement(new StkObject(L"TimeLocal", TimeLocal[Loop]));
-		if (Locale != NULL && Locale[2] == '\0' && Locale[0] != '\0' && StkPlWcsCmp(Locale, L"ja") == 0) {
+		if (LocaleType == 1) {
 			TmpObjC->AppendChildElement(new StkObject(L"Msg", MsgJa[Loop]));
 		} else {
 			TmpObjC->AppendChildElement(new StkObject(L"Msg", Msg[Loop]));

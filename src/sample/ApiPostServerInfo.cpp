@@ -4,14 +4,8 @@
 #include "MessageCode.h"
 #include "ApiPostServerInfo.h"
 
-StkObject* ApiPostServerInfo::Execute(StkObject* ReqObj, int Method, wchar_t UrlPath[StkWebAppExec::URL_PATH_LENGTH], int* ResultCode, wchar_t Locale[3])
+StkObject* ApiPostServerInfo::ExecuteImpl(StkObject* ReqObj, int Method, wchar_t UrlPath[StkWebAppExec::URL_PATH_LENGTH], int* ResultCode, int LocaleType)
 {
-	if (Locale != NULL && Locale[2] == '\0' && Locale[0] != '\0' && StkPlWcsCmp(Locale, L"ja") == 0) {
-		MessageProc::SetLocaleMode(MessageProc::LOCALE_MODE_JAPANESE);
-	} else {
-		MessageProc::SetLocaleMode(MessageProc::LOCALE_MODE_ENGLISH);
-	}
-
 	int PInterval = 0;
 	int SaInterval = 0;
 	wchar_t BucketPath[DA_MAXLEN_OF_BUCKETPATH] = L"";
