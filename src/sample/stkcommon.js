@@ -9,12 +9,45 @@ var underComm = 0;
 var statusCode = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
 var responseData = [{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}];
 
+// For login info
+var initLoginModalFlag = false;
+var loginId = "";
+var loginPw = "";
+
 // Init flag of loading modal
 var initLoadingModalFlag = false;
 
 // Client messages
 var clientMsg = {};
 var clientLanguage = 0;
+
+function initLoginModal(func) {
+    var loginModal = $('<div id="login_Modal" class="modal fade" tabindex="-1" role="dialog" data-keyboard="false" data-backdrop="static">');
+    var modalDialog = $('<div class="modal-dialog">');
+    var modalContent = $('<div class="modal-content">');
+    var modalHeader = $('<div class="modal-header" style="padding: 0px; text-align: center;"><h3 style="margin-top: 5px;">Login</h3></div>');
+    var modalBody = $('<div class="modal-body"><div style="height:130px"><div class="form-group"><input type="text" class="form-control" id="loginId" placeholder="Your Email *" value="" /></div><div class="form-group"><input type="password" class="form-control" id="loginPw" placeholder="Your Password *" value="" /></div><button type="button" id="commandBtnAdd" class="btn btn-primary" onclick="tryLogin()">Login</button></div></div>');
+
+    modalContent.append(modalHeader);
+    modalContent.append(modalBody);
+    modalDialog.append(modalContent);
+    loginModal.append(modalDialog);
+    $('body').append(loginModal);
+}
+
+function tryLogin() {
+    loginId = $("#loginId").val();
+    loginPw = $("#loginPw").val();
+    $('#login_Modal').modal('hide');
+}
+
+function showLoginModal() {
+    if (initLoginModalFlag == false) {
+        initLoginModalFlag = true;
+        initLoginModal();
+    }
+    $('#login_Modal').modal('show');
+}
 
 function initLoadingModal() {
     var loadingModal = $('<div id="loading_Modal" class="modal fade" tabindex="-1" role="dialog" data-keyboard="false" data-backdrop="static">');
