@@ -5,7 +5,7 @@
 
 bool ApiGetCommandForOperation::StopFlag;
 
-StkObject* ApiGetCommandForOperation::ExecuteImpl(StkObject* ReqObj, int Method, wchar_t UrlPath[StkWebAppExec::URL_PATH_LENGTH], int* ResultCode, int LocaleType)
+StkObject* ApiGetCommandForOperation::ExecuteImpl(StkObject* ReqObj, int Method, wchar_t UrlPath[StkWebAppExec::URL_PATH_LENGTH], int* ResultCode, int LocaleType, wchar_t* Token)
 {
 	wchar_t TargetAgtName[DA_MAXLEN_OF_AGTNAME];
 	StkStringParser::ParseInto1Param(UrlPath, L"/api/opcommand/$/", L'$', TargetAgtName, DA_MAXLEN_OF_AGTNAME);

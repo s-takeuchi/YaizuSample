@@ -3,7 +3,7 @@
 #include "../../../YaizuComLib/src/commonfunc/StkStringParser.h"
 #include "ApiGetFile.h"
 
-StkObject* ApiGetFile::ExecuteImpl(StkObject* ReqObj, int Method, wchar_t UrlPath[StkWebAppExec::URL_PATH_LENGTH], int* ResultCode, int LocaleType)
+StkObject* ApiGetFile::ExecuteImpl(StkObject* ReqObj, int Method, wchar_t UrlPath[StkWebAppExec::URL_PATH_LENGTH], int* ResultCode, int LocaleType, wchar_t* Token)
 {
 	wchar_t TargetFileName[FILENAME_MAX];
 	wchar_t OffsetStr[16];

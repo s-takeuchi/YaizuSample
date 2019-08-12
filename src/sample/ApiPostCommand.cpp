@@ -15,7 +15,7 @@ bool ApiPostCommand::CheckFileNameChar(wchar_t* Ptr)
 	return true;
 }
 
-StkObject* ApiPostCommand::ExecuteImpl(StkObject* ReqObj, int Method, wchar_t UrlPath[StkWebAppExec::URL_PATH_LENGTH], int* ResultCode, int LocaleType)
+StkObject* ApiPostCommand::ExecuteImpl(StkObject* ReqObj, int Method, wchar_t UrlPath[StkWebAppExec::URL_PATH_LENGTH], int* ResultCode, int LocaleType, wchar_t* Token)
 {
 	StkObject* ResObj = new StkObject(L"");
 	if (ReqObj == NULL) {

@@ -4,7 +4,7 @@
 #include "MessageCode.h"
 #include "ApiPostAgentInfo.h"
 
-StkObject* ApiPostAgentInfo::ExecuteImpl(StkObject* ReqObj, int Method, wchar_t UrlPath[StkWebAppExec::URL_PATH_LENGTH], int* ResultCode, int LocaleType)
+StkObject* ApiPostAgentInfo::ExecuteImpl(StkObject* ReqObj, int Method, wchar_t UrlPath[StkWebAppExec::URL_PATH_LENGTH], int* ResultCode, int LocaleType, wchar_t* Token)
 {
 	wchar_t Name[DA_MAXLEN_OF_AGTNAME] = L"";
 	int Status = 0;

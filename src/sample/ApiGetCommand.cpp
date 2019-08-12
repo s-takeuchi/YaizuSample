@@ -2,8 +2,13 @@
 #include "dataaccess.h"
 #include "ApiGetCommand.h"
 
-StkObject* ApiGetCommand::ExecuteImpl(StkObject* ReqObj, int Method, wchar_t UrlPath[StkWebAppExec::URL_PATH_LENGTH], int* ResultCode, int LocaleType)
+StkObject* ApiGetCommand::ExecuteImpl(StkObject* ReqObj, int Method, wchar_t UrlPath[StkWebAppExec::URL_PATH_LENGTH], int* ResultCode, int LocaleType, wchar_t* Token)
 {
+	if (*Token == L'\0' || StkPlWcsCmp(L"takeuchiHapp1975", Token) != 0) {
+		*ResultCode = 401;
+		return NULL;
+	}
+
 	int Id[DA_MAXNUM_OF_CMDRECORDS];
 	wchar_t Name[DA_MAXNUM_OF_CMDRECORDS][DA_MAXLEN_OF_CMDNAME];
 	int Type[DA_MAXNUM_OF_CMDRECORDS];

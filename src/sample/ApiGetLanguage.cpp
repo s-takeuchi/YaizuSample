@@ -2,7 +2,7 @@
 #include "../../../YaizuComLib/src/commonfunc/StkStringParser.h"
 #include "ApiGetLanguage.h"
 
-StkObject* ApiGetLanguage::ExecuteImpl(StkObject* ReqObj, int Method, wchar_t UrlPath[StkWebAppExec::URL_PATH_LENGTH], int* ResultCode, int LocaleType)
+StkObject* ApiGetLanguage::ExecuteImpl(StkObject* ReqObj, int Method, wchar_t UrlPath[StkWebAppExec::URL_PATH_LENGTH], int* ResultCode, int LocaleType, wchar_t* Token)
 {
 	StkObject* ResObj = new StkObject(L"");
 	if (LocaleType == -1) {

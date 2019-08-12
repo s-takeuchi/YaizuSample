@@ -2,8 +2,13 @@
 #include "dataaccess.h"
 #include "ApiGetLogInfo.h"
 
-StkObject* ApiGetLogInfo::ExecuteImpl(StkObject* ReqObj, int Method, wchar_t UrlPath[StkWebAppExec::URL_PATH_LENGTH], int* ResultCode, int LocaleType)
+StkObject* ApiGetLogInfo::ExecuteImpl(StkObject* ReqObj, int Method, wchar_t UrlPath[StkWebAppExec::URL_PATH_LENGTH], int* ResultCode, int LocaleType, wchar_t* Token)
 {
+	if (*Token == L'\0' || StkPlWcsCmp(L"takeuchiHapp1975", Token) != 0) {
+		*ResultCode = 401;
+		return NULL;
+	}
+
 	wchar_t TimeUtc[DA_MAXNUM_OF_LOGRECORDS][DA_MAXLEN_OF_TIME];
 	wchar_t TimeLocal[DA_MAXNUM_OF_LOGRECORDS][DA_MAXLEN_OF_TIME];
 	wchar_t Msg[DA_MAXNUM_OF_LOGRECORDS][DA_MAXLEN_OF_LOGMSG];

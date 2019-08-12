@@ -3,7 +3,6 @@
 #include "../../../YaizuComLib/src/commonfunc/msgproc.h"
 #include "ApiBase.h"
 
-
 StkObject* ApiBase::Execute(StkObject* ReqObj, int Method, wchar_t UrlPath[StkWebAppExec::URL_PATH_LENGTH], int* ResultCode, wchar_t* HttpHeader)
 {
 	wchar_t Locale[3] = L"";
@@ -17,5 +16,8 @@ StkObject* ApiBase::Execute(StkObject* ReqObj, int Method, wchar_t UrlPath[StkWe
 		MessageProc::SetLocaleMode(MessageProc::LOCALE_MODE_ENGLISH);
 	}
 
-	return ExecuteImpl(ReqObj, Method, UrlPath, ResultCode, LocaleType);
+	wchar_t Token[256] = L"";
+	StkStringParser::ParseInto4Params(HttpHeader, L"#Authorization:#Bearer #\r\n#", L'#', NULL, 0, NULL, 0, Token, 256, NULL, 0);
+
+	return ExecuteImpl(ReqObj, Method, UrlPath, ResultCode, LocaleType, Token);
 }

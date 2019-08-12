@@ -8,8 +8,13 @@ ApiGetServerInfo::ApiGetServerInfo()
 	StkPlGetWTimeInIso8601(StartTimeLocal, true);
 }
 
-StkObject* ApiGetServerInfo::ExecuteImpl(StkObject* ReqObj, int Method, wchar_t UrlPath[StkWebAppExec::URL_PATH_LENGTH], int* ResultCode, int LocaleType)
+StkObject* ApiGetServerInfo::ExecuteImpl(StkObject* ReqObj, int Method, wchar_t UrlPath[StkWebAppExec::URL_PATH_LENGTH], int* ResultCode, int LocaleType, wchar_t* Token)
 {
+	if (*Token == L'\0' || StkPlWcsCmp(L"takeuchiHapp1975", Token) != 0) {
+		*ResultCode = 401;
+		return NULL;
+	}
+
 	int PInterval = 0;
 	int SaInterval = 0;
 	wchar_t BucketPath[DA_MAXLEN_OF_BUCKETPATH];

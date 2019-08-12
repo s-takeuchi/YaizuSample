@@ -4,7 +4,7 @@
 #include "MessageCode.h"
 #include "ApiPostServerInfo.h"
 
-StkObject* ApiPostServerInfo::ExecuteImpl(StkObject* ReqObj, int Method, wchar_t UrlPath[StkWebAppExec::URL_PATH_LENGTH], int* ResultCode, int LocaleType)
+StkObject* ApiPostServerInfo::ExecuteImpl(StkObject* ReqObj, int Method, wchar_t UrlPath[StkWebAppExec::URL_PATH_LENGTH], int* ResultCode, int LocaleType, wchar_t* Token)
 {
 	int PInterval = 0;
 	int SaInterval = 0;
