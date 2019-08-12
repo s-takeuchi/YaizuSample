@@ -718,7 +718,6 @@
         } else {
             setClientLanguage(0);
         }
-        refreshInfo();
     }
 
     function refreshInfo() {
@@ -743,10 +742,11 @@
     }
 
     function checkLogin() {
-        sendRequestRecvResponse('GET', './api/language/', null, API_GET_LANG, false);
-        if (statusCode[API_GET_LANG] != 200) {
+        sendRequestRecvResponse('GET', './api/server/', null, API_GET_SVRINFO, false);
+        if (statusCode[API_GET_SVRINFO] != 200) {
             return false;
         } else {
+            refreshInfo();
             return true;
         }
     }
@@ -761,7 +761,6 @@
             });
         });
         showLoginModal(checkLogin);
-        refreshInfo();
     }
 
     </script>
