@@ -26,7 +26,7 @@ function initLoginModal(func) {
     var modalDialog = $('<div class="modal-dialog">');
     var modalContent = $('<div class="modal-content">');
     var modalHeader = $('<div class="modal-header" style="padding: 0px; text-align: center;"><h3 style="margin-top: 5px;">Login</h3></div>');
-    var modalBody = $('<div class="modal-body"><div style="height:130px"><div class="form-group"><input type="text" class="form-control" id="loginId" placeholder="Your Email *" value="" /></div><div class="form-group"><input type="password" class="form-control" id="loginPw" placeholder="Your Password *" value="" /></div><button type="button" id="commandBtnAdd" class="btn btn-primary" onclick="tryLogin()">Login</button></div></div>');
+    var modalBody = $('<div class="modal-body"><div style="height:150px"><div class="form-group"><input type="text" class="form-control" id="loginId" placeholder="Your Email *" value="" /></div><div class="form-group"><input type="password" class="form-control" id="loginPw" placeholder="Your Password *" value="" /></div><div id="login_Modal_Body"></div><button type="button" id="commandBtnAdd" class="btn btn-primary" onclick="tryLogin(' + func + ')">Login</button></div></div>');
 
     modalContent.append(modalHeader);
     modalContent.append(modalBody);
@@ -35,16 +35,21 @@ function initLoginModal(func) {
     $('body').append(loginModal);
 }
 
-function tryLogin() {
+function tryLogin(func) {
     loginId = $("#loginId").val();
     loginPw = $("#loginPw").val();
-    $('#login_Modal').modal('hide');
+    if (func() == true) {
+        $('#login_Modal').modal('hide');
+    } else {
+        $('#login_Modal_Body').empty();
+        $('#login_Modal_Body').append('The email address or password is incorrect.');
+    }
 }
 
-function showLoginModal() {
+function showLoginModal(func) {
     if (initLoginModalFlag == false) {
         initLoginModalFlag = true;
-        initLoginModal();
+        initLoginModal(func);
     }
     $('#login_Modal').modal('show');
 }
@@ -116,7 +121,7 @@ function displayAlertInfo(parent, msg) {
 
 function apiCall(method, url, request, index, targetFunc) {
     if (method != null && url != null && index != -1) {
-        sendRequestRecvResponse(method, url, request, index);
+        sendRequestRecvResponse(method, url, request, index, true);
     }
     if (targetFunc != null) {
         setTimeout(function() {waitForResponse(0, targetFunc);}, 1);
@@ -148,7 +153,7 @@ function waitForResponse(count, targetFunc) {
     setTimeout(function() {waitForResponse(count + 1, targetFunc);}, 500);
 }
 
-function sendRequestRecvResponse(method, url, request, index) {
+function sendRequestRecvResponse(method, url, request, index, asyncFlag) {
     underComm++;
     if (method === 'GET' || method === 'DELETE') {
         $.ajax({
@@ -156,8 +161,11 @@ function sendRequestRecvResponse(method, url, request, index) {
             dataType: 'json',
             url: url,
             data: request,
-            async: true,
+            async: asyncFlag,
             timeout: timeout,
+            beforeSend: function( xhr, settings ) {
+                xhr.setRequestHeader('Authorization', 'Bearer ' + loginId + loginPw);
+            },
             success: function(msg, textStatus, xhr) {
                 statusCode[index] = xhr.status;
                 responseData[index] = {};
@@ -186,8 +194,11 @@ function sendRequestRecvResponse(method, url, request, index) {
             url: url,
             data: JSON.stringify(request),
             contentType: 'application/json',
-            async: true,
+            async: asyncFlag,
             timeout: timeout,
+            beforeSend: function( xhr, settings ) {
+                xhr.setRequestHeader('Authorization', 'Bearer ' + loginId + loginPw);
+            },
             success: function(msg, textStatus, xhr) {
                 statusCode[index] = xhr.status;
                 responseData[index] = {};

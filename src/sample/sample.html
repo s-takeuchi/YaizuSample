@@ -742,6 +742,15 @@
         activateTarget.style.display = 'block'
     }
 
+    function checkLogin() {
+        sendRequestRecvResponse('GET', './api/language/', null, API_GET_LANG, false);
+        if (statusCode[API_GET_LANG] != 200) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
     window.onload = function() {
         initClientMessage();
         apiCall('GET', './api/language/', null, API_GET_LANG, getLanguage);
@@ -751,7 +760,7 @@
                 "padding" : "1%"
             });
         });
-        showLoginModal();
+        showLoginModal(checkLogin);
         refreshInfo();
     }
 
