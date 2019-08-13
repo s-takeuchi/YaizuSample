@@ -40,16 +40,43 @@ function tryLogin(func) {
     loginPw = $("#loginPw").val();
     if (func() == true) {
         $('#login_Modal').modal('hide');
+        document.cookie = "loginId=" + loginId;
+        document.cookie = "loginPw=" + loginPw;
     } else {
         $('#login_Modal_Body').empty();
         $('#login_Modal_Body').append('The email address or password is incorrect.');
     }
 }
 
+function tryLogout() {
+    loginId = "";
+    loginPw = "";
+    document.cookie = "loginId=" + loginId;
+    document.cookie = "loginPw=" + loginPw;
+    location.reload();
+}
+
 function showLoginModal(func) {
     if (initLoginModalFlag == false) {
         initLoginModalFlag = true;
         initLoginModal(func);
+    }
+    var myCookies = document.cookie.split(';');
+    myCookies.forEach(function(value) {
+        var content = value.split('=');
+        if (content.length == 2 && content[0].trim() === 'loginId') {
+            loginId = content[1];
+        }
+        if (content.length == 2 && content[0].trim() === 'loginPw') {
+            loginPw= content[1];
+        }
+    })
+    if (loginId !== "" && loginPw !== "") {
+        if (func() == true) {
+            return;
+        } else {
+            $('#login_Modal').modal('show');
+        }
     }
     $('#login_Modal').modal('show');
 }
