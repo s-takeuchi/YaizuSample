@@ -191,7 +191,7 @@ function sendRequestRecvResponse(method, url, request, index, asyncFlag) {
             async: asyncFlag,
             timeout: timeout,
             beforeSend: function( xhr, settings ) {
-                xhr.setRequestHeader('Authorization', 'Bearer ' + loginId + loginPw);
+                xhr.setRequestHeader('Authorization', 'Bearer ' + loginId + ' ' + loginPw);
             },
             success: function(msg, textStatus, xhr) {
                 statusCode[index] = xhr.status;

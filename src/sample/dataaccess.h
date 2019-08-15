@@ -12,6 +12,10 @@
 #define DA_MAXLEN_OF_SERVERFILENAME 256
 #define DA_MAXLEN_OF_AGENTFILENAME 256
 #define DA_MAXLEN_OF_BUCKETPATH 256
+#define DA_MAXLEN_OF_USERNAME 256
+#define DA_MAXLEN_OF_PASSWORD 32
+#define DA_MAXLEN_OF_TARGETURL 256
+#define DA_MAXNUM_OF_USERRECORDS 64
 
 class DataAccess
 {
@@ -47,7 +51,6 @@ public:
 	int GetAgentInfoForOpStatus(wchar_t[DA_MAXLEN_OF_AGTNAME]);
 	long long GetAgentInfoForReqTime(wchar_t[DA_MAXLEN_OF_AGTNAME]);
 
-
 	int GetServerInfo(int*, int*, wchar_t [DA_MAXLEN_OF_BUCKETPATH]);
 	int SetServerInfo(int, int, wchar_t[DA_MAXLEN_OF_BUCKETPATH]);
 	int GetMaxCommandId();
@@ -65,4 +68,6 @@ public:
 	int GetNumOfLogs();
 	int GetLogs(wchar_t[DA_MAXNUM_OF_LOGRECORDS][DA_MAXLEN_OF_TIME], wchar_t[DA_MAXNUM_OF_LOGRECORDS][DA_MAXLEN_OF_TIME], wchar_t[DA_MAXNUM_OF_LOGRECORDS][DA_MAXLEN_OF_LOGMSG], wchar_t[DA_MAXNUM_OF_LOGRECORDS][DA_MAXLEN_OF_LOGMSG]);
 	int DeleteOldLogs();
+
+	bool GetTargetUser(wchar_t*, wchar_t*, int*, wchar_t*);
 };

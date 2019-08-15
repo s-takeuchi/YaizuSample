@@ -4,7 +4,7 @@
 
 StkObject* ApiGetAgentInfo::ExecuteImpl(StkObject* ReqObj, int Method, wchar_t UrlPath[StkWebAppExec::URL_PATH_LENGTH], int* ResultCode, int LocaleType, wchar_t* Token)
 {
-	if (*Token == L'\0' || StkPlWcsCmp(L"takeuchiHapp1975", Token) != 0) {
+	if (!CheckCredentials(Token)) {
 		*ResultCode = 401;
 		return NULL;
 	}
