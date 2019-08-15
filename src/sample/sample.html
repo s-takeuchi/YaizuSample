@@ -746,6 +746,15 @@
         if (statusCode[API_GET_SVRINFO] != 200) {
             return false;
         } else {
+            var usertype = 0;
+            if (usertype == 0) {
+                $('#menu-agtinfo').show();
+                $('#menu-svrinfo').show();
+                $('#menu-command').show();
+                $('#menu-loginfo').show();
+            } else {
+                $('#menu-usermgt').show();
+            }
             refreshInfo();
             return true;
         }
@@ -781,10 +790,11 @@
             </div>
             <div class="collapse navbar-collapse" id="top-nav">
                 <ul class="nav navbar-nav">
-                    <li><a onclick="activateTopic('agtinfo')"><span class="glyphicon glyphicon-eye-open"></span> Agent Info</a></li>
-                    <li><a onclick="activateTopic('svrinfo')"><span class="glyphicon glyphicon-tower"></span> Server Info</a></li>
-                    <li><a onclick="activateTopic('command')"><span class="glyphicon glyphicon-flash"></span> Command</a></li>
-                    <li><a onclick="activateTopic('loginfo')"><span class="glyphicon glyphicon-time"></span> Audit Log</a></li>
+                    <li id="menu-agtinfo" style="display:none"><a onclick="activateTopic('agtinfo')"><span class="glyphicon glyphicon-eye-open"></span> Agent Info</a></li>
+                    <li id="menu-svrinfo" style="display:none"><a onclick="activateTopic('svrinfo')"><span class="glyphicon glyphicon-tower"></span> Server Info</a></li>
+                    <li id="menu-command" style="display:none"><a onclick="activateTopic('command')"><span class="glyphicon glyphicon-flash"></span> Command</a></li>
+                    <li id="menu-loginfo" style="display:none"><a onclick="activateTopic('loginfo')"><span class="glyphicon glyphicon-time"></span> Audit Log</a></li>
+                    <li id="menu-usermgt" style="display:none"><a onclick="activateTopic('usermgt')"><span class="glyphicon glyphicon-user"></span> User Management</a></li>
                 </ul>
                 <ul class="nav navbar-nav navbar-right">
                     <li><a onclick="tryLogout()"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
@@ -808,6 +818,10 @@
         </div>
         <div id="loginfo" class="row" style="display:none">
             <div id="workspace_loginfo" class="col-xs-12">
+            </div>
+        </div>
+        <div id="usermgt" class="row" style="display:none">
+            <div id="workspace_usermgt" class="col-xs-12">
             </div>
         </div>
     </div>

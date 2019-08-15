@@ -40,8 +40,8 @@ function tryLogin(func) {
     loginPw = $("#loginPw").val();
     if (func() == true) {
         $('#login_Modal').modal('hide');
-        document.cookie = "loginId=" + loginId;
-        document.cookie = "loginPw=" + loginPw;
+        document.cookie = "loginId=" + encodeURIComponent(window.btoa(loginId));
+        document.cookie = "loginPw=" + encodeURIComponent(window.btoa(loginPw));
     } else {
         $('#login_Modal_Body').empty();
         $('#login_Modal_Body').append('The email address or password is incorrect.');
@@ -65,10 +65,10 @@ function showLoginModal(func) {
     myCookies.forEach(function(value) {
         var content = value.split('=');
         if (content.length == 2 && content[0].trim() === 'loginId') {
-            loginId = content[1];
+            loginId = window.atob(decodeURIComponent(content[1]));
         }
         if (content.length == 2 && content[0].trim() === 'loginPw') {
-            loginPw= content[1];
+            loginPw = window.atob(decodeURIComponent(content[1]));
         }
     })
     if (loginId !== "" && loginPw !== "") {
