@@ -22,6 +22,7 @@
     var API_DELETE_COMMAND          = 7;
     var API_POST_AGTINFO            = 8;
     var API_GET_LANG                = 9;
+    var API_GET_USER                = 10;
 
     var selectedPollingInterval = 1;
     var pollingIntervalStr = ['30 sec ', '1 min ', '5 min ', '15 min '];
@@ -742,12 +743,12 @@
     }
 
     function checkLogin() {
-        sendRequestRecvResponse('GET', './api/server/', null, API_GET_SVRINFO, false);
-        if (statusCode[API_GET_SVRINFO] != 200) {
+        sendRequestRecvResponse('GET', './api/user/', null, API_GET_USER, false);
+        if (statusCode[API_GET_USER] != 200) {
             return false;
         } else {
-            var usertype = 0;
-            if (usertype == 0) {
+            var userrole = responseData[API_GET_USER].User.Role;
+            if (userrole == 1) {
                 $('#menu-agtinfo').show();
                 $('#menu-svrinfo').show();
                 $('#menu-command').show();

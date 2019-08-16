@@ -194,6 +194,19 @@ int DataAccess::CreateTables(const wchar_t* DataFileName)
 			UnlockTable(L"User");
 			delete RecUser;
 		}
+		{
+			ColumnData *ColDatUser[4];
+			ColDatUser[0] = new ColumnDataWStr(L"Name", L"takeuchi");
+			ColDatUser[1] = new ColumnDataWStr(L"Password", L"takeuchi");
+			ColDatUser[2] = new ColumnDataInt(L"Role", 1);
+			ColDatUser[3] = new ColumnDataWStr(L"Url", L"");
+			RecordData* RecUser = new RecordData(L"User", ColDatUser, 4);
+			// Add record
+			LockTable(L"User", LOCK_EXCLUSIVE);
+			int Ret = InsertRecord(RecUser);
+			UnlockTable(L"User");
+			delete RecUser;
+		}
 
 	} else {
 		LockAllTable(2);

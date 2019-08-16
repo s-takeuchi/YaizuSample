@@ -4,10 +4,14 @@
 #include "ApiBase.h"
 #include "dataaccess.h"
 
-bool ApiBase::CheckCredentials(wchar_t* Token)
+bool ApiBase::CheckCredentials(wchar_t* Token, wchar_t* Name)
 {
 	wchar_t TmpName[DA_MAXLEN_OF_USERNAME] = L"";
 	wchar_t TmpPassword[DA_MAXLEN_OF_PASSWORD] = L"";
+
+	if (Token == NULL) {
+		return false;
+	}
 	StkStringParser::ParseInto2Params(Token, L"# #", L'#', TmpName, 256, TmpPassword, 32);
 	wchar_t Password[DA_MAXLEN_OF_PASSWORD];
 	int Role = 0;
@@ -17,6 +21,9 @@ bool ApiBase::CheckCredentials(wchar_t* Token)
 		return false;
 	}
 	if (StkPlWcsCmp(TmpPassword, Password) == 0) {
+		if (Name != NULL) {
+			StkPlWcsCpy(Name, DA_MAXLEN_OF_USERNAME, TmpName);
+		}
 		return true;
 	} else {
 		return false;

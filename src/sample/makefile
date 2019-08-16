@@ -1,4 +1,4 @@
-sample : sample.o ApiBase.o ApiGetLogInfo.o ApiGetServerInfo.o ApiPostServerInfo.o ApiGetAgentInfo.o ApiPostAgentInfo.o ApiGetCommandForStatus.o ApiGetCommandForOperation.o ApiGetCommand.o ApiPostCommand.o ApiDeleteCommand.o ApiGetFile.o ApiPostFile.o ApiGetLanguage.o dataaccess.o
+sample : sample.o ApiBase.o ApiGetLogInfo.o ApiGetServerInfo.o ApiPostServerInfo.o ApiGetAgentInfo.o ApiPostAgentInfo.o ApiGetCommandForStatus.o ApiGetCommandForOperation.o ApiGetCommand.o ApiPostCommand.o ApiDeleteCommand.o ApiGetFile.o ApiPostFile.o ApiGetLanguage.o ApiGetUser.o dataaccess.o
 	cd ../../../YaizuComLib/src/stkpl; make
 	cp ../../../YaizuComLib/src/stkpl/stkpl.a .
 	cd ../../../YaizuComLib/src/stkwebapp; make
@@ -12,7 +12,7 @@ sample : sample.o ApiBase.o ApiGetLogInfo.o ApiGetServerInfo.o ApiPostServerInfo
 	cd ../../../YaizuComLib/src/stkdata; make
 	cp ../../../YaizuComLib/src/stkdata/stkdata.a .
 
-	g++ -o sample sample.o ApiBase.o ApiGetLogInfo.o ApiGetServerInfo.o ApiPostServerInfo.o ApiGetAgentInfo.o ApiPostAgentInfo.o ApiGetCommandForStatus.o ApiGetCommandForOperation.o ApiGetCommand.o ApiPostCommand.o ApiDeleteCommand.o ApiGetFile.o ApiPostFile.o ApiGetLanguage.o dataaccess.o stkpl.a stkwebapp.a commonfunc.a stksocket.a stkthread.a stkdata.a -std=c++1z -lstdc++fs -pthread -static-libgcc -static-libstdc++
+	g++ -o sample sample.o ApiBase.o ApiGetLogInfo.o ApiGetServerInfo.o ApiPostServerInfo.o ApiGetAgentInfo.o ApiPostAgentInfo.o ApiGetCommandForStatus.o ApiGetCommandForOperation.o ApiGetCommand.o ApiPostCommand.o ApiDeleteCommand.o ApiGetFile.o ApiPostFile.o ApiGetLanguage.o ApiGetUser.o dataaccess.o stkpl.a stkwebapp.a commonfunc.a stksocket.a stkthread.a stkdata.a -std=c++1z -lstdc++fs -pthread -static-libgcc -static-libstdc++
 
 ApiBase.o : ApiBase.cpp
 	g++ -c ApiBase.cpp -std=c++1z
@@ -55,6 +55,9 @@ ApiPostFile.o : ApiPostFile.cpp
 
 ApiGetLanguage.o : ApiGetLanguage.cpp
 	g++ -c ApiGetLanguage.cpp -std=c++1z
+
+ApiGetUser.o : ApiGetUser.cpp
+	g++ -c ApiGetUser.cpp -std=c++1z
 
 dataaccess.o : dataaccess.cpp
 	g++ -c dataaccess.cpp -std=c++1z

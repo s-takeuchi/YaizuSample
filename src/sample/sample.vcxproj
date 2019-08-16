@@ -112,6 +112,7 @@
     <ClCompile Include="ApiGetLanguage.cpp" />
     <ClCompile Include="ApiGetLogInfo.cpp" />
     <ClCompile Include="ApiGetServerInfo.cpp" />
+    <ClCompile Include="ApiGetUser.cpp" />
     <ClCompile Include="ApiPostAgentInfo.cpp" />
     <ClCompile Include="ApiPostCommand.cpp" />
     <ClCompile Include="ApiPostFile.cpp" />
@@ -130,6 +131,7 @@
     <ClInclude Include="ApiGetLanguage.h" />
     <ClInclude Include="ApiGetLogInfo.h" />
     <ClInclude Include="ApiGetServerInfo.h" />
+    <ClInclude Include="ApiGetUser.h" />
     <ClInclude Include="ApiPostAgentInfo.h" />
     <ClInclude Include="ApiPostCommand.h" />
     <ClInclude Include="ApiPostFile.h" />

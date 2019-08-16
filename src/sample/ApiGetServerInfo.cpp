@@ -11,7 +11,7 @@ ApiGetServerInfo::ApiGetServerInfo()
 StkObject* ApiGetServerInfo::ExecuteImpl(StkObject* ReqObj, int Method, wchar_t UrlPath[StkWebAppExec::URL_PATH_LENGTH], int* ResultCode, int LocaleType, wchar_t* Token)
 {
 	if (!CheckCredentials(Token)) {
-		*ResultCode = 401;
+		*ResultCode = 403;
 		return NULL;
 	}
 
