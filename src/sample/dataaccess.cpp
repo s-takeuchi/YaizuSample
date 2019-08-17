@@ -183,7 +183,7 @@ int DataAccess::CreateTables(const wchar_t* DataFileName)
 		// For user table
 		{
 			ColumnData *ColDatUser[4];
-			ColDatUser[0] = new ColumnDataWStr(L"Name", L"admin");
+			ColDatUser[0] = new ColumnDataWStr(L"Name", L"admin@a.a");
 			ColDatUser[1] = new ColumnDataWStr(L"Password", L"manager");
 			ColDatUser[2] = new ColumnDataInt(L"Role", 0);
 			ColDatUser[3] = new ColumnDataWStr(L"Url", L"");
@@ -196,7 +196,7 @@ int DataAccess::CreateTables(const wchar_t* DataFileName)
 		}
 		{
 			ColumnData *ColDatUser[4];
-			ColDatUser[0] = new ColumnDataWStr(L"Name", L"takeuchi");
+			ColDatUser[0] = new ColumnDataWStr(L"Name", L"takeuchi@a.a");
 			ColDatUser[1] = new ColumnDataWStr(L"Password", L"takeuchi");
 			ColDatUser[2] = new ColumnDataInt(L"Role", 1);
 			ColDatUser[3] = new ColumnDataWStr(L"Url", L"");

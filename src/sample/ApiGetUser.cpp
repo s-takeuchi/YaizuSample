@@ -5,10 +5,10 @@
 
 StkObject* ApiGetUser::ExecuteImpl(StkObject* ReqObj, int Method, wchar_t UrlPath[StkWebAppExec::URL_PATH_LENGTH], int* ResultCode, int LocaleType, wchar_t* Token)
 {
-	wchar_t UserName[DA_MAXLEN_OF_USERNAME];
-	wchar_t UserPassword[DA_MAXLEN_OF_PASSWORD];
+	wchar_t UserName[DA_MAXLEN_OF_USERNAME] = L"";
+	wchar_t UserPassword[DA_MAXLEN_OF_PASSWORD] = L"";
 	int Role = 0;
-	wchar_t TargetUrl[DA_MAXLEN_OF_TARGETURL];
+	wchar_t TargetUrl[DA_MAXLEN_OF_TARGETURL] = L"";
 	if (!CheckCredentials(Token, UserName)) {
 		*ResultCode = 403;
 		return NULL;

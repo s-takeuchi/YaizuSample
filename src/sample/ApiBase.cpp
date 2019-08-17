@@ -6,13 +6,17 @@
 
 bool ApiBase::CheckCredentials(wchar_t* Token, wchar_t* Name)
 {
-	wchar_t TmpName[DA_MAXLEN_OF_USERNAME] = L"";
-	wchar_t TmpPassword[DA_MAXLEN_OF_PASSWORD] = L"";
-
-	if (Token == NULL) {
+	if (Token == NULL || *Token == L'\0') {
 		return false;
 	}
+
+	wchar_t TmpName[DA_MAXLEN_OF_USERNAME] = L"";
+	wchar_t TmpPassword[DA_MAXLEN_OF_PASSWORD] = L"";
 	StkStringParser::ParseInto2Params(Token, L"# #", L'#', TmpName, 256, TmpPassword, 32);
+	if (TmpName == NULL || TmpPassword == NULL || *TmpName == L'\0' || *TmpPassword == L'\0') {
+		return false;
+	}
+
 	wchar_t Password[DA_MAXLEN_OF_PASSWORD];
 	int Role = 0;
 	wchar_t Url[DA_MAXLEN_OF_TARGETURL];
@@ -20,6 +24,7 @@ bool ApiBase::CheckCredentials(wchar_t* Token, wchar_t* Name)
 	if (Ret == false) {
 		return false;
 	}
+
 	if (StkPlWcsCmp(TmpPassword, Password) == 0) {
 		if (Name != NULL) {
 			StkPlWcsCpy(Name, DA_MAXLEN_OF_USERNAME, TmpName);

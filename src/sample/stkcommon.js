@@ -26,7 +26,7 @@ function initLoginModal(func) {
     var modalDialog = $('<div class="modal-dialog">');
     var modalContent = $('<div class="modal-content">');
     var modalHeader = $('<div class="modal-header" style="padding: 0px; text-align: center;"><h3 style="margin-top: 5px;">Login</h3></div>');
-    var modalBody = $('<div class="modal-body"><div style="height:150px"><div class="form-group"><input type="text" class="form-control" id="loginId" placeholder="Your Email *" value="" /></div><div class="form-group"><input type="password" class="form-control" id="loginPw" placeholder="Your Password *" value="" /></div><div id="login_Modal_Body"></div><button type="button" id="commandBtnAdd" class="btn btn-primary" onclick="tryLogin(' + func + ')">Login</button></div></div>');
+    var modalBody = $('<div class="modal-body"><div style="height:150px"><div class="form-group"><input type="email" maxlength="254" class="form-control" id="loginId" placeholder="Your Email *" value="" /></div><div class="form-group"><input type="password" maxlength="31" class="form-control" id="loginPw" placeholder="Your Password *" value="" /></div><div id="login_Modal_Body"></div><button type="button" class="btn btn-primary" onclick="tryLogin(' + func + ')">Login</button></div></div>');
 
     modalContent.append(modalHeader);
     modalContent.append(modalBody);
@@ -38,6 +38,16 @@ function initLoginModal(func) {
 function tryLogin(func) {
     loginId = $("#loginId").val();
     loginPw = $("#loginPw").val();
+    if (!loginId.match(/^([a-zA-Z0-9])+([a-zA-Z0-9\._-])*@([a-zA-Z0-9_-])+([a-zA-Z0-9\._-]+)+$/)) {
+        $('#login_Modal_Body').empty();
+        $('#login_Modal_Body').append('The format of the email address is incorrect.');
+        return;
+    }
+    if (!loginPw.match(/^([a-zA-Z0-9!\?\.\+\$%#&\*=@])+$/)) {
+        $('#login_Modal_Body').empty();
+        $('#login_Modal_Body').append('The passwprd is empty or contains abnormal character(s).');
+        return;
+    }
     if (func() == true) {
         $('#login_Modal').modal('hide');
         document.cookie = "loginId=" + encodeURIComponent(window.btoa(loginId));
