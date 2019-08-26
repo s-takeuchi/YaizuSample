@@ -747,6 +747,7 @@
         if (statusCode[API_GET_USER] != 200) {
             return false;
         } else {
+            $('#container').show();
             var userrole = responseData[API_GET_USER].User.Role;
             if (userrole == 1) {
                 $('#menu-agtinfo').show();
@@ -770,6 +771,7 @@
                 "padding" : "1%"
             });
         });
+        $('#container').hide();
         showLoginModal(checkLogin);
     }
 
@@ -777,52 +779,53 @@
 </head>
 
 <body>
-    <nav class="navbar navbar-default">
-        <div id="container">
-            <div class="navbar-header">
-                <a class="navbar-brand" href="">
-                    <strong>Management Server</strong>
-                </a>
-                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#top-nav">
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
+    <div id="container">
+        <nav class="navbar navbar-default">
+            <div class="container-fluid">
+                <div class="navbar-header">
+                    <a class="navbar-brand" href="">
+                        <strong>Management Server</strong>
+                    </a>
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#top-nav">
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                </div>
+                <div class="collapse navbar-collapse" id="top-nav">
+                    <ul class="nav navbar-nav">
+                        <li id="menu-agtinfo" style="display:none"><a onclick="activateTopic('agtinfo')"><span class="glyphicon glyphicon-eye-open"></span> Agent Info</a></li>
+                        <li id="menu-svrinfo" style="display:none"><a onclick="activateTopic('svrinfo')"><span class="glyphicon glyphicon-tower"></span> Server Info</a></li>
+                        <li id="menu-command" style="display:none"><a onclick="activateTopic('command')"><span class="glyphicon glyphicon-flash"></span> Command</a></li>
+                        <li id="menu-loginfo" style="display:none"><a onclick="activateTopic('loginfo')"><span class="glyphicon glyphicon-time"></span> Audit Log</a></li>
+                        <li id="menu-usermgt" style="display:none"><a onclick="activateTopic('usermgt')"><span class="glyphicon glyphicon-user"></span> User Management</a></li>
+                    </ul>
+                    <ul class="nav navbar-nav navbar-right">
+                        <li><a onclick="tryLogout()"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
+                    </ul>
+                </div>
             </div>
-            <div class="collapse navbar-collapse" id="top-nav">
-                <ul class="nav navbar-nav">
-                    <li id="menu-agtinfo" style="display:none"><a onclick="activateTopic('agtinfo')"><span class="glyphicon glyphicon-eye-open"></span> Agent Info</a></li>
-                    <li id="menu-svrinfo" style="display:none"><a onclick="activateTopic('svrinfo')"><span class="glyphicon glyphicon-tower"></span> Server Info</a></li>
-                    <li id="menu-command" style="display:none"><a onclick="activateTopic('command')"><span class="glyphicon glyphicon-flash"></span> Command</a></li>
-                    <li id="menu-loginfo" style="display:none"><a onclick="activateTopic('loginfo')"><span class="glyphicon glyphicon-time"></span> Audit Log</a></li>
-                    <li id="menu-usermgt" style="display:none"><a onclick="activateTopic('usermgt')"><span class="glyphicon glyphicon-user"></span> User Management</a></li>
-                </ul>
-                <ul class="nav navbar-nav navbar-right">
-                    <li><a onclick="tryLogout()"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
-                </ul>
+        </nav>
+        <div class="container-fluid">
+            <div id="agtinfo" class="row" style="display:none">
+                <div id="workspace_agtinfo" class="col-xs-12">
+                </div>
             </div>
-        </div>
-    </nav>
-
-    <div class="container-fluid">
-        <div id="agtinfo" class="row" style="display:none">
-            <div id="workspace_agtinfo" class="col-xs-12">
+            <div id="svrinfo" class="row" style="display:none">
+                <div id="workspace_svrinfo" class="col-xs-12">
+                </div>
             </div>
-        </div>
-        <div id="svrinfo" class="row" style="display:none">
-            <div id="workspace_svrinfo" class="col-xs-12">
+            <div id="command" class="row" style="display:none">
+                <div id="workspace_command" class="col-xs-12">
+                </div>
             </div>
-        </div>
-        <div id="command" class="row" style="display:none">
-            <div id="workspace_command" class="col-xs-12">
+            <div id="loginfo" class="row" style="display:none">
+                <div id="workspace_loginfo" class="col-xs-12">
+                </div>
             </div>
-        </div>
-        <div id="loginfo" class="row" style="display:none">
-            <div id="workspace_loginfo" class="col-xs-12">
-            </div>
-        </div>
-        <div id="usermgt" class="row" style="display:none">
-            <div id="workspace_usermgt" class="col-xs-12">
+            <div id="usermgt" class="row" style="display:none">
+                <div id="workspace_usermgt" class="col-xs-12">
+                </div>
             </div>
         </div>
     </div>
