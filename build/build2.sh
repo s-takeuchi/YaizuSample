@@ -41,18 +41,40 @@ install -p -m 644 %{SOURCE3} %{buildroot}/%{_sysconfdir}/systemd/system
 
 %files
 %{_bindir}/agent
-%{_sysconfdir}/agent.conf
-%{_sysconfdir}/systemd/system/agent.service
+%config(noreplace) %{_sysconfdir}/agent.conf
+%config(noreplace) %{_sysconfdir}/systemd/system/agent.service
+
+%pre
+if [ \$1 = 2 ]; then
+    echo "Upgrade installation (pre)"
+    systemctl daemon-reload
+    systemctl stop agent.service
+    while [ \`ps -ef | grep "/usr/bin/agent" | grep -v grep | grep -v srvchk | wc -l\` != 0 ]
+    do
+        echo "aa"
+        sleep 1
+    done
+fi
 
 %post
-setsebool httpd_can_network_connect on -P
-systemctl daemon-reload
-systemctl start agent.service
-systemctl enable agent.service
+if [ \$1 = 1 ]; then
+    echo "New installation (post)"
+    setsebool httpd_can_network_connect on -P
+    systemctl daemon-reload
+    systemctl start agent.service
+    systemctl enable agent.service
+elif [ \$1 = 2 ]; then
+    echo "Upgrade installation (post)"
+    systemctl daemon-reload
+    systemctl start agent.service
+fi
 
 %preun
-systemctl stop agent.service
-systemctl disable agent.service
+if [ \$1 = 0 ]; then
+    echo "Uninstallation (preun)"
+    systemctl stop agent.service
+    systemctl disable agent.service
+fi
 
 EOF
 
