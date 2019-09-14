@@ -105,9 +105,9 @@ install -p -m 644 %{SOURCE25} %{buildroot}/%{_datarootdir}/nginx/html
 
 %files
 %{_bindir}/sample
-%{_sysconfdir}/sample.conf
+%config(noreplace) %{_sysconfdir}/sample.conf
 %{_sysconfdir}/nginx/conf.d/sample_nginx.conf
-%{_sysconfdir}/systemd/system/sample.service
+%config(noreplace) %{_sysconfdir}/systemd/system/sample.service
 %{_datarootdir}/nginx/html/sample.html
 %{_datarootdir}/nginx/html/stkcommon.js
 %{_datarootdir}/nginx/html/jquery-3.2.0.min.js
@@ -127,27 +127,51 @@ install -p -m 644 %{SOURCE25} %{buildroot}/%{_datarootdir}/nginx/html
 %{_datarootdir}/nginx/html/bootstrap-3.3.7-dist/js/bootstrap.js
 %{_datarootdir}/nginx/html/bootstrap-3.3.7-dist/js/bootstrap.min.js
 %{_datarootdir}/nginx/html/bootstrap-3.3.7-dist/js/npm.js
-%{_sysconfdir}/sample.dat
+%config(noreplace) %{_sysconfdir}/sample.dat
 %{_bindir}/samplestop
 
+%pre
+if [ \$1 = 2 ]; then
+    echo "Upgrade installation (pre)"
+    systemctl daemon-reload
+    systemctl stop nginx.service
+    systemctl stop sample.service
+    while [ \`ps -ef | grep "/usr/bin/sample" | grep -v grep | grep -v srvchk | wc -l\` != 0 ]
+    do
+        sleep 1
+    done
+fi
+
 %post
-setsebool httpd_can_network_connect on -P
-firewall-cmd --add-port=8080/tcp --permanent
-firewall-cmd --reload
-systemctl daemon-reload
-systemctl stop nginx.service
-systemctl start nginx.service
-systemctl enable nginx.service
-systemctl start sample.service
-systemctl enable sample.service
+if [ \$1 = 1 ]; then
+    echo "New installation (post)"
+    setsebool httpd_can_network_connect on -P
+    firewall-cmd --add-port=8080/tcp --permanent
+    firewall-cmd --reload
+    systemctl daemon-reload
+    systemctl stop nginx.service
+    systemctl start nginx.service
+    systemctl enable nginx.service
+    systemctl start sample.service
+    systemctl enable sample.service
+elif [ \$1 = 2 ]; then
+    echo "Upgrade installation (post)"
+    systemctl daemon-reload
+    systemctl start nginx.service
+    systemctl start sample.service
+fi
 
 %preun
-systemctl stop nginx.service
-systemctl stop sample.service
-firewall-cmd --remove-port=8080/tcp --permanent
-firewall-cmd --reload
-systemctl disable sample.service
-systemctl start nginx.service
+if [ \$1 = 0 ]; then
+    echo "Uninstallation (preun)"
+    systemctl daemon-reload
+    systemctl stop nginx.service
+    systemctl stop sample.service
+    firewall-cmd --remove-port=8080/tcp --permanent
+    firewall-cmd --reload
+    systemctl disable sample.service
+    systemctl start nginx.service
+fi
 
 EOF
 
