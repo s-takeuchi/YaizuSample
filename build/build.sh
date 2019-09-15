@@ -169,6 +169,10 @@ if [ \$1 = 0 ]; then
     systemctl daemon-reload
     systemctl stop nginx.service
     systemctl stop sample.service
+    while [ \`ps -ef | grep "/usr/bin/sample" | grep -v grep | grep -v srvchk | wc -l\` != 0 ]
+    do
+        sleep 1
+    done
     semanage port -d -t http_port_t -p tcp 8080
     semanage port -d -t http_port_t -p tcp 8081
     firewall-cmd --remove-port=8080/tcp --permanent

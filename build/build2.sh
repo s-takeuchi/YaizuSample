@@ -51,7 +51,6 @@ if [ \$1 = 2 ]; then
     systemctl stop agent.service
     while [ \`ps -ef | grep "/usr/bin/agent" | grep -v grep | grep -v srvchk | wc -l\` != 0 ]
     do
-        echo "aa"
         sleep 1
     done
 fi
@@ -73,6 +72,10 @@ fi
 if [ \$1 = 0 ]; then
     echo "Uninstallation (preun)"
     systemctl stop agent.service
+    while [ \`ps -ef | grep "/usr/bin/agent" | grep -v grep | grep -v srvchk | wc -l\` != 0 ]
+    do
+        sleep 1
+    done
     systemctl disable agent.service
 fi
 
