@@ -66,7 +66,11 @@ if not exist "..\..\YaizuComLib\src\stkwebapp\Release\stkwebappcmd.exe" goto ERR
 echo Checking "nginx-1.12.2.zip" existence...
 if not exist "..\..\YaizuComLib\src\stkwebapp\nginx-1.12.2.zip" goto ERRORRAISED
 echo Checking "jquery-3.2.0.min.js" existence...
-if not exist "..\src\sample\jquery-3.2.0.min.js" goto ERRORRAISED
+if not exist "..\..\YaizuComLib\src\stkwebapp\jquery-3.2.0.min.js" goto ERRORRAISED
+echo Checking "bootstrap-3.3.7-dist.zip" existence...
+if not exist "..\..\YaizuComLib\src\stkwebapp\bootstrap-3.3.7-dist.zip" goto ERRORRAISED
+echo Checking "stkcommon.js" existence...
+if not exist "..\..\YaizuComLib\src\stkwebapp\stkcommon.js" goto ERRORRAISED
 echo Checking "stkwebappcmd.conf" existence...
 if not exist "..\..\YaizuComLib\src\stkwebapp\stkwebappcmd.conf" goto ERRORRAISED
 echo Checking "sample.dat" existence...
@@ -75,8 +79,6 @@ echo Checking "sample.conf" existence...
 if not exist "..\src\sample\sample.conf" goto ERRORRAISED
 echo Checking "sample.html" existence...
 if not exist "..\src\sample\sample.html" goto ERRORRAISED
-echo Checking "stkcommon.js" existence...
-if not exist "..\src\sample\stkcommon.js" goto ERRORRAISED
 
 
 rem ########## Deployment of files and folders ##########
@@ -90,7 +92,6 @@ copy "..\src\sample\sample.conf" sample
 copy "..\..\YaizuComLib\src\stkwebapp\stkwebappcmd.conf" sample
 copy "..\..\YaizuComLib\src\stkdatagui\Release\stkdatagui.exe" sample
 copy "..\..\YaizuComLib\src\stkwebapp\Release\stkwebappcmd.exe" sample
-xcopy /y /q /i /s /e "..\src\sample\bootstrap-3.3.7-dist" sample\bootstrap-3.3.7-dist
 
 mkdir sample\nginx
 copy "..\..\YaizuComLib\src\stkwebapp\nginx-1.12.2.zip" sample\nginx
@@ -100,9 +101,17 @@ popd
 xcopy /y /q /i /s /e "sample\nginx\nginx-1.12.2" sample
 if exist sample\nginx rmdir /S /Q sample\nginx
 
+mkdir sample\bootstrap
+copy "..\..\YaizuComLib\src\stkwebapp\bootstrap-3.3.7-dist.zip" sample\bootstrap
+pushd sample\bootstrap
+%SEVENZIP% x "bootstrap-3.3.7-dist.zip"
+popd
+xcopy /y /q /i /s /e "sample\bootstrap\bootstrap-3.3.7-dist" sample\html\bootstrap-3.3.7-dist
+if exist sample\bootstrap rmdir /S /Q sample\bootstrap
+
 copy "..\src\sample\sample.html" sample\html
-copy "..\src\sample\stkcommon.js" sample\html
-copy "..\src\sample\jquery-3.2.0.min.js" sample\html
+copy "..\..\YaizuComLib\src\stkwebapp\stkcommon.js" sample\html
+copy "..\..\YaizuComLib\src\stkwebapp\jquery-3.2.0.min.js" sample\html
 
 
 rem ########## Making installer ##########

@@ -21,7 +21,13 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_048BCF246F934068A8F323A46F226AAA"
+        "MsmKey" = "8:_0A393B493E094F91B2563389931560D9"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_0D4098E386184111B1002A659640D4FE"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -39,18 +45,6 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_1DE293AAA75E45098DF2BAC30ADEC151"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_1E8943CAECEF4565BBA19268BC5A1617"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
         "MsmKey" = "8:_20EA5751FBC24AB4ABB04B00C9227964"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -63,7 +57,7 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_3085B81F889B4849A263FBFB9F8D07BB"
+        "MsmKey" = "8:_292D5C9C22D045C8A1E61178E98B365E"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -81,7 +75,7 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_373A249A44EC499E80E25CED83E5921A"
+        "MsmKey" = "8:_3894B2DA6CEB48A398B6BAB9A5E4BB65"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -93,19 +87,31 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_42C5E53135574DC7A9CA01613D53DBDA"
+        "MsmKey" = "8:_38EC58DA92864AD48B73C3237E44EBEB"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
-        "MsmKey" = "8:_463AC18FD92C4B439DAE1AAD8172D07C"
+        "MsmKey" = "8:_42BD099F9CFA4C43A9DC2E868642CE08"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
         "MsmKey" = "8:_46A9864B62CA4D83BD5D7512507A7343"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_4B67C7DADCAC4B6EA7D0F8D18E5C2322"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_4B9B23641A164D2183B9FB38B84D009E"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -159,13 +165,7 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_6F701270DC6C41FE86A08947A6A7D5F1"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_73E8439A097E42239D09DF4C6C50AB7A"
+        "MsmKey" = "8:_6D71007CD84C47609C6AD364DFE5881C"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -207,13 +207,25 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_9EE19DB8B4784627B726AF81615E420F"
+        "MsmKey" = "8:_9565376207354855A13415975D193BFD"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
-        "MsmKey" = "8:_A7AF68120D6347938917BF514E4592E5"
+        "MsmKey" = "8:_A3E05B6FC5854C4E99B6A53D40B094F0"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_AB0B544958454A23BCFD5AA793B08B3F"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_AE03196EDBD946F8ABAC589C6E857FDA"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -231,7 +243,7 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_B8E385C360974D179BD376F15688EB2B"
+        "MsmKey" = "8:_B99106DF22B5446FA978101010EFBE17"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -273,7 +285,13 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_CDE5EC30C09A48A0B5B16B359EF3EAEC"
+        "MsmKey" = "8:_CBD17E6413F74099A226CF4F88196D90"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_CEA7FD5D71254AB9905642BCDFEEC20A"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -297,25 +315,7 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_E1BCA6458B7E4CEB9ACB88E8978E5AF7"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_E54BD021F3C14A049EE5D9E2FA2DBC67"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
         "MsmKey" = "8:_E5C91AC41BD1427291F71C35BD214D6F"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_F6A7D17D149445FF9FF5B1FCAD0DB785"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -456,12 +456,32 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_048BCF246F934068A8F323A46F226AAA"
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_0A393B493E094F91B2563389931560D9"
             {
-            "SourcePath" = "8:..\\sample\\bootstrap-3.3.7-dist\\css\\bootstrap-theme.min.css"
-            "TargetName" = "8:bootstrap-theme.min.css"
+            "SourcePath" = "8:..\\sample\\html\\bootstrap-3.3.7-dist\\js\\bootstrap.min.js"
+            "TargetName" = "8:bootstrap.min.js"
             "Tag" = "8:"
-            "Folder" = "8:_9C47F2DB529C4C0BABB11B4BA3DDC365"
+            "Folder" = "8:_855E6FF400834B94BCA2CA46EEB173E7"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_0D4098E386184111B1002A659640D4FE"
+            {
+            "SourcePath" = "8:..\\sample\\html\\bootstrap-3.3.7-dist\\fonts\\glyphicons-halflings-regular.woff"
+            "TargetName" = "8:glyphicons-halflings-regular.woff"
+            "Tag" = "8:"
+            "Folder" = "8:_C15051AB55A04B6DB13120E0D7280588"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -516,46 +536,6 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_1DE293AAA75E45098DF2BAC30ADEC151"
-            {
-            "SourcePath" = "8:..\\sample\\bootstrap-3.3.7-dist\\css\\bootstrap.min.css.map"
-            "TargetName" = "8:bootstrap.min.css.map"
-            "Tag" = "8:"
-            "Folder" = "8:_9C47F2DB529C4C0BABB11B4BA3DDC365"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_1E8943CAECEF4565BBA19268BC5A1617"
-            {
-            "SourcePath" = "8:..\\sample\\bootstrap-3.3.7-dist\\js\\bootstrap.min.js"
-            "TargetName" = "8:bootstrap.min.js"
-            "Tag" = "8:"
-            "Folder" = "8:_855E6FF400834B94BCA2CA46EEB173E7"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_20EA5751FBC24AB4ABB04B00C9227964"
             {
             "SourcePath" = "8:..\\sample\\html\\jquery-3.2.0.min.js"
@@ -596,12 +576,12 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_3085B81F889B4849A263FBFB9F8D07BB"
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_292D5C9C22D045C8A1E61178E98B365E"
             {
-            "SourcePath" = "8:..\\sample\\bootstrap-3.3.7-dist\\css\\bootstrap.min.css"
-            "TargetName" = "8:bootstrap.min.css"
+            "SourcePath" = "8:..\\sample\\html\\bootstrap-3.3.7-dist\\fonts\\glyphicons-halflings-regular.ttf"
+            "TargetName" = "8:glyphicons-halflings-regular.ttf"
             "Tag" = "8:"
-            "Folder" = "8:_9C47F2DB529C4C0BABB11B4BA3DDC365"
+            "Folder" = "8:_C15051AB55A04B6DB13120E0D7280588"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -656,10 +636,10 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_373A249A44EC499E80E25CED83E5921A"
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_3894B2DA6CEB48A398B6BAB9A5E4BB65"
             {
-            "SourcePath" = "8:..\\sample\\bootstrap-3.3.7-dist\\fonts\\glyphicons-halflings-regular.woff"
-            "TargetName" = "8:glyphicons-halflings-regular.woff"
+            "SourcePath" = "8:..\\sample\\html\\bootstrap-3.3.7-dist\\fonts\\glyphicons-halflings-regular.svg"
+            "TargetName" = "8:glyphicons-halflings-regular.svg"
             "Tag" = "8:"
             "Folder" = "8:_C15051AB55A04B6DB13120E0D7280588"
             "Condition" = "8:"
@@ -696,10 +676,10 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_42C5E53135574DC7A9CA01613D53DBDA"
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_38EC58DA92864AD48B73C3237E44EBEB"
             {
-            "SourcePath" = "8:..\\sample\\bootstrap-3.3.7-dist\\css\\bootstrap-theme.css"
-            "TargetName" = "8:bootstrap-theme.css"
+            "SourcePath" = "8:..\\sample\\html\\bootstrap-3.3.7-dist\\css\\bootstrap-theme.min.css.map"
+            "TargetName" = "8:bootstrap-theme.min.css.map"
             "Tag" = "8:"
             "Folder" = "8:_9C47F2DB529C4C0BABB11B4BA3DDC365"
             "Condition" = "8:"
@@ -716,12 +696,12 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_463AC18FD92C4B439DAE1AAD8172D07C"
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_42BD099F9CFA4C43A9DC2E868642CE08"
             {
-            "SourcePath" = "8:..\\sample\\bootstrap-3.3.7-dist\\css\\bootstrap.css.map"
-            "TargetName" = "8:bootstrap.css.map"
+            "SourcePath" = "8:..\\sample\\html\\bootstrap-3.3.7-dist\\fonts\\glyphicons-halflings-regular.eot"
+            "TargetName" = "8:glyphicons-halflings-regular.eot"
             "Tag" = "8:"
-            "Folder" = "8:_9C47F2DB529C4C0BABB11B4BA3DDC365"
+            "Folder" = "8:_C15051AB55A04B6DB13120E0D7280588"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -742,6 +722,46 @@
             "TargetName" = "8:nginx.conf"
             "Tag" = "8:"
             "Folder" = "8:_7B6C4252067649FB9C9B0989F0DBD017"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_4B67C7DADCAC4B6EA7D0F8D18E5C2322"
+            {
+            "SourcePath" = "8:..\\sample\\html\\bootstrap-3.3.7-dist\\css\\bootstrap.min.css.map"
+            "TargetName" = "8:bootstrap.min.css.map"
+            "Tag" = "8:"
+            "Folder" = "8:_9C47F2DB529C4C0BABB11B4BA3DDC365"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_4B9B23641A164D2183B9FB38B84D009E"
+            {
+            "SourcePath" = "8:..\\sample\\html\\bootstrap-3.3.7-dist\\css\\bootstrap-theme.min.css"
+            "TargetName" = "8:bootstrap-theme.min.css"
+            "Tag" = "8:"
+            "Folder" = "8:_9C47F2DB529C4C0BABB11B4BA3DDC365"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -916,32 +936,12 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_6F701270DC6C41FE86A08947A6A7D5F1"
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_6D71007CD84C47609C6AD364DFE5881C"
             {
-            "SourcePath" = "8:..\\sample\\bootstrap-3.3.7-dist\\js\\npm.js"
-            "TargetName" = "8:npm.js"
+            "SourcePath" = "8:..\\sample\\html\\bootstrap-3.3.7-dist\\css\\bootstrap.css"
+            "TargetName" = "8:bootstrap.css"
             "Tag" = "8:"
-            "Folder" = "8:_855E6FF400834B94BCA2CA46EEB173E7"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_73E8439A097E42239D09DF4C6C50AB7A"
-            {
-            "SourcePath" = "8:..\\sample\\bootstrap-3.3.7-dist\\fonts\\glyphicons-halflings-regular.svg"
-            "TargetName" = "8:glyphicons-halflings-regular.svg"
-            "Tag" = "8:"
-            "Folder" = "8:_C15051AB55A04B6DB13120E0D7280588"
+            "Folder" = "8:_9C47F2DB529C4C0BABB11B4BA3DDC365"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -1076,12 +1076,12 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_9EE19DB8B4784627B726AF81615E420F"
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_9565376207354855A13415975D193BFD"
             {
-            "SourcePath" = "8:..\\sample\\bootstrap-3.3.7-dist\\fonts\\glyphicons-halflings-regular.eot"
-            "TargetName" = "8:glyphicons-halflings-regular.eot"
+            "SourcePath" = "8:..\\sample\\html\\bootstrap-3.3.7-dist\\css\\bootstrap-theme.css.map"
+            "TargetName" = "8:bootstrap-theme.css.map"
             "Tag" = "8:"
-            "Folder" = "8:_C15051AB55A04B6DB13120E0D7280588"
+            "Folder" = "8:_9C47F2DB529C4C0BABB11B4BA3DDC365"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -1096,10 +1096,50 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_A7AF68120D6347938917BF514E4592E5"
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_A3E05B6FC5854C4E99B6A53D40B094F0"
             {
-            "SourcePath" = "8:..\\sample\\bootstrap-3.3.7-dist\\css\\bootstrap-theme.min.css.map"
-            "TargetName" = "8:bootstrap-theme.min.css.map"
+            "SourcePath" = "8:..\\sample\\html\\bootstrap-3.3.7-dist\\js\\bootstrap.js"
+            "TargetName" = "8:bootstrap.js"
+            "Tag" = "8:"
+            "Folder" = "8:_855E6FF400834B94BCA2CA46EEB173E7"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_AB0B544958454A23BCFD5AA793B08B3F"
+            {
+            "SourcePath" = "8:..\\sample\\html\\bootstrap-3.3.7-dist\\css\\bootstrap.css.map"
+            "TargetName" = "8:bootstrap.css.map"
+            "Tag" = "8:"
+            "Folder" = "8:_9C47F2DB529C4C0BABB11B4BA3DDC365"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_AE03196EDBD946F8ABAC589C6E857FDA"
+            {
+            "SourcePath" = "8:..\\sample\\html\\bootstrap-3.3.7-dist\\css\\bootstrap-theme.css"
+            "TargetName" = "8:bootstrap-theme.css"
             "Tag" = "8:"
             "Folder" = "8:_9C47F2DB529C4C0BABB11B4BA3DDC365"
             "Condition" = "8:"
@@ -1156,12 +1196,12 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_B8E385C360974D179BD376F15688EB2B"
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_B99106DF22B5446FA978101010EFBE17"
             {
-            "SourcePath" = "8:..\\sample\\bootstrap-3.3.7-dist\\css\\bootstrap.css"
-            "TargetName" = "8:bootstrap.css"
+            "SourcePath" = "8:..\\sample\\html\\bootstrap-3.3.7-dist\\fonts\\glyphicons-halflings-regular.woff2"
+            "TargetName" = "8:glyphicons-halflings-regular.woff2"
             "Tag" = "8:"
-            "Folder" = "8:_9C47F2DB529C4C0BABB11B4BA3DDC365"
+            "Folder" = "8:_C15051AB55A04B6DB13120E0D7280588"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -1296,12 +1336,32 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_CDE5EC30C09A48A0B5B16B359EF3EAEC"
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_CBD17E6413F74099A226CF4F88196D90"
             {
-            "SourcePath" = "8:..\\sample\\bootstrap-3.3.7-dist\\fonts\\glyphicons-halflings-regular.woff2"
-            "TargetName" = "8:glyphicons-halflings-regular.woff2"
+            "SourcePath" = "8:..\\sample\\html\\bootstrap-3.3.7-dist\\js\\npm.js"
+            "TargetName" = "8:npm.js"
             "Tag" = "8:"
-            "Folder" = "8:_C15051AB55A04B6DB13120E0D7280588"
+            "Folder" = "8:_855E6FF400834B94BCA2CA46EEB173E7"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_CEA7FD5D71254AB9905642BCDFEEC20A"
+            {
+            "SourcePath" = "8:..\\sample\\html\\bootstrap-3.3.7-dist\\css\\bootstrap.min.css"
+            "TargetName" = "8:bootstrap.min.css"
+            "Tag" = "8:"
+            "Folder" = "8:_9C47F2DB529C4C0BABB11B4BA3DDC365"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -1376,72 +1436,12 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_E1BCA6458B7E4CEB9ACB88E8978E5AF7"
-            {
-            "SourcePath" = "8:..\\sample\\bootstrap-3.3.7-dist\\js\\bootstrap.js"
-            "TargetName" = "8:bootstrap.js"
-            "Tag" = "8:"
-            "Folder" = "8:_855E6FF400834B94BCA2CA46EEB173E7"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_E54BD021F3C14A049EE5D9E2FA2DBC67"
-            {
-            "SourcePath" = "8:..\\sample\\bootstrap-3.3.7-dist\\css\\bootstrap-theme.css.map"
-            "TargetName" = "8:bootstrap-theme.css.map"
-            "Tag" = "8:"
-            "Folder" = "8:_9C47F2DB529C4C0BABB11B4BA3DDC365"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_E5C91AC41BD1427291F71C35BD214D6F"
             {
             "SourcePath" = "8:..\\sample\\conf\\fastcgi_params"
             "TargetName" = "8:fastcgi_params"
             "Tag" = "8:"
             "Folder" = "8:_7B6C4252067649FB9C9B0989F0DBD017"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_F6A7D17D149445FF9FF5B1FCAD0DB785"
-            {
-            "SourcePath" = "8:..\\sample\\bootstrap-3.3.7-dist\\fonts\\glyphicons-halflings-regular.ttf"
-            "TargetName" = "8:glyphicons-halflings-regular.ttf"
-            "Tag" = "8:"
-            "Folder" = "8:_C15051AB55A04B6DB13120E0D7280588"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
