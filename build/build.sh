@@ -17,13 +17,16 @@ cp sample_nginx.conf $BUILDDIR/SOURCES
 cp sample.html $BUILDDIR/SOURCES
 cp stkcommon.js $BUILDDIR/SOURCES
 cp sample.dat $BUILDDIR/SOURCES
-cp jquery-3.2.0.min.js $BUILDDIR/SOURCES
-cp bootstrap-3.3.7-dist/css/* $BUILDDIR/SOURCES
-cp bootstrap-3.3.7-dist/fonts/* $BUILDDIR/SOURCES
-cp bootstrap-3.3.7-dist/js/* $BUILDDIR/SOURCES
+cp ../../../YaizuComLib/src/stkwebapp/jquery-3.2.0.min.js $BUILDDIR/SOURCES
+cp ../../../YaizuComLib/src/stkwebapp/bootstrap-3.3.7-dist.zip $BUILDDIR/SOURCES
 cd ../../../YaizuComLib/src/stkwebapp
 make all
 cp stkwebappstop $BUILDDIR/SOURCES/samplestop
+cd $BUILDDIR/SOURCES
+unzip $BUILDDIR/SOURCES/bootstrap-3.3.7-dist.zip
+cp $BUILDDIR/SOURCES/bootstrap-3.3.7-dist/css/* $BUILDDIR/SOURCES
+cp $BUILDDIR/SOURCES/bootstrap-3.3.7-dist/fonts/* $BUILDDIR/SOURCES
+cp $BUILDDIR/SOURCES/bootstrap-3.3.7-dist/js/* $BUILDDIR/SOURCES
 
 
 # Make SPEC file
@@ -187,8 +190,14 @@ EOF
 # RpmBuild
 cd $BUILDDIR
 rpmbuild --define "_topdir ${BUILDDIR}" -bb ./$SPEC
+
 if [ -e ../deployment ]; then
     yes|rm -r ../deployment
 fi
 mkdir -p ../deployment
 cp RPMS/x86_64/YaizuSample-1-1.*.rpm ../deployment
+
+if [ -e $BUILDDIR ]; then
+    yes|rm -r $BUILDDIR
+fi
+mkdir -p $BUILDDIR
