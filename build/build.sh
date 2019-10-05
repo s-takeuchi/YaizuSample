@@ -15,8 +15,8 @@ echo serviceport=8081 >> $BUILDDIR/SOURCES/sample.conf
 cp sample.service $BUILDDIR/SOURCES
 cp sample_nginx.conf $BUILDDIR/SOURCES
 cp sample.html $BUILDDIR/SOURCES
-cp stkcommon.js $BUILDDIR/SOURCES
 cp sample.dat $BUILDDIR/SOURCES
+cp ../../../YaizuComLib/src/stkwebapp/stkcommon.js $BUILDDIR/SOURCES
 cp ../../../YaizuComLib/src/stkwebapp/jquery-3.2.0.min.js $BUILDDIR/SOURCES
 cp ../../../YaizuComLib/src/stkwebapp/bootstrap-3.3.7-dist.zip $BUILDDIR/SOURCES
 cd ../../../YaizuComLib/src/stkwebapp
