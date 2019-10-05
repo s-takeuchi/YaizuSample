@@ -6,8 +6,8 @@ var timeout = 10000;
 var underComm = 0;
 
 // [0] : for API-1, [1] : for API-2, [2] : for API-3, ...
-var statusCode = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
-var responseData = [{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}];
+var statusCode = {};
+var responseData = {};
 
 // For login info
 var initLoginModalFlag = false;
@@ -156,9 +156,9 @@ function displayAlertInfo(parent, msg) {
     $(parent).append('<div class="alert alert-info" role="alert">' + msg + '</div>');
 }
 
-function apiCall(method, url, request, index, targetFunc) {
-    if (method != null && url != null && index != -1) {
-        sendRequestRecvResponse(method, url, request, index, true);
+function apiCall(method, url, request, keystring, targetFunc) {
+    if (method != null && url != null && keystring !== '') {
+        sendRequestRecvResponse(method, url, request, keystring, true);
     }
     if (targetFunc != null) {
         setTimeout(function() {waitForResponse(0, targetFunc);}, 1);
@@ -190,7 +190,7 @@ function waitForResponse(count, targetFunc) {
     setTimeout(function() {waitForResponse(count + 1, targetFunc);}, 500);
 }
 
-function sendRequestRecvResponse(method, url, request, index, asyncFlag) {
+function sendRequestRecvResponse(method, url, request, keystring, asyncFlag) {
     underComm++;
     if (method === 'GET' || method === 'DELETE') {
         $.ajax({
@@ -204,21 +204,21 @@ function sendRequestRecvResponse(method, url, request, index, asyncFlag) {
                 xhr.setRequestHeader('Authorization', 'Bearer ' + loginId + ' ' + loginPw);
             },
             success: function(msg, textStatus, xhr) {
-                statusCode[index] = xhr.status;
-                responseData[index] = {};
-                $.extend(responseData[index], msg);
+                statusCode[keystring] = xhr.status;
+                responseData[keystring] = {};
+                $.extend(responseData[keystring], msg);
                 underComm--;
             },
             error: function(xhr, textStatus, errorThrown) {
                 if (textStatus === 'timeout') {
-                    statusCode[index] = -1;
-                    responseData[index] = {};
+                    statusCode[keystring] = -1;
+                    responseData[keystring] = {};
                 } else {
-                    statusCode[index] = xhr.status;
+                    statusCode[keystring] = xhr.status;
                     try {
-                        $.extend(responseData[index], JSON.parse(xhr.responseText));
+                        $.extend(responseData[keystring], JSON.parse(xhr.responseText));
                     } catch (e) {
-                        responseData[index] = {};
+                        responseData[keystring] = {};
                     }
                 }
                 underComm--;
@@ -237,21 +237,21 @@ function sendRequestRecvResponse(method, url, request, index, asyncFlag) {
                 xhr.setRequestHeader('Authorization', 'Bearer ' + loginId + loginPw);
             },
             success: function(msg, textStatus, xhr) {
-                statusCode[index] = xhr.status;
-                responseData[index] = {};
-                $.extend(responseData[index], msg);
+                statusCode[keystring] = xhr.status;
+                responseData[keystring] = {};
+                $.extend(responseData[keystring], msg);
                 underComm--;
             },
             error: function(xhr, textStatus, errorThrown) {
                 if (textStatus === 'timeout') {
-                    statusCode[index] = -1;
-                    responseData[index] = {};
+                    statusCode[keystring] = -1;
+                    responseData[keystring] = {};
                 } else {
-                    statusCode[index] = xhr.status;
+                    statusCode[keystring] = xhr.status;
                     try {
-                        $.extend(responseData[index], JSON.parse(xhr.responseText));
+                        $.extend(responseData[keystring], JSON.parse(xhr.responseText));
                     } catch (e) {
-                        responseData[index] = {};
+                        responseData[keystring] = {};
                     }
                 }
                 underComm--;

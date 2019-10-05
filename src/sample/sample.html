@@ -12,18 +12,6 @@
 
     <script>
 
-    var API_DUMMY                   = -1;
-    var API_GET_SVRINFO             = 1;
-    var API_GET_LOGS                = 2;
-    var API_GET_AGTINFO             = 3;
-    var API_POST_SVRINFO            = 4;
-    var API_GET_COMMAND             = 5;
-    var API_POST_COMMAND            = 6;
-    var API_DELETE_COMMAND          = 7;
-    var API_POST_AGTINFO            = 8;
-    var API_GET_LANG                = 9;
-    var API_GET_USER                = 10;
-
     var selectedPollingInterval = 1;
     var pollingIntervalStr = ['30 sec ', '1 min ', '5 min ', '15 min '];
     var selectedStatusAcquisitionInterval = 2;
@@ -127,11 +115,11 @@
 
     function displayLogInfo() {
         $('#workspace_loginfo').append('<h2><span class="glyphicon glyphicon-time"></span>' + getClientMessage('AUDITLOG') + '</h2>');
-        if (statusCode[API_GET_LOGS] == -1 || statusCode[API_GET_LOGS] == 0) {
+        if (statusCode['API_GET_LOGS'] == -1 || statusCode['API_GET_LOGS'] == 0) {
             displayAlertDanger('#workspace_loginfo', getClientMessage('CONNERR'));
             return;
         }
-        var Log = getArray(responseData[API_GET_LOGS].Log);
+        var Log = getArray(responseData['API_GET_LOGS'].Log);
         if (Log == null) {
             $('#workspace_loginfo').append(getClientMessage('NOLOGINFO'));
             return;
@@ -160,16 +148,16 @@
 
     function displayAgentInfo() {
         $('#workspace_agtinfo').append('<h2><span class="glyphicon glyphicon-eye-open"></span>' + getClientMessage('AGENTINFO') + '</h2>');
-        if (statusCode[API_GET_AGTINFO] == -1 || statusCode[API_GET_AGTINFO] == 0) {
+        if (statusCode['API_GET_AGTINFO'] == -1 || statusCode['API_GET_AGTINFO'] == 0) {
             displayAlertDanger('#workspace_agtinfo', getClientMessage('CONNERR'));
             return;
         }
-        var AgentInfo = getArray(responseData[API_GET_AGTINFO].AgentInfo);
+        var AgentInfo = getArray(responseData['API_GET_AGTINFO'].AgentInfo);
         if (AgentInfo == null) {
             $('#workspace_agtinfo').append(getClientMessage('NOAGTINFO'));
             return;
         }
-        var commandList = getArray(responseData[API_GET_COMMAND].Command);
+        var commandList = getArray(responseData['API_GET_COMMAND'].Command);
 
         selectedAgentStatusCommand = -1;
         selectedOperationCommand = -1;
@@ -255,7 +243,7 @@
     }
 
     function switchAgentInfoButton() {
-        var AgentInfo = getArray(responseData[API_GET_AGTINFO].AgentInfo);
+        var AgentInfo = getArray(responseData['API_GET_AGTINFO'].AgentInfo);
         var foundFlag = false;
         for (var loop = 0; loop < AgentInfo.length; loop++) {
             if ($('#agtInfoId' + loop).prop('checked') == true) {
@@ -272,7 +260,7 @@
     }
 
     function displayExecCommandDlg() {
-        var AgentInfo = getArray(responseData[API_GET_AGTINFO].AgentInfo);
+        var AgentInfo = getArray(responseData['API_GET_AGTINFO'].AgentInfo);
         var foundFlag = false;
         for (var loop = 0; loop < AgentInfo.length; loop++) {
             if ($('#agtInfoId' + loop).prop('checked') == true) {
@@ -283,7 +271,7 @@
             return;
         }
 
-        var commandList = getArray(responseData[API_GET_COMMAND].Command);
+        var commandList = getArray(responseData['API_GET_COMMAND'].Command);
 
         $('#inputDlgModalTitle').empty();
         $('#inputDlgModalBody').empty();
@@ -309,27 +297,27 @@
 
     function closeExecCommandDlg(okFlag) {
         if (okFlag == true && selectedOperationCommand != -1) {
-            var commandList = getArray(responseData[API_GET_COMMAND].Command);
-            var AgentInfo = getArray(responseData[API_GET_AGTINFO].AgentInfo);
+            var commandList = getArray(responseData['API_GET_COMMAND'].Command);
+            var AgentInfo = getArray(responseData['API_GET_AGTINFO'].AgentInfo);
             for (var loop = 0; loop < AgentInfo.length; loop++) {
                 if ($('#agtInfoId' + loop).prop('checked') == true) {
                     var ReqObj = { AgentInfo : { Name : AgentInfo[loop].Name, OpCmd : commandList[selectedOperationCommand].Id }};
-                    apiCall('POST', './api/agent/', ReqObj, API_POST_AGTINFO, null);
+                    apiCall('POST', './api/agent/', ReqObj, 'API_POST_AGTINFO', null);
                 }
             }
-            apiCall(null, null, null, API_DUMMY, refreshInfo);
+            apiCall(null, null, null, '', refreshInfo);
         }
         $('#inputDlgModal').modal('hide');
     }
 
     function selectExecCommand(execCommand) {
-        var commandList = getArray(responseData[API_GET_COMMAND].Command);
+        var commandList = getArray(responseData['API_GET_COMMAND'].Command);
         $('#selectedExecCommand').text(commandList[execCommand].Name);
         selectedOperationCommand = execCommand;
     }
 
     function displayAgentStatusCommandDlg() {
-        var AgentInfo = getArray(responseData[API_GET_AGTINFO].AgentInfo);
+        var AgentInfo = getArray(responseData['API_GET_AGTINFO'].AgentInfo);
         var foundFlag = false;
         for (var loop = 0; loop < AgentInfo.length; loop++) {
             if ($('#agtInfoId' + loop).prop('checked') == true) {
@@ -340,7 +328,7 @@
             return;
         }
 
-        var commandList = getArray(responseData[API_GET_COMMAND].Command);
+        var commandList = getArray(responseData['API_GET_COMMAND'].Command);
 
         $('#inputDlgModalTitle').empty();
         $('#inputDlgModalBody').empty();
@@ -366,22 +354,22 @@
 
     function closeAgentStatusCommandDlg(okFlag) {
         if (okFlag == true && selectedAgentStatusCommand != -1) {
-            var commandList = getArray(responseData[API_GET_COMMAND].Command);
-            var AgentInfo = getArray(responseData[API_GET_AGTINFO].AgentInfo);
+            var commandList = getArray(responseData['API_GET_COMMAND'].Command);
+            var AgentInfo = getArray(responseData['API_GET_AGTINFO'].AgentInfo);
             for (var loop = 0; loop < AgentInfo.length; loop++) {
                 if ($('#agtInfoId' + loop).prop('checked') == true) {
                     var ReqObj = { AgentInfo : { Name : AgentInfo[loop].Name, StatusCmd : commandList[selectedAgentStatusCommand].Id }};
-                    apiCall('POST', './api/agent/', ReqObj, API_POST_AGTINFO, null);
+                    apiCall('POST', './api/agent/', ReqObj, 'API_POST_AGTINFO', null);
                 }
             }
-            apiCall(null, null, null, API_DUMMY, refreshInfo);
+            apiCall(null, null, null, '', refreshInfo);
         }
         $('#inputDlgModal').modal('hide');
     }
 
     function getAgentStatusCommand() {
-        var AgentInfo = getArray(responseData[API_GET_AGTINFO].AgentInfo);
-        var commandList = getArray(responseData[API_GET_COMMAND].Command);
+        var AgentInfo = getArray(responseData['API_GET_AGTINFO'].AgentInfo);
+        var commandList = getArray(responseData['API_GET_COMMAND'].Command);
         var allSame = true;
         var commandId = -1;
         var commandStr = '';
@@ -409,7 +397,7 @@
     }
 
     function selectAgentStatusCommand(agentStatusCommand) {
-        var commandList = getArray(responseData[API_GET_COMMAND].Command);
+        var commandList = getArray(responseData['API_GET_COMMAND'].Command);
         $('#selectedAgentStatus').text(commandList[agentStatusCommand].Name);
         selectedAgentStatusCommand = agentStatusCommand;
     }
@@ -421,7 +409,7 @@
 
     function displayServerInfo() {
         $('#workspace_svrinfo').append('<h2><span class="glyphicon glyphicon-tower"></span>' + getClientMessage('SERVERINFO') + '</h2>');
-        if (statusCode[API_GET_SVRINFO] == -1 || statusCode[API_GET_SVRINFO] == 0) {
+        if (statusCode['API_GET_SVRINFO'] == -1 || statusCode['API_GET_SVRINFO'] == 0) {
             displayAlertDanger('#workspace_svrinfo', getClientMessage('CONNERR'));
             return;
         }
@@ -437,20 +425,20 @@
         StartTimeTbl.append(tHead);
 
         var tBody = $('<tbody>');
-        tBody.append('<tr><td>' + responseData[API_GET_SVRINFO].ServerInfo.StartTimeUtc + '</td><td>' + responseData[API_GET_SVRINFO].ServerInfo.StartTimeLocal + '</td></tr>');
+        tBody.append('<tr><td>' + responseData['API_GET_SVRINFO'].ServerInfo.StartTimeUtc + '</td><td>' + responseData['API_GET_SVRINFO'].ServerInfo.StartTimeLocal + '</td></tr>');
         StartTimeTbl.append(tBody);
 
-        $('#workspace_svrinfo').append('<h4>' + getClientMessage('SISVRVERSION') + responseData[API_GET_SVRINFO].ServerInfo.Version + '</h4>');
+        $('#workspace_svrinfo').append('<h4>' + getClientMessage('SISVRVERSION') + responseData['API_GET_SVRINFO'].ServerInfo.Version + '</h4>');
         $('#workspace_svrinfo').append(StartTimeTbl);
 
         // Polling Interval
-        if (responseData[API_GET_SVRINFO].ServerInfo.PollingInterval == 30) {
+        if (responseData['API_GET_SVRINFO'].ServerInfo.PollingInterval == 30) {
             selectedPollingInterval = 0;
-        } else if (responseData[API_GET_SVRINFO].ServerInfo.PollingInterval == 60) {
+        } else if (responseData['API_GET_SVRINFO'].ServerInfo.PollingInterval == 60) {
             selectedPollingInterval = 1;
-        } else if (responseData[API_GET_SVRINFO].ServerInfo.PollingInterval == 300) {
+        } else if (responseData['API_GET_SVRINFO'].ServerInfo.PollingInterval == 300) {
             selectedPollingInterval = 2;
-        } else if (responseData[API_GET_SVRINFO].ServerInfo.PollingInterval == 900) {
+        } else if (responseData['API_GET_SVRINFO'].ServerInfo.PollingInterval == 900) {
             selectedPollingInterval = 3;
         }
         var btnGrp = $('<div class="btn-group">');
@@ -467,13 +455,13 @@
         $('#workspace_svrinfo').append('</p>');
 
         // Status Acquisition Interval
-        if (responseData[API_GET_SVRINFO].ServerInfo.StatusAcquisitionInterval == 300) {
+        if (responseData['API_GET_SVRINFO'].ServerInfo.StatusAcquisitionInterval == 300) {
             selectedStatusAcquisitionInterval = 0;
-        } else if (responseData[API_GET_SVRINFO].ServerInfo.StatusAcquisitionInterval == 900) {
+        } else if (responseData['API_GET_SVRINFO'].ServerInfo.StatusAcquisitionInterval == 900) {
             selectedStatusAcquisitionInterval = 1;
-        } else if (responseData[API_GET_SVRINFO].ServerInfo.StatusAcquisitionInterval == 1800) {
+        } else if (responseData['API_GET_SVRINFO'].ServerInfo.StatusAcquisitionInterval == 1800) {
             selectedStatusAcquisitionInterval = 2;
-        } else if (responseData[API_GET_SVRINFO].ServerInfo.StatusAcquisitionInterval == 3600) {
+        } else if (responseData['API_GET_SVRINFO'].ServerInfo.StatusAcquisitionInterval == 3600) {
             selectedStatusAcquisitionInterval = 3;
         }
         var btnGrp = $('<div class="btn-group">');
@@ -493,7 +481,7 @@
         $('#workspace_svrinfo').append('<p>');
         $('#workspace_svrinfo').append('<div class="form-group"><label for="bucketPath">' + getClientMessage('SIPATHTOBUCKET') + '</label><input type="text" class="form-control" id="bucketPath" placeholder="Path to bucket"></div>');
         $('#workspace_svrinfo').append('</p>');
-        $('#bucketPath').val(responseData[API_GET_SVRINFO].ServerInfo.BucketPath);
+        $('#bucketPath').val(responseData['API_GET_SVRINFO'].ServerInfo.BucketPath);
 
         $('#workspace_svrinfo').append('<div id="workspace_svrinfo_errmsg">');
 
@@ -540,17 +528,17 @@
     function updateServerInfo() {
         var pInterval = getPollingInterval(selectedPollingInterval);
         var saInterval = getStatusAcquisitionInterval(selectedStatusAcquisitionInterval);
-        apiCall('POST', './api/server/', {"ServerInfo":{"PInterval":pInterval, "SaInterval":saInterval, "BucketPath":$('#bucketPath').val()}}, API_POST_SVRINFO, refreshAfterUpdateServerInfo);
+        apiCall('POST', './api/server/', {"ServerInfo":{"PInterval":pInterval, "SaInterval":saInterval, "BucketPath":$('#bucketPath').val()}}, 'API_POST_SVRINFO', refreshAfterUpdateServerInfo);
     }
 
     function refreshAfterUpdateServerInfo() {
         $('#workspace_svrinfo .alert').remove();
-        if (statusCode[API_POST_SVRINFO] == -1 || statusCode[API_POST_SVRINFO] == 0) {
+        if (statusCode['API_POST_SVRINFO'] == -1 || statusCode['API_POST_SVRINFO'] == 0) {
             displayAlertDanger('#workspace_svrinfo_errmsg', getClientMessage('CONNERR'));
             return;
         }
-        if (statusCode[API_POST_SVRINFO] == 400) {
-            displayAlertDanger('#workspace_svrinfo_errmsg', responseData[API_POST_SVRINFO].Msg0);
+        if (statusCode['API_POST_SVRINFO'] == 400) {
+            displayAlertDanger('#workspace_svrinfo_errmsg', responseData['API_POST_SVRINFO'].Msg0);
             return;
         }
         refreshInfo();
@@ -564,7 +552,7 @@
 
     function displayCommand() {
         $('#workspace_command').append('<h2><span class="glyphicon glyphicon-flash"></span>' + getClientMessage('COMMAND') + '</h2>');
-        if (statusCode[API_GET_COMMAND] == -1 || statusCode[API_GET_COMMAND] == 0) {
+        if (statusCode['API_GET_COMMAND'] == -1 || statusCode['API_GET_COMMAND'] == 0) {
             displayAlertDanger('#workspace_command', getClientMessage('CONNERR'));
             return;
         }
@@ -572,14 +560,14 @@
             displayAlertSuccess('#workspace_command', workplace_command_msg);
             workplace_command_msg = '';
         }
-        var commandList = getArray(responseData[API_GET_COMMAND].Command);
+        var commandList = getArray(responseData['API_GET_COMMAND'].Command);
         if (commandList == null) {
             $('#workspace_command').append(getClientMessage('NOCMDEXIST'));
         }
 
         selectedCommand = -1;
 
-        if (responseData[API_GET_COMMAND].Command !== undefined) {
+        if (responseData['API_GET_COMMAND'].Command !== undefined) {
             var commandListTable = $('<table>');
             commandListTable.addClass('table table-striped');
 
@@ -627,10 +615,10 @@
         }
         if (updateFlag == false) {
             var ReqObj = { Command : { Name : $("#commandName").val(), Type : comTypeInt, Script : $("#commandScript").val(), ServerFileName : $("#serverFileName").val(), AgentFileName : $("#agentFileName").val() }};
-            apiCall('POST', './api/command/', ReqObj, API_POST_COMMAND, refreshAfterAddCommand);
+            apiCall('POST', './api/command/', ReqObj, 'API_POST_COMMAND', refreshAfterAddCommand);
         } else {
             var ReqObj = { Command : { Id : selectedCommand, Name : $("#commandName").val(), Type : comTypeInt, Script : $("#commandScript").val(), ServerFileName : $("#serverFileName").val(), AgentFileName : $("#agentFileName").val() }};
-            apiCall('POST', './api/command/', ReqObj, API_POST_COMMAND, refreshAfterUpdateCommand);
+            apiCall('POST', './api/command/', ReqObj, 'API_POST_COMMAND', refreshAfterUpdateCommand);
         }
     }
 
@@ -638,11 +626,11 @@
         if (selectedCommand == -1) {
             return;
         }
-        apiCall('DELETE', './api/command/' + selectedCommand + '/', null, API_DELETE_COMMAND, refreshAfterDeleteCommand);
+        apiCall('DELETE', './api/command/' + selectedCommand + '/', null, 'API_DELETE_COMMAND', refreshAfterDeleteCommand);
     }
 
     function selectCommand(targetId) {
-        var commandList = getArray(responseData[API_GET_COMMAND].Command);
+        var commandList = getArray(responseData['API_GET_COMMAND'].Command);
         selectedCommand = targetId;
         for (loop = 0; loop < commandList.length; loop++) {
             if (commandList[loop].Id == targetId) {
@@ -665,12 +653,12 @@
 
     function refreshAfterAddCommand() {
         $('#workspace_command .alert').remove();
-        if (statusCode[API_POST_COMMAND] == -1 || statusCode[API_POST_COMMAND] == 0) {
+        if (statusCode['API_POST_COMMAND'] == -1 || statusCode['API_POST_COMMAND'] == 0) {
             displayAlertDanger('#workspace_command_errmsg', getClientMessage('CONNERR'));
             return;
         }
-        if (statusCode[API_POST_COMMAND] == 400) {
-            displayAlertDanger('#workspace_command_errmsg', responseData[API_POST_COMMAND].Msg0);
+        if (statusCode['API_POST_COMMAND'] == 400) {
+            displayAlertDanger('#workspace_command_errmsg', responseData['API_POST_COMMAND'].Msg0);
             return;
         }
         refreshInfo();
@@ -679,12 +667,12 @@
 
     function refreshAfterUpdateCommand() {
         $('#workspace_command .alert').remove();
-        if (statusCode[API_POST_COMMAND] == -1 || statusCode[API_POST_COMMAND] == 0) {
+        if (statusCode['API_POST_COMMAND'] == -1 || statusCode['API_POST_COMMAND'] == 0) {
             displayAlertDanger('#workspace_command_errmsg', getClientMessage('CONNERR'));
             return;
         }
-        if (statusCode[API_POST_COMMAND] == 400) {
-            displayAlertDanger('#workspace_command_errmsg', responseData[API_POST_COMMAND].Msg0);
+        if (statusCode['API_POST_COMMAND'] == 400) {
+            displayAlertDanger('#workspace_command_errmsg', responseData['API_POST_COMMAND'].Msg0);
             return;
         }
         refreshInfo();
@@ -693,12 +681,12 @@
 
     function refreshAfterDeleteCommand() {
         $('#workspace_command .alert').remove();
-        if (statusCode[API_DELETE_COMMAND] == -1 || statusCode[API_DELETE_COMMAND] == 0) {
+        if (statusCode['API_DELETE_COMMAND'] == -1 || statusCode['API_DELETE_COMMAND'] == 0) {
             displayAlertDanger('#workspace_command_errmsg', getClientMessage('CONNERR'));
             return;
         }
-        if (statusCode[API_DELETE_COMMAND] == 400) {
-            displayAlertDanger('#workspace_command_errmsg', responseData[API_DELETE_COMMAND].Msg0);
+        if (statusCode['API_DELETE_COMMAND'] == 400) {
+            displayAlertDanger('#workspace_command_errmsg', responseData['API_DELETE_COMMAND'].Msg0);
             return;
         }
         refreshInfo();
@@ -711,10 +699,10 @@
     ////////////////////////////////////////////////////////////////////////////////
 
     function getLanguage() {
-        if (statusCode[API_GET_LANG] == -1 || statusCode[API_GET_LANG] == 0) {
+        if (statusCode['API_GET_LANG'] == -1 || statusCode['API_GET_LANG'] == 0) {
             return;
         }
-        if (responseData[API_GET_LANG].ClientLanguage == 'ja') {
+        if (responseData['API_GET_LANG'].ClientLanguage == 'ja') {
             setClientLanguage(1);
         } else {
             setClientLanguage(0);
@@ -726,10 +714,10 @@
         $('#workspace_svrinfo').empty();
         $('#workspace_command').empty();
         $('#workspace_loginfo').empty();
-        apiCall('GET', './api/log/', null, API_GET_LOGS, displayLogInfo);
-        apiCall('GET', './api/server/', null, API_GET_SVRINFO, displayServerInfo);
-        apiCall('GET', './api/agent/', null, API_GET_AGTINFO, displayAgentInfo);
-        apiCall('GET', './api/command/', null, API_GET_COMMAND, displayCommand);
+        apiCall('GET', './api/log/', null, 'API_GET_LOGS', displayLogInfo);
+        apiCall('GET', './api/server/', null, 'API_GET_SVRINFO', displayServerInfo);
+        apiCall('GET', './api/agent/', null, 'API_GET_AGTINFO', displayAgentInfo);
+        apiCall('GET', './api/command/', null, 'API_GET_COMMAND', displayCommand);
     }
 
     function activateTopic(id) {
@@ -743,12 +731,12 @@
     }
 
     function checkLogin() {
-        sendRequestRecvResponse('GET', './api/user/', null, API_GET_USER, false);
-        if (statusCode[API_GET_USER] != 200) {
+        sendRequestRecvResponse('GET', './api/user/', null, 'API_GET_USER', false);
+        if (statusCode['API_GET_USER'] != 200) {
             return false;
         } else {
             $('#container').show();
-            var userrole = responseData[API_GET_USER].User.Role;
+            var userrole = responseData['API_GET_USER'].User.Role;
             if (userrole == 1) {
                 $('#menu-agtinfo').show();
                 $('#menu-svrinfo').show();
@@ -764,7 +752,7 @@
 
     window.onload = function() {
         initClientMessage();
-        apiCall('GET', './api/language/', null, API_GET_LANG, getLanguage);
+        apiCall('GET', './api/language/', null, 'API_GET_LANG', getLanguage);
         $(function() {
             $(".modal-dialog").css({
                 "width" : "98%",
