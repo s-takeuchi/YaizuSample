@@ -753,11 +753,11 @@
     window.onload = function() {
         initClientMessage();
         var contents = [
-            { id : 'agtinfo', actApiName : 'activateTopic', icon : 'glyphicon glyphicon-eye-open' },
-            { id : 'svrinfo', actApiName : 'activateTopic', icon : 'glyphicon glyphicon-tower' },
-            { id : 'command', actApiName : 'activateTopic', icon : 'glyphicon glyphicon-flash' },
-            { id : 'loginfo', actApiName : 'activateTopic', icon : 'glyphicon glyphicon-time' },
-            { id : 'usermgt', actApiName : 'activateTopic', icon : 'glyphicon glyphicon-user' }
+            { id : 'agtinfo', actApiName : 'activateTopic', title : 'Agent Info', icon : 'glyphicon glyphicon-eye-open' },
+            { id : 'svrinfo', actApiName : 'activateTopic', title : 'Server Info', icon : 'glyphicon glyphicon-tower' },
+            { id : 'command', actApiName : 'activateTopic', title : 'Command', icon : 'glyphicon glyphicon-flash' },
+            { id : 'loginfo', actApiName : 'activateTopic', title : 'Audit Log', icon : 'glyphicon glyphicon-time' },
+            { id : 'usermgt', actApiName : 'activateTopic', title : 'User Management', icon : 'glyphicon glyphicon-user' }
         ];
         initMainPage(contents);
         apiCall('GET', './api/language/', null, 'API_GET_LANG', getLanguage);
