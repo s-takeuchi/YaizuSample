@@ -936,7 +936,7 @@ int DataAccess::DeleteOldLogs()
 	return 0;
 }
 
-bool DataAccess::GetTargetUser(wchar_t* Name, wchar_t* Password, int* Role, wchar_t* Url)
+bool DataAccess::GetTargetUser(wchar_t Name[DA_MAXLEN_OF_USERNAME], wchar_t Password[DA_MAXLEN_OF_PASSWORD], int* Role, wchar_t Url[DA_MAXLEN_OF_TARGETURL])
 {
 	ColumnData* ColDat[1];
 	ColDat[0] = new ColumnDataWStr(L"Name", Name);
@@ -959,4 +959,34 @@ bool DataAccess::GetTargetUser(wchar_t* Name, wchar_t* Password, int* Role, wcha
 	}
 	delete RecDatUser;
 	return true;
+}
+
+int DataAccess::GetTargetUsers(wchar_t Name[DA_MAXNUM_OF_USERRECORDS][DA_MAXLEN_OF_USERNAME],
+								wchar_t Password[DA_MAXNUM_OF_USERRECORDS][DA_MAXLEN_OF_PASSWORD],
+								int Role[DA_MAXNUM_OF_USERRECORDS],
+								wchar_t Url[DA_MAXNUM_OF_USERRECORDS][DA_MAXLEN_OF_TARGETURL])
+{
+	LockTable(L"User", LOCK_SHARE);
+	RecordData* RecDatUser = GetRecord(L"User");
+	UnlockTable(L"User");
+	RecordData* CurRecDatUser = RecDatUser;
+	if (!CurRecDatUser) {
+		return 0;
+	}
+	int Loop = 0;
+	for (; CurRecDatUser; Loop++) {
+		ColumnDataWStr* ColDatName = (ColumnDataWStr*)CurRecDatUser->GetColumn(0);
+		ColumnDataWStr* ColDatPw = (ColumnDataWStr*)CurRecDatUser->GetColumn(1);
+		ColumnDataInt* ColDatRole = (ColumnDataInt*)CurRecDatUser->GetColumn(2);
+		ColumnDataWStr* ColDatUrl = (ColumnDataWStr*)CurRecDatUser->GetColumn(3);
+		if (ColDatName != NULL && ColDatPw != NULL && ColDatRole != NULL && ColDatUrl != NULL) {
+			StkPlWcsCpy(Name[Loop], DA_MAXLEN_OF_PASSWORD, ColDatName->GetValue());
+			StkPlWcsCpy(Password[Loop], DA_MAXLEN_OF_PASSWORD, ColDatPw->GetValue());
+			Role[Loop] = ColDatRole->GetValue();
+			StkPlWcsCpy(Url[Loop], DA_MAXLEN_OF_PASSWORD, ColDatUrl->GetValue());
+		}
+		CurRecDatUser = CurRecDatUser->GetNextRecord();
+	}
+	delete RecDatUser;
+	return Loop;
 }

@@ -14,15 +14,37 @@ StkObject* ApiGetUser::ExecuteImpl(StkObject* ReqObj, int Method, wchar_t UrlPat
 		return NULL;
 	}
 	DataAccess::GetInstance()->GetTargetUser(UserName, UserPassword, &Role, TargetUrl);
-
-	StkObject* TmpObj = new StkObject(L"");
-	StkObject* TmpObjC = new StkObject(L"User");
-	TmpObjC->AppendChildElement(new StkObject(L"Name", UserName));
-	TmpObjC->AppendChildElement(new StkObject(L"Role", Role));
-	TmpObjC->AppendChildElement(new StkObject(L"Url", TargetUrl));
-	TmpObj->AppendChildElement(TmpObjC);
-	TmpObj->AppendChildElement(new StkObject(L"Msg0", L""));
-	*ResultCode = 200;
-
-	return TmpObj;
+	if (StkPlWcsStr(UrlPath, L"?target=all") != NULL) {
+		if (Role != 0) {
+			*ResultCode = 403;
+			return NULL;
+		}
+		wchar_t AryUserName[DA_MAXNUM_OF_USERRECORDS][DA_MAXLEN_OF_USERNAME];
+		wchar_t AryUserPassword[DA_MAXNUM_OF_USERRECORDS][DA_MAXLEN_OF_PASSWORD];
+		int AryRole[DA_MAXNUM_OF_USERRECORDS];
+		wchar_t AryTargetUrl[DA_MAXNUM_OF_USERRECORDS][DA_MAXLEN_OF_TARGETURL];
+		int Cnt = DataAccess::GetInstance()->GetTargetUsers(AryUserName, AryUserPassword, AryRole, AryTargetUrl);
+		StkObject* TmpObj = new StkObject(L"");
+		for (int Loop = 0; Loop < Cnt; Loop++) {
+			StkObject* TmpObjC = new StkObject(L"User");
+			TmpObjC->AppendChildElement(new StkObject(L"Name", AryUserName[Loop]));
+			TmpObjC->AppendChildElement(new StkObject(L"Role", AryRole[Loop]));
+			TmpObjC->AppendChildElement(new StkObject(L"Url", AryTargetUrl[Loop]));
+			TmpObj->AppendChildElement(TmpObjC);
+		}
+		TmpObj->AppendChildElement(new StkObject(L"Msg0", L""));
+		*ResultCode = 200;
+		return TmpObj;
+	} else {
+		StkObject* TmpObj = new StkObject(L"");
+		StkObject* TmpObjC = new StkObject(L"User");
+		TmpObjC->AppendChildElement(new StkObject(L"Name", UserName));
+		TmpObjC->AppendChildElement(new StkObject(L"Role", Role));
+		TmpObjC->AppendChildElement(new StkObject(L"Url", TargetUrl));
+		TmpObj->AppendChildElement(TmpObjC);
+		TmpObj->AppendChildElement(new StkObject(L"Msg0", L""));
+		*ResultCode = 200;
+		return TmpObj;
+	}
+	return NULL;
 }
