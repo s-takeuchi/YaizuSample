@@ -25,8 +25,8 @@
     // Selected index number of operation command on agent info page.
     var selectedOperationCommand = -1;
 
-    var workplace_command_msg = '';
-    var workspace_svrinfo_msg = '';
+    var command_msg = '';
+    var svrinfo_msg = '';
 
     function initClientMessage() {
         addClientMessage('AGENTINFO', {'en':' Agent Info', 'ja':' Agent Info'});
@@ -114,14 +114,14 @@
     ////////////////////////////////////////////////////////////////////////////////
 
     function displayLogInfo() {
-        $('#workspace_loginfo').append('<h2><span class="glyphicon glyphicon-time"></span>' + getClientMessage('AUDITLOG') + '</h2>');
+        $('#loginfo').append('<h2><span class="glyphicon glyphicon-time"></span>' + getClientMessage('AUDITLOG') + '</h2>');
         if (statusCode['API_GET_LOGS'] == -1 || statusCode['API_GET_LOGS'] == 0) {
-            displayAlertDanger('#workspace_loginfo', getClientMessage('CONNERR'));
+            displayAlertDanger('#loginfo', getClientMessage('CONNERR'));
             return;
         }
         var Log = getArray(responseData['API_GET_LOGS'].Log);
         if (Log == null) {
-            $('#workspace_loginfo').append(getClientMessage('NOLOGINFO'));
+            $('#loginfo').append(getClientMessage('NOLOGINFO'));
             return;
         }
 
@@ -137,7 +137,7 @@
             tBody.append('<tr><td>' + Log[Loop].TimeUtc + '<br/>' + Log[Loop].TimeLocal + '</td><td>' + Log[Loop].Msg + '</td></tr>');
         }
         logData.append(tBody);
-        $('#workspace_loginfo').append(logData);
+        $('#loginfo').append(logData);
         $('td').css('vertical-align', 'middle');
     }
 
@@ -147,14 +147,14 @@
     ////////////////////////////////////////////////////////////////////////////////
 
     function displayAgentInfo() {
-        $('#workspace_agtinfo').append('<h2><span class="glyphicon glyphicon-eye-open"></span>' + getClientMessage('AGENTINFO') + '</h2>');
+        $('#agtinfo').append('<h2><span class="glyphicon glyphicon-eye-open"></span>' + getClientMessage('AGENTINFO') + '</h2>');
         if (statusCode['API_GET_AGTINFO'] == -1 || statusCode['API_GET_AGTINFO'] == 0) {
-            displayAlertDanger('#workspace_agtinfo', getClientMessage('CONNERR'));
+            displayAlertDanger('#agtinfo', getClientMessage('CONNERR'));
             return;
         }
         var AgentInfo = getArray(responseData['API_GET_AGTINFO'].AgentInfo);
         if (AgentInfo == null) {
-            $('#workspace_agtinfo').append(getClientMessage('NOAGTINFO'));
+            $('#agtinfo').append(getClientMessage('NOAGTINFO'));
             return;
         }
         var commandList = getArray(responseData['API_GET_COMMAND'].Command);
@@ -179,7 +179,7 @@
 
         var tBody = $('<tbody>');
         agentInfoData.append(tBody);
-        $('#workspace_agtinfo').append(agentInfoData);
+        $('#agtinfo').append(agentInfoData);
         for (var Loop = 0; Loop < AgentInfo.length; Loop++) {
             var cmdNameStatus = '';
             for (var loopcmd = 0; commandList != null && loopcmd < commandList.length; loopcmd++) {
@@ -221,9 +221,9 @@
                 $('#opStatusTd' + Loop).css('background-color', 'LightCoral');
             }
         }
-        $('#workspace_agtinfo').append('<button type="button" id="setAgentStatusCommand" class="btn btn-primary disabled" onclick="displayAgentStatusCommandDlg()">' + getClientMessage('AISETSTATUSCMD') + '</button> ');
-        $('#workspace_agtinfo').append('<button type="button" id="execOpeCommand" class="btn btn-primary disabled" onclick="displayExecCommandDlg()">' + getClientMessage('AIEXECCMD') + '</button> ');
-        $('#workspace_agtinfo').append('<p></p>');
+        $('#agtinfo').append('<button type="button" id="setAgentStatusCommand" class="btn btn-primary disabled" onclick="displayAgentStatusCommandDlg()">' + getClientMessage('AISETSTATUSCMD') + '</button> ');
+        $('#agtinfo').append('<button type="button" id="execOpeCommand" class="btn btn-primary disabled" onclick="displayExecCommandDlg()">' + getClientMessage('AIEXECCMD') + '</button> ');
+        $('#agtinfo').append('<p></p>');
         $('td').css('vertical-align', 'middle');
     }
 
@@ -408,14 +408,14 @@
     ////////////////////////////////////////////////////////////////////////////////
 
     function displayServerInfo() {
-        $('#workspace_svrinfo').append('<h2><span class="glyphicon glyphicon-tower"></span>' + getClientMessage('SERVERINFO') + '</h2>');
+        $('#svrinfo').append('<h2><span class="glyphicon glyphicon-tower"></span>' + getClientMessage('SERVERINFO') + '</h2>');
         if (statusCode['API_GET_SVRINFO'] == -1 || statusCode['API_GET_SVRINFO'] == 0) {
-            displayAlertDanger('#workspace_svrinfo', getClientMessage('CONNERR'));
+            displayAlertDanger('#svrinfo', getClientMessage('CONNERR'));
             return;
         }
-        if (workspace_svrinfo_msg !== '') {
-            displayAlertSuccess('#workspace_svrinfo', workspace_svrinfo_msg);
-            workspace_svrinfo_msg = '';
+        if (svrinfo_msg !== '') {
+            displayAlertSuccess('#svrinfo', svrinfo_msg);
+            svrinfo_msg = '';
         }
         var StartTimeTbl = $('<table>');
         StartTimeTbl.addClass('table table-striped');
@@ -428,8 +428,8 @@
         tBody.append('<tr><td>' + responseData['API_GET_SVRINFO'].ServerInfo.StartTimeUtc + '</td><td>' + responseData['API_GET_SVRINFO'].ServerInfo.StartTimeLocal + '</td></tr>');
         StartTimeTbl.append(tBody);
 
-        $('#workspace_svrinfo').append('<h4>' + getClientMessage('SISVRVERSION') + responseData['API_GET_SVRINFO'].ServerInfo.Version + '</h4>');
-        $('#workspace_svrinfo').append(StartTimeTbl);
+        $('#svrinfo').append('<h4>' + getClientMessage('SISVRVERSION') + responseData['API_GET_SVRINFO'].ServerInfo.Version + '</h4>');
+        $('#svrinfo').append(StartTimeTbl);
 
         // Polling Interval
         if (responseData['API_GET_SVRINFO'].ServerInfo.PollingInterval == 30) {
@@ -449,10 +449,10 @@
         ddMenu.append('<li role="presentation"><a onclick="selectPollingInterval(2)" role="menuitem" tabindex="-1" href="#">' + pollingIntervalStr[2] + '</a></li>');
         ddMenu.append('<li role="presentation"><a onclick="selectPollingInterval(3)" role="menuitem" tabindex="-1" href="#">' + pollingIntervalStr[3] + '</a></li>');
         btnGrp.append(ddMenu);
-        $('#workspace_svrinfo').append('<p>');
-        $('#workspace_svrinfo').append(getClientMessage('SIPOLLINTVL'));
-        $('#workspace_svrinfo').append(btnGrp);
-        $('#workspace_svrinfo').append('</p>');
+        $('#svrinfo').append('<p>');
+        $('#svrinfo').append(getClientMessage('SIPOLLINTVL'));
+        $('#svrinfo').append(btnGrp);
+        $('#svrinfo').append('</p>');
 
         // Status Acquisition Interval
         if (responseData['API_GET_SVRINFO'].ServerInfo.StatusAcquisitionInterval == 300) {
@@ -473,21 +473,21 @@
         ddMenu.append('<li role="presentation"><a onclick="selectStatusAcquisitionInterval(3)" role="menuitem" tabindex="-1" href="#">' + statusAcquisitionIntervalStr[3] + '</a></li>');
         btnGrp.append(ddMenu);
 
-        $('#workspace_svrinfo').append('<p>');
-        $('#workspace_svrinfo').append(getClientMessage('SISTACQINTVL'));
-        $('#workspace_svrinfo').append(btnGrp);
-        $('#workspace_svrinfo').append('</p>');
+        $('#svrinfo').append('<p>');
+        $('#svrinfo').append(getClientMessage('SISTACQINTVL'));
+        $('#svrinfo').append(btnGrp);
+        $('#svrinfo').append('</p>');
 
-        $('#workspace_svrinfo').append('<p>');
-        $('#workspace_svrinfo').append('<div class="form-group"><label for="bucketPath">' + getClientMessage('SIPATHTOBUCKET') + '</label><input type="text" class="form-control" id="bucketPath" placeholder="Path to bucket"></div>');
-        $('#workspace_svrinfo').append('</p>');
+        $('#svrinfo').append('<p>');
+        $('#svrinfo').append('<div class="form-group"><label for="bucketPath">' + getClientMessage('SIPATHTOBUCKET') + '</label><input type="text" class="form-control" id="bucketPath" placeholder="Path to bucket"></div>');
+        $('#svrinfo').append('</p>');
         $('#bucketPath').val(responseData['API_GET_SVRINFO'].ServerInfo.BucketPath);
 
-        $('#workspace_svrinfo').append('<div id="workspace_svrinfo_errmsg">');
+        $('#svrinfo').append('<div id="svrinfo_errmsg">');
 
-        $('#workspace_svrinfo').append('<p>');
-        $('#workspace_svrinfo').append('<button type="button" id="serverInfoBtnUpdate" class="btn btn-primary" onclick="updateServerInfo()">' + getClientMessage('SIUPDATEBTN') + '</button> ');
-        $('#workspace_svrinfo').append('</p>');
+        $('#svrinfo').append('<p>');
+        $('#svrinfo').append('<button type="button" id="serverInfoBtnUpdate" class="btn btn-primary" onclick="updateServerInfo()">' + getClientMessage('SIUPDATEBTN') + '</button> ');
+        $('#svrinfo').append('</p>');
         $('td').css('vertical-align', 'middle');
     }
 
@@ -532,17 +532,17 @@
     }
 
     function refreshAfterUpdateServerInfo() {
-        $('#workspace_svrinfo .alert').remove();
+        $('#svrinfo .alert').remove();
         if (statusCode['API_POST_SVRINFO'] == -1 || statusCode['API_POST_SVRINFO'] == 0) {
-            displayAlertDanger('#workspace_svrinfo_errmsg', getClientMessage('CONNERR'));
+            displayAlertDanger('#svrinfo_errmsg', getClientMessage('CONNERR'));
             return;
         }
         if (statusCode['API_POST_SVRINFO'] == 400) {
-            displayAlertDanger('#workspace_svrinfo_errmsg', responseData['API_POST_SVRINFO'].Msg0);
+            displayAlertDanger('#svrinfo_errmsg', responseData['API_POST_SVRINFO'].Msg0);
             return;
         }
         refreshInfo();
-        workspace_svrinfo_msg = getClientMessage('SIUPDATED');
+        svrinfo_msg = getClientMessage('SIUPDATED');
     }
 
     ////////////////////////////////////////////////////////////////////////////////
@@ -551,18 +551,18 @@
     ////////////////////////////////////////////////////////////////////////////////
 
     function displayCommand() {
-        $('#workspace_command').append('<h2><span class="glyphicon glyphicon-flash"></span>' + getClientMessage('COMMAND') + '</h2>');
+        $('#command').append('<h2><span class="glyphicon glyphicon-flash"></span>' + getClientMessage('COMMAND') + '</h2>');
         if (statusCode['API_GET_COMMAND'] == -1 || statusCode['API_GET_COMMAND'] == 0) {
-            displayAlertDanger('#workspace_command', getClientMessage('CONNERR'));
+            displayAlertDanger('#command', getClientMessage('CONNERR'));
             return;
         }
-        if (workplace_command_msg !== '') {
-            displayAlertSuccess('#workspace_command', workplace_command_msg);
-            workplace_command_msg = '';
+        if (command_msg !== '') {
+            displayAlertSuccess('#command', command_msg);
+            command_msg = '';
         }
         var commandList = getArray(responseData['API_GET_COMMAND'].Command);
         if (commandList == null) {
-            $('#workspace_command').append(getClientMessage('NOCMDEXIST'));
+            $('#command').append(getClientMessage('NOCMDEXIST'));
         }
 
         selectedCommand = -1;
@@ -586,19 +586,19 @@
                 tBody.append('<tr><td><div class="radio"><label><input type="radio" id="radioCom' + commandList[Loop].Id + '" name="optradio" onclick="selectCommand('+ commandList[Loop].Id + ')"/>' + commandList[Loop].Name + '</label></div></td><td>' + typeStr + '</td></tr>');
             }
             commandListTable.append(tBody);
-            $('#workspace_command').append(commandListTable);
+            $('#command').append(commandListTable);
         }
 
-        $('#workspace_command').append('<div class="form-group"><label for="commandName">' + getClientMessage('COMNAME') + '</label><input type="text" class="form-control" id="commandName" placeholder="' + getClientMessage('COMNAME') + '"></div>');
-        $('#workspace_command').append('<div class="form-group"><label for="serverFileName">' + getClientMessage('COMCOPYTOAGT') + '</label><input type="text" class="form-control" id="serverFileName" placeholder="' + getClientMessage('COMPLACESVR') + '"></div>');
-        $('#workspace_command').append('<div class="form-group"><label for="commandType">' + getClientMessage('COMTYPE') + '</label><select class="form-control" id="commandType"><option>Linux /usr/bin/bash</option><option>Windows cmd.exe /c</option></select></div>');
-        $('#workspace_command').append('<div class="form-group"><label for="commandScript">' + getClientMessage('COMSCRIPT') + '</label><textarea class="form-control" id="commandScript" rows="3" style="margin-top: 0px; margin-bottom: 0px; height: 185px;"></textarea></div>');
-        $('#workspace_command').append('<div class="form-group"><label for="agentFileName">' + getClientMessage('COMCOPYTOSVR') + '</label><input type="text" class="form-control" id="agentFileName" placeholder="' + getClientMessage('COMPLACEAGT') + '"></div>');
-        $('#workspace_command').append('<div id="workspace_command_errmsg">');
-        $('#workspace_command').append('<button type="button" id="commandBtnAdd" class="btn btn-primary" onclick="updateCommand(false)">' + getClientMessage('COMADD') + '</button> ');
-        $('#workspace_command').append('<button type="button" id="commandBtnUpdate" class="btn btn-primary disabled" onclick="updateCommand(true)">' + getClientMessage('COMUPDATE') + '</button> ');
-        $('#workspace_command').append('<button type="button" id="commandBtnDelete" class="btn btn-primary disabled" onclick="deleteCommand()">' + getClientMessage('COMDELETE') + '</button> ');
-        $('#workspace_command').append('<p></p>');
+        $('#command').append('<div class="form-group"><label for="commandName">' + getClientMessage('COMNAME') + '</label><input type="text" class="form-control" id="commandName" placeholder="' + getClientMessage('COMNAME') + '"></div>');
+        $('#command').append('<div class="form-group"><label for="serverFileName">' + getClientMessage('COMCOPYTOAGT') + '</label><input type="text" class="form-control" id="serverFileName" placeholder="' + getClientMessage('COMPLACESVR') + '"></div>');
+        $('#command').append('<div class="form-group"><label for="commandType">' + getClientMessage('COMTYPE') + '</label><select class="form-control" id="commandType"><option>Linux /usr/bin/bash</option><option>Windows cmd.exe /c</option></select></div>');
+        $('#command').append('<div class="form-group"><label for="commandScript">' + getClientMessage('COMSCRIPT') + '</label><textarea class="form-control" id="commandScript" rows="3" style="margin-top: 0px; margin-bottom: 0px; height: 185px;"></textarea></div>');
+        $('#command').append('<div class="form-group"><label for="agentFileName">' + getClientMessage('COMCOPYTOSVR') + '</label><input type="text" class="form-control" id="agentFileName" placeholder="' + getClientMessage('COMPLACEAGT') + '"></div>');
+        $('#command').append('<div id="command_errmsg">');
+        $('#command').append('<button type="button" id="commandBtnAdd" class="btn btn-primary" onclick="updateCommand(false)">' + getClientMessage('COMADD') + '</button> ');
+        $('#command').append('<button type="button" id="commandBtnUpdate" class="btn btn-primary disabled" onclick="updateCommand(true)">' + getClientMessage('COMUPDATE') + '</button> ');
+        $('#command').append('<button type="button" id="commandBtnDelete" class="btn btn-primary disabled" onclick="deleteCommand()">' + getClientMessage('COMDELETE') + '</button> ');
+        $('#command').append('<p></p>');
         $('td').css('vertical-align', 'middle');
     }
 
@@ -652,45 +652,45 @@
     }
 
     function refreshAfterAddCommand() {
-        $('#workspace_command .alert').remove();
+        $('#command .alert').remove();
         if (statusCode['API_POST_COMMAND'] == -1 || statusCode['API_POST_COMMAND'] == 0) {
-            displayAlertDanger('#workspace_command_errmsg', getClientMessage('CONNERR'));
+            displayAlertDanger('#command_errmsg', getClientMessage('CONNERR'));
             return;
         }
         if (statusCode['API_POST_COMMAND'] == 400) {
-            displayAlertDanger('#workspace_command_errmsg', responseData['API_POST_COMMAND'].Msg0);
+            displayAlertDanger('#command_errmsg', responseData['API_POST_COMMAND'].Msg0);
             return;
         }
         refreshInfo();
-        workplace_command_msg = getClientMessage('COMADDED');
+        command_msg = getClientMessage('COMADDED');
     }
 
     function refreshAfterUpdateCommand() {
-        $('#workspace_command .alert').remove();
+        $('#command .alert').remove();
         if (statusCode['API_POST_COMMAND'] == -1 || statusCode['API_POST_COMMAND'] == 0) {
-            displayAlertDanger('#workspace_command_errmsg', getClientMessage('CONNERR'));
+            displayAlertDanger('#command_errmsg', getClientMessage('CONNERR'));
             return;
         }
         if (statusCode['API_POST_COMMAND'] == 400) {
-            displayAlertDanger('#workspace_command_errmsg', responseData['API_POST_COMMAND'].Msg0);
+            displayAlertDanger('#command_errmsg', responseData['API_POST_COMMAND'].Msg0);
             return;
         }
         refreshInfo();
-        workplace_command_msg = getClientMessage('COMUPDATED');
+        command_msg = getClientMessage('COMUPDATED');
     }
 
     function refreshAfterDeleteCommand() {
-        $('#workspace_command .alert').remove();
+        $('#command .alert').remove();
         if (statusCode['API_DELETE_COMMAND'] == -1 || statusCode['API_DELETE_COMMAND'] == 0) {
-            displayAlertDanger('#workspace_command_errmsg', getClientMessage('CONNERR'));
+            displayAlertDanger('#command_errmsg', getClientMessage('CONNERR'));
             return;
         }
         if (statusCode['API_DELETE_COMMAND'] == 400) {
-            displayAlertDanger('#workspace_command_errmsg', responseData['API_DELETE_COMMAND'].Msg0);
+            displayAlertDanger('#command_errmsg', responseData['API_DELETE_COMMAND'].Msg0);
             return;
         }
         refreshInfo();
-        workplace_command_msg = getClientMessage('COMDELETED');
+        command_msg = getClientMessage('COMDELETED');
     }
 
     ////////////////////////////////////////////////////////////////////////////////
@@ -710,10 +710,10 @@
     }
 
     function refreshInfo() {
-        $('#workspace_agtinfo').empty();
-        $('#workspace_svrinfo').empty();
-        $('#workspace_command').empty();
-        $('#workspace_loginfo').empty();
+        $('#agtinfo').empty();
+        $('#svrinfo').empty();
+        $('#command').empty();
+        $('#loginfo').empty();
         apiCall('GET', './api/log/', null, 'API_GET_LOGS', displayLogInfo);
         apiCall('GET', './api/server/', null, 'API_GET_SVRINFO', displayServerInfo);
         apiCall('GET', './api/agent/', null, 'API_GET_AGTINFO', displayAgentInfo);
@@ -752,6 +752,14 @@
 
     window.onload = function() {
         initClientMessage();
+        var contents = [
+            { id : 'agtinfo', actApiName : 'activateTopic', icon : 'glyphicon glyphicon-eye-open' },
+            { id : 'svrinfo', actApiName : 'activateTopic', icon : 'glyphicon glyphicon-tower' },
+            { id : 'command', actApiName : 'activateTopic', icon : 'glyphicon glyphicon-flash' },
+            { id : 'loginfo', actApiName : 'activateTopic', icon : 'glyphicon glyphicon-time' },
+            { id : 'usermgt', actApiName : 'activateTopic', icon : 'glyphicon glyphicon-user' }
+        ];
+        initMainPage(contents);
         apiCall('GET', './api/language/', null, 'API_GET_LANG', getLanguage);
         $(function() {
             $(".modal-dialog").css({
@@ -767,57 +775,6 @@
 </head>
 
 <body>
-    <div id="container">
-        <nav class="navbar navbar-default">
-            <div class="container-fluid">
-                <div class="navbar-header">
-                    <a class="navbar-brand" href="">
-                        <strong>Management Server</strong>
-                    </a>
-                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#top-nav">
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                    </button>
-                </div>
-                <div class="collapse navbar-collapse" id="top-nav">
-                    <ul class="nav navbar-nav">
-                        <li id="menu-agtinfo" style="display:none"><a onclick="activateTopic('agtinfo')"><span class="glyphicon glyphicon-eye-open"></span> Agent Info</a></li>
-                        <li id="menu-svrinfo" style="display:none"><a onclick="activateTopic('svrinfo')"><span class="glyphicon glyphicon-tower"></span> Server Info</a></li>
-                        <li id="menu-command" style="display:none"><a onclick="activateTopic('command')"><span class="glyphicon glyphicon-flash"></span> Command</a></li>
-                        <li id="menu-loginfo" style="display:none"><a onclick="activateTopic('loginfo')"><span class="glyphicon glyphicon-time"></span> Audit Log</a></li>
-                        <li id="menu-usermgt" style="display:none"><a onclick="activateTopic('usermgt')"><span class="glyphicon glyphicon-user"></span> User Management</a></li>
-                    </ul>
-                    <ul class="nav navbar-nav navbar-right">
-                        <li><a onclick="tryLogout()"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
-                    </ul>
-                </div>
-            </div>
-        </nav>
-        <div class="container-fluid">
-            <div id="agtinfo" class="row" style="display:none">
-                <div id="workspace_agtinfo" class="col-xs-12">
-                </div>
-            </div>
-            <div id="svrinfo" class="row" style="display:none">
-                <div id="workspace_svrinfo" class="col-xs-12">
-                </div>
-            </div>
-            <div id="command" class="row" style="display:none">
-                <div id="workspace_command" class="col-xs-12">
-                </div>
-            </div>
-            <div id="loginfo" class="row" style="display:none">
-                <div id="workspace_loginfo" class="col-xs-12">
-                </div>
-            </div>
-            <div id="usermgt" class="row" style="display:none">
-                <div id="workspace_usermgt" class="col-xs-12">
-                </div>
-            </div>
-        </div>
-    </div>
-
     <div id="inputDlgModal" class="modal fade" tabindex="-1" role="dialog" data-keyboard="false" data-backdrop="static">
         <div class="modal-dialog">
             <div class="modal-content">
