@@ -20,13 +20,17 @@
     // Selected command ID on command page
     var selectedCommand = -1;
 
+    // Selected user on user management page
+    var selectedUser = '';
+
     // Selected index number of status acquisition command on agent info page.
     var selectedAgentStatusCommand = -1;
     // Selected index number of operation command on agent info page.
     var selectedOperationCommand = -1;
 
-    var command_msg = '';
     var svrinfo_msg = '';
+    var command_msg = '';
+    var usermgt_msg = '';
 
     function initClientMessage() {
         addClientMessage('AGENTINFO', {'en':' Agent Info', 'ja':' Agent Info'});
@@ -91,7 +95,7 @@
         addClientMessage('USERNAME', {'en':'User Name', 'ja':'ユーザー名'});
         addClientMessage('USERROLE', {'en':'User Role', 'ja':'ユーザーロール'});
         addClientMessage('USERROLEADMIN', {'en':'Administrator', 'ja':'管理者'});
-        addClientMessage('USERROLEUSER', {'en':'General User', 'ja':'一般'});
+        addClientMessage('USERROLEUSER', {'en':'General User', 'ja':'一般ユーザー'});
 
         addClientMessage('LOGEVENTTIME', {'en':'Event Occurrence Time', 'ja':'イベント発生時刻'});
         addClientMessage('LOGEVENT', {'en':'Event', 'ja':'イベント'});
@@ -601,7 +605,7 @@
         $('#command').append('<div class="form-group"><label for="commandType">' + getClientMessage('COMTYPE') + '</label><select class="form-control" id="commandType"><option>Linux /usr/bin/bash</option><option>Windows cmd.exe /c</option></select></div>');
         $('#command').append('<div class="form-group"><label for="commandScript">' + getClientMessage('COMSCRIPT') + '</label><textarea class="form-control" id="commandScript" rows="3" style="margin-top: 0px; margin-bottom: 0px; height: 185px;"></textarea></div>');
         $('#command').append('<div class="form-group"><label for="agentFileName">' + getClientMessage('COMCOPYTOSVR') + '</label><input type="text" class="form-control" id="agentFileName" placeholder="' + getClientMessage('COMPLACEAGT') + '"></div>');
-        $('#command').append('<div id="command_errmsg">');
+        $('#command').append('<div id="command_errmsg"/>');
         $('#command').append('<button type="button" id="commandBtnAdd" class="btn btn-primary" onclick="updateCommand(false)">' + getClientMessage('COMADD') + '</button> ');
         $('#command').append('<button type="button" id="commandBtnUpdate" class="btn btn-primary disabled" onclick="updateCommand(true)">' + getClientMessage('COMUPDATE') + '</button> ');
         $('#command').append('<button type="button" id="commandBtnDelete" class="btn btn-primary disabled" onclick="deleteCommand()">' + getClientMessage('COMDELETE') + '</button> ');
@@ -732,10 +736,43 @@
                 } else {
                     StrUserRole = getClientMessage('USERROLEUSER');
                 }
-                tBody.append('<tr><td><div class="radio"><label><input type="radio" id="radioCom' + userList[Loop].Name + '" name="optradio" onclick=""/>' + userList[Loop].Name + '</label></div></td><td>' + StrUserRole + '</td></tr>');
+                tBody.append('<tr><td><div class="radio"><label><input type="radio" id="radioUser_' + userList[Loop].Name + '" name="optradio" onclick="selectUser(\''+ userList[Loop].Name + '\')"/>' + userList[Loop].Name + '</label></div></td><td>' + StrUserRole + '</td></tr>');
             }
             userListTable.append(tBody);
             $('#usermgt').append(userListTable);
+        }
+        $('#usermgt').append('<div class="form-group"><label for="userName">' + getClientMessage('USERNAME') + '</label><input type="text" class="form-control" id="userName" placeholder="' + getClientMessage('USERNAME') + '"></div>');
+        $('#usermgt').append('<div class="form-group"><label for="userType">' + getClientMessage('USERROLE') + '</label><select class="form-control" id="userRole"><option>' + getClientMessage('USERROLEADMIN') + '</option><option>' + getClientMessage('USERROLEUSER') + '</option></select></div>');
+        $('#usermgt').append('<div id="usermgt_errmsg"/>');
+        $('#usermgt').append('<button type="button" id="userBtnAdd" class="btn btn-primary" onclick="updateUser(false)">' + getClientMessage('COMADD') + '</button> ');
+        $('#usermgt').append('<button type="button" id="userBtnUpdate" class="btn btn-primary disabled" onclick="updateUser(true)">' + getClientMessage('COMUPDATE') + '</button> ');
+        $('#usermgt').append('<button type="button" id="userBtnDelete" class="btn btn-primary disabled" onclick="deleteUser()">' + getClientMessage('COMDELETE') + '</button> ');
+        $('#usermgt').append('<p></p>');
+        $('td').css('vertical-align', 'middle');
+    }
+
+    function updateUser(updateFlag) {
+    }
+
+    function deleteUser() {
+    }
+
+    function selectUser(userName) {
+        var userList = getArray(responseData['API_GET_USER'].User);
+        selectedUser = userName;
+        for (loop = 0; loop < userList.length; loop++) {
+            if (userList[loop].Name == userName) {
+                var roleStr = '';
+                if (userList[loop].Role == 0) {
+                    roleStr = getClientMessage('USERROLEADMIN');
+                } else {
+                    roleStr = getClientMessage('USERROLEUSER');
+                }
+                $('#userName').val(userList[loop].Name);
+                $('#userRole').val(roleStr);
+                $('#userBtnUpdate').removeClass('disabled');
+                $('#userBtnDelete').removeClass('disabled');
+            }
         }
     }
 
