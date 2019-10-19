@@ -111,12 +111,14 @@ int DataAccess::CreateTables(const wchar_t* DataFileName)
 			ColumnDefInt ColDefSvrPi(L"PInterval");
 			ColumnDefInt ColDefSvrSai(L"SaInterval");
 			ColumnDefInt ColDefSvrMaxComId(L"MaxCommandId");
+			ColumnDefInt ColDefSvrMaxUserId(L"MaxUserId");
 			ColumnDefWStr ColDefSvrBucketPath(L"BucketPath", DA_MAXLEN_OF_BUCKETPATH);
 			TableDef TabDefSvrInfo(L"ServerInfo", 1);
 			TabDefSvrInfo.AddColumnDef(&ColDefSvrId);
 			TabDefSvrInfo.AddColumnDef(&ColDefSvrPi);
 			TabDefSvrInfo.AddColumnDef(&ColDefSvrSai);
 			TabDefSvrInfo.AddColumnDef(&ColDefSvrMaxComId);
+			TabDefSvrInfo.AddColumnDef(&ColDefSvrMaxUserId);
 			TabDefSvrInfo.AddColumnDef(&ColDefSvrBucketPath);
 			if (CreateTable(&TabDefSvrInfo) != 0) {
 				UnlockAllTable();
@@ -145,16 +147,18 @@ int DataAccess::CreateTables(const wchar_t* DataFileName)
 		}
 		// User table
 		{
+			ColumnDefInt ColDefUserId(L"Id");
 			ColumnDefWStr ColDefUserName(L"Name", DA_MAXLEN_OF_USERNAME);
 			ColumnDefWStr ColDefUserPassword(L"Password", DA_MAXLEN_OF_PASSWORD);
 			ColumnDefInt ColDefUserRole(L"Role");
 			ColumnDefWStr ColDefUserUrl(L"Url", DA_MAXLEN_OF_TARGETURL);
-			TableDef TabDefCommand(L"User", DA_MAXNUM_OF_USERRECORDS);
-			TabDefCommand.AddColumnDef(&ColDefUserName);
-			TabDefCommand.AddColumnDef(&ColDefUserPassword);
-			TabDefCommand.AddColumnDef(&ColDefUserRole);
-			TabDefCommand.AddColumnDef(&ColDefUserUrl);
-			if (CreateTable(&TabDefCommand) != 0) {
+			TableDef TabDefUser(L"User", DA_MAXNUM_OF_USERRECORDS);
+			TabDefUser.AddColumnDef(&ColDefUserId);
+			TabDefUser.AddColumnDef(&ColDefUserName);
+			TabDefUser.AddColumnDef(&ColDefUserPassword);
+			TabDefUser.AddColumnDef(&ColDefUserRole);
+			TabDefUser.AddColumnDef(&ColDefUserUrl);
+			if (CreateTable(&TabDefUser) != 0) {
 				UnlockAllTable();
 				return -1;
 			}
@@ -163,17 +167,18 @@ int DataAccess::CreateTables(const wchar_t* DataFileName)
 
 		// For server info table
 		{
-			ColumnData *ColDatSvr[5];
+			ColumnData *ColDatSvr[6];
 			ColDatSvr[0] = new ColumnDataInt(L"Id", 0);
 			ColDatSvr[1] = new ColumnDataInt(L"PInterval", 300);
 			ColDatSvr[2] = new ColumnDataInt(L"SaInterval", 1800);
 			ColDatSvr[3] = new ColumnDataInt(L"MaxCommandId", 1);
+			ColDatSvr[4] = new ColumnDataInt(L"MaxUserId", 2);
 #ifdef WIN32
-			ColDatSvr[4] = new ColumnDataWStr(L"BucketPath", L"\\");
+			ColDatSvr[5] = new ColumnDataWStr(L"BucketPath", L"\\");
 #else
-			ColDatSvr[4] = new ColumnDataWStr(L"BucketPath", L"/");
+			ColDatSvr[5] = new ColumnDataWStr(L"BucketPath", L"/");
 #endif
-			RecordData* RecSvrInfo = new RecordData(L"ServerInfo", ColDatSvr, 5);
+			RecordData* RecSvrInfo = new RecordData(L"ServerInfo", ColDatSvr, 6);
 			// Add record
 			LockTable(L"ServerInfo", LOCK_EXCLUSIVE);
 			int Ret = InsertRecord(RecSvrInfo);
@@ -182,12 +187,13 @@ int DataAccess::CreateTables(const wchar_t* DataFileName)
 		}
 		// For user table
 		{
-			ColumnData *ColDatUser[4];
-			ColDatUser[0] = new ColumnDataWStr(L"Name", L"admin@a.a");
-			ColDatUser[1] = new ColumnDataWStr(L"Password", L"manager");
-			ColDatUser[2] = new ColumnDataInt(L"Role", 0);
-			ColDatUser[3] = new ColumnDataWStr(L"Url", L"");
-			RecordData* RecUser = new RecordData(L"User", ColDatUser, 4);
+			ColumnData *ColDatUser[5];
+			ColDatUser[0] = new ColumnDataInt(L"Id", 0);
+			ColDatUser[1] = new ColumnDataWStr(L"Name", L"admin@a.a");
+			ColDatUser[2] = new ColumnDataWStr(L"Password", L"manager");
+			ColDatUser[3] = new ColumnDataInt(L"Role", 0);
+			ColDatUser[4] = new ColumnDataWStr(L"Url", L"");
+			RecordData* RecUser = new RecordData(L"User", ColDatUser, 5);
 			// Add record
 			LockTable(L"User", LOCK_EXCLUSIVE);
 			int Ret = InsertRecord(RecUser);
@@ -195,12 +201,13 @@ int DataAccess::CreateTables(const wchar_t* DataFileName)
 			delete RecUser;
 		}
 		{
-			ColumnData *ColDatUser[4];
-			ColDatUser[0] = new ColumnDataWStr(L"Name", L"takeuchi@a.a");
-			ColDatUser[1] = new ColumnDataWStr(L"Password", L"takeuchi");
-			ColDatUser[2] = new ColumnDataInt(L"Role", 1);
-			ColDatUser[3] = new ColumnDataWStr(L"Url", L"");
-			RecordData* RecUser = new RecordData(L"User", ColDatUser, 4);
+			ColumnData *ColDatUser[5];
+			ColDatUser[0] = new ColumnDataInt(L"Id", 1);
+			ColDatUser[1] = new ColumnDataWStr(L"Name", L"takeuchi@a.a");
+			ColDatUser[2] = new ColumnDataWStr(L"Password", L"takeuchi");
+			ColDatUser[3] = new ColumnDataInt(L"Role", 1);
+			ColDatUser[4] = new ColumnDataWStr(L"Url", L"");
+			RecordData* RecUser = new RecordData(L"User", ColDatUser, 5);
 			// Add record
 			LockTable(L"User", LOCK_EXCLUSIVE);
 			int Ret = InsertRecord(RecUser);
@@ -546,7 +553,7 @@ int  DataAccess::GetServerInfo(int* PInterval, int* SaInterval, wchar_t BucketPa
 	}
 	ColumnDataInt* ColDatPInterval = (ColumnDataInt*)RecDatSvr->GetColumn(1);
 	ColumnDataInt* ColDatSaInterval = (ColumnDataInt*)RecDatSvr->GetColumn(2);
-	ColumnDataWStr* ColDatBucketPath = (ColumnDataWStr*)RecDatSvr->GetColumn(4);
+	ColumnDataWStr* ColDatBucketPath = (ColumnDataWStr*)RecDatSvr->GetColumn(5);
 	if (ColDatPInterval == NULL || ColDatSaInterval == NULL || ColDatBucketPath == NULL) {
 		delete RecDatSvr;
 		return -1;
@@ -586,7 +593,7 @@ void DataAccess::GetFullPathFromFileName(wchar_t FullPath[DA_MAXLEN_OF_SERVERFIL
 	UnlockTable(L"ServerInfo");
 	int MaxCommandId = 0;
 	if (RecDatSvrInfo != NULL) {
-		ColumnDataWStr* ColDat = (ColumnDataWStr*)RecDatSvrInfo->GetColumn(4);
+		ColumnDataWStr* ColDat = (ColumnDataWStr*)RecDatSvrInfo->GetColumn(5);
 		if (ColDat != NULL) {
 			StkPlWcsCpy(FullPath, DA_MAXLEN_OF_SERVERFILENAME, ColDat->GetValue());
 			int FullPathLen = StkPlWcsLen(FullPath);
@@ -936,7 +943,7 @@ int DataAccess::DeleteOldLogs()
 	return 0;
 }
 
-bool DataAccess::GetTargetUser(wchar_t Name[DA_MAXLEN_OF_USERNAME], wchar_t Password[DA_MAXLEN_OF_PASSWORD], int* Role, wchar_t Url[DA_MAXLEN_OF_TARGETURL])
+bool DataAccess::GetTargetUserByName(wchar_t Name[DA_MAXLEN_OF_USERNAME], int* Id, wchar_t Password[DA_MAXLEN_OF_PASSWORD], int* Role, wchar_t Url[DA_MAXLEN_OF_TARGETURL])
 {
 	ColumnData* ColDat[1];
 	ColDat[0] = new ColumnDataWStr(L"Name", Name);
@@ -946,10 +953,12 @@ bool DataAccess::GetTargetUser(wchar_t Name[DA_MAXLEN_OF_USERNAME], wchar_t Pass
 	UnlockTable(L"User");
 	delete SearchUser;
 	if (RecDatUser != NULL) {
-		ColumnDataWStr* ColDatPw = (ColumnDataWStr*)RecDatUser->GetColumn(1);
-		ColumnDataInt* ColDatRole = (ColumnDataInt*)RecDatUser->GetColumn(2);
-		ColumnDataWStr* ColDatUrl = (ColumnDataWStr*)RecDatUser->GetColumn(3);
-		if (ColDatPw != NULL && ColDatRole != NULL && ColDatUrl != NULL) {
+		ColumnDataInt* ColDatId = (ColumnDataInt*)RecDatUser->GetColumn(0);
+		ColumnDataWStr* ColDatPw = (ColumnDataWStr*)RecDatUser->GetColumn(2);
+		ColumnDataInt* ColDatRole = (ColumnDataInt*)RecDatUser->GetColumn(3);
+		ColumnDataWStr* ColDatUrl = (ColumnDataWStr*)RecDatUser->GetColumn(4);
+		if (ColDatId != NULL && ColDatPw != NULL && ColDatRole != NULL && ColDatUrl != NULL) {
+			*Id = ColDatId->GetValue();
 			StkPlWcsCpy(Password, DA_MAXLEN_OF_PASSWORD, ColDatPw->GetValue());
 			*Role = ColDatRole->GetValue();
 			StkPlWcsCpy(Url, DA_MAXLEN_OF_PASSWORD, ColDatUrl->GetValue());
@@ -961,7 +970,8 @@ bool DataAccess::GetTargetUser(wchar_t Name[DA_MAXLEN_OF_USERNAME], wchar_t Pass
 	return true;
 }
 
-int DataAccess::GetTargetUsers(wchar_t Name[DA_MAXNUM_OF_USERRECORDS][DA_MAXLEN_OF_USERNAME],
+int DataAccess::GetTargetUsers(int Id[DA_MAXNUM_OF_USERRECORDS],
+								wchar_t Name[DA_MAXNUM_OF_USERRECORDS][DA_MAXLEN_OF_USERNAME],
 								wchar_t Password[DA_MAXNUM_OF_USERRECORDS][DA_MAXLEN_OF_PASSWORD],
 								int Role[DA_MAXNUM_OF_USERRECORDS],
 								wchar_t Url[DA_MAXNUM_OF_USERRECORDS][DA_MAXLEN_OF_TARGETURL])
@@ -975,10 +985,10 @@ int DataAccess::GetTargetUsers(wchar_t Name[DA_MAXNUM_OF_USERRECORDS][DA_MAXLEN_
 	}
 	int Loop = 0;
 	for (; CurRecDatUser; Loop++) {
-		ColumnDataWStr* ColDatName = (ColumnDataWStr*)CurRecDatUser->GetColumn(0);
-		ColumnDataWStr* ColDatPw = (ColumnDataWStr*)CurRecDatUser->GetColumn(1);
-		ColumnDataInt* ColDatRole = (ColumnDataInt*)CurRecDatUser->GetColumn(2);
-		ColumnDataWStr* ColDatUrl = (ColumnDataWStr*)CurRecDatUser->GetColumn(3);
+		ColumnDataWStr* ColDatName = (ColumnDataWStr*)CurRecDatUser->GetColumn(1);
+		ColumnDataWStr* ColDatPw = (ColumnDataWStr*)CurRecDatUser->GetColumn(2);
+		ColumnDataInt* ColDatRole = (ColumnDataInt*)CurRecDatUser->GetColumn(3);
+		ColumnDataWStr* ColDatUrl = (ColumnDataWStr*)CurRecDatUser->GetColumn(4);
 		if (ColDatName != NULL && ColDatPw != NULL && ColDatRole != NULL && ColDatUrl != NULL) {
 			StkPlWcsCpy(Name[Loop], DA_MAXLEN_OF_PASSWORD, ColDatName->GetValue());
 			StkPlWcsCpy(Password[Loop], DA_MAXLEN_OF_PASSWORD, ColDatPw->GetValue());

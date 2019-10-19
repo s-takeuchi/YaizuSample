@@ -5,6 +5,7 @@
 
 StkObject* ApiGetUser::ExecuteImpl(StkObject* ReqObj, int Method, wchar_t UrlPath[StkWebAppExec::URL_PATH_LENGTH], int* ResultCode, int LocaleType, wchar_t* Token)
 {
+	int UserId = 0;
 	wchar_t UserName[DA_MAXLEN_OF_USERNAME] = L"";
 	wchar_t UserPassword[DA_MAXLEN_OF_PASSWORD] = L"";
 	int Role = 0;
@@ -13,20 +14,22 @@ StkObject* ApiGetUser::ExecuteImpl(StkObject* ReqObj, int Method, wchar_t UrlPat
 		*ResultCode = 403;
 		return NULL;
 	}
-	DataAccess::GetInstance()->GetTargetUser(UserName, UserPassword, &Role, TargetUrl);
+	DataAccess::GetInstance()->GetTargetUserByName(UserName, &UserId, UserPassword, &Role, TargetUrl);
 	if (StkPlWcsStr(UrlPath, L"?target=all") != NULL) {
 		if (Role != 0) {
 			*ResultCode = 403;
 			return NULL;
 		}
+		int AryUserId[DA_MAXNUM_OF_USERRECORDS];
 		wchar_t AryUserName[DA_MAXNUM_OF_USERRECORDS][DA_MAXLEN_OF_USERNAME];
 		wchar_t AryUserPassword[DA_MAXNUM_OF_USERRECORDS][DA_MAXLEN_OF_PASSWORD];
 		int AryRole[DA_MAXNUM_OF_USERRECORDS];
 		wchar_t AryTargetUrl[DA_MAXNUM_OF_USERRECORDS][DA_MAXLEN_OF_TARGETURL];
-		int Cnt = DataAccess::GetInstance()->GetTargetUsers(AryUserName, AryUserPassword, AryRole, AryTargetUrl);
+		int Cnt = DataAccess::GetInstance()->GetTargetUsers(AryUserId, AryUserName, AryUserPassword, AryRole, AryTargetUrl);
 		StkObject* TmpObj = new StkObject(L"");
 		for (int Loop = 0; Loop < Cnt; Loop++) {
 			StkObject* TmpObjC = new StkObject(L"User");
+			TmpObjC->AppendChildElement(new StkObject(L"Id", AryUserId[Loop]));
 			TmpObjC->AppendChildElement(new StkObject(L"Name", AryUserName[Loop]));
 			TmpObjC->AppendChildElement(new StkObject(L"Role", AryRole[Loop]));
 			TmpObjC->AppendChildElement(new StkObject(L"Url", AryTargetUrl[Loop]));
@@ -38,6 +41,7 @@ StkObject* ApiGetUser::ExecuteImpl(StkObject* ReqObj, int Method, wchar_t UrlPat
 	} else {
 		StkObject* TmpObj = new StkObject(L"");
 		StkObject* TmpObjC = new StkObject(L"User");
+		TmpObjC->AppendChildElement(new StkObject(L"Id", UserId));
 		TmpObjC->AppendChildElement(new StkObject(L"Name", UserName));
 		TmpObjC->AppendChildElement(new StkObject(L"Role", Role));
 		TmpObjC->AppendChildElement(new StkObject(L"Url", TargetUrl));

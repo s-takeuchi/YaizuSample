@@ -17,10 +17,11 @@ bool ApiBase::CheckCredentials(wchar_t* Token, wchar_t* Name)
 		return false;
 	}
 
+	int Id = 0;
 	wchar_t Password[DA_MAXLEN_OF_PASSWORD];
 	int Role = 0;
 	wchar_t Url[DA_MAXLEN_OF_TARGETURL];
-	bool Ret = DataAccess::GetInstance()->GetTargetUser(TmpName, Password, &Role, Url);
+	bool Ret = DataAccess::GetInstance()->GetTargetUserByName(TmpName, &Id, Password, &Role, Url);
 	if (Ret == false) {
 		return false;
 	}

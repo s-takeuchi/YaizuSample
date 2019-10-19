@@ -736,7 +736,7 @@
                 } else {
                     StrUserRole = getClientMessage('USERROLEUSER');
                 }
-                tBody.append('<tr><td><div class="radio"><label><input type="radio" id="radioUser_' + userList[Loop].Name + '" name="optradio" onclick="selectUser(\''+ userList[Loop].Name + '\')"/>' + userList[Loop].Name + '</label></div></td><td>' + StrUserRole + '</td></tr>');
+                tBody.append('<tr><td><div class="radio"><label><input type="radio" id="radioUser' + userList[Loop].Id + '" name="optradio" onclick="selectUser(\''+ userList[Loop].Id + '\')"/>' + userList[Loop].Name + '</label></div></td><td>' + StrUserRole + '</td></tr>');
             }
             userListTable.append(tBody);
             $('#usermgt').append(userListTable);
@@ -757,11 +757,11 @@
     function deleteUser() {
     }
 
-    function selectUser(userName) {
+    function selectUser(userId) {
         var userList = getArray(responseData['API_GET_USER'].User);
         selectedUser = userName;
         for (loop = 0; loop < userList.length; loop++) {
-            if (userList[loop].Name == userName) {
+            if (userList[loop].Id == userId) {
                 var roleStr = '';
                 if (userList[loop].Role == 0) {
                     roleStr = getClientMessage('USERROLEADMIN');
