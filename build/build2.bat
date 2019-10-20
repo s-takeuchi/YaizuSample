@@ -49,10 +49,8 @@ rem ########## Building ##########
 echo;
 echo Building agent.sln...
 %MSBUILD% "..\src\agent\agent.sln" /t:clean;build /p:Configuration=Release
-rem %DEVENV% "..\src\agent\agent.sln" /rebuild Release 
 echo Building agentsvc.sln...
 %MSBUILD% "..\src\agentsvc\agentsvc.sln" /t:clean;build /p:Configuration=Release
-rem %DEVENV% "..\src\agentsvc\agentsvc.sln" /rebuild Release 
 
 
 rem ########## Checking file existence ##########
