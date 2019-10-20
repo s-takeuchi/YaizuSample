@@ -117,6 +117,7 @@
     <ClCompile Include="ApiPostCommand.cpp" />
     <ClCompile Include="ApiPostFile.cpp" />
     <ClCompile Include="ApiPostServerInfo.cpp" />
+    <ClCompile Include="ApiPostUser.cpp" />
     <ClCompile Include="dataaccess.cpp" />
     <ClCompile Include="sample.cpp" />
   </ItemGroup>
@@ -136,6 +137,7 @@
     <ClInclude Include="ApiPostCommand.h" />
     <ClInclude Include="ApiPostFile.h" />
     <ClInclude Include="ApiPostServerInfo.h" />
+    <ClInclude Include="ApiPostUser.h" />
     <ClInclude Include="dataaccess.h" />
     <ClInclude Include="MessageCode.h" />
   </ItemGroup>

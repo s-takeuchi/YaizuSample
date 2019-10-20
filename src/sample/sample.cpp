@@ -60,6 +60,8 @@ int StatusChecker(int Id)
 void InitMessageResource()
 {
 	MessageProc::ClearAllMsg();
+
+	// Audit log
 	MessageProc::AddEng(MSG_COMDELETE, L"A command has been deleted.");
 	MessageProc::AddJpn(MSG_COMDELETE, L"コマンドを削除しました。");
 	MessageProc::AddEng(MSG_COMADD, L"A command has been added.");
@@ -80,10 +82,10 @@ void InitMessageResource()
 	MessageProc::AddJpn(MSG_NEWAGTNOTIFIED, L"新規にエージェント情報が通知されました。");
 	MessageProc::AddEng(MSG_SVRINFOUPDATED, L"Server information has been changed.");
 	MessageProc::AddJpn(MSG_SVRINFOUPDATED, L"サーバー情報が更新されました。");
+	
+	// Command
 	MessageProc::AddEng(MSG_COMMANDNOTEXIST, L"The specified command does not exist.");
 	MessageProc::AddJpn(MSG_COMMANDNOTEXIST, L"指定したコマンドは存在しません。");
-	MessageProc::AddEng(MSG_NOREQUEST, L"No request has been presented.");
-	MessageProc::AddJpn(MSG_NOREQUEST, L"リクエストが存在しません。");
 	MessageProc::AddEng(MSG_NOCOMMANDREQUEST, L"No \"Command\" element has been presented in the request.");
 	MessageProc::AddJpn(MSG_NOCOMMANDREQUEST, L"リクエストに\"Command\"要素が存在しません。");
 	MessageProc::AddEng(MSG_NOCOMMANDNAME, L"No command name has been specified.");
@@ -98,6 +100,8 @@ void InitMessageResource()
 	MessageProc::AddJpn(MSG_FILENAMEFBDNCHAR, L"ファイル名に使用禁止文字が含まれています。[\\ / : * ? \" < > | & %] およびスペース");
 	MessageProc::AddEng(MSG_DUPCMDNAME, L"The command which has same command name exists. Change the command name.");
 	MessageProc::AddJpn(MSG_DUPCMDNAME, L"すでに同名のコマンドが存在します。コマンド名を見直してください。");
+	
+	// Server Info
 	MessageProc::AddEng(MSG_NOPOLLINGINTVL, L"No \"PollingInterval\" element has been presented in the request.");
 	MessageProc::AddJpn(MSG_NOPOLLINGINTVL, L"リクエストに\"PollingInterval\"要素が存在しません。");
 	MessageProc::AddEng(MSG_NOSAINTVL, L"No \"StatusAcquisitionInterval\" element has been presented in the request.");
@@ -108,6 +112,16 @@ void InitMessageResource()
 	MessageProc::AddJpn(MSG_INVALIDPOINTVL, L"\"PollingInterval\"の値が許可された範囲を超えました。30-900の範囲で指定してください。");
 	MessageProc::AddEng(MSG_INVALIDSVINTVL, L"The value of \"StatusAcquisitionInterval\" is out of permission. Specify the value in the range of 300-3600.");
 	MessageProc::AddJpn(MSG_INVALIDSVINTVL, L"\"StatusAcquisitionInterval\"の値が許可された範囲を超えました。300-3600の範囲で指定してください。");
+	
+	// Common error message
+	MessageProc::AddEng(MSG_NO_ELEM_IN_REQUEST, L"No \"%s\" element has been presented in the request.");
+	MessageProc::AddJpn(MSG_NO_ELEM_IN_REQUEST, L"リクエストに\"%s\"要素が存在しません。");
+	MessageProc::AddEng(MSG_STRING_LEN_ERROR, L"Length of %s exceeds the limitation. Maximum %d characters can be specified.");
+	MessageProc::AddJpn(MSG_STRING_LEN_ERROR, L"%sの長さが最大を超えました。最大%d文字まで指定可能です。");
+	MessageProc::AddEng(MSG_NOREQUEST, L"No request has been presented.");
+	MessageProc::AddJpn(MSG_NOREQUEST, L"リクエストが存在しません。");
+	MessageProc::AddEng(MSG_NO_EXEC_RIGHT, L"User does not have execute right for this request.");
+	MessageProc::AddJpn(MSG_NO_EXEC_RIGHT, L"ユーザーは，このリクエストの実行権限を持っていません。");
 }
 
 void Sample(wchar_t* IpAddr, int Port)
