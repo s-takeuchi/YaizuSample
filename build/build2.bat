@@ -48,9 +48,11 @@ if exist deployment\YaizuSampleAgent.msi del deployment\YaizuSampleAgent.msi
 rem ########## Building ##########
 echo;
 echo Building agent.sln...
-%DEVENV% "..\src\agent\agent.sln" /rebuild Release 
+%MSBUILD% "..\src\agent\agent.sln" /t:clean;build /p:Configuration=Release
+rem %DEVENV% "..\src\agent\agent.sln" /rebuild Release 
 echo Building agentsvc.sln...
-%DEVENV% "..\src\agentsvc\agentsvc.sln" /rebuild Release 
+%MSBUILD% "..\src\agentsvc\agentsvc.sln" /t:clean;build /p:Configuration=Release
+rem %DEVENV% "..\src\agentsvc\agentsvc.sln" /rebuild Release 
 
 
 rem ########## Checking file existence ##########
