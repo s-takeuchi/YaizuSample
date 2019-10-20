@@ -42,7 +42,7 @@ rem ########## Initializing ##########
 echo;
 echo Initializing...
 if exist agent rmdir /S /Q agent
-if exist deployment rmdir /S /Q deployment
+if exist deployment\YaizuSampleAgent.msi del deployment\YaizuSampleAgent.msi
 
 
 rem ########## Building ##########
@@ -83,7 +83,7 @@ rem ########## Making installer ##########
 echo;
 echo Making installer...
 %DEVENV% "setup2\setup2.sln" /rebuild Release
-mkdir deployment
+if not exist deployment mkdir deployment
 copy setup2\Release\YaizuSampleAgent.msi deployment
 
 

@@ -42,7 +42,7 @@ rem ########## Initializing ##########
 echo;
 echo Initializing...
 if exist sample rmdir /S /Q sample
-if exist deployment rmdir /S /Q deployment
+if exist deployment\YaizuSample.msi del deployment\YaizuSample.msi
 
 
 rem ########## Building ##########
@@ -118,7 +118,7 @@ rem ########## Making installer ##########
 echo;
 echo Making installer...
 %DEVENV% "setup\setup.sln" /rebuild Release
-mkdir deployment
+if not exist deployment mkdir deployment
 copy setup\Release\YaizuSample.msi deployment
 
 
