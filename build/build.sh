@@ -2,6 +2,9 @@
 
 # Make build folder
 BUILDDIR=$(pwd)/sample
+if [ -e $BUILDDIR ]; then
+    yes|rm -r $BUILDDIR
+fi
 mkdir -p $BUILDDIR/SOURCES
 
 
@@ -191,13 +194,10 @@ EOF
 cd $BUILDDIR
 rpmbuild --define "_topdir ${BUILDDIR}" -bb ./$SPEC
 
-if [ -e ../deployment ]; then
-    yes|rm -r ../deployment
+if [ -e ../deployment/YaizuSample-1-1.*.rpm ]; then
+    yes|rm ../deployment/YaizuSample-1-1.*.rpm
 fi
-mkdir -p ../deployment
+if [ ! -e ../deployment ]; then
+    mkdir -p ../deployment
+fi
 cp RPMS/x86_64/YaizuSample-1-1.*.rpm ../deployment
-
-if [ -e $BUILDDIR ]; then
-    yes|rm -r $BUILDDIR
-fi
-mkdir -p $BUILDDIR
