@@ -53,7 +53,7 @@ int DataAccess::CreateTables(const wchar_t* DataFileName)
 	size_t WorkDatLength = StkPlGetFileSize(Buf);
 	if (WorkDatLength == (size_t)-1) {
 #ifndef WIN32
-		StkPlSwPrintf(Buf, FILENAME_MAX, L"/etc/%s", DataFileName);
+		StkPlSwPrintf(Buf, FILENAME_MAX, L"/etc/%S", DataFileName);
 #endif
 	}
 	AutoSave(Buf, 30, true);
