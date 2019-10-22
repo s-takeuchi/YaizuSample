@@ -43,18 +43,19 @@ int DataAccess::StopAutoSave(const wchar_t* DataFileName)
 }
 
 // Create tables for CmdFreak
-// DataFileName [in] : data file name which you want to preserve.
+// DataFileName [in] : data file name which you want to preserve. Do NOT specify path to file.
 // Return : [0:Success, -1:Failed]
 int DataAccess::CreateTables(const wchar_t* DataFileName)
 {
 	// Make full path name and call AutoSave
 	wchar_t Buf[FILENAME_MAX];
-#ifdef WIN32
 	StkPlGetFullPathFromFileName(DataFileName, Buf);
-#else
-	StkPlWcsCpy(Buf, FILENAME_MAX, L"/etc/");
-	StkPlWcsCat(Buf, FILENAME_MAX, DataFileName);
+	size_t WorkDatLength = StkPlGetFileSize(Buf);
+	if (WorkDatLength == (size_t)-1) {
+#ifndef WIN32
+		StkPlSwPrintf(Buf, FILENAME_MAX, L"/etc/%s", DataFileName);
 #endif
+	}
 	AutoSave(Buf, 30, true);
 
 	if (StkPlGetFileSize(Buf) == 0) {

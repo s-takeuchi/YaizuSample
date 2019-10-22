@@ -15,7 +15,7 @@ cp sample $BUILDDIR
 cp sample.conf $BUILDDIR
 cp sample.dat $BUILDDIR
 echo servicehost=127.0.0.1 >> $BUILDDIR/sample.conf
-echo serviceport=2070 >> $BUILDDIR/sample.conf
+echo serviceport=10009 >> $BUILDDIR/sample.conf
 cd ../../test/sampletest
 make all
 cp sampletest $BUILDDIR

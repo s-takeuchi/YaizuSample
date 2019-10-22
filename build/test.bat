@@ -71,7 +71,7 @@ copy "..\src\sample\Debug\sample.exe" sample
 copy "..\src\sample\sample.dat" sample
 copy "..\src\sample\sample.conf" sample
 echo servicehost=localhost>> sample\sample.conf
-echo serviceport=2070>> sample\sample.conf
+echo serviceport=10009>> sample\sample.conf
 copy "..\test\sampletest\Release\sampletest.exe" sample
 
 

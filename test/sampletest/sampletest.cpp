@@ -38,14 +38,15 @@ void TestPostOperationStop(StkWebAppSend* StkWebAppSendObj)
 {
 	StkPlPrintf("PostOperationStop ... ");
 	int ResultCode = 0;
-	StkObject* ReqObj = new StkObject(L"Operation", L"Stop");
+	StkObject* ReqObj = new StkObject(L"");
+	ReqObj->AppendChildElement(new StkObject(L"Operation", L"Stop"));
 	StkObject* ResObj = StkWebAppSendObj->SendRequestRecvResponse(StkWebAppSend::STKWEBAPP_METHOD_POST, "/service/", ReqObj, &ResultCode);
 	StkPlPrintf("[OK]\r\n");
 }
 
 int main(int Argc, char* Argv[])
 {
-	StkWebAppSend* StkWebAppSendObj = new StkWebAppSend(10, L"localhost", 2070);
+	StkWebAppSend* StkWebAppSendObj = new StkWebAppSend(10, L"localhost", 10009);
 	TestGetUser(StkWebAppSendObj);
 	TestPostOperationStop(StkWebAppSendObj);
 	delete StkWebAppSendObj;
