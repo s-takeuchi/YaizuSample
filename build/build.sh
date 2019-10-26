@@ -152,9 +152,9 @@ fi
 if [ \$1 = 1 ]; then
     echo "New installation (post)"
     setsebool httpd_can_network_connect on -P
-    semanage port -a -t http_port_t -p tcp 8080
+    semanage port -a -t http_port_t -p tcp 80
     semanage port -a -t http_port_t -p tcp 8081
-    firewall-cmd --add-port=8080/tcp --permanent
+    firewall-cmd --add-port=80/tcp --permanent
     firewall-cmd --reload
     systemctl daemon-reload
     systemctl stop nginx.service
@@ -179,9 +179,9 @@ if [ \$1 = 0 ]; then
     do
         sleep 1
     done
-    semanage port -d -t http_port_t -p tcp 8080
+    semanage port -d -t http_port_t -p tcp 80
     semanage port -d -t http_port_t -p tcp 8081
-    firewall-cmd --remove-port=8080/tcp --permanent
+    firewall-cmd --remove-port=80/tcp --permanent
     firewall-cmd --reload
     systemctl disable sample.service
     systemctl start nginx.service
