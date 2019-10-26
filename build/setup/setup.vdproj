@@ -2104,7 +2104,7 @@
                             "ContextData" = "8:"
                             "Attributes" = "3:0"
                             "Setting" = "3:2"
-                            "Value" = "8:8080"
+                            "Value" = "8:80"
                             "DefaultValue" = "8:"
                             "UsePlugInResources" = "11:TRUE"
                             }
