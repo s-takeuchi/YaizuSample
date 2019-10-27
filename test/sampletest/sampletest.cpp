@@ -19,6 +19,20 @@ void TestGetUser(StkWebAppSend* StkWebAppSendObj)
 			StkPlExit(1);
 		}
 		StkPlPrintf("[OK]\r\n");
+		delete ResObj;
+	}
+
+	{
+		StkPlPrintf("GetUser(admin@a.a + Method=OPTION) ... ");
+		int ResultCode = 0;
+		StkWebAppSendObj->SetAutholization("Bearer admin@a.a manager");
+		StkObject* ResObj = StkWebAppSendObj->SendRequestRecvResponse(StkWebAppSend::STKWEBAPP_METHOD_OPTION, "/api/user/", NULL, &ResultCode);
+		if (ResObj != NULL || ResultCode != 200) {
+			StkPlPrintf("[NG]\r\n");
+			StkPlExit(1);
+		}
+		StkPlPrintf("[OK]\r\n");
+		delete ResObj;
 	}
 
 	{
@@ -31,6 +45,7 @@ void TestGetUser(StkWebAppSend* StkWebAppSendObj)
 			StkPlExit(1);
 		}
 		StkPlPrintf("[OK]\r\n");
+		delete ResObj;
 	}
 }
 
