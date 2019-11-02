@@ -13,17 +13,16 @@ jobs:
       env:
         GITHUBACTIONS: true
       run: |
-        cd ..
-        git clone -q --branch=master https://github.com/s-takeuchi/YaizuComLib.git .
+        git clone -q --branch=master https://github.com/s-takeuchi/YaizuComLib.git ../YaizuComLib
         git checkout master
-        cd YaizuSample/build
+        cd build
         ./build.bat
         ./build2.bat
     - name: exec test
       env:
         GITHUBACTIONS: true
       run: |
-        git clone -q --branch=master https://github.com/s-takeuchi/YaizuComLib.git .
+        git clone -q --branch=master https://github.com/s-takeuchi/YaizuComLib.git ../YaizuComLib
         git checkout master
-        cd YaizuSample/build
-        ./test.sh
+        cd build
+        ./test.bat
