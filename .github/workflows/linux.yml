@@ -1,0 +1,26 @@
+name: YaizuSample Linux CI
+
+on: [push]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-18.04
+
+    steps:
+    - uses: actions/checkout@v1
+    - name: exec build
+      run: |
+        cd ..
+        git clone -q --branch=master https://github.com/s-takeuchi/YaizuComLib.git .
+        git checkout master
+        cd YaizuSample/build
+        ./build.sh
+        ./build2.sh
+    - name: exec test
+      run: |
+        cd ..
+        git clone -q --branch=master https://github.com/s-takeuchi/YaizuComLib.git .
+        git checkout master
+        cd YaizuSample/build
+        ./test.sh
