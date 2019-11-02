@@ -22,7 +22,5 @@ jobs:
       env:
         GITHUBACTIONS: true
       run: |
-        git clone -q --branch=master https://github.com/s-takeuchi/YaizuComLib.git ../YaizuComLib
-        git checkout master
         cd build
         ./test.bat

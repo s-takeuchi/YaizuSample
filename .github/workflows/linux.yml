@@ -18,7 +18,5 @@ jobs:
         ./build2.sh
     - name: exec test
       run: |
-        git clone -q --branch=master https://github.com/s-takeuchi/YaizuComLib.git ../YaizuComLib
-        git checkout master
         cd build
         ./test.sh
