@@ -7,7 +7,7 @@ echo =========================================
 
 if defined APPVEYOR (
   set MSBUILD="msbuild.exe"
-  set DEVENV="C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\Common7\IDE\devenv.exe"
+  set DEVENV="C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\Common7\IDE\devenv.com"
   set SEVENZIP="7z.exe"
   set LCOUNTER=""
   goto definitionend
@@ -16,7 +16,7 @@ if defined APPVEYOR (
 if defined GITHUBACTIONS (
   echo For AppVeyor
   set MSBUILD="C:\Program Files (x86)\Microsoft Visual Studio\2017\Enterprise\MSBuild\15.0\Bin\msbuild.exe"
-  set DEVENV="C:\Program Files (x86)\Microsoft Visual Studio\2017\Enterprise\Common7\IDE\devenv.exe"
+  set DEVENV="C:\Program Files (x86)\Microsoft Visual Studio\2017\Enterprise\Common7\IDE\devenv.com"
   set SEVENZIP="7z.exe"
   set LCOUNTER=""
   goto definitionend
@@ -25,7 +25,7 @@ if defined GITHUBACTIONS (
 set LOCALMACHINE="true"
 
 set MSBUILD="C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\MSBuild\15.0\Bin\msbuild.exe"
-set DEVENV="C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\Common7\IDE\devenv.exe"
+set DEVENV="C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\Common7\IDE\devenv.com"
 set SEVENZIP="C:\Program Files\7-Zip\7z.exe"
 set LCOUNTER="C:\Program Files (x86)\lcounter\lcounter.exe"
 
@@ -46,19 +46,6 @@ if not exist %MSBUILD% (
 )
 
 :definitionend
-
-
-rem ########## Test for GitHub Actions ##########
-pwd
-dir c:\
-dir "C:\Program Files"
-dir "C:\Program Files (x86)\Microsoft Visual Studio\2017"
-dir "C:\Program Files (x86)\Microsoft Visual Studio\2017\Enterprise"
-dir "C:\Program Files (x86)\Microsoft Visual Studio\2017\Enterprise\Common7"
-dir "C:\Program Files (x86)\Microsoft Visual Studio\2017\Enterprise\Common7\IDE"
-dir setup2
-where /r "C:\Program Files (x86)" devenv.exe
-set
 
 
 rem ########## Initializing ##########
