@@ -48,6 +48,19 @@ if not exist %MSBUILD% (
 :definitionend
 
 
+rem ########## Test for GitHub Actions ##########
+pwd
+dir c:\
+dir "C:\Program Files"
+dir "C:\Program Files (x86)\Microsoft Visual Studio\2017"
+dir "C:\Program Files (x86)\Microsoft Visual Studio\2017\Enterprise"
+dir "C:\Program Files (x86)\Microsoft Visual Studio\2017\Enterprise\Common7"
+dir "C:\Program Files (x86)\Microsoft Visual Studio\2017\Enterprise\Common7\IDE"
+dir setup2
+where /r "C:\Program Files (x86)" devenv.exe
+set
+
+
 rem ########## Initializing ##########
 echo;
 echo Initializing...
