@@ -125,11 +125,13 @@ copy "..\..\YaizuComLib\src\stkwebapp\jquery-3.2.0.min.js" sample\html
 
 
 rem ########## Making installer ##########
-echo;
-echo Making installer...
-%DEVENV% "setup\setup.sln" /rebuild Release
-if not exist deployment mkdir deployment
-copy setup\Release\YaizuSample.msi deployment
+if defined LOCALMACHINE (
+  echo;
+  echo Making installer...
+  %DEVENV% "setup\setup.sln" /rebuild Release
+  if not exist deployment mkdir deployment
+  copy setup\Release\YaizuSample.msi deployment
+)
 
 
 rem ########## build complete ##########
@@ -137,6 +139,7 @@ if defined LOCALMACHINE (
   echo;
   %LCOUNTER% ..\src /subdir
 )
+
 echo;
 echo All building processes of YaizuSample have been successfully finished.
 if defined LOCALMACHINE (

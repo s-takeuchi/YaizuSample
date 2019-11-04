@@ -90,11 +90,13 @@ copy "..\src\agentsvc\svcdel.bat" agent
 
 
 rem ########## Making installer ##########
-echo;
-echo Making installer...
-%DEVENV% "setup2\setup2.sln" /rebuild Release
-if not exist deployment mkdir deployment
-copy setup2\Release\YaizuSampleAgent.msi deployment
+if defined LOCALMACHINE (
+  echo;
+  echo Making installer...
+  %DEVENV% "setup2\setup2.sln" /rebuild Release
+  if not exist deployment mkdir deployment
+  copy setup2\Release\YaizuSampleAgent.msi deployment
+)
 
 
 rem ########## build complete ##########
@@ -102,6 +104,7 @@ if defined LOCALMACHINE (
   echo;
   %LCOUNTER% ..\src /subdir
 )
+
 echo;
 echo All building processes of YaizuSampleAgent have been successfully finished.
 if defined LOCALMACHINE (
