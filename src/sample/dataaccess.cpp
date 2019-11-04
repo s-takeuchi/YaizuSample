@@ -112,14 +112,12 @@ int DataAccess::CreateTables(const wchar_t* DataFileName)
 			ColumnDefInt ColDefSvrPi(L"PInterval");
 			ColumnDefInt ColDefSvrSai(L"SaInterval");
 			ColumnDefInt ColDefSvrMaxComId(L"MaxCommandId");
-			ColumnDefInt ColDefSvrMaxUserId(L"MaxUserId");
 			ColumnDefWStr ColDefSvrBucketPath(L"BucketPath", DA_MAXLEN_OF_BUCKETPATH);
 			TableDef TabDefSvrInfo(L"ServerInfo", 1);
 			TabDefSvrInfo.AddColumnDef(&ColDefSvrId);
 			TabDefSvrInfo.AddColumnDef(&ColDefSvrPi);
 			TabDefSvrInfo.AddColumnDef(&ColDefSvrSai);
 			TabDefSvrInfo.AddColumnDef(&ColDefSvrMaxComId);
-			TabDefSvrInfo.AddColumnDef(&ColDefSvrMaxUserId);
 			TabDefSvrInfo.AddColumnDef(&ColDefSvrBucketPath);
 			if (CreateTable(&TabDefSvrInfo) != 0) {
 				UnlockAllTable();
@@ -164,6 +162,20 @@ int DataAccess::CreateTables(const wchar_t* DataFileName)
 				return -1;
 			}
 		}
+		// Property table
+		{
+			ColumnDefWStr ColDefPropertyName(L"Name", DA_MAXLEN_OF_PROPERTY_NAME);
+			ColumnDefInt ColDefPropertyValueInt(L"ValueInt");
+			ColumnDefWStr ColDefPropertyValueWStr(L"ValueWStr", DA_MAXLEN_OF_PROPERTY_VALUEWSTR);
+			TableDef TabDefProperty(L"Property", DA_MAXNUM_OF_PROPERTY_RECORDS);
+			TabDefProperty.AddColumnDef(&ColDefPropertyName);
+			TabDefProperty.AddColumnDef(&ColDefPropertyValueInt);
+			TabDefProperty.AddColumnDef(&ColDefPropertyValueWStr);
+			if (CreateTable(&TabDefProperty) != 0) {
+				UnlockAllTable();
+				return -1;
+			}
+		}
 		UnlockAllTable();
 
 		// For server info table
@@ -173,13 +185,12 @@ int DataAccess::CreateTables(const wchar_t* DataFileName)
 			ColDatSvr[1] = new ColumnDataInt(L"PInterval", 300);
 			ColDatSvr[2] = new ColumnDataInt(L"SaInterval", 1800);
 			ColDatSvr[3] = new ColumnDataInt(L"MaxCommandId", 1);
-			ColDatSvr[4] = new ColumnDataInt(L"MaxUserId", 2);
 #ifdef WIN32
-			ColDatSvr[5] = new ColumnDataWStr(L"BucketPath", L"\\");
+			ColDatSvr[4] = new ColumnDataWStr(L"BucketPath", L"\\");
 #else
-			ColDatSvr[5] = new ColumnDataWStr(L"BucketPath", L"/");
+			ColDatSvr[4] = new ColumnDataWStr(L"BucketPath", L"/");
 #endif
-			RecordData* RecSvrInfo = new RecordData(L"ServerInfo", ColDatSvr, 6);
+			RecordData* RecSvrInfo = new RecordData(L"ServerInfo", ColDatSvr, 5);
 			// Add record
 			LockTable(L"ServerInfo", LOCK_EXCLUSIVE);
 			int Ret = InsertRecord(RecSvrInfo);
@@ -214,6 +225,10 @@ int DataAccess::CreateTables(const wchar_t* DataFileName)
 			int Ret = InsertRecord(RecUser);
 			UnlockTable(L"User");
 			delete RecUser;
+		}
+		// For property table
+		{
+			SetPropertyValueInt(L"MaxUserId", 2);
 		}
 
 	} else {
@@ -554,7 +569,7 @@ int  DataAccess::GetServerInfo(int* PInterval, int* SaInterval, wchar_t BucketPa
 	}
 	ColumnDataInt* ColDatPInterval = (ColumnDataInt*)RecDatSvr->GetColumn(1);
 	ColumnDataInt* ColDatSaInterval = (ColumnDataInt*)RecDatSvr->GetColumn(2);
-	ColumnDataWStr* ColDatBucketPath = (ColumnDataWStr*)RecDatSvr->GetColumn(5);
+	ColumnDataWStr* ColDatBucketPath = (ColumnDataWStr*)RecDatSvr->GetColumn(4);
 	if (ColDatPInterval == NULL || ColDatSaInterval == NULL || ColDatBucketPath == NULL) {
 		delete RecDatSvr;
 		return -1;
@@ -594,7 +609,7 @@ void DataAccess::GetFullPathFromFileName(wchar_t FullPath[DA_MAXLEN_OF_SERVERFIL
 	UnlockTable(L"ServerInfo");
 	int MaxCommandId = 0;
 	if (RecDatSvrInfo != NULL) {
-		ColumnDataWStr* ColDat = (ColumnDataWStr*)RecDatSvrInfo->GetColumn(5);
+		ColumnDataWStr* ColDat = (ColumnDataWStr*)RecDatSvrInfo->GetColumn(4);
 		if (ColDat != NULL) {
 			StkPlWcsCpy(FullPath, DA_MAXLEN_OF_SERVERFILENAME, ColDat->GetValue());
 			int FullPathLen = StkPlWcsLen(FullPath);
@@ -1000,4 +1015,118 @@ int DataAccess::GetTargetUsers(int Id[DA_MAXNUM_OF_USERRECORDS],
 	}
 	delete RecDatUser;
 	return Loop;
+}
+
+int DataAccess::IncreaseId(const wchar_t* Name)
+{
+	int TargetId = -1;
+	LockTable(L"Property", LOCK_EXCLUSIVE);
+	ColumnData* ColDatSearch[1];
+	ColDatSearch[0] = new ColumnDataWStr(L"Name", Name);
+	RecordData* RecDatSearch = new RecordData(L"Property", ColDatSearch, 1);
+	RecordData* RecDatFound = GetRecord(RecDatSearch);
+	if (RecDatFound) {
+		TargetId = (((ColumnDataInt*)RecDatFound->GetColumn(1))->GetValue()) + 1;
+		ColumnData* ColDatUpd[1];
+		ColDatUpd[0] = new ColumnDataInt(L"ValueInt", TargetId);
+		RecordData* RecDatUpd = new RecordData(L"Property", ColDatUpd, 1);
+		UpdateRecord(RecDatSearch, RecDatUpd);
+		delete RecDatUpd;
+	}
+	UnlockTable(L"Property");
+	delete RecDatSearch;
+	delete RecDatFound;
+	return TargetId;
+}
+
+void DataAccess::SetPropertyValueInt(wchar_t* Name, const int Value)
+{
+	LockTable(L"Property", LOCK_EXCLUSIVE);
+	ColumnData* ColDatSearch[1];
+	ColDatSearch[0] = new ColumnDataWStr(L"Name", Name);
+	RecordData* RecDatSearch = new RecordData(L"Property", ColDatSearch, 1);
+	RecordData* RecDatFound = GetRecord(RecDatSearch);
+
+	if (RecDatFound != NULL) {
+		// Update
+		ColumnData* ColDatUpd[1];
+		ColDatUpd[0] = new ColumnDataInt(L"ValueInt", Value);
+		RecordData* RecDatUpd = new RecordData(L"Property", ColDatUpd, 1);
+		UpdateRecord(RecDatSearch, RecDatUpd);
+		delete RecDatUpd;
+	} else {
+		// Insert
+		ColumnData* ColDatInsert[3];
+		ColDatInsert[0] = new ColumnDataWStr(L"Name", Name);
+		ColDatInsert[1] = new ColumnDataInt(L"ValueInt", Value);
+		ColDatInsert[2] = new ColumnDataWStr(L"ValueWStr", L"");
+		RecordData* RecDatInsert = new RecordData(L"Property", ColDatInsert, 3);
+		InsertRecord(RecDatInsert);
+		delete RecDatInsert;
+	}
+	UnlockTable(L"Property");
+	delete RecDatSearch;
+	delete RecDatFound;
+}
+
+void DataAccess::SetPropertyValueWStr(wchar_t* Name, const wchar_t Value[DA_MAXLEN_OF_PROPERTY_VALUEWSTR])
+{
+	LockTable(L"Property", LOCK_EXCLUSIVE);
+	ColumnData* ColDatSearch[1];
+	ColDatSearch[0] = new ColumnDataWStr(L"Name", Name);
+	RecordData* RecDatSearch = new RecordData(L"Property", ColDatSearch, 1);
+	RecordData* RecDatFound = GetRecord(RecDatSearch);
+
+	if (RecDatFound != NULL) {
+		// Update
+		ColumnData* ColDatUpd[1];
+		ColDatUpd[0] = new ColumnDataWStr(L"ValueWStr", Value);
+		RecordData* RecDatUpd = new RecordData(L"Property", ColDatUpd, 1);
+		UpdateRecord(RecDatSearch, RecDatUpd);
+		delete RecDatUpd;
+	} else {
+		// Insert
+		ColumnData* ColDatInsert[3];
+		ColDatInsert[0] = new ColumnDataWStr(L"Name", ((ColumnDataWStr*)RecDatFound->GetColumn(0))->GetValue());
+		ColDatInsert[1] = new ColumnDataInt(L"ValueInt", 0);
+		ColDatInsert[2] = new ColumnDataWStr(L"ValueWStr", Value);
+		RecordData* RecDatInsert = new RecordData(L"Property", ColDatInsert, 3);
+		InsertRecord(RecDatInsert);
+		delete RecDatInsert;
+	}
+	UnlockTable(L"Property");
+	delete RecDatSearch;
+	delete RecDatFound;
+}
+
+int DataAccess::GetPropertyValueInt(wchar_t* Name)
+{
+	int Ret = -1;
+	LockTable(L"Property", LOCK_SHARE);
+	ColumnData* ColDatSearch[1];
+	ColDatSearch[0] = new ColumnDataWStr(L"Name", Name);
+	RecordData* RecDatSearch = new RecordData(L"Property", ColDatSearch, 1);
+	RecordData* RecDatFound = GetRecord(RecDatSearch);
+	if (RecDatFound) {
+		Ret = ((ColumnDataInt*)RecDatFound->GetColumn(1))->GetValue();
+	}
+	UnlockTable(L"Property");
+	delete RecDatSearch;
+	delete RecDatFound;
+	return Ret;
+}
+
+void DataAccess::GetPropertyValueWStr(wchar_t* Name, wchar_t Value[DA_MAXLEN_OF_PROPERTY_VALUEWSTR])
+{
+	LockTable(L"Property", LOCK_SHARE);
+	ColumnData* ColDatSearch[1];
+	ColDatSearch[0] = new ColumnDataWStr(L"Name", Name);
+	RecordData* RecDatSearch = new RecordData(L"Property", ColDatSearch, 1);
+	RecordData* RecDatFound = GetRecord(RecDatSearch);
+	if (RecDatFound) {
+		StkPlWcsCpy(Value, DA_MAXLEN_OF_PROPERTY_VALUEWSTR, ((ColumnDataWStr*)RecDatFound->GetColumn(2))->GetValue());
+	}
+	UnlockTable(L"Property");
+	delete RecDatSearch;
+	delete RecDatFound;
 }

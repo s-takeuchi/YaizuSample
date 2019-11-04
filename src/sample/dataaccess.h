@@ -16,6 +16,10 @@
 #define DA_MAXLEN_OF_PASSWORD 32
 #define DA_MAXLEN_OF_TARGETURL 256
 #define DA_MAXNUM_OF_USERRECORDS 64
+#define DA_MAXNUM_OF_THREADS 305
+#define DA_MAXLEN_OF_PROPERTY_NAME 256
+#define DA_MAXLEN_OF_PROPERTY_VALUEWSTR 256
+#define DA_MAXNUM_OF_PROPERTY_RECORDS 1024
 
 class DataAccess
 {
@@ -71,4 +75,10 @@ public:
 
 	bool GetTargetUserByName(wchar_t[DA_MAXLEN_OF_USERNAME], int*, wchar_t[DA_MAXLEN_OF_PASSWORD], int*, wchar_t[DA_MAXLEN_OF_TARGETURL]);
 	int GetTargetUsers(int[DA_MAXNUM_OF_USERRECORDS], wchar_t[DA_MAXNUM_OF_USERRECORDS][DA_MAXLEN_OF_USERNAME], wchar_t[DA_MAXNUM_OF_USERRECORDS][DA_MAXLEN_OF_PASSWORD], int[DA_MAXNUM_OF_USERRECORDS], wchar_t[DA_MAXNUM_OF_USERRECORDS][DA_MAXLEN_OF_TARGETURL]);
+	int IncreaseId(const wchar_t*);
+
+	void SetPropertyValueInt(wchar_t*, const int);
+	void SetPropertyValueWStr(wchar_t*, const wchar_t[DA_MAXLEN_OF_PROPERTY_VALUEWSTR]);
+	int GetPropertyValueInt(wchar_t*);
+	void GetPropertyValueWStr(wchar_t*, wchar_t[DA_MAXLEN_OF_PROPERTY_VALUEWSTR]);
 };

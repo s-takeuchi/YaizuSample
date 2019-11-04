@@ -124,13 +124,22 @@ void InitMessageResource()
 	MessageProc::AddJpn(MSG_NO_EXEC_RIGHT, L"ユーザーは，このリクエストの実行権限を持っていません。");
 }
 
-void Sample(wchar_t* IpAddr, int Port)
+void Server(wchar_t* IpAddr, int Port, int NumOfWorkerThreads, int ThreadInterval)
 {
-	int Ids[32] = {10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31};
+	// How many threads this program needs to be covered.
+	// 2 (status acquisition and operation) * 3 (agent / customer) * 50 (customer / server) + 5 (browser access)
+	// 305 threads are required as total
+	int Ids[MAX_NUM_OF_STKTHREADS];
+	for (int Loop = 0; Loop < NumOfWorkerThreads; Loop++) {
+		Ids[Loop] = 1000 + Loop;
+	}
 
-	StkWebApp* Soc = new StkWebApp(Ids, 32, IpAddr, Port);
+	StkWebApp* Soc = new StkWebApp(Ids, NumOfWorkerThreads, IpAddr, Port);
 	Soc->SetSendBufSize(5000000);
 	Soc->SetRecvBufSize(5000000);
+	for (int Loop = 0; Loop < NumOfWorkerThreads; Loop++) {
+		SetStkThreadInterval(Ids[Loop], ThreadInterval);
+	}
 
 	int TargetId[1] = { 100 };
 	AddStkThread(100, L"StatusChecker", L"", NULL, NULL, StatusChecker, NULL, NULL);
@@ -200,21 +209,41 @@ int main(int Argc, char* Argv[])
 {
 	InitMessageResource();
 
-	char IpAddrTmp[256];
-	int Port;
+	char IpAddrTmp[256] = "";
+	int Port = 0;
+	int NumOfWorkerThreads = 0;
+	int ThreadInterval = 0;
 	StkProperties *Prop = new StkProperties();
 	
 	if (Prop->GetProperties(L"sample.conf") == 0) {
+		// servicehost
 		if (Prop->GetPropertyStr("servicehost", IpAddrTmp) != 0) {
 			StkPlPrintf("servicehost property is not found.\r\n");
 			return -1;
 		}
 		StkPlPrintf("servicehost property = %s\r\n", IpAddrTmp);
+
+		// serviceport
 		if (Prop->GetPropertyInt("serviceport", &Port) != 0) {
 			StkPlPrintf("serviceport property is not found.\r\n");
 			return -1;
 		}
 		StkPlPrintf("serviceport property = %d\r\n", Port);
+
+		// workerthreads
+		if (Prop->GetPropertyInt("workerthreads", &NumOfWorkerThreads) != 0) {
+			// How many threads this program needs to be covered.
+			// 2 (status acquisition and operation) * 3 (agent / customer) * 50 (customer / server) + 5 (browser access)
+			// 305 threads are required as total
+			NumOfWorkerThreads = 305;
+		}
+		StkPlPrintf("workerthreads property = %d\r\n", NumOfWorkerThreads);
+
+		// threadinterval
+		if (Prop->GetPropertyInt("threadinterval", &ThreadInterval) != 0) {
+			ThreadInterval = 200;
+		}
+		StkPlPrintf("threadinterval property = %d\r\n", ThreadInterval);
 	} else {
 		StkPlPrintf("sample.conf is not found.\r\n");
 		return -1;
@@ -223,7 +252,7 @@ int main(int Argc, char* Argv[])
 	DataAccess::GetInstance()->CreateTables(L"sample.dat");
 	DataAccess::GetInstance()->AddLogMsg(MessageProc::GetMsgEng(MSG_SERVICESTARTED), MessageProc::GetMsgJpn(MSG_SERVICESTARTED));
 	wchar_t* IpAddr = StkPlCreateWideCharFromUtf8(IpAddrTmp);
-	Sample(IpAddr, Port);
+	Server(IpAddr, Port, NumOfWorkerThreads, ThreadInterval);
 	delete IpAddr;
 	DataAccess::GetInstance()->AddLogMsg(MessageProc::GetMsgEng(MSG_SERVICESTOPPED), MessageProc::GetMsgJpn(MSG_SERVICESTOPPED));
 	DataAccess::GetInstance()->StopAutoSave(L"sample.dat");
