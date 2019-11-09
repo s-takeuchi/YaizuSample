@@ -38,12 +38,12 @@ SERVICE_TABLE_ENTRY ServiceTable[] = {
 StkWebAppSend* SoForTh1 = NULL;
 StkWebAppSend* SoForTh2 = NULL;
 
+wchar_t HostName[256];
+
 StkObject* GetAgentInfo(int Status)
 {
 	wchar_t StatusTimeUtc[64];
 	wchar_t StatusTimeLocal[64];
-	wchar_t HostName[256];
-	StkPlGetHostName(HostName, 256);
 	StkObject* NewObj = new StkObject(L"");
 	StkPlGetWTimeInIso8601(StatusTimeUtc, false);
 	StkPlGetWTimeInIso8601(StatusTimeLocal, true);
@@ -58,8 +58,6 @@ StkObject* GetAgentInfo(int Status)
 
 StkObject* GetAgentInfoForOpStatus(int Status)
 {
-	wchar_t HostName[256];
-	StkPlGetHostName(HostName, 256);
 	StkObject* NewObj = new StkObject(L"");
 	StkObject* AgentInfo = new StkObject(L"AgentInfo");
 	AgentInfo->AppendChildElement(new StkObject(L"Name", HostName));
@@ -302,10 +300,8 @@ int OperationLoop(int TargetId)
 {
 	int Result = 0;
 
-	wchar_t HostName[256] = L"";
 	wchar_t Url[512] = L"";
 	char Urlc[512] = "";
-	StkPlGetHostName(HostName, 256);
 	StkPlSwPrintf(Url, 512, L"/api/opcommand/%ls/", HostName);
 	StkPlConvWideCharToUtf8(Urlc, 512, Url);
 	StkObject* ResGetCommandForOp = SoForTh2->SendRequestRecvResponse(StkWebAppSend::STKWEBAPP_METHOD_GET, Urlc, NULL, &Result);
@@ -345,10 +341,8 @@ int StatusLoop(int TargetId)
 {
 	int Result = 0;
 
-	wchar_t HostName[256] = L"";
 	wchar_t Url[512] = L"";
 	char Urlc[512] = "";
-	StkPlGetHostName(HostName, 256);
 	StkPlSwPrintf(Url, 512, L"/api/statuscommand/%ls/", HostName);
 	StkPlConvWideCharToUtf8(Urlc, 512, Url);
 	StkObject* ResGetCommandForStatus = SoForTh1->SendRequestRecvResponse(StkWebAppSend::STKWEBAPP_METHOD_GET, Urlc, NULL, &Result);
@@ -383,10 +377,11 @@ int StatusLoop(int TargetId)
 	return 0;
 }
 
-int LoadPropertyFile(wchar_t HostOrIpAddr[256], int* PortNum, wchar_t PathToBucket[256])
+int LoadPropertyFile(wchar_t HostOrIpAddr[256], int* PortNum, wchar_t PathToBucket[256], wchar_t LcHostName[256])
 {
 	char TmpHostOrIpAddr[256] = "";
 	char TmpPathToBucket[256] = "";
+	char TmpHostName[256] = "";
 	StkProperties *Prop = new StkProperties();
 	if (Prop->GetProperties(L"agent.conf") == 0) {
 		// For targethost
@@ -411,6 +406,14 @@ int LoadPropertyFile(wchar_t HostOrIpAddr[256], int* PortNum, wchar_t PathToBuck
 		}
 		StkPlPrintf("pathtobucket property = %s\r\n", TmpPathToBucket);
 		StkPlConvUtf8ToWideChar(PathToBucket, 256, TmpPathToBucket);
+
+		// For hostname
+		if (Prop->GetPropertyStr("hostname", TmpHostName) != 0) {
+			StkPlPrintf("hostname property is not found.\r\n");
+			return -1;
+		}
+		StkPlPrintf("hostname property = %s\r\n", TmpHostName);
+		StkPlConvUtf8ToWideChar(LcHostName, 256, TmpHostName);
 	} else {
 		StkPlPrintf("agent.conf is not found.\r\n");
 		return -1;
@@ -449,7 +452,7 @@ int main(int argc, char* argv[])
 	wchar_t HostOrIpAddr[256] = L"";
 	int PortNum = 0;
 	wchar_t PathToBucket[256] = L"";
-	if (argc == 4) {
+	if (argc == 5) {
 		StkPlPrintf("Agent starts\r\n");
 		StkPlConvUtf8ToWideChar(HostOrIpAddr, 256, argv[1]);
 		PortNum = StkPlAtoi(argv[2]);
@@ -458,13 +461,18 @@ int main(int argc, char* argv[])
 		if (StkPlWcsCmp(PathToBucket, L"") != 0) {
 			InvalidDirectory = ChangeCurrentDirectory(PathToBucket);
 		}
+		StkPlConvUtf8ToWideChar(HostName, 256, argv[4]);
 		StartXxx(HostOrIpAddr, PortNum, InvalidDirectory);
 		while (true) { StkPlSleepMs(1000); }
 	} else {
+		StkPlPrintf("Usage: %s  host_name_or_IP_addres  port_number  path_to_bucket  host_name", argv[0]);
 #ifdef WIN32
 		StartServiceCtrlDispatcher(ServiceTable);
 #else
-		LoadPropertyFile(HostOrIpAddr, &PortNum, PathToBucket);
+		LoadPropertyFile(HostOrIpAddr, &PortNum, PathToBucket, HostName);
+		if (HostName == NULL || StkPlWcsCmp(HostName, L"") == 0) {
+			StkPlGetHostName(HostName, 256);
+		}
 		int InvalidDirectory = 0;
 		if (StkPlWcsCmp(PathToBucket, L"") != 0) {
 			InvalidDirectory = ChangeCurrentDirectory(PathToBucket);
@@ -617,7 +625,10 @@ VOID WINAPI ServiceMain(DWORD dwArgc, PTSTR* pszArgv)
 	wchar_t HostOrIpAddr[256] = L"";
 	int PortNum = 0;
 	wchar_t PathToBucket[256] = L"";
-	LoadPropertyFile(HostOrIpAddr, &PortNum, PathToBucket);
+	LoadPropertyFile(HostOrIpAddr, &PortNum, PathToBucket, HostName);
+	if (HostName == NULL || StkPlWcsCmp(HostName, L"") == 0) {
+		StkPlGetHostName(HostName, 256);
+	}
 	int InvalidDirectory = 0;
 	if (StkPlWcsCmp(PathToBucket, L"") != 0) {
 		InvalidDirectory = ChangeCurrentDirectory(PathToBucket);
