@@ -313,7 +313,7 @@
             for (var loop = 0; loop < AgentInfo.length; loop++) {
                 if ($('#agtInfoId' + loop).prop('checked') == true) {
                     var ReqObj = { AgentInfo : { Name : AgentInfo[loop].Name, OpCmd : commandList[selectedOperationCommand].Id }};
-                    apiCall('POST', './api/agent/', ReqObj, 'API_POST_AGTINFO', null);
+                    apiCall('POST', '/api/agent/', ReqObj, 'API_POST_AGTINFO', null);
                 }
             }
             apiCall(null, null, null, '', refreshInfo);
@@ -370,7 +370,7 @@
             for (var loop = 0; loop < AgentInfo.length; loop++) {
                 if ($('#agtInfoId' + loop).prop('checked') == true) {
                     var ReqObj = { AgentInfo : { Name : AgentInfo[loop].Name, StatusCmd : commandList[selectedAgentStatusCommand].Id }};
-                    apiCall('POST', './api/agent/', ReqObj, 'API_POST_AGTINFO', null);
+                    apiCall('POST', '/api/agent/', ReqObj, 'API_POST_AGTINFO', null);
                 }
             }
             apiCall(null, null, null, '', refreshInfo);
@@ -539,7 +539,7 @@
     function updateServerInfo() {
         var pInterval = getPollingInterval(selectedPollingInterval);
         var saInterval = getStatusAcquisitionInterval(selectedStatusAcquisitionInterval);
-        apiCall('POST', './api/server/', {"ServerInfo":{"PInterval":pInterval, "SaInterval":saInterval, "BucketPath":$('#bucketPath').val()}}, 'API_POST_SVRINFO', refreshAfterUpdateServerInfo);
+        apiCall('POST', '/api/server/', {"ServerInfo":{"PInterval":pInterval, "SaInterval":saInterval, "BucketPath":$('#bucketPath').val()}}, 'API_POST_SVRINFO', refreshAfterUpdateServerInfo);
     }
 
     function refreshAfterUpdateServerInfo() {
@@ -626,10 +626,10 @@
         }
         if (updateFlag == false) {
             var ReqObj = { Command : { Name : $("#commandName").val(), Type : comTypeInt, Script : $("#commandScript").val(), ServerFileName : $("#serverFileName").val(), AgentFileName : $("#agentFileName").val() }};
-            apiCall('POST', './api/command/', ReqObj, 'API_POST_COMMAND', refreshAfterAddCommand);
+            apiCall('POST', '/api/command/', ReqObj, 'API_POST_COMMAND', refreshAfterAddCommand);
         } else {
             var ReqObj = { Command : { Id : selectedCommand, Name : $("#commandName").val(), Type : comTypeInt, Script : $("#commandScript").val(), ServerFileName : $("#serverFileName").val(), AgentFileName : $("#agentFileName").val() }};
-            apiCall('POST', './api/command/', ReqObj, 'API_POST_COMMAND', refreshAfterUpdateCommand);
+            apiCall('POST', '/api/command/', ReqObj, 'API_POST_COMMAND', refreshAfterUpdateCommand);
         }
     }
 
@@ -637,7 +637,7 @@
         if (selectedCommand == -1) {
             return;
         }
-        apiCall('DELETE', './api/command/' + selectedCommand + '/', null, 'API_DELETE_COMMAND', refreshAfterDeleteCommand);
+        apiCall('DELETE', '/api/command/' + selectedCommand + '/', null, 'API_DELETE_COMMAND', refreshAfterDeleteCommand);
     }
 
     function selectCommand(targetId) {
@@ -798,11 +798,11 @@
         $('#command').empty();
         $('#loginfo').empty();
         $('#usermgt').empty();
-        apiCall('GET', './api/log/', null, 'API_GET_LOGS', displayLogInfo);
-        apiCall('GET', './api/server/', null, 'API_GET_SVRINFO', displayServerInfo);
-        apiCall('GET', './api/agent/', null, 'API_GET_AGTINFO', displayAgentInfo);
-        apiCall('GET', './api/command/', null, 'API_GET_COMMAND', displayCommand);
-        apiCall('GET', './api/user/?target=all', null, 'API_GET_USER', displayUser);
+        apiCall('GET', '/api/log/', null, 'API_GET_LOGS', displayLogInfo);
+        apiCall('GET', '/api/server/', null, 'API_GET_SVRINFO', displayServerInfo);
+        apiCall('GET', '/api/agent/', null, 'API_GET_AGTINFO', displayAgentInfo);
+        apiCall('GET', '/api/command/', null, 'API_GET_COMMAND', displayCommand);
+        apiCall('GET', '/api/user/?target=all', null, 'API_GET_USER', displayUser);
     }
 
     function activateTopic(id) {
@@ -816,7 +816,7 @@
     }
 
     function checkLogin() {
-        sendRequestRecvResponse('GET', './api/user/', null, 'API_GET_USER', false);
+        sendRequestRecvResponse('GET', '/api/user/', null, 'API_GET_USER', false);
         if (statusCode['API_GET_USER'] != 200) {
             return false;
         } else {
@@ -837,7 +837,7 @@
 
     window.onload = function() {
         initClientMessage();
-        apiCall('GET', './api/language/', null, 'API_GET_LANG', getLanguage);
+        apiCall('GET', '/api/language/', null, 'API_GET_LANG', getLanguage);
         var contents = [
             { id : 'agtinfo', actApiName : 'activateTopic', title : 'Agent Info', icon : 'glyphicon glyphicon-eye-open' },
             { id : 'svrinfo', actApiName : 'activateTopic', title : 'Server Info', icon : 'glyphicon glyphicon-tower' },
