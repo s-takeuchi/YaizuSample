@@ -10,15 +10,15 @@ void TestGetUser(StkWebAppSend* StkWebAppSendObj)
 		StkWebAppSendObj->SetAutholization("Bearer admin@a.a manager");
 		StkObject* ResObj = StkWebAppSendObj->SendRequestRecvResponse(StkWebAppSend::STKWEBAPP_METHOD_GET, "/api/user/", NULL, &ResultCode);
 		if (ResObj == NULL) {
-			StkPlPrintf("[NG]\r\n");
+			StkPlPrintf("[NG]\n");
 			StkPlExit(1);
 		}
 		StkObject* ResUserObj = ResObj->GetFirstChildElement();
 		if (ResUserObj == NULL || StkPlWcsCmp(ResUserObj->GetName(), L"User") != 0) {
-			StkPlPrintf("[NG]\r\n");
+			StkPlPrintf("[NG]\n");
 			StkPlExit(1);
 		}
-		StkPlPrintf("[OK]\r\n");
+		StkPlPrintf("[OK]\n");
 		delete ResObj;
 	}
 
@@ -28,10 +28,10 @@ void TestGetUser(StkWebAppSend* StkWebAppSendObj)
 		StkWebAppSendObj->SetAutholization("Bearer admin@a.a manager");
 		StkObject* ResObj = StkWebAppSendObj->SendRequestRecvResponse(StkWebAppSend::STKWEBAPP_METHOD_OPTIONS, "/api/user/", NULL, &ResultCode);
 		if (ResObj != NULL || ResultCode != 200) {
-			StkPlPrintf("[NG]\r\n");
+			StkPlPrintf("[NG]\n");
 			StkPlExit(1);
 		}
-		StkPlPrintf("[OK]\r\n");
+		StkPlPrintf("[OK]\n");
 		delete ResObj;
 	}
 
@@ -41,10 +41,10 @@ void TestGetUser(StkWebAppSend* StkWebAppSendObj)
 		StkWebAppSendObj->SetAutholization("Bearer dummy dummy");
 		StkObject* ResObj = StkWebAppSendObj->SendRequestRecvResponse(StkWebAppSend::STKWEBAPP_METHOD_GET, "/api/user/", NULL, &ResultCode);
 		if (ResultCode != 403) {
-			StkPlPrintf("[NG]\r\n");
+			StkPlPrintf("[NG]\n");
 			StkPlExit(1);
 		}
-		StkPlPrintf("[OK]\r\n");
+		StkPlPrintf("[OK]\n");
 		delete ResObj;
 	}
 }
@@ -56,7 +56,7 @@ void TestPostOperationStop(StkWebAppSend* StkWebAppSendObj)
 	StkObject* ReqObj = new StkObject(L"");
 	ReqObj->AppendChildElement(new StkObject(L"Operation", L"Stop"));
 	StkObject* ResObj = StkWebAppSendObj->SendRequestRecvResponse(StkWebAppSend::STKWEBAPP_METHOD_POST, "/service/", ReqObj, &ResultCode);
-	StkPlPrintf("[OK]\r\n");
+	StkPlPrintf("[OK]\n");
 }
 
 int main(int Argc, char* Argv[])

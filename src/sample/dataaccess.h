@@ -77,8 +77,8 @@ public:
 	int GetTargetUsers(int[DA_MAXNUM_OF_USERRECORDS], wchar_t[DA_MAXNUM_OF_USERRECORDS][DA_MAXLEN_OF_USERNAME], wchar_t[DA_MAXNUM_OF_USERRECORDS][DA_MAXLEN_OF_PASSWORD], int[DA_MAXNUM_OF_USERRECORDS], wchar_t[DA_MAXNUM_OF_USERRECORDS][DA_MAXLEN_OF_TARGETURL]);
 	int IncreaseId(const wchar_t*);
 
-	void SetPropertyValueInt(wchar_t*, const int);
-	void SetPropertyValueWStr(wchar_t*, const wchar_t[DA_MAXLEN_OF_PROPERTY_VALUEWSTR]);
-	int GetPropertyValueInt(wchar_t*);
-	void GetPropertyValueWStr(wchar_t*, wchar_t[DA_MAXLEN_OF_PROPERTY_VALUEWSTR]);
+	void SetPropertyValueInt(const wchar_t*, const int);
+	void SetPropertyValueWStr(const wchar_t*, const wchar_t[DA_MAXLEN_OF_PROPERTY_VALUEWSTR]);
+	int GetPropertyValueInt(const wchar_t*);
+	void GetPropertyValueWStr(const wchar_t*, wchar_t[DA_MAXLEN_OF_PROPERTY_VALUEWSTR]);
 };

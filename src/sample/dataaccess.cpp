@@ -1039,7 +1039,7 @@ int DataAccess::IncreaseId(const wchar_t* Name)
 	return TargetId;
 }
 
-void DataAccess::SetPropertyValueInt(wchar_t* Name, const int Value)
+void DataAccess::SetPropertyValueInt(const wchar_t* Name, const int Value)
 {
 	LockTable(L"Property", LOCK_EXCLUSIVE);
 	ColumnData* ColDatSearch[1];
@@ -1069,7 +1069,7 @@ void DataAccess::SetPropertyValueInt(wchar_t* Name, const int Value)
 	delete RecDatFound;
 }
 
-void DataAccess::SetPropertyValueWStr(wchar_t* Name, const wchar_t Value[DA_MAXLEN_OF_PROPERTY_VALUEWSTR])
+void DataAccess::SetPropertyValueWStr(const wchar_t* Name, const wchar_t Value[DA_MAXLEN_OF_PROPERTY_VALUEWSTR])
 {
 	LockTable(L"Property", LOCK_EXCLUSIVE);
 	ColumnData* ColDatSearch[1];
@@ -1099,7 +1099,7 @@ void DataAccess::SetPropertyValueWStr(wchar_t* Name, const wchar_t Value[DA_MAXL
 	delete RecDatFound;
 }
 
-int DataAccess::GetPropertyValueInt(wchar_t* Name)
+int DataAccess::GetPropertyValueInt(const wchar_t* Name)
 {
 	int Ret = -1;
 	LockTable(L"Property", LOCK_SHARE);
@@ -1116,7 +1116,7 @@ int DataAccess::GetPropertyValueInt(wchar_t* Name)
 	return Ret;
 }
 
-void DataAccess::GetPropertyValueWStr(wchar_t* Name, wchar_t Value[DA_MAXLEN_OF_PROPERTY_VALUEWSTR])
+void DataAccess::GetPropertyValueWStr(const wchar_t* Name, wchar_t Value[DA_MAXLEN_OF_PROPERTY_VALUEWSTR])
 {
 	LockTable(L"Property", LOCK_SHARE);
 	ColumnData* ColDatSearch[1];
