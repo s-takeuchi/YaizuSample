@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.27130.2027
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "setup", "setup.vdproj", "{86000C14-0814-4E89-AC17-303C06A76CF7}"
+Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "setup_svr", "setup_svr.vdproj", "{86000C14-0814-4E89-AC17-303C06A76CF7}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

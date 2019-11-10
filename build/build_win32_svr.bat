@@ -43,7 +43,7 @@ if not exist %MSBUILD% (
 rem ########## Initializing ##########
 echo;
 echo Initializing...
-if exist sample rmdir /S /Q sample
+if exist server rmdir /S /Q server
 if exist deployment\YaizuSample.msi del deployment\YaizuSample.msi
 
 
@@ -87,42 +87,42 @@ rem ########## Deployment of files and folders ##########
 echo;
 echo Deployment of files and folders...
 
-mkdir sample
-copy "..\src\sample\Release\sample.exe" sample
-copy "..\src\sample\sample.dat" sample
-copy "..\src\sample\sample.conf" sample
-copy "..\..\YaizuComLib\src\stkwebapp\stkwebappcmd.conf" sample
-copy "..\..\YaizuComLib\src\stkdatagui\Release\stkdatagui.exe" sample
-copy "..\..\YaizuComLib\src\stkwebapp\Release\stkwebappcmd.exe" sample
+mkdir server
+copy "..\src\sample\Release\sample.exe" server
+copy "..\src\sample\sample.dat" server
+copy "..\src\sample\sample.conf" server
+copy "..\..\YaizuComLib\src\stkwebapp\stkwebappcmd.conf" server
+copy "..\..\YaizuComLib\src\stkdatagui\Release\stkdatagui.exe" server
+copy "..\..\YaizuComLib\src\stkwebapp\Release\stkwebappcmd.exe" server
 
-mkdir sample\nginx
-copy "..\..\YaizuComLib\src\stkwebapp\nginx-1.12.2.zip" sample\nginx
-pushd sample\nginx
+mkdir server\nginx
+copy "..\..\YaizuComLib\src\stkwebapp\nginx-1.12.2.zip" server\nginx
+pushd server\nginx
 %SEVENZIP% x "nginx-1.12.2.zip"
 popd
-xcopy /y /q /i /s /e "sample\nginx\nginx-1.12.2" sample
-if exist sample\nginx rmdir /S /Q sample\nginx
+xcopy /y /q /i /s /e "server\nginx\nginx-1.12.2" server
+if exist server\nginx rmdir /S /Q server\nginx
 
-mkdir sample\bootstrap
-copy "..\..\YaizuComLib\src\stkwebapp\bootstrap-3.3.7-dist.zip" sample\bootstrap
-pushd sample\bootstrap
+mkdir server\bootstrap
+copy "..\..\YaizuComLib\src\stkwebapp\bootstrap-3.3.7-dist.zip" server\bootstrap
+pushd server\bootstrap
 %SEVENZIP% x "bootstrap-3.3.7-dist.zip"
 popd
-xcopy /y /q /i /s /e "sample\bootstrap\bootstrap-3.3.7-dist" sample\html\bootstrap-3.3.7-dist
-if exist sample\bootstrap rmdir /S /Q sample\bootstrap
+xcopy /y /q /i /s /e "server\bootstrap\bootstrap-3.3.7-dist" server\html\bootstrap-3.3.7-dist
+if exist server\bootstrap rmdir /S /Q server\bootstrap
 
-copy "..\src\sample\sample.html" sample\html
-copy "..\..\YaizuComLib\src\stkwebapp\stkcommon.js" sample\html
-copy "..\..\YaizuComLib\src\stkwebapp\jquery-3.2.0.min.js" sample\html
+copy "..\src\sample\sample.html" server\html
+copy "..\..\YaizuComLib\src\stkwebapp\stkcommon.js" server\html
+copy "..\..\YaizuComLib\src\stkwebapp\jquery-3.2.0.min.js" server\html
 
 
 rem ########## Making installer ##########
 if defined LOCALMACHINE (
   echo;
   echo Making installer...
-  %DEVENV% "setup\setup.sln" /rebuild Release
+  %DEVENV% "setup_svr\setup_svr.sln" /rebuild Release
   if not exist deployment mkdir deployment
-  copy setup\Release\YaizuSample.msi deployment
+  copy setup_svr\Release\YaizuSample.msi deployment
 )
 
 

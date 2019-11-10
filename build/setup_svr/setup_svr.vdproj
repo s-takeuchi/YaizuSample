@@ -3,7 +3,7 @@
 "VSVersion" = "3:800"
 "ProjectType" = "8:{978C614F-708E-4E1A-B201-565925725DBA}"
 "IsWebType" = "8:FALSE"
-"ProjectName" = "8:setup"
+"ProjectName" = "8:setup_svr"
 "LanguageId" = "3:0"
 "CodePage" = "3:1252"
 "UILanguageId" = "3:0"
@@ -438,7 +438,7 @@
         {
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_0476B0CF92864ADFBF9B59B39E8D835C"
             {
-            "SourcePath" = "8:..\\sample\\contrib\\vim\\syntax\\nginx.vim"
+            "SourcePath" = "8:..\\server\\contrib\\vim\\syntax\\nginx.vim"
             "TargetName" = "8:nginx.vim"
             "Tag" = "8:"
             "Folder" = "8:_4B788674ED4E47FD926B63D19EFA211C"
@@ -458,7 +458,7 @@
             }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_0A393B493E094F91B2563389931560D9"
             {
-            "SourcePath" = "8:..\\sample\\html\\bootstrap-3.3.7-dist\\js\\bootstrap.min.js"
+            "SourcePath" = "8:..\\server\\html\\bootstrap-3.3.7-dist\\js\\bootstrap.min.js"
             "TargetName" = "8:bootstrap.min.js"
             "Tag" = "8:"
             "Folder" = "8:_855E6FF400834B94BCA2CA46EEB173E7"
@@ -478,7 +478,7 @@
             }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_0D4098E386184111B1002A659640D4FE"
             {
-            "SourcePath" = "8:..\\sample\\html\\bootstrap-3.3.7-dist\\fonts\\glyphicons-halflings-regular.woff"
+            "SourcePath" = "8:..\\server\\html\\bootstrap-3.3.7-dist\\fonts\\glyphicons-halflings-regular.woff"
             "TargetName" = "8:glyphicons-halflings-regular.woff"
             "Tag" = "8:"
             "Folder" = "8:_C15051AB55A04B6DB13120E0D7280588"
@@ -498,7 +498,7 @@
             }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_199A2EE33D1F417C89D21EE4B3A096D3"
             {
-            "SourcePath" = "8:..\\sample\\contrib\\unicode2nginx\\unicode-to-nginx.pl"
+            "SourcePath" = "8:..\\server\\contrib\\unicode2nginx\\unicode-to-nginx.pl"
             "TargetName" = "8:unicode-to-nginx.pl"
             "Tag" = "8:"
             "Folder" = "8:_9FE064E9E69B4235A1AB4BE443F51313"
@@ -518,7 +518,7 @@
             }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_1A3A179F86554F829F8E50888C0E71FB"
             {
-            "SourcePath" = "8:..\\sample\\docs\\CHANGES"
+            "SourcePath" = "8:..\\server\\docs\\CHANGES"
             "TargetName" = "8:CHANGES"
             "Tag" = "8:"
             "Folder" = "8:_0F6A6CFC606B491F9792C564CC3F27B8"
@@ -538,7 +538,7 @@
             }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_20EA5751FBC24AB4ABB04B00C9227964"
             {
-            "SourcePath" = "8:..\\sample\\html\\jquery-3.2.0.min.js"
+            "SourcePath" = "8:..\\server\\html\\jquery-3.2.0.min.js"
             "TargetName" = "8:jquery-3.2.0.min.js"
             "Tag" = "8:"
             "Folder" = "8:_328950E660704BD7856D4AF4E7C70906"
@@ -558,7 +558,7 @@
             }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_274A444909714CDC9BB2C6BB5A26AADE"
             {
-            "SourcePath" = "8:..\\sample\\docs\\CHANGES.ru"
+            "SourcePath" = "8:..\\server\\docs\\CHANGES.ru"
             "TargetName" = "8:CHANGES.ru"
             "Tag" = "8:"
             "Folder" = "8:_0F6A6CFC606B491F9792C564CC3F27B8"
@@ -578,7 +578,7 @@
             }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_292D5C9C22D045C8A1E61178E98B365E"
             {
-            "SourcePath" = "8:..\\sample\\html\\bootstrap-3.3.7-dist\\fonts\\glyphicons-halflings-regular.ttf"
+            "SourcePath" = "8:..\\server\\html\\bootstrap-3.3.7-dist\\fonts\\glyphicons-halflings-regular.ttf"
             "TargetName" = "8:glyphicons-halflings-regular.ttf"
             "Tag" = "8:"
             "Folder" = "8:_C15051AB55A04B6DB13120E0D7280588"
@@ -598,7 +598,7 @@
             }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_34A7D1617DA340FF82DC0BBDA1B03691"
             {
-            "SourcePath" = "8:..\\sample\\conf\\fastcgi.conf"
+            "SourcePath" = "8:..\\server\\conf\\fastcgi.conf"
             "TargetName" = "8:fastcgi.conf"
             "Tag" = "8:"
             "Folder" = "8:_7B6C4252067649FB9C9B0989F0DBD017"
@@ -618,7 +618,7 @@
             }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_354AC4B248944DEA83EFE51BAC79E972"
             {
-            "SourcePath" = "8:..\\sample\\docs\\PCRE.LICENCE"
+            "SourcePath" = "8:..\\server\\docs\\PCRE.LICENCE"
             "TargetName" = "8:PCRE.LICENCE"
             "Tag" = "8:"
             "Folder" = "8:_0F6A6CFC606B491F9792C564CC3F27B8"
@@ -638,7 +638,7 @@
             }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_3894B2DA6CEB48A398B6BAB9A5E4BB65"
             {
-            "SourcePath" = "8:..\\sample\\html\\bootstrap-3.3.7-dist\\fonts\\glyphicons-halflings-regular.svg"
+            "SourcePath" = "8:..\\server\\html\\bootstrap-3.3.7-dist\\fonts\\glyphicons-halflings-regular.svg"
             "TargetName" = "8:glyphicons-halflings-regular.svg"
             "Tag" = "8:"
             "Folder" = "8:_C15051AB55A04B6DB13120E0D7280588"
@@ -658,7 +658,7 @@
             }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_38E56281386C4DF79894DCE448E72F4E"
             {
-            "SourcePath" = "8:..\\sample\\sample.exe"
+            "SourcePath" = "8:..\\server\\sample.exe"
             "TargetName" = "8:sample.exe"
             "Tag" = "8:"
             "Folder" = "8:_2EE47700FD9E4DD4BD9BDA1A2D4D47F4"
@@ -678,7 +678,7 @@
             }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_38EC58DA92864AD48B73C3237E44EBEB"
             {
-            "SourcePath" = "8:..\\sample\\html\\bootstrap-3.3.7-dist\\css\\bootstrap-theme.min.css.map"
+            "SourcePath" = "8:..\\server\\html\\bootstrap-3.3.7-dist\\css\\bootstrap-theme.min.css.map"
             "TargetName" = "8:bootstrap-theme.min.css.map"
             "Tag" = "8:"
             "Folder" = "8:_9C47F2DB529C4C0BABB11B4BA3DDC365"
@@ -698,7 +698,7 @@
             }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_42BD099F9CFA4C43A9DC2E868642CE08"
             {
-            "SourcePath" = "8:..\\sample\\html\\bootstrap-3.3.7-dist\\fonts\\glyphicons-halflings-regular.eot"
+            "SourcePath" = "8:..\\server\\html\\bootstrap-3.3.7-dist\\fonts\\glyphicons-halflings-regular.eot"
             "TargetName" = "8:glyphicons-halflings-regular.eot"
             "Tag" = "8:"
             "Folder" = "8:_C15051AB55A04B6DB13120E0D7280588"
@@ -718,7 +718,7 @@
             }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_46A9864B62CA4D83BD5D7512507A7343"
             {
-            "SourcePath" = "8:..\\sample\\conf\\nginx.conf"
+            "SourcePath" = "8:..\\server\\conf\\nginx.conf"
             "TargetName" = "8:nginx.conf"
             "Tag" = "8:"
             "Folder" = "8:_7B6C4252067649FB9C9B0989F0DBD017"
@@ -738,7 +738,7 @@
             }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_4B67C7DADCAC4B6EA7D0F8D18E5C2322"
             {
-            "SourcePath" = "8:..\\sample\\html\\bootstrap-3.3.7-dist\\css\\bootstrap.min.css.map"
+            "SourcePath" = "8:..\\server\\html\\bootstrap-3.3.7-dist\\css\\bootstrap.min.css.map"
             "TargetName" = "8:bootstrap.min.css.map"
             "Tag" = "8:"
             "Folder" = "8:_9C47F2DB529C4C0BABB11B4BA3DDC365"
@@ -758,7 +758,7 @@
             }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_4B9B23641A164D2183B9FB38B84D009E"
             {
-            "SourcePath" = "8:..\\sample\\html\\bootstrap-3.3.7-dist\\css\\bootstrap-theme.min.css"
+            "SourcePath" = "8:..\\server\\html\\bootstrap-3.3.7-dist\\css\\bootstrap-theme.min.css"
             "TargetName" = "8:bootstrap-theme.min.css"
             "Tag" = "8:"
             "Folder" = "8:_9C47F2DB529C4C0BABB11B4BA3DDC365"
@@ -778,7 +778,7 @@
             }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_4BF20778C63C471B924A7D2E8542E6B8"
             {
-            "SourcePath" = "8:..\\sample\\stkwebappcmd.exe"
+            "SourcePath" = "8:..\\server\\stkwebappcmd.exe"
             "TargetName" = "8:stkwebappcmd.exe"
             "Tag" = "8:"
             "Folder" = "8:_2EE47700FD9E4DD4BD9BDA1A2D4D47F4"
@@ -798,7 +798,7 @@
             }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_4DAB32C816054F8FA3F83677E3B14005"
             {
-            "SourcePath" = "8:..\\sample\\contrib\\unicode2nginx\\koi-utf"
+            "SourcePath" = "8:..\\server\\contrib\\unicode2nginx\\koi-utf"
             "TargetName" = "8:koi-utf"
             "Tag" = "8:"
             "Folder" = "8:_9FE064E9E69B4235A1AB4BE443F51313"
@@ -818,7 +818,7 @@
             }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_4DCDD9254BCC440681E56119966790DB"
             {
-            "SourcePath" = "8:..\\sample\\contrib\\geo2nginx.pl"
+            "SourcePath" = "8:..\\server\\contrib\\geo2nginx.pl"
             "TargetName" = "8:geo2nginx.pl"
             "Tag" = "8:"
             "Folder" = "8:_B4C71C11CC334EEE84F56EBB0B4238C5"
@@ -838,7 +838,7 @@
             }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_549CD512B88145BCB55A197D485F570E"
             {
-            "SourcePath" = "8:..\\sample\\conf\\koi-win"
+            "SourcePath" = "8:..\\server\\conf\\koi-win"
             "TargetName" = "8:koi-win"
             "Tag" = "8:"
             "Folder" = "8:_7B6C4252067649FB9C9B0989F0DBD017"
@@ -858,7 +858,7 @@
             }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_57C451CFDB19463C8D890D6A5D89650F"
             {
-            "SourcePath" = "8:..\\sample\\docs\\zlib.LICENSE"
+            "SourcePath" = "8:..\\server\\docs\\zlib.LICENSE"
             "TargetName" = "8:zlib.LICENSE"
             "Tag" = "8:"
             "Folder" = "8:_0F6A6CFC606B491F9792C564CC3F27B8"
@@ -878,7 +878,7 @@
             }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_59A17EB60DA54AD3BBA768F4FCBC24A9"
             {
-            "SourcePath" = "8:..\\sample\\conf\\scgi_params"
+            "SourcePath" = "8:..\\server\\conf\\scgi_params"
             "TargetName" = "8:scgi_params"
             "Tag" = "8:"
             "Folder" = "8:_7B6C4252067649FB9C9B0989F0DBD017"
@@ -898,7 +898,7 @@
             }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_623D2694A3D34E96917708716F0F89B3"
             {
-            "SourcePath" = "8:..\\sample\\html\\index.html"
+            "SourcePath" = "8:..\\server\\html\\index.html"
             "TargetName" = "8:index.html"
             "Tag" = "8:"
             "Folder" = "8:_328950E660704BD7856D4AF4E7C70906"
@@ -918,7 +918,7 @@
             }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_6A30E76DAD7E4D75B25F73D758C0D264"
             {
-            "SourcePath" = "8:..\\sample\\contrib\\vim\\ftdetect\\nginx.vim"
+            "SourcePath" = "8:..\\server\\contrib\\vim\\ftdetect\\nginx.vim"
             "TargetName" = "8:nginx.vim"
             "Tag" = "8:"
             "Folder" = "8:_79B5CA20CFE042FF9609F83C8842A428"
@@ -938,7 +938,7 @@
             }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_6D71007CD84C47609C6AD364DFE5881C"
             {
-            "SourcePath" = "8:..\\sample\\html\\bootstrap-3.3.7-dist\\css\\bootstrap.css"
+            "SourcePath" = "8:..\\server\\html\\bootstrap-3.3.7-dist\\css\\bootstrap.css"
             "TargetName" = "8:bootstrap.css"
             "Tag" = "8:"
             "Folder" = "8:_9C47F2DB529C4C0BABB11B4BA3DDC365"
@@ -958,7 +958,7 @@
             }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_83C209FD91AC44D6A5D07AACA8CD2264"
             {
-            "SourcePath" = "8:..\\sample\\html\\sample.html"
+            "SourcePath" = "8:..\\server\\html\\sample.html"
             "TargetName" = "8:sample.html"
             "Tag" = "8:"
             "Folder" = "8:_328950E660704BD7856D4AF4E7C70906"
@@ -978,7 +978,7 @@
             }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_876094B1770A41F0AD2FC03D85B0227C"
             {
-            "SourcePath" = "8:..\\sample\\docs\\README"
+            "SourcePath" = "8:..\\server\\docs\\README"
             "TargetName" = "8:README"
             "Tag" = "8:"
             "Folder" = "8:_0F6A6CFC606B491F9792C564CC3F27B8"
@@ -998,7 +998,7 @@
             }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_8BDABE6E07374A99BD105F8ADD08D4FA"
             {
-            "SourcePath" = "8:..\\sample\\conf\\win-utf"
+            "SourcePath" = "8:..\\server\\conf\\win-utf"
             "TargetName" = "8:win-utf"
             "Tag" = "8:"
             "Folder" = "8:_7B6C4252067649FB9C9B0989F0DBD017"
@@ -1018,7 +1018,7 @@
             }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_8BE27E58CC6B42CD83C1CAEBD95C1F69"
             {
-            "SourcePath" = "8:..\\sample\\docs\\OpenSSL.LICENSE"
+            "SourcePath" = "8:..\\server\\docs\\OpenSSL.LICENSE"
             "TargetName" = "8:OpenSSL.LICENSE"
             "Tag" = "8:"
             "Folder" = "8:_0F6A6CFC606B491F9792C564CC3F27B8"
@@ -1038,7 +1038,7 @@
             }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_8F2AE9A32E2D4906AEC5ED254902E856"
             {
-            "SourcePath" = "8:..\\sample\\nginx.exe"
+            "SourcePath" = "8:..\\server\\nginx.exe"
             "TargetName" = "8:nginx.exe"
             "Tag" = "8:"
             "Folder" = "8:_2EE47700FD9E4DD4BD9BDA1A2D4D47F4"
@@ -1058,7 +1058,7 @@
             }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_94EA46177086453EA683955B2B180AF6"
             {
-            "SourcePath" = "8:..\\sample\\stkwebappcmd.conf"
+            "SourcePath" = "8:..\\server\\stkwebappcmd.conf"
             "TargetName" = "8:stkwebappcmd.conf"
             "Tag" = "8:"
             "Folder" = "8:_2EE47700FD9E4DD4BD9BDA1A2D4D47F4"
@@ -1078,7 +1078,7 @@
             }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_9565376207354855A13415975D193BFD"
             {
-            "SourcePath" = "8:..\\sample\\html\\bootstrap-3.3.7-dist\\css\\bootstrap-theme.css.map"
+            "SourcePath" = "8:..\\server\\html\\bootstrap-3.3.7-dist\\css\\bootstrap-theme.css.map"
             "TargetName" = "8:bootstrap-theme.css.map"
             "Tag" = "8:"
             "Folder" = "8:_9C47F2DB529C4C0BABB11B4BA3DDC365"
@@ -1098,7 +1098,7 @@
             }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_A3E05B6FC5854C4E99B6A53D40B094F0"
             {
-            "SourcePath" = "8:..\\sample\\html\\bootstrap-3.3.7-dist\\js\\bootstrap.js"
+            "SourcePath" = "8:..\\server\\html\\bootstrap-3.3.7-dist\\js\\bootstrap.js"
             "TargetName" = "8:bootstrap.js"
             "Tag" = "8:"
             "Folder" = "8:_855E6FF400834B94BCA2CA46EEB173E7"
@@ -1118,7 +1118,7 @@
             }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_AB0B544958454A23BCFD5AA793B08B3F"
             {
-            "SourcePath" = "8:..\\sample\\html\\bootstrap-3.3.7-dist\\css\\bootstrap.css.map"
+            "SourcePath" = "8:..\\server\\html\\bootstrap-3.3.7-dist\\css\\bootstrap.css.map"
             "TargetName" = "8:bootstrap.css.map"
             "Tag" = "8:"
             "Folder" = "8:_9C47F2DB529C4C0BABB11B4BA3DDC365"
@@ -1138,7 +1138,7 @@
             }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_AE03196EDBD946F8ABAC589C6E857FDA"
             {
-            "SourcePath" = "8:..\\sample\\html\\bootstrap-3.3.7-dist\\css\\bootstrap-theme.css"
+            "SourcePath" = "8:..\\server\\html\\bootstrap-3.3.7-dist\\css\\bootstrap-theme.css"
             "TargetName" = "8:bootstrap-theme.css"
             "Tag" = "8:"
             "Folder" = "8:_9C47F2DB529C4C0BABB11B4BA3DDC365"
@@ -1158,7 +1158,7 @@
             }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_B2188A1B3AD242F8A9569D0F5715C05F"
             {
-            "SourcePath" = "8:..\\sample\\conf\\koi-utf"
+            "SourcePath" = "8:..\\server\\conf\\koi-utf"
             "TargetName" = "8:koi-utf"
             "Tag" = "8:"
             "Folder" = "8:_7B6C4252067649FB9C9B0989F0DBD017"
@@ -1178,7 +1178,7 @@
             }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_B7FD8387AD8E439DB22740B537A1D511"
             {
-            "SourcePath" = "8:..\\sample\\html\\50x.html"
+            "SourcePath" = "8:..\\server\\html\\50x.html"
             "TargetName" = "8:50x.html"
             "Tag" = "8:"
             "Folder" = "8:_328950E660704BD7856D4AF4E7C70906"
@@ -1198,7 +1198,7 @@
             }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_B99106DF22B5446FA978101010EFBE17"
             {
-            "SourcePath" = "8:..\\sample\\html\\bootstrap-3.3.7-dist\\fonts\\glyphicons-halflings-regular.woff2"
+            "SourcePath" = "8:..\\server\\html\\bootstrap-3.3.7-dist\\fonts\\glyphicons-halflings-regular.woff2"
             "TargetName" = "8:glyphicons-halflings-regular.woff2"
             "Tag" = "8:"
             "Folder" = "8:_C15051AB55A04B6DB13120E0D7280588"
@@ -1218,7 +1218,7 @@
             }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_BD20251DB9BE419192D58F60FBA395F9"
             {
-            "SourcePath" = "8:..\\sample\\contrib\\vim\\ftplugin\\nginx.vim"
+            "SourcePath" = "8:..\\server\\contrib\\vim\\ftplugin\\nginx.vim"
             "TargetName" = "8:nginx.vim"
             "Tag" = "8:"
             "Folder" = "8:_6328216AAF024686963BA03D474C6543"
@@ -1238,7 +1238,7 @@
             }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_BE35B8BE3AC740D0977D88BB62351C7B"
             {
-            "SourcePath" = "8:..\\sample\\stkdatagui.exe"
+            "SourcePath" = "8:..\\server\\stkdatagui.exe"
             "TargetName" = "8:stkdatagui.exe"
             "Tag" = "8:"
             "Folder" = "8:_2EE47700FD9E4DD4BD9BDA1A2D4D47F4"
@@ -1258,7 +1258,7 @@
             }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_C4089C91301B4F6B920FB7D591533163"
             {
-            "SourcePath" = "8:..\\sample\\sample.dat"
+            "SourcePath" = "8:..\\server\\sample.dat"
             "TargetName" = "8:sample.dat"
             "Tag" = "8:"
             "Folder" = "8:_2EE47700FD9E4DD4BD9BDA1A2D4D47F4"
@@ -1278,7 +1278,7 @@
             }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_C737393B421E43EB8075C12CD879D320"
             {
-            "SourcePath" = "8:..\\sample\\html\\stkcommon.js"
+            "SourcePath" = "8:..\\server\\html\\stkcommon.js"
             "TargetName" = "8:stkcommon.js"
             "Tag" = "8:"
             "Folder" = "8:_328950E660704BD7856D4AF4E7C70906"
@@ -1298,7 +1298,7 @@
             }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_C76CD6719C0646389B3EE4E187CC6B3A"
             {
-            "SourcePath" = "8:..\\sample\\contrib\\unicode2nginx\\win-utf"
+            "SourcePath" = "8:..\\server\\contrib\\unicode2nginx\\win-utf"
             "TargetName" = "8:win-utf"
             "Tag" = "8:"
             "Folder" = "8:_9FE064E9E69B4235A1AB4BE443F51313"
@@ -1318,7 +1318,7 @@
             }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_C929AD9C1F0340FFAA0D3F953A341726"
             {
-            "SourcePath" = "8:..\\sample\\contrib\\README"
+            "SourcePath" = "8:..\\server\\contrib\\README"
             "TargetName" = "8:README"
             "Tag" = "8:"
             "Folder" = "8:_B4C71C11CC334EEE84F56EBB0B4238C5"
@@ -1338,7 +1338,7 @@
             }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_CBD17E6413F74099A226CF4F88196D90"
             {
-            "SourcePath" = "8:..\\sample\\html\\bootstrap-3.3.7-dist\\js\\npm.js"
+            "SourcePath" = "8:..\\server\\html\\bootstrap-3.3.7-dist\\js\\npm.js"
             "TargetName" = "8:npm.js"
             "Tag" = "8:"
             "Folder" = "8:_855E6FF400834B94BCA2CA46EEB173E7"
@@ -1358,7 +1358,7 @@
             }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_CEA7FD5D71254AB9905642BCDFEEC20A"
             {
-            "SourcePath" = "8:..\\sample\\html\\bootstrap-3.3.7-dist\\css\\bootstrap.min.css"
+            "SourcePath" = "8:..\\server\\html\\bootstrap-3.3.7-dist\\css\\bootstrap.min.css"
             "TargetName" = "8:bootstrap.min.css"
             "Tag" = "8:"
             "Folder" = "8:_9C47F2DB529C4C0BABB11B4BA3DDC365"
@@ -1378,7 +1378,7 @@
             }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_D126FAF16DEF45E1A06E65753D706697"
             {
-            "SourcePath" = "8:..\\sample\\conf\\mime.types"
+            "SourcePath" = "8:..\\server\\conf\\mime.types"
             "TargetName" = "8:mime.types"
             "Tag" = "8:"
             "Folder" = "8:_7B6C4252067649FB9C9B0989F0DBD017"
@@ -1398,7 +1398,7 @@
             }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_DC3BFB9A3D474241B44EA47B317204D6"
             {
-            "SourcePath" = "8:..\\sample\\conf\\uwsgi_params"
+            "SourcePath" = "8:..\\server\\conf\\uwsgi_params"
             "TargetName" = "8:uwsgi_params"
             "Tag" = "8:"
             "Folder" = "8:_7B6C4252067649FB9C9B0989F0DBD017"
@@ -1418,7 +1418,7 @@
             }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_DD6B6F98A1A44C6F8149B731CBE8F259"
             {
-            "SourcePath" = "8:..\\sample\\docs\\LICENSE"
+            "SourcePath" = "8:..\\server\\docs\\LICENSE"
             "TargetName" = "8:LICENSE"
             "Tag" = "8:"
             "Folder" = "8:_0F6A6CFC606B491F9792C564CC3F27B8"
@@ -1438,7 +1438,7 @@
             }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_E5C91AC41BD1427291F71C35BD214D6F"
             {
-            "SourcePath" = "8:..\\sample\\conf\\fastcgi_params"
+            "SourcePath" = "8:..\\server\\conf\\fastcgi_params"
             "TargetName" = "8:fastcgi_params"
             "Tag" = "8:"
             "Folder" = "8:_7B6C4252067649FB9C9B0989F0DBD017"
@@ -1478,7 +1478,7 @@
             }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_FA6A12F7AB4E48719FA477A007C36795"
             {
-            "SourcePath" = "8:..\\sample\\contrib\\vim\\indent\\nginx.vim"
+            "SourcePath" = "8:..\\server\\contrib\\vim\\indent\\nginx.vim"
             "TargetName" = "8:nginx.vim"
             "Tag" = "8:"
             "Folder" = "8:_7E0DBDD98D614C0ABEEAA29DBAC31465"

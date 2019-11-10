@@ -5,16 +5,8 @@ echo =========================================
 echo Test YaizuSample
 echo =========================================
 
-if defined APPVEYOR (
-  set MSBUILD="msbuild.exe"
-  set DEVENV="C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\Common7\IDE\devenv.exe"
-  set SEVENZIP="7z.exe"
-  set LCOUNTER=""
-  goto definitionend
-)
-
 if defined GITHUBACTIONS (
-  echo For AppVeyor
+  echo For GitHub Actions
   set MSBUILD="C:\Program Files (x86)\Microsoft Visual Studio\2017\Enterprise\MSBuild\15.0\Bin\msbuild.exe"
   set DEVENV="C:\Program Files (x86)\Microsoft Visual Studio\2017\Enterprise\Common7\IDE\devenv.exe"
   set SEVENZIP="7z.exe"
@@ -51,7 +43,7 @@ if not exist %MSBUILD% (
 rem ########## Initializing ##########
 echo;
 echo Initializing...
-if exist webapp rmdir /S /Q webapp
+if exist server rmdir /S /Q server
 
 
 rem ########## Building ##########
@@ -76,21 +68,21 @@ if not exist "..\test\sampletest\Release\sampletest.exe" goto ERRORRAISED
 rem ########## Deployment of files and folders ##########
 echo;
 echo Deployment of files and folders...
-mkdir webapp
-copy "..\src\sample\Debug\sample.exe" sample
-copy "..\src\sample\sample.dat" sample
-copy "..\src\sample\sample.conf" sample
-echo servicehost=localhost>> sample\sample.conf
-echo serviceport=10009>> sample\sample.conf
-copy "..\test\sampletest\Release\sampletest.exe" sample
+mkdir server
+copy "..\src\sample\Debug\sample.exe" server
+copy "..\src\sample\sample.dat" server
+copy "..\src\sample\sample.conf" server
+echo servicehost=localhost>> server\sample.conf
+echo serviceport=10009>> server\sample.conf
+copy "..\test\sampletest\Release\sampletest.exe" server
 
 
 rem ########## Testing ##########
 echo;
 echo Test starts
-start sample\sample.exe
-timeout /t 3
-sample\sampletest.exe
+start server\sample.exe
+C:\Windows\System32\timeout.exe /t 3
+server\sampletest.exe
 echo Test ends
 
 

@@ -85,9 +85,9 @@ rem ########## Making installer ##########
 if defined LOCALMACHINE (
   echo;
   echo Making installer...
-  %DEVENV% "setup2\setup2.sln" /rebuild Release
+  %DEVENV% "setup_agt\setup_agt.sln" /rebuild Release
   if not exist deployment mkdir deployment
-  copy setup2\Release\YaizuSampleAgent.msi deployment
+  copy setup_agt\Release\YaizuSampleAgent.msi deployment
 )
 
 
