@@ -81,7 +81,6 @@ rem ########## Testing ##########
 echo;
 echo Test starts
 start server\sample.exe
-C:\Windows\System32\timeout.exe /t 3
 server\sampletest.exe
 echo Test ends
 

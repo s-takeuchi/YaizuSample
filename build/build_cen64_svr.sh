@@ -1,7 +1,7 @@
 #!/bin/bash -x
 
 # Make build folder
-BUILDDIR=$(pwd)/sample
+BUILDDIR=$(pwd)/server
 if [ -e $BUILDDIR ]; then
     yes|rm -r $BUILDDIR
 fi

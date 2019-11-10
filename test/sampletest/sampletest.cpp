@@ -61,6 +61,7 @@ void TestPostOperationStop(StkWebAppSend* StkWebAppSendObj)
 
 int main(int Argc, char* Argv[])
 {
+	StkPlSleepMs(3000);
 	StkWebAppSend* StkWebAppSendObj = new StkWebAppSend(10, L"localhost", 10009);
 	TestGetUser(StkWebAppSendObj);
 	TestPostOperationStop(StkWebAppSendObj);
