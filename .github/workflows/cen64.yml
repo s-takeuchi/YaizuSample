@@ -1,26 +1,22 @@
-name: YaizuSample Windows CI
+name: YaizuSample Linux CI
 
 on: [push]
 
 jobs:
   build:
 
-    runs-on: windows-2016
+    runs-on: ubuntu-18.04
 
     steps:
     - uses: actions/checkout@v1
     - name: exec build
-      env:
-        GITHUBACTIONS: true
       run: |
         git clone -q --branch=master https://github.com/s-takeuchi/YaizuComLib.git ../YaizuComLib
         git checkout master
         cd build
-        ./build.bat
-        ./build2.bat
+        ./build_cen64_svr.sh
+        ./build_cen64_agt.sh
     - name: exec test
-      env:
-        GITHUBACTIONS: true
       run: |
         cd build
-        ./test.bat
+        ./test.sh

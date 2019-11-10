@@ -5,16 +5,8 @@ echo =========================================
 echo Build YaizuSample
 echo =========================================
 
-if defined APPVEYOR (
-  set MSBUILD="msbuild.exe"
-  set DEVENV="C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\Common7\IDE\devenv.com"
-  set SEVENZIP="7z.exe"
-  set LCOUNTER=""
-  goto definitionend
-)
-
 if defined GITHUBACTIONS (
-  echo For AppVeyor
+  echo For GitHub Actions
   set MSBUILD="C:\Program Files (x86)\Microsoft Visual Studio\2017\Enterprise\MSBuild\15.0\Bin\msbuild.exe"
   set DEVENV="C:\Program Files (x86)\Microsoft Visual Studio\2017\Enterprise\Common7\IDE\devenv.com"
   set SEVENZIP="7z.exe"
