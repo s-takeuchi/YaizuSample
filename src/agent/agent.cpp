@@ -447,6 +447,23 @@ void StartXxx(wchar_t HostOrIpAddr[256], int PortNum, int InvalidDirectory)
 	}
 }
 
+void LoadPropertyFileAndStart()
+{
+	wchar_t HostOrIpAddr[256] = L"";
+	int PortNum = 0;
+	wchar_t PathToBucket[256] = L"";
+
+	LoadPropertyFile(HostOrIpAddr, &PortNum, PathToBucket, HostName);
+	if (HostName == NULL || StkPlWcsCmp(HostName, L"") == 0) {
+		StkPlGetHostName(HostName, 256);
+	}
+	int InvalidDirectory = 0;
+	if (StkPlWcsCmp(PathToBucket, L"") != 0) {
+		InvalidDirectory = ChangeCurrentDirectory(PathToBucket);
+	}
+	StartXxx(HostOrIpAddr, PortNum, InvalidDirectory);
+}
+
 int main(int argc, char* argv[])
 {
 	wchar_t HostOrIpAddr[256] = L"";
@@ -465,19 +482,11 @@ int main(int argc, char* argv[])
 		StartXxx(HostOrIpAddr, PortNum, InvalidDirectory);
 		while (true) { StkPlSleepMs(1000); }
 	} else {
-		StkPlPrintf("Usage: %s  host_name_or_IP_addres  port_number  path_to_bucket  host_name", argv[0]);
+		StkPlPrintf("Usage: %s  destination_host_name_or_IP_addres  port_number  path_to_bucket  host_name", argv[0]);
 #ifdef WIN32
 		StartServiceCtrlDispatcher(ServiceTable);
 #else
-		LoadPropertyFile(HostOrIpAddr, &PortNum, PathToBucket, HostName);
-		if (HostName == NULL || StkPlWcsCmp(HostName, L"") == 0) {
-			StkPlGetHostName(HostName, 256);
-		}
-		int InvalidDirectory = 0;
-		if (StkPlWcsCmp(PathToBucket, L"") != 0) {
-			InvalidDirectory = ChangeCurrentDirectory(PathToBucket);
-		}
-		StartXxx(HostOrIpAddr, PortNum, InvalidDirectory);
+		LoadPropertyFileAndStart();
 		while (true) { StkPlSleepMs(1000); }
 #endif
 	}
@@ -622,18 +631,7 @@ VOID WINAPI ServiceMain(DWORD dwArgc, PTSTR* pszArgv)
 		return;
 	}
 
-	wchar_t HostOrIpAddr[256] = L"";
-	int PortNum = 0;
-	wchar_t PathToBucket[256] = L"";
-	LoadPropertyFile(HostOrIpAddr, &PortNum, PathToBucket, HostName);
-	if (HostName == NULL || StkPlWcsCmp(HostName, L"") == 0) {
-		StkPlGetHostName(HostName, 256);
-	}
-	int InvalidDirectory = 0;
-	if (StkPlWcsCmp(PathToBucket, L"") != 0) {
-		InvalidDirectory = ChangeCurrentDirectory(PathToBucket);
-	}
-	StartXxx(HostOrIpAddr, PortNum, InvalidDirectory);
+	LoadPropertyFileAndStart();
 
 	while (g_bService) {
 		if (!g_bRun) {
