@@ -87,6 +87,7 @@ StkObject* ApiPostAgentInfo::ExecuteImpl(StkObject* ReqObj, int Method, wchar_t 
 		if (!StatusCmdFlag && !OpCmdFlag && !OpStatusFlag) {
 			int RetSetAgtInfo = DataAccess::GetInstance()->SetAgentInfo(Name, Status, StatusTimeUtc, StatusTimeLocal);
 			if (RetSetAgtInfo == 0) {
+				// Addition
 				DataAccess::GetInstance()->SetAgentInfoForOpStatus(Name, -984);
 				wchar_t LogMsg[512] = L"";
 				wchar_t LogMsgJa[512] = L"";
@@ -94,8 +95,9 @@ StkObject* ApiPostAgentInfo::ExecuteImpl(StkObject* ReqObj, int Method, wchar_t 
 				StkPlSwPrintf(LogMsgJa, 256, L"%ls [%ls]", MessageProc::GetMsgJpn(MSG_NEWAGTNOTIFIED), Name);
 				DataAccess::GetInstance()->AddLogMsg(LogMsg, LogMsgJa);
 			} else if (RetSetAgtInfo == 1) {
-				//
+				// Update
 			}
+			DataAccess::GetInstance()->SetAgentInfoForReqTime(Name);
 		}
 	}
 
