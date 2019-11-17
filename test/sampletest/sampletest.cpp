@@ -135,7 +135,7 @@ void TestNewAgentInfoNotificationNoAgentInfo(StkWebAppSend* StkWebAppSendObj)
 void TestNewAgentInfoNotificationForbiddenChar(StkWebAppSend* StkWebAppSendObj)
 {
 	StkPlPrintf("New agent information notification (invalid host name) ... ");
-	wchar_t* HostName[] = { L"abc_xyz", L"Ç†Ç¢Ç§Ç¶Ç®", L"hello!" };
+	wchar_t* HostName[] = { L"abc_xyz", L"„ÅÇ„ÅÑ„ÅÜ„Åà„Åä", L"hello!" };
 	wchar_t ReqStr[256] = L"";
 
 	for (int Loop = 0; Loop < 3; Loop++) {
