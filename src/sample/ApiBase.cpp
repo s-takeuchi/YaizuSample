@@ -73,14 +73,14 @@ StkObject* ApiBase::Execute(StkObject* ReqObj, int Method, wchar_t UrlPath[StkWe
 	return ExecuteImpl(ReqObj, Method, UrlPath, ResultCode, LocaleType, Token);
 }
 
-StkObject* ApiBase::CommonError_NoElemInRequest(wchar_t* ElemName)
+StkObject* ApiBase::CommonError_NoElemInRequest(const wchar_t* ElemName)
 {
 	wchar_t Msg[1024] = L"";
 	StkPlSwPrintf(Msg, 1024, MessageProc::GetMsg(MSG_NO_ELEM_IN_REQUEST), ElemName);
 	return new StkObject(L"Msg0", Msg);
 }
 
-StkObject* ApiBase::CommonError_StringLenError(wchar_t* Name, int MaxLen)
+StkObject* ApiBase::CommonError_StringLenError(const wchar_t* Name, int MaxLen)
 {
 	wchar_t Msg[1024] = L"";
 	StkPlSwPrintf(Msg, 1024, MessageProc::GetMsg(MSG_STRING_LEN_ERROR), Name, MaxLen);
@@ -101,7 +101,7 @@ StkObject* ApiBase::CommonError_NoExecRight()
 	return new StkObject(L"Msg0", Msg);
 }
 
-StkObject* ApiBase::CommonError_ForbiddenChar(wchar_t* Name)
+StkObject* ApiBase::CommonError_ForbiddenChar(const wchar_t* Name)
 {
 	wchar_t Msg[1024] = L"";
 	StkPlSwPrintf(Msg, 1024, MessageProc::GetMsg(MSG_FORBIDDEN_CHAR), Name);
