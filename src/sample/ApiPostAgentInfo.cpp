@@ -17,15 +17,23 @@ StkObject* ApiPostAgentInfo::ExecuteImpl(StkObject* ReqObj, int Method, wchar_t 
 	wchar_t StatusTimeUtc[DA_MAXLEN_OF_TIME] = L"";
 	wchar_t StatusTimeLocal[DA_MAXLEN_OF_TIME] = L"";
 	if (ReqObj != NULL) {
-		*ResultCode = 200;
 		StkObject* AgentInfo = ReqObj->GetFirstChildElement();
-		if (AgentInfo == NULL) {
-			return NULL;
+		if (AgentInfo == NULL || StkPlWcsCmp(AgentInfo->GetName(), L"AgentInfo") != 0) {
+			*ResultCode = 400;
+			StkObject* ResObj = new StkObject(L"");
+			ResObj->AppendChildElement(CommonError_NoElemInRequest(L"AgentInfo"));
+			return ResObj;
 		}
 		StkObject* CurrAgentInfo = AgentInfo->GetFirstChildElement();
 		while (CurrAgentInfo) {
 			if (StkPlWcsCmp(CurrAgentInfo->GetName(), L"Name") == 0) {
 				StkPlWcsCpy(Name, DA_MAXLEN_OF_AGTNAME, CurrAgentInfo->GetStringValue());
+				if (StkPlCheckHostName(Name) == false) {
+					*ResultCode = 400;
+					StkObject* ResObj = new StkObject(L"");
+					ResObj->AppendChildElement(CommonError_ForbiddenChar(L"Name"));
+					return ResObj;
+				}
 			}
 			if (StkPlWcsCmp(CurrAgentInfo->GetName(), L"Status") == 0) {
 				Status = CurrAgentInfo->GetIntValue();
@@ -99,6 +107,11 @@ StkObject* ApiPostAgentInfo::ExecuteImpl(StkObject* ReqObj, int Method, wchar_t 
 			}
 			DataAccess::GetInstance()->SetAgentInfoForReqTime(Name);
 		}
+	} else {
+		*ResultCode = 400;
+		StkObject* ResObj = new StkObject(L"");
+		ResObj->AppendChildElement(CommonError_NoRequest());
+		return ResObj;
 	}
 
 	StkObject* TmpObj = new StkObject(L"");

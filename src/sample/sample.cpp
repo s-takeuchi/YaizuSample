@@ -114,14 +114,16 @@ void InitMessageResource()
 	MessageProc::AddJpn(MSG_INVALIDSVINTVL, L"\"StatusAcquisitionInterval\"の値が許可された範囲を超えました。300-3600の範囲で指定してください。");
 	
 	// Common error message
-	MessageProc::AddEng(MSG_NO_ELEM_IN_REQUEST, L"No \"%S\" element has been presented in the request.");
-	MessageProc::AddJpn(MSG_NO_ELEM_IN_REQUEST, L"リクエストに\"%S\"要素が存在しません。");
-	MessageProc::AddEng(MSG_STRING_LEN_ERROR, L"Length of %S exceeds the limitation. Maximum %d characters can be specified.");
-	MessageProc::AddJpn(MSG_STRING_LEN_ERROR, L"%Sの長さが最大を超えました。最大%d文字まで指定可能です。");
+	MessageProc::AddEng(MSG_NO_ELEM_IN_REQUEST, L"No \"%s\" element has been presented in the request.");
+	MessageProc::AddJpn(MSG_NO_ELEM_IN_REQUEST, L"リクエストに\"%s\"要素が存在しません。");
+	MessageProc::AddEng(MSG_STRING_LEN_ERROR, L"Length of %s exceeds the limitation. Maximum %d characters can be specified.");
+	MessageProc::AddJpn(MSG_STRING_LEN_ERROR, L"%sの長さが最大を超えました。最大%d文字まで指定可能です。");
 	MessageProc::AddEng(MSG_NOREQUEST, L"No request has been presented.");
 	MessageProc::AddJpn(MSG_NOREQUEST, L"リクエストが存在しません。");
 	MessageProc::AddEng(MSG_NO_EXEC_RIGHT, L"User does not have execute right for this request.");
 	MessageProc::AddJpn(MSG_NO_EXEC_RIGHT, L"ユーザーは，このリクエストの実行権限を持っていません。");
+	MessageProc::AddEng(MSG_FORBIDDEN_CHAR, L"\"%s\" includes forbidden character(s).");
+	MessageProc::AddJpn(MSG_FORBIDDEN_CHAR, L"\"%s\"は使用禁止文字が含まれています。");
 }
 
 void Server(wchar_t* IpAddr, int Port, int NumOfWorkerThreads, int ThreadInterval)

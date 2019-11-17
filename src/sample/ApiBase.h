@@ -11,6 +11,7 @@ protected:
 	StkObject* CommonError_StringLenError(wchar_t*, int);
 	StkObject* CommonError_NoRequest();
 	StkObject* CommonError_NoExecRight();
+	StkObject* CommonError_ForbiddenChar(wchar_t*);
 
 public:
 	virtual StkObject* Execute(StkObject*, int, wchar_t[StkWebAppExec::URL_PATH_LENGTH], int*, wchar_t*);

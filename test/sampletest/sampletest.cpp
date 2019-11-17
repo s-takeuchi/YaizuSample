@@ -49,9 +49,27 @@ void TestGetUser(StkWebAppSend* StkWebAppSendObj)
 	}
 }
 
-void TestNewAgentInfoNotification(StkWebAppSend* StkWebAppSendObj)
+bool TestForGetApi(StkWebAppSend* StkWebAppSendObj, const char* Url, const char* Auth, StkObject* CompObj)
 {
-	StkPlPrintf("New agent information notification ... ");
+	int ResultCode = 0;
+	StkWebAppSendObj->SetAutholization(Auth);
+	StkObject* ResObj = StkWebAppSendObj->SendRequestRecvResponse(StkWebAppSend::STKWEBAPP_METHOD_GET, Url, NULL, &ResultCode);
+	if (ResultCode != 200) {
+		if (ResObj != NULL) {
+			delete ResObj;
+		}
+		return false;
+	}
+	if (ResObj->Contains(CompObj) == NULL) {
+		delete ResObj;
+		return false;
+	}
+	return true;
+}
+
+void TestNewAgentInfoNotificationNormal(StkWebAppSend* StkWebAppSendObj)
+{
+	StkPlPrintf("New agent information notification (testagent) ... ");
 	int ResultCode = 0;
 
 	{
@@ -74,31 +92,66 @@ void TestNewAgentInfoNotification(StkWebAppSend* StkWebAppSendObj)
 		}
 		delete ResObj;
 	}
+	int ErrCode = 0;
+	StkObject* ReqObj = StkObject::CreateObjectFromJson(L"{\"AgentInfo\" : {\"Name\":\"testagent\", \"Status\":-980}}", &ErrCode);
+	bool Result = TestForGetApi(StkWebAppSendObj, "/api/agent/", "Bearer admin@a.a manager", ReqObj);
+	if (Result != true) {
+		StkPlPrintf("[NG]\n");
+		StkPlExit(1);
+	}
+	delete ReqObj;
+	StkPlPrintf("[OK]\n");
+}
 
-	{
-		StkWebAppSendObj->SetAutholization("Bearer admin@a.a manager"); 
-		StkObject* ResObj = StkWebAppSendObj->SendRequestRecvResponse(StkWebAppSend::STKWEBAPP_METHOD_GET, "/api/agent/", NULL, &ResultCode);
-		if (ResultCode != 200 || ResObj == NULL) {
+void TestNewAgentInfoNotificationNull(StkWebAppSend* StkWebAppSendObj)
+{
+	StkPlPrintf("New agent information notification (NULL) ... ");
+	int ResultCode = 0;
+	StkObject* ResObj = StkWebAppSendObj->SendRequestRecvResponse(StkWebAppSend::STKWEBAPP_METHOD_POST, "/api/agent/", NULL, &ResultCode);
+	if (ResultCode != 400 || ResObj == NULL || StkPlWcsStr(ResObj->GetFirstChildElement()->GetStringValue(), L"No ") == NULL) {
+		StkPlPrintf("[NG]\n");
+		StkPlExit(1);
+	}
+	StkPlWPrintf(L"[OK]\n");
+	delete ResObj;
+}
+
+void TestNewAgentInfoNotificationNoAgentInfo(StkWebAppSend* StkWebAppSendObj)
+{
+	StkPlPrintf("New agent information notification (no agent info) ... ");
+	int ResultCode = 0;
+	int ErrCode = 0;
+	StkObject* ReqObj = StkObject::CreateObjectFromJson(L"{\"XXX\" : {\"Name\":\"testagent\", \"Status\":-980}}", &ErrCode);
+	StkObject* ResObj = StkWebAppSendObj->SendRequestRecvResponse(StkWebAppSend::STKWEBAPP_METHOD_POST, "/api/agent/", ReqObj, &ResultCode);
+	if (ResultCode != 400 || ResObj == NULL || StkPlWcsStr(ResObj->GetFirstChildElement()->GetStringValue(), L"No ") == NULL) {
+		StkPlPrintf("[NG]\n");
+		StkPlExit(1);
+	}
+	StkPlWPrintf(L"[OK]\n");
+	delete ReqObj;
+	delete ResObj;
+}
+
+void TestNewAgentInfoNotificationForbiddenChar(StkWebAppSend* StkWebAppSendObj)
+{
+	StkPlPrintf("New agent information notification (invalid host name) ... ");
+	wchar_t* HostName[] = { L"abc_xyz", L"‚ ‚¢‚¤‚¦‚¨", L"hello!" };
+	wchar_t ReqStr[256] = L"";
+
+	for (int Loop = 0; Loop < 3; Loop++) {
+		StkPlSwPrintf(ReqStr, 256, L"{\"AgentInfo\" : {\"Name\":\"%s\", \"Status\":-980}}", HostName[Loop]);
+		int ResultCode = 0;
+		int ErrCode = 0;
+		StkObject* ReqObj = StkObject::CreateObjectFromJson(ReqStr, &ErrCode);
+		StkObject* ResObj = StkWebAppSendObj->SendRequestRecvResponse(StkWebAppSend::STKWEBAPP_METHOD_POST, "/api/agent/", ReqObj, &ResultCode);
+		if (ResultCode != 400 || ResObj == NULL || StkPlWcsStr(ResObj->GetFirstChildElement()->GetStringValue(), L"forbidden ") == NULL) {
 			StkPlPrintf("[NG]\n");
 			StkPlExit(1);
 		}
-		StkObject* CurObj = ResObj->GetFirstChildElement()->GetFirstChildElement();
-		while (CurObj) {
-			if (StkPlWcsCmp(CurObj->GetName(), L"Status") == 0) {
-				if (CurObj->GetIntValue() != -980) {
-					StkPlPrintf("[NG]\n");
-					StkPlExit(1);
-				} else {
-					break;
-				}
-			}
-			CurObj = CurObj->GetNext();
-		}
-
+		delete ReqObj;
 		delete ResObj;
 	}
-
-	StkPlPrintf("[OK]\n");
+	StkPlWPrintf(L"[OK]\n");
 }
 
 void TestPostOperationStop(StkWebAppSend* StkWebAppSendObj)
@@ -117,7 +170,12 @@ int main(int Argc, char* Argv[])
 	StkPlSleepMs(3000);
 	StkWebAppSend* StkWebAppSendObj = new StkWebAppSend(10, L"localhost", 10009);
 	TestGetUser(StkWebAppSendObj);
-	TestNewAgentInfoNotification(StkWebAppSendObj);
+
+	TestNewAgentInfoNotificationNormal(StkWebAppSendObj);
+	TestNewAgentInfoNotificationNull(StkWebAppSendObj);
+	TestNewAgentInfoNotificationNoAgentInfo(StkWebAppSendObj);
+	TestNewAgentInfoNotificationForbiddenChar(StkWebAppSendObj);
+
 	TestPostOperationStop(StkWebAppSendObj);
 	delete StkWebAppSendObj;
 	return 0;

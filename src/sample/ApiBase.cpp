@@ -100,3 +100,10 @@ StkObject* ApiBase::CommonError_NoExecRight()
 	StkPlSwPrintf(Msg, 1024, MessageProc::GetMsg(MSG_NO_EXEC_RIGHT));
 	return new StkObject(L"Msg0", Msg);
 }
+
+StkObject* ApiBase::CommonError_ForbiddenChar(wchar_t* Name)
+{
+	wchar_t Msg[1024] = L"";
+	StkPlSwPrintf(Msg, 1024, MessageProc::GetMsg(MSG_FORBIDDEN_CHAR), Name);
+	return new StkObject(L"Msg0", Msg);
+}
