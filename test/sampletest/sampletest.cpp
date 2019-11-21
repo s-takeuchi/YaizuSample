@@ -165,6 +165,43 @@ void TestPostOperationStop(StkWebAppSend* StkWebAppSendObj)
 	StkPlPrintf("[OK]\n");
 }
 
+void TestGetCommand(StkWebAppSend* StkWebAppSendObj)
+{
+	StkPlPrintf("Get Status Command ... ");
+	int ResultCode1 = 0;
+	StkObject* ResObj1 = StkWebAppSendObj->SendRequestRecvResponse(StkWebAppSend::STKWEBAPP_METHOD_GET, "/api/statuscommand/aaa/", NULL, &ResultCode1);
+	if (ResultCode1 != 400) {
+		if (ResObj1 != NULL) {
+			delete ResObj1;
+		}
+		StkPlPrintf("[NG]\n");
+		StkPlExit(1);
+	}
+	StkPlPrintf("[OK]\n");
+
+	StkPlPrintf("Get Operation Command ... ");
+	int ResultCode2 = 0;
+	StkObject* ResObj2 = StkWebAppSendObj->SendRequestRecvResponse(StkWebAppSend::STKWEBAPP_METHOD_GET, "/api/opcommand/aaa/", NULL, &ResultCode2);
+	if (ResultCode2 != 400) {
+		if (ResObj2 != NULL) {
+			delete ResObj2;
+		}
+		StkPlPrintf("[NG]\n");
+		StkPlExit(1);
+	}
+
+	if (!ResObj1->Equals(ResObj2)) {
+		delete ResObj1;
+		delete ResObj2;
+		StkPlPrintf("[NG]\n");
+		StkPlExit(1);
+	}
+
+	delete ResObj1;
+	delete ResObj2;
+	StkPlPrintf("[OK]\n");
+}
+
 int main(int Argc, char* Argv[])
 {
 	StkPlSleepMs(3000);
@@ -176,6 +213,7 @@ int main(int Argc, char* Argv[])
 	TestNewAgentInfoNotificationNoAgentInfo(StkWebAppSendObj);
 	TestNewAgentInfoNotificationForbiddenChar(StkWebAppSendObj);
 
+	TestGetCommand(StkWebAppSendObj);
 	TestPostOperationStop(StkWebAppSendObj);
 	delete StkWebAppSendObj;
 	return 0;
