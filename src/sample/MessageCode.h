@@ -35,3 +35,4 @@
 #define MSG_NOREQUEST            4203
 #define MSG_NO_EXEC_RIGHT        4204
 #define MSG_FORBIDDEN_CHAR       4205
+#define MSG_AGENTINFO_NOT_FOUND  4206

@@ -1,7 +1,9 @@
 #include "dataaccess.h"
 #include "../../../YaizuComLib/src/stkpl/StkPl.h"
 #include "../../../YaizuComLib/src/commonfunc/StkStringParser.h"
+#include "../../../YaizuComLib/src/commonfunc/msgproc.h"
 #include "ApiGetCommandForStatus.h"
+#include "MessageCode.h"
 
 bool ApiGetCommandForStatus::StopFlag;
 
@@ -10,6 +12,12 @@ StkObject* ApiGetCommandForStatus::ExecuteImpl(StkObject* ReqObj, int Method, wc
 	wchar_t TargetAgtName[DA_MAXLEN_OF_AGTNAME];
 	StkStringParser::ParseInto1Param(UrlPath, L"/api/statuscommand/$/", L'$', TargetAgtName, DA_MAXLEN_OF_AGTNAME);
 	StkObject* TmpObj = new StkObject(L"");
+
+	if (!DataAccess::GetInstance()->CheckExistenceOfTargetAgent(TargetAgtName)) {
+		TmpObj->AppendChildElement(new StkObject(L"Msg0", MessageProc::GetMsg(MSG_AGENTINFO_NOT_FOUND)));
+		*ResultCode = 400;
+		return TmpObj;
+	}
 
 	DataAccess::GetInstance()->SetAgentInfoForReqTime(TargetAgtName);
 
