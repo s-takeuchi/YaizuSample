@@ -48,7 +48,7 @@ if exist deployment\YaizuSample.msi del deployment\YaizuSample.msi
 if defined GITHUBACTIONS (
   echo $vsixPath = ".\InstallerProjects.vsix">InstallerProjects.ps1
   echo ^(new-object net.webclient^).DownloadFile^('https://visualstudioproductteam.gallerycdn.vsassets.io/extensions/visualstudioproductteam/microsoftvisualstudio2017installerprojects/0.8.5/1517363289019/InstallerProjects.vsix', $vsixPath^)>>InstallerProjects.ps1
-  echo "`"C:\Program Files ^(x86^)\Microsoft Visual Studio\2017\Community\Common7\IDE\VSIXInstaller.exe`" /q /a $vsixPath" ^| out-file ".\install-vsix.cmd" -Encoding ASCII>>InstallerProjects.ps1
+  echo "`"C:\Program Files ^(x86^)\Microsoft Visual Studio\2017\Enterprise\Common7\IDE\VSIXInstaller.exe`" /q /a $vsixPath" ^| out-file ".\install-vsix.cmd" -Encoding ASCII>>InstallerProjects.ps1
   echo ^& .\install-vsix.cmd>>InstallerProjects.ps1
   powershell -ExecutionPolicy RemoteSigned -File InstallerProjects.ps1
 )
