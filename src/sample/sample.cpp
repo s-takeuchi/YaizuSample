@@ -130,9 +130,6 @@ void InitMessageResource()
 
 void Server(wchar_t* IpAddr, int Port, int NumOfWorkerThreads, int ThreadInterval)
 {
-	// How many threads this program needs to be covered.
-	// 2 (status acquisition and operation) * 3 (agent / customer) * 50 (customer / server) + 5 (browser access)
-	// 305 threads are required as total
 	int Ids[MAX_NUM_OF_STKTHREADS];
 	for (int Loop = 0; Loop < NumOfWorkerThreads; Loop++) {
 		Ids[Loop] = 1000 + Loop;
@@ -237,9 +234,13 @@ int main(int Argc, char* Argv[])
 		// workerthreads
 		if (Prop->GetPropertyInt("workerthreads", &NumOfWorkerThreads) != 0) {
 			// How many threads this program needs to be covered.
-			// 2 (status acquisition and operation) * 3 (agent / customer) * 50 (customer / server) + 5 (browser access)
-			// 305 threads are required as total
-			NumOfWorkerThreads = 305;
+			// 2 (status acquisition and operation) * 3 (agent / customer) * 40 (customer / server) + 10 (browser access)
+			// Considering the limitation of StkSocket
+			NumOfWorkerThreads = 250;
+		}
+		if (NumOfWorkerThreads <= 2 || NumOfWorkerThreads > 250) { // Max number of threads is 250
+			StkPlPrintf("An invalid number of threads is specified.\r\n");
+			return -1;
 		}
 		StkPlPrintf("workerthreads property = %d\r\n", NumOfWorkerThreads);
 
