@@ -122,13 +122,11 @@ copy "..\..\YaizuComLib\src\stkwebapp\jquery-3.2.0.min.js" server\html
 
 
 rem ########## Making installer ##########
-if defined LOCALMACHINE (
-  echo;
-  echo Making installer...
-  %DEVENV% "setup_svr\setup_svr.sln" /rebuild Release
-  if not exist deployment mkdir deployment
-  copy setup_svr\Release\YaizuSample.msi deployment
-)
+echo;
+echo Making installer...
+%DEVENV% "setup_svr\setup_svr.sln" /rebuild Release
+if not exist deployment mkdir deployment
+copy setup_svr\Release\YaizuSample.msi deployment
 
 
 rem ########## build complete ##########
