@@ -19,6 +19,7 @@ StkObject* ApiGetCommandForOperation::ExecuteImpl(StkObject* ReqObj, int Method,
 		return TmpObj;
 	}
 
+	StkPlSleepMs(5000);
 	while (true) {
 		StkPlSleepMs(1000);
 		if (StopFlag) {
@@ -97,10 +98,10 @@ StkObject* ApiGetCommandForOperation::ExecuteImpl(StkObject* ReqObj, int Method,
 			break;
 		}
 
-		if ((PInterval == 30 && Sec % 30 == 0) ||
-			(PInterval == 60 && Sec == 0) ||
-			(PInterval == 300 && Min % 5 == 0 && Sec == 0) ||
-			(PInterval == 900 && Min % 15 == 0 && Sec == 0)) {
+		if ((PInterval == 30 && Sec % 30 < 5) ||
+			(PInterval == 60 && Sec < 5) ||
+			(PInterval == 300 && Min % 5 == 0 && Sec < 5) ||
+			(PInterval == 900 && Min % 15 == 0 && Sec < 5)) {
 			TmpObj->AppendChildElement(new StkObject(L"Msg0", L"Timeout"));
 			*ResultCode = 200;
 			break;

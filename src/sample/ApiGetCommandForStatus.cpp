@@ -21,6 +21,7 @@ StkObject* ApiGetCommandForStatus::ExecuteImpl(StkObject* ReqObj, int Method, wc
 
 	DataAccess::GetInstance()->SetAgentInfoForReqTime(TargetAgtName);
 
+	StkPlSleepMs(5000);
 	while (true) {
 		StkPlSleepMs(1000);
 		if (StopFlag) {
@@ -46,10 +47,10 @@ StkObject* ApiGetCommandForStatus::ExecuteImpl(StkObject* ReqObj, int Method, wc
 		int Sec = 0;
 		StkPlGetTime(&Year, &Mon, &Day, &Hour, &Min, &Sec, false);
 
-		if ((SaInterval == 300  && Min % 5 == 0  && Sec == 0) ||
-			(SaInterval == 900  && Min % 15 == 0 && Sec == 0) ||
-			(SaInterval == 1800 && Min % 30 == 0 && Sec == 0) ||
-			(SaInterval == 3600 && Min == 0      && Sec == 0)) {
+		if ((SaInterval == 300  && Min % 5 == 0  && Sec < 5) ||
+			(SaInterval == 900  && Min % 15 == 0 && Sec < 5) ||
+			(SaInterval == 1800 && Min % 30 == 0 && Sec < 5) ||
+			(SaInterval == 3600 && Min == 0      && Sec < 5)) {
 
 			TmpObj->AppendChildElement(new StkObject(L"Msg0", L"Execution"));
 			*ResultCode = 200;
@@ -128,10 +129,10 @@ StkObject* ApiGetCommandForStatus::ExecuteImpl(StkObject* ReqObj, int Method, wc
 			break;
 		}
 
-		if ((PInterval == 30 && Sec % 30 == 0) ||
-			(PInterval == 60 && Sec == 0) ||
-			(PInterval == 300 && Min % 5 == 0 && Sec == 0) ||
-			(PInterval == 900 && Min % 15 == 0 && Sec == 0)) {
+		if ((PInterval == 30 && Sec % 30 < 5) ||
+			(PInterval == 60 && Sec < 5) ||
+			(PInterval == 300 && Min % 5 == 0 && Sec < 5) ||
+			(PInterval == 900 && Min % 15 == 0 && Sec < 5)) {
 			TmpObj->AppendChildElement(new StkObject(L"Msg0", L"Timeout"));
 			*ResultCode = 200;
 			break;
