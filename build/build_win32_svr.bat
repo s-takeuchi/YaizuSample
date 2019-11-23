@@ -45,12 +45,7 @@ echo;
 echo Initializing...
 if exist server rmdir /S /Q server
 if exist deployment\YaizuSample.msi del deployment\YaizuSample.msi
-if defined GITHUBACTIONS (
-  echo $vsixPath = ".\InstallerProjects.vsix">InstallerProjects.ps1
-  echo ^(new-object net.webclient^).DownloadFile^('https://visualstudioproductteam.gallerycdn.vsassets.io/extensions/visualstudioproductteam/microsoftvisualstudio2017installerprojects/0.8.5/1517363289019/InstallerProjects.vsix', $vsixPath^)>>InstallerProjects.ps1
-  echo "`"C:\Program Files ^(x86^)\Microsoft Visual Studio\2017\Enterprise\Common7\IDE\VSIXInstaller.exe`" /q /a $vsixPath">>InstallerProjects.ps1
-  powershell -ExecutionPolicy RemoteSigned -File InstallerProjects.ps1
-)
+
 
 rem ########## Building ##########
 echo;
@@ -122,11 +117,13 @@ copy "..\..\YaizuComLib\src\stkwebapp\jquery-3.2.0.min.js" server\html
 
 
 rem ########## Making installer ##########
-echo;
-echo Making installer...
-%DEVENV% "setup_svr\setup_svr.sln" /rebuild Release
-if not exist deployment mkdir deployment
-copy setup_svr\Release\YaizuSample.msi deployment
+if defined LOCALMACHINE (
+  echo;
+  echo Making installer...
+  %DEVENV% "setup_svr\setup_svr.sln" /rebuild Release
+  if not exist deployment mkdir deployment
+  copy setup_svr\Release\YaizuSample.msi deployment
+)
 
 
 rem ########## build complete ##########
