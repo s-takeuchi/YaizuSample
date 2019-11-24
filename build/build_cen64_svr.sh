@@ -154,8 +154,10 @@ if [ \$1 = 1 ]; then
     setsebool httpd_can_network_connect on -P
     semanage port -a -t http_port_t -p tcp 8080
     semanage port -a -t http_port_t -p tcp 8081
-    firewall-cmd --add-port=8080/tcp --permanent
-    firewall-cmd --reload
+    if !(type "firewall-cmd" > /dev/null 2>&1); then
+        firewall-cmd --add-port=8080/tcp --permanent
+        firewall-cmd --reload
+    fi
     systemctl daemon-reload
     systemctl stop nginx.service
     systemctl start nginx.service
@@ -181,8 +183,10 @@ if [ \$1 = 0 ]; then
     done
     semanage port -d -t http_port_t -p tcp 8080
     semanage port -d -t http_port_t -p tcp 8081
-    firewall-cmd --remove-port=8080/tcp --permanent
-    firewall-cmd --reload
+    if !(type "firewall-cmd" > /dev/null 2>&1); then
+        firewall-cmd --remove-port=8080/tcp --permanent
+        firewall-cmd --reload
+    fi
     systemctl disable sample.service
     systemctl start nginx.service
 fi
