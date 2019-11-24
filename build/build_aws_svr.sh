@@ -76,7 +76,7 @@ if [ \$1 = 1 ]; then
     echo "New installation (post)"
     setsebool httpd_can_network_connect on -P
     semanage port -a -t http_port_t -p tcp 8081
-    if !(type "firewall-cmd" > /dev/null 2>&1); then
+    if [ ! type "firewall-cmd" > /dev/null 2>&1 ]; then
         firewall-cmd --add-port=8081/tcp --permanent
         firewall-cmd --reload
     fi
@@ -99,7 +99,7 @@ if [ \$1 = 0 ]; then
         sleep 1
     done
     semanage port -d -t http_port_t -p tcp 8081
-    if !(type "firewall-cmd" > /dev/null 2>&1); then
+    if [ ! type "firewall-cmd" > /dev/null 2>&1 ]; then
         firewall-cmd --remove-port=8081/tcp --permanent
         firewall-cmd --reload
     fi
