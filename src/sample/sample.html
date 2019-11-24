@@ -12,6 +12,10 @@
 
     <script>
 
+    // User role
+    var userRole = 0;
+
+    // Intervals
     var selectedPollingInterval = 1;
     var pollingIntervalStr = ['30 sec ', '1 min ', '5 min ', '15 min '];
     var selectedStatusAcquisitionInterval = 2;
@@ -28,6 +32,7 @@
     // Selected index number of operation command on agent info page.
     var selectedOperationCommand = -1;
 
+    // Notifications
     var svrinfo_msg = '';
     var command_msg = '';
     var usermgt_msg = '';
@@ -798,11 +803,14 @@
         $('#command').empty();
         $('#loginfo').empty();
         $('#usermgt').empty();
-        apiCall('GET', '/api/log/', null, 'API_GET_LOGS', displayLogInfo);
-        apiCall('GET', '/api/server/', null, 'API_GET_SVRINFO', displayServerInfo);
-        apiCall('GET', '/api/agent/', null, 'API_GET_AGTINFO', displayAgentInfo);
-        apiCall('GET', '/api/command/', null, 'API_GET_COMMAND', displayCommand);
-        apiCall('GET', '/api/user/?target=all', null, 'API_GET_USER', displayUser);
+        if (userRole == 1) {
+            apiCall('GET', '/api/agent/', null, 'API_GET_AGTINFO', displayAgentInfo);
+            apiCall('GET', '/api/server/', null, 'API_GET_SVRINFO', displayServerInfo);
+            apiCall('GET', '/api/command/', null, 'API_GET_COMMAND', displayCommand);
+            apiCall('GET', '/api/log/', null, 'API_GET_LOGS', displayLogInfo);
+        } else {
+            apiCall('GET', '/api/user/?target=all', null, 'API_GET_USER', displayUser);
+        }
     }
 
     function activateTopic(id) {
@@ -821,8 +829,8 @@
             return false;
         } else {
             $('#container').show();
-            var userrole = responseData['API_GET_USER'].User.Role;
-            if (userrole == 1) {
+            userRole = responseData['API_GET_USER'].User.Role;
+            if (userRole == 1) {
                 $('#menu-agtinfo').show();
                 $('#menu-svrinfo').show();
                 $('#menu-command').show();
