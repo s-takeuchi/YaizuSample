@@ -69,8 +69,8 @@ echo Checking "nginx-1.12.2.zip" existence...
 if not exist "..\..\YaizuComLib\src\stkwebapp\nginx-1.12.2.zip" goto ERRORRAISED
 echo Checking "jquery-3.2.0.min.js" existence...
 if not exist "..\..\YaizuComLib\src\stkwebapp\jquery-3.2.0.min.js" goto ERRORRAISED
-echo Checking "bootstrap-3.3.7-dist.zip" existence...
-if not exist "..\..\YaizuComLib\src\stkwebapp\bootstrap-3.3.7-dist.zip" goto ERRORRAISED
+echo Checking "bootstrap-4.4.1-dist.zip" existence...
+if not exist "..\..\YaizuComLib\src\stkwebapp\bootstrap-4.4.1-dist.zip" goto ERRORRAISED
 echo Checking "stkcommon.js" existence...
 if not exist "..\..\YaizuComLib\src\stkwebapp\stkcommon.js" goto ERRORRAISED
 echo Checking "stkwebappcmd.conf" existence...
@@ -104,11 +104,11 @@ xcopy /y /q /i /s /e "server\nginx\nginx-1.12.2" server
 if exist server\nginx rmdir /S /Q server\nginx
 
 mkdir server\bootstrap
-copy "..\..\YaizuComLib\src\stkwebapp\bootstrap-3.3.7-dist.zip" server\bootstrap
+copy "..\..\YaizuComLib\src\stkwebapp\bootstrap-4.4.1-dist.zip" server\bootstrap
 pushd server\bootstrap
-%SEVENZIP% x "bootstrap-3.3.7-dist.zip"
+%SEVENZIP% x "bootstrap-4.4.1-dist.zip"
 popd
-xcopy /y /q /i /s /e "server\bootstrap\bootstrap-3.3.7-dist" server\html\bootstrap-3.3.7-dist
+xcopy /y /q /i /s /e "server\bootstrap\bootstrap-4.4.1-dist" server\html\bootstrap-4.4.1-dist
 if exist server\bootstrap rmdir /S /Q server\bootstrap
 
 copy "..\src\sample\sample.html" server\html

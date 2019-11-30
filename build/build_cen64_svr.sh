@@ -21,15 +21,14 @@ cp sample.html $BUILDDIR/SOURCES
 cp sample.dat $BUILDDIR/SOURCES
 cp ../../../YaizuComLib/src/stkwebapp/stkcommon.js $BUILDDIR/SOURCES
 cp ../../../YaizuComLib/src/stkwebapp/jquery-3.2.0.min.js $BUILDDIR/SOURCES
-cp ../../../YaizuComLib/src/stkwebapp/bootstrap-3.3.7-dist.zip $BUILDDIR/SOURCES
+cp ../../../YaizuComLib/src/stkwebapp/bootstrap-4.4.1-dist.zip $BUILDDIR/SOURCES
 cd ../../../YaizuComLib/src/stkwebapp
 make all
 cp stkwebappstop $BUILDDIR/SOURCES/samplestop
 cd $BUILDDIR/SOURCES
-unzip $BUILDDIR/SOURCES/bootstrap-3.3.7-dist.zip
-cp $BUILDDIR/SOURCES/bootstrap-3.3.7-dist/css/* $BUILDDIR/SOURCES
-cp $BUILDDIR/SOURCES/bootstrap-3.3.7-dist/fonts/* $BUILDDIR/SOURCES
-cp $BUILDDIR/SOURCES/bootstrap-3.3.7-dist/js/* $BUILDDIR/SOURCES
+unzip $BUILDDIR/SOURCES/bootstrap-4.4.1-dist.zip
+cp $BUILDDIR/SOURCES/bootstrap-4.4.1-dist/css/* $BUILDDIR/SOURCES
+cp $BUILDDIR/SOURCES/bootstrap-4.4.1-dist/js/* $BUILDDIR/SOURCES
 
 
 # Make SPEC file
@@ -53,21 +52,25 @@ Source7: bootstrap.css
 Source8: bootstrap.css.map
 Source9: bootstrap.min.css
 Source10: bootstrap.min.css.map
-Source11: bootstrap-theme.css
-Source12: bootstrap-theme.css.map
-Source13: bootstrap-theme.min.css
-Source14: bootstrap-theme.min.css.map
-Source15: glyphicons-halflings-regular.eot
-Source16: glyphicons-halflings-regular.svg
-Source17: glyphicons-halflings-regular.ttf
-Source18: glyphicons-halflings-regular.woff
-Source19: glyphicons-halflings-regular.woff2
-Source20: bootstrap.js
-Source21: bootstrap.min.js
-Source22: npm.js
+Source11: bootstrap-grid.css
+Source12: bootstrap-grid.css.map
+Source13: bootstrap-grid.min.css
+Source14: bootstrap-grid.min.css.map
+Source15: bootstrap-reboot.css
+Source16: bootstrap-reboot.css.map
+Source17: bootstrap-reboot.min.css
+Source18: bootstrap-reboot.min.css.map
 Source23: sample.dat
 Source24: samplestop
 Source25: stkcommon.js
+Source30: bootstrap.bundle.js
+Source31: bootstrap.bundle.js.map
+Source32: bootstrap.bundle.min.js
+Source33: bootstrap.bundle.min.js.map
+Source34: bootstrap.js
+Source35: bootstrap.js.map
+Source36: bootstrap.min.js
+Source37: bootstrap.min.js.map
 
 %description
 YaizuSample!!
@@ -78,9 +81,8 @@ mkdir -p %{buildroot}/%{_sysconfdir}
 mkdir -p %{buildroot}/%{_sysconfdir}/nginx/conf.d
 mkdir -p %{buildroot}/%{_sysconfdir}/systemd/system
 mkdir -p %{buildroot}/%{_datarootdir}/nginx/html
-mkdir -p %{buildroot}/%{_datarootdir}/nginx/html/bootstrap-3.3.7-dist/css
-mkdir -p %{buildroot}/%{_datarootdir}/nginx/html/bootstrap-3.3.7-dist/fonts
-mkdir -p %{buildroot}/%{_datarootdir}/nginx/html/bootstrap-3.3.7-dist/js
+mkdir -p %{buildroot}/%{_datarootdir}/nginx/html/bootstrap-4.4.1-dist/css
+mkdir -p %{buildroot}/%{_datarootdir}/nginx/html/bootstrap-4.4.1-dist/js
 
 install -p -m 755 %{SOURCE1} %{buildroot}/%{_bindir}
 install -p -m 644 %{SOURCE2} %{buildroot}/%{_sysconfdir}
@@ -88,25 +90,29 @@ install -p -m 644 %{SOURCE3} %{buildroot}/%{_sysconfdir}/nginx/conf.d
 install -p -m 644 %{SOURCE4} %{buildroot}/%{_sysconfdir}/systemd/system
 install -p -m 644 %{SOURCE5} %{buildroot}/%{_datarootdir}/nginx/html
 install -p -m 644 %{SOURCE6} %{buildroot}/%{_datarootdir}/nginx/html
-install -p -m 644 %{SOURCE7} %{buildroot}/%{_datarootdir}/nginx/html/bootstrap-3.3.7-dist/css
-install -p -m 644 %{SOURCE8} %{buildroot}/%{_datarootdir}/nginx/html/bootstrap-3.3.7-dist/css
-install -p -m 644 %{SOURCE9} %{buildroot}/%{_datarootdir}/nginx/html/bootstrap-3.3.7-dist/css
-install -p -m 644 %{SOURCE10} %{buildroot}/%{_datarootdir}/nginx/html/bootstrap-3.3.7-dist/css
-install -p -m 644 %{SOURCE11} %{buildroot}/%{_datarootdir}/nginx/html/bootstrap-3.3.7-dist/css
-install -p -m 644 %{SOURCE12} %{buildroot}/%{_datarootdir}/nginx/html/bootstrap-3.3.7-dist/css
-install -p -m 644 %{SOURCE13} %{buildroot}/%{_datarootdir}/nginx/html/bootstrap-3.3.7-dist/css
-install -p -m 644 %{SOURCE14} %{buildroot}/%{_datarootdir}/nginx/html/bootstrap-3.3.7-dist/css
-install -p -m 644 %{SOURCE15} %{buildroot}/%{_datarootdir}/nginx/html/bootstrap-3.3.7-dist/fonts
-install -p -m 644 %{SOURCE16} %{buildroot}/%{_datarootdir}/nginx/html/bootstrap-3.3.7-dist/fonts
-install -p -m 644 %{SOURCE17} %{buildroot}/%{_datarootdir}/nginx/html/bootstrap-3.3.7-dist/fonts
-install -p -m 644 %{SOURCE18} %{buildroot}/%{_datarootdir}/nginx/html/bootstrap-3.3.7-dist/fonts
-install -p -m 644 %{SOURCE19} %{buildroot}/%{_datarootdir}/nginx/html/bootstrap-3.3.7-dist/fonts
-install -p -m 644 %{SOURCE20} %{buildroot}/%{_datarootdir}/nginx/html/bootstrap-3.3.7-dist/js
-install -p -m 644 %{SOURCE21} %{buildroot}/%{_datarootdir}/nginx/html/bootstrap-3.3.7-dist/js
-install -p -m 644 %{SOURCE22} %{buildroot}/%{_datarootdir}/nginx/html/bootstrap-3.3.7-dist/js
+install -p -m 644 %{SOURCE7} %{buildroot}/%{_datarootdir}/nginx/html/bootstrap-4.4.1-dist/css
+install -p -m 644 %{SOURCE8} %{buildroot}/%{_datarootdir}/nginx/html/bootstrap-4.4.1-dist/css
+install -p -m 644 %{SOURCE9} %{buildroot}/%{_datarootdir}/nginx/html/bootstrap-4.4.1-dist/css
+install -p -m 644 %{SOURCE10} %{buildroot}/%{_datarootdir}/nginx/html/bootstrap-4.4.1-dist/css
+install -p -m 644 %{SOURCE11} %{buildroot}/%{_datarootdir}/nginx/html/bootstrap-4.4.1-dist/css
+install -p -m 644 %{SOURCE12} %{buildroot}/%{_datarootdir}/nginx/html/bootstrap-4.4.1-dist/css
+install -p -m 644 %{SOURCE13} %{buildroot}/%{_datarootdir}/nginx/html/bootstrap-4.4.1-dist/css
+install -p -m 644 %{SOURCE14} %{buildroot}/%{_datarootdir}/nginx/html/bootstrap-4.4.1-dist/css
+install -p -m 644 %{SOURCE15} %{buildroot}/%{_datarootdir}/nginx/html/bootstrap-4.4.1-dist/css
+install -p -m 644 %{SOURCE16} %{buildroot}/%{_datarootdir}/nginx/html/bootstrap-4.4.1-dist/css
+install -p -m 644 %{SOURCE17} %{buildroot}/%{_datarootdir}/nginx/html/bootstrap-4.4.1-dist/css
+install -p -m 644 %{SOURCE18} %{buildroot}/%{_datarootdir}/nginx/html/bootstrap-4.4.1-dist/css
 install -p -m 644 %{SOURCE23} %{buildroot}/%{_sysconfdir}
 install -p -m 755 %{SOURCE24} %{buildroot}/%{_bindir}
 install -p -m 644 %{SOURCE25} %{buildroot}/%{_datarootdir}/nginx/html
+install -p -m 644 %{SOURCE30} %{buildroot}/%{_datarootdir}/nginx/html/bootstrap-4.4.1-dist/js
+install -p -m 644 %{SOURCE31} %{buildroot}/%{_datarootdir}/nginx/html/bootstrap-4.4.1-dist/js
+install -p -m 644 %{SOURCE32} %{buildroot}/%{_datarootdir}/nginx/html/bootstrap-4.4.1-dist/js
+install -p -m 644 %{SOURCE33} %{buildroot}/%{_datarootdir}/nginx/html/bootstrap-4.4.1-dist/js
+install -p -m 644 %{SOURCE34} %{buildroot}/%{_datarootdir}/nginx/html/bootstrap-4.4.1-dist/js
+install -p -m 644 %{SOURCE35} %{buildroot}/%{_datarootdir}/nginx/html/bootstrap-4.4.1-dist/js
+install -p -m 644 %{SOURCE36} %{buildroot}/%{_datarootdir}/nginx/html/bootstrap-4.4.1-dist/js
+install -p -m 644 %{SOURCE37} %{buildroot}/%{_datarootdir}/nginx/html/bootstrap-4.4.1-dist/js
 
 
 %files
@@ -117,22 +123,26 @@ install -p -m 644 %{SOURCE25} %{buildroot}/%{_datarootdir}/nginx/html
 %{_datarootdir}/nginx/html/sample.html
 %{_datarootdir}/nginx/html/stkcommon.js
 %{_datarootdir}/nginx/html/jquery-3.2.0.min.js
-%{_datarootdir}/nginx/html/bootstrap-3.3.7-dist/css/bootstrap.css
-%{_datarootdir}/nginx/html/bootstrap-3.3.7-dist/css/bootstrap.css.map
-%{_datarootdir}/nginx/html/bootstrap-3.3.7-dist/css/bootstrap.min.css
-%{_datarootdir}/nginx/html/bootstrap-3.3.7-dist/css/bootstrap.min.css.map
-%{_datarootdir}/nginx/html/bootstrap-3.3.7-dist/css/bootstrap-theme.css
-%{_datarootdir}/nginx/html/bootstrap-3.3.7-dist/css/bootstrap-theme.css.map
-%{_datarootdir}/nginx/html/bootstrap-3.3.7-dist/css/bootstrap-theme.min.css
-%{_datarootdir}/nginx/html/bootstrap-3.3.7-dist/css/bootstrap-theme.min.css.map
-%{_datarootdir}/nginx/html/bootstrap-3.3.7-dist/fonts/glyphicons-halflings-regular.eot
-%{_datarootdir}/nginx/html/bootstrap-3.3.7-dist/fonts/glyphicons-halflings-regular.svg
-%{_datarootdir}/nginx/html/bootstrap-3.3.7-dist/fonts/glyphicons-halflings-regular.ttf
-%{_datarootdir}/nginx/html/bootstrap-3.3.7-dist/fonts/glyphicons-halflings-regular.woff
-%{_datarootdir}/nginx/html/bootstrap-3.3.7-dist/fonts/glyphicons-halflings-regular.woff2
-%{_datarootdir}/nginx/html/bootstrap-3.3.7-dist/js/bootstrap.js
-%{_datarootdir}/nginx/html/bootstrap-3.3.7-dist/js/bootstrap.min.js
-%{_datarootdir}/nginx/html/bootstrap-3.3.7-dist/js/npm.js
+%{_datarootdir}/nginx/html/bootstrap-4.4.1-dist/css/bootstrap.css
+%{_datarootdir}/nginx/html/bootstrap-4.4.1-dist/css/bootstrap.css.map
+%{_datarootdir}/nginx/html/bootstrap-4.4.1-dist/css/bootstrap.min.css
+%{_datarootdir}/nginx/html/bootstrap-4.4.1-dist/css/bootstrap.min.css.map
+%{_datarootdir}/nginx/html/bootstrap-4.4.1-dist/css/bootstrap-grid.css
+%{_datarootdir}/nginx/html/bootstrap-4.4.1-dist/css/bootstrap-grid.css.map
+%{_datarootdir}/nginx/html/bootstrap-4.4.1-dist/css/bootstrap-grid.min.css
+%{_datarootdir}/nginx/html/bootstrap-4.4.1-dist/css/bootstrap-grid.min.css.map
+%{_datarootdir}/nginx/html/bootstrap-4.4.1-dist/css/bootstrap-reboot.css
+%{_datarootdir}/nginx/html/bootstrap-4.4.1-dist/css/bootstrap-reboot.css.map
+%{_datarootdir}/nginx/html/bootstrap-4.4.1-dist/css/bootstrap-reboot.min.css
+%{_datarootdir}/nginx/html/bootstrap-4.4.1-dist/css/bootstrap-reboot.min.css.map
+%{_datarootdir}/nginx/html/bootstrap-4.4.1-dist/js/bootstrap.bundle.js
+%{_datarootdir}/nginx/html/bootstrap-4.4.1-dist/js/bootstrap.bundle.js.map
+%{_datarootdir}/nginx/html/bootstrap-4.4.1-dist/js/bootstrap.bundle.min.js
+%{_datarootdir}/nginx/html/bootstrap-4.4.1-dist/js/bootstrap.bundle.min.js.map
+%{_datarootdir}/nginx/html/bootstrap-4.4.1-dist/js/bootstrap.js
+%{_datarootdir}/nginx/html/bootstrap-4.4.1-dist/js/bootstrap.js.map
+%{_datarootdir}/nginx/html/bootstrap-4.4.1-dist/js/bootstrap.min.js
+%{_datarootdir}/nginx/html/bootstrap-4.4.1-dist/js/bootstrap.min.js.map
 %config(noreplace) %{_sysconfdir}/sample.dat
 %{_bindir}/samplestop
 

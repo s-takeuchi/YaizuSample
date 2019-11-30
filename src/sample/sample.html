@@ -3,10 +3,10 @@
 <head>
     <title>Management Server</title>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="bootstrap-3.3.7-dist/css/bootstrap.min.css" rel="stylesheet" media="screen">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link href="bootstrap-4.4.1-dist/css/bootstrap.min.css" rel="stylesheet" media="screen">
     <script src="jquery-3.2.0.min.js"></script>
-    <script src="bootstrap-3.3.7-dist/js/bootstrap.min.js"></script>
+    <script src="bootstrap-4.4.1-dist/js/bootstrap.bundle.min.js"></script>
 
     <script type="text/javascript" src="stkcommon.js"></script>
 
@@ -130,7 +130,7 @@
     ////////////////////////////////////////////////////////////////////////////////
 
     function displayLogInfo() {
-        $('#loginfo').append('<h2><span class="glyphicon glyphicon-time"></span>' + getClientMessage('AUDITLOG') + '</h2>');
+        $('#loginfo').append('<h2>' + getClientMessage('AUDITLOG') + '</h2>');
         if (statusCode['API_GET_LOGS'] == -1 || statusCode['API_GET_LOGS'] == 0) {
             displayAlertDanger('#loginfo', getClientMessage('CONNERR'));
             return;
@@ -163,7 +163,7 @@
     ////////////////////////////////////////////////////////////////////////////////
 
     function displayAgentInfo() {
-        $('#agtinfo').append('<h2><span class="glyphicon glyphicon-eye-open"></span>' + getClientMessage('AGENTINFO') + '</h2>');
+        $('#agtinfo').append('<h2>' + getClientMessage('AGENTINFO') + '</h2>');
         if (statusCode['API_GET_AGTINFO'] == -1 || statusCode['API_GET_AGTINFO'] == 0) {
             displayAlertDanger('#agtinfo', getClientMessage('CONNERR'));
             return;
@@ -185,11 +185,11 @@
         tHead.append('<tr>' +
                      '<th>' + getClientMessage('AINAME') + '</th>' +
                      '<th>' + getClientMessage('AISTATUS') + '</th>' +
-                     '<th class="hidden-xs">' + getClientMessage('AISTATUSCMD') + '</th>' +
+                     '<th class="d-none d-sm-table-cell">' + getClientMessage('AISTATUSCMD') + '</th>' +
                      '<th>' + getClientMessage('AISTATUSTIME') + '</th>' +
-                     '<th class="hidden-xs">' + getClientMessage('AISTATUSUPTIME') + '</th>' +
-                     '<th class="hidden-xs hidden-sm">' + getClientMessage('AIOPSTATUS') + '</th>' +
-                     '<th class="hidden-xs hidden-sm">' + getClientMessage('AIOPSTATUSCMD') + '</th>' +
+                     '<th class="d-none d-md-table-cell">' + getClientMessage('AISTATUSUPTIME') + '</th>' +
+                     '<th class="d-none d-lg-table-cell">' + getClientMessage('AIOPSTATUS') + '</th>' +
+                     '<th class="d-none d-lg-table-cell">' + getClientMessage('AIOPSTATUSCMD') + '</th>' +
                      '</tr>');
         agentInfoData.append(tHead);
 
@@ -214,11 +214,11 @@
             tBody.append('<tr>' +
                          '<td><div class="checkbox"><label><input type="checkbox" id="agtInfoId' + Loop + '" value="" onclick="switchAgentInfoButton()"/>' + AgentInfo[Loop].Name + '</label></div></td>' +
                          '<td><div align="center" id="statusTd' + Loop + '" data-toggle="tooltip" title="' + getTooltipStr() + '">' + AgentInfo[Loop].Status + '</div></td>' +
-                         '<td class="hidden-xs">' + cmdNameStatus + '</td>' +
+                         '<td class="d-none d-sm-table-cell">' + cmdNameStatus + '</td>' +
                          '<td>' + AgentInfo[Loop].TimeUtc + '<br/>' + AgentInfo[Loop].TimeLocal + '</td>' +
-                         '<td class="hidden-xs">' + AgentInfo[Loop].UdTimeUtc + '<br/>' + AgentInfo[Loop].UdTimeLocal + '</td>' +
-                         '<td class="hidden-xs hidden-sm"><div align="center" id="opStatusTd' + Loop + '" data-toggle="tooltip" title="' + getTooltipStr() + '">' + AgentInfo[Loop].OpStatus + '</div></td>' +
-                         '<td class="hidden-xs hidden-sm">' + cmdNameOp + '</td>' +
+                         '<td class="d-none d-md-table-cell">' + AgentInfo[Loop].UdTimeUtc + '<br/>' + AgentInfo[Loop].UdTimeLocal + '</td>' +
+                         '<td class="d-none d-lg-table-cell"><div align="center" id="opStatusTd' + Loop + '" data-toggle="tooltip" title="' + getTooltipStr() + '">' + AgentInfo[Loop].OpStatus + '</div></td>' +
+                         '<td class="d-none d-lg-table-cell">' + cmdNameOp + '</td>' +
                          '</tr>');
             // Draw rectangle for agent status
             if (AgentInfo[Loop].Status == 0) {
@@ -424,7 +424,7 @@
     ////////////////////////////////////////////////////////////////////////////////
 
     function displayServerInfo() {
-        $('#svrinfo').append('<h2><span class="glyphicon glyphicon-tower"></span>' + getClientMessage('SERVERINFO') + '</h2>');
+        $('#svrinfo').append('<h2>' + getClientMessage('SERVERINFO') + '</h2>');
         if (statusCode['API_GET_SVRINFO'] == -1 || statusCode['API_GET_SVRINFO'] == 0) {
             displayAlertDanger('#svrinfo', getClientMessage('CONNERR'));
             return;
@@ -567,7 +567,7 @@
     ////////////////////////////////////////////////////////////////////////////////
 
     function displayCommand() {
-        $('#command').append('<h2><span class="glyphicon glyphicon-flash"></span>' + getClientMessage('COMMAND') + '</h2>');
+        $('#command').append('<h2>' + getClientMessage('COMMAND') + '</h2>');
         if (statusCode['API_GET_COMMAND'] == -1 || statusCode['API_GET_COMMAND'] == 0) {
             displayAlertDanger('#command', getClientMessage('CONNERR'));
             return;
@@ -715,7 +715,7 @@
     ////////////////////////////////////////////////////////////////////////////////
 
     function displayUser() {
-        $('#usermgt').append('<h2><span class="glyphicon glyphicon-user"></span>' + getClientMessage('USERMGT') + '</h2>');
+        $('#usermgt').append('<h2>' + getClientMessage('USERMGT') + '</h2>');
         if (statusCode['API_GET_USER'] == -1 || statusCode['API_GET_USER'] == 0) {
             displayAlertDanger('#usermgt', getClientMessage('CONNERR'));
             return;
@@ -847,11 +847,11 @@
         initClientMessage();
         apiCall('GET', '/api/language/', null, 'API_GET_LANG', getLanguage);
         var contents = [
-            { id : 'agtinfo', actApiName : 'activateTopic', title : 'Agent Info', icon : 'glyphicon glyphicon-eye-open' },
-            { id : 'svrinfo', actApiName : 'activateTopic', title : 'Server Info', icon : 'glyphicon glyphicon-tower' },
-            { id : 'command', actApiName : 'activateTopic', title : 'Command', icon : 'glyphicon glyphicon-flash' },
-            { id : 'loginfo', actApiName : 'activateTopic', title : 'Audit Log', icon : 'glyphicon glyphicon-time' },
-            { id : 'usermgt', actApiName : 'activateTopic', title : 'User Management', icon : 'glyphicon glyphicon-user' }
+            { id : 'agtinfo', actApiName : 'activateTopic', title : 'Agent Info' },
+            { id : 'svrinfo', actApiName : 'activateTopic', title : 'Server Info' },
+            { id : 'command', actApiName : 'activateTopic', title : 'Command' },
+            { id : 'loginfo', actApiName : 'activateTopic', title : 'Audit Log' },
+            { id : 'usermgt', actApiName : 'activateTopic', title : 'User Management' }
         ];
         initMainPage(contents);
         $(function() {
