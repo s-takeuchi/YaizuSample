@@ -22,6 +22,9 @@ cp sample.dat $BUILDDIR/SOURCES
 cp ../../../YaizuComLib/src/stkwebapp/stkcommon.js $BUILDDIR/SOURCES
 cp ../../../YaizuComLib/src/stkwebapp/jquery-3.2.0.min.js $BUILDDIR/SOURCES
 cp ../../../YaizuComLib/src/stkwebapp/bootstrap-4.4.1-dist.zip $BUILDDIR/SOURCES
+cp ../../../YaizuComLib/src/stkwebapp/IcoMoon-Free.css $BUILDDIR/SOURCES
+cp ../../../YaizuComLib/src/stkwebapp/IcoMoon-Free.ttf $BUILDDIR/SOURCES
+cp ../../../YaizuComLib/src/stkwebapp/squirrel.svg $BUILDDIR/SOURCES
 cd ../../../YaizuComLib/src/stkwebapp
 make all
 cp stkwebappstop $BUILDDIR/SOURCES/samplestop
@@ -71,6 +74,9 @@ Source34: bootstrap.js
 Source35: bootstrap.js.map
 Source36: bootstrap.min.js
 Source37: bootstrap.min.js.map
+Source40: IcoMoon-Free.css
+Source41: IcoMoon-Free.ttf
+Source42: squirrel.svg
 
 %description
 YaizuSample!!
@@ -113,6 +119,9 @@ install -p -m 644 %{SOURCE34} %{buildroot}/%{_datarootdir}/nginx/html/bootstrap-
 install -p -m 644 %{SOURCE35} %{buildroot}/%{_datarootdir}/nginx/html/bootstrap-4.4.1-dist/js
 install -p -m 644 %{SOURCE36} %{buildroot}/%{_datarootdir}/nginx/html/bootstrap-4.4.1-dist/js
 install -p -m 644 %{SOURCE37} %{buildroot}/%{_datarootdir}/nginx/html/bootstrap-4.4.1-dist/js
+install -p -m 644 %{SOURCE40} %{buildroot}/%{_datarootdir}/nginx/html/IcoMoon-Free.css
+install -p -m 644 %{SOURCE41} %{buildroot}/%{_datarootdir}/nginx/html/IcoMoon-Free.ttf
+install -p -m 644 %{SOURCE42} %{buildroot}/%{_datarootdir}/nginx/html/squirrel.svg
 
 
 %files
@@ -145,6 +154,10 @@ install -p -m 644 %{SOURCE37} %{buildroot}/%{_datarootdir}/nginx/html/bootstrap-
 %{_datarootdir}/nginx/html/bootstrap-4.4.1-dist/js/bootstrap.min.js.map
 %config(noreplace) %{_sysconfdir}/sample.dat
 %{_bindir}/samplestop
+%{_datarootdir}/nginx/html/IcoMoon-Free.css
+%{_datarootdir}/nginx/html/IcoMoon-Free.ttf
+%{_datarootdir}/nginx/html/squirrel.svg
+
 
 %pre
 if [ \$1 = 2 ]; then

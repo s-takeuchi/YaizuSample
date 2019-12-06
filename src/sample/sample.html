@@ -269,6 +269,7 @@
         }
         if (foundFlag == true) {
             clearRsCommand();
+            addRsCommand('', 'icon-checkmark', true);
             addRsCommand('displayAgentStatusCommandDlg()', 'icon-stats-bars', true);
             addRsCommand('displayExecCommandDlg()', 'icon-play', true);
             addRsCommand('', 'icon-bin', true);
@@ -276,6 +277,7 @@
             $('#execOpeCommand').removeClass('disabled');
         } else {
             clearRsCommand();
+            addRsCommand('', 'icon-checkmark', true);
             addRsCommand('', 'icon-stats-bars', false);
             addRsCommand('', 'icon-play', false);
             addRsCommand('', 'icon-bin', false);
@@ -301,7 +303,7 @@
         $('#inputDlgModalTitle').empty();
         $('#inputDlgModalBody').empty();
 
-        $('#inputDlgModalTitle').append('<h3 class="modal-title">' + getClientMessage('SELOPCMD') + '</h3>');
+        $('#inputDlgModalTitle').append('<h5 class="modal-title">' + getClientMessage('SELOPCMD') + '</h5>');
 
         var btnGrp = $('<div class="btn-group">');
         btnGrp.append('<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><span id="selectedExecCommand">' + getClientMessage('SELCMD') + '</span><span class="caret"></span></button>');
@@ -358,7 +360,7 @@
         $('#inputDlgModalTitle').empty();
         $('#inputDlgModalBody').empty();
 
-        $('#inputDlgModalTitle').append('<h3 class="modal-title">' + getClientMessage('SELSTATUSCMD') + '</h3>');
+        $('#inputDlgModalTitle').append('<h5 class="modal-title">' + getClientMessage('SELSTATUSCMD') + '</h5>');
 
         var btnGrp = $('<div class="btn-group">');
         btnGrp.append('<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><span id="selectedAgentStatus">' + getAgentStatusCommand() + '</span><span class="caret"></span></button>');

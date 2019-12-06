@@ -129,6 +129,12 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_57E031AFA3524756B12D21D6B289F262"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_59A17EB60DA54AD3BBA768F4FCBC24A9"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -142,6 +148,12 @@
         "Entry"
         {
         "MsmKey" = "8:_68AD8A6E153D4BC5876AFBB5DB026363"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_68EF3DFC6F254FAAACEA00751AFB5F8F"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -214,6 +226,12 @@
         "Entry"
         {
         "MsmKey" = "8:_A4E3AA8565ED4DF7876E0BBBA4D058FA"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_ACCE647FD80E4A1EA799D41A1F9A1948"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -840,6 +858,26 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_57E031AFA3524756B12D21D6B289F262"
+            {
+            "SourcePath" = "8:..\\server\\html\\IcoMoon-Free.ttf"
+            "TargetName" = "8:IcoMoon-Free.ttf"
+            "Tag" = "8:"
+            "Folder" = "8:_328950E660704BD7856D4AF4E7C70906"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_59A17EB60DA54AD3BBA768F4FCBC24A9"
             {
             "SourcePath" = "8:..\\server\\conf\\scgi_params"
@@ -886,6 +924,26 @@
             "TargetName" = "8:bootstrap.js"
             "Tag" = "8:"
             "Folder" = "8:_97BBF0464A424B6AA07D795EDD0BAB5E"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_68EF3DFC6F254FAAACEA00751AFB5F8F"
+            {
+            "SourcePath" = "8:..\\server\\html\\squirrel.svg"
+            "TargetName" = "8:squirrel.svg"
+            "Tag" = "8:"
+            "Folder" = "8:_328950E660704BD7856D4AF4E7C70906"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -1126,6 +1184,26 @@
             "TargetName" = "8:bootstrap-grid.css.map"
             "Tag" = "8:"
             "Folder" = "8:_870F872D462941D89217436F3A130BA9"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_ACCE647FD80E4A1EA799D41A1F9A1948"
+            {
+            "SourcePath" = "8:..\\server\\html\\IcoMoon-Free.css"
+            "TargetName" = "8:IcoMoon-Free.css"
+            "Tag" = "8:"
+            "Folder" = "8:_328950E660704BD7856D4AF4E7C70906"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"

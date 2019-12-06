@@ -69,6 +69,8 @@ echo Checking "nginx-1.12.2.zip" existence...
 if not exist "..\..\YaizuComLib\src\stkwebapp\nginx-1.12.2.zip" goto ERRORRAISED
 echo Checking "jquery-3.2.0.min.js" existence...
 if not exist "..\..\YaizuComLib\src\stkwebapp\jquery-3.2.0.min.js" goto ERRORRAISED
+echo Checking "IcoMoon-Free.ttf" existence...
+if not exist "..\..\YaizuComLib\src\stkwebapp\IcoMoon-Free.ttf" goto ERRORRAISED
 echo Checking "bootstrap-4.4.1-dist.zip" existence...
 if not exist "..\..\YaizuComLib\src\stkwebapp\bootstrap-4.4.1-dist.zip" goto ERRORRAISED
 echo Checking "stkcommon.js" existence...
@@ -114,6 +116,9 @@ if exist server\bootstrap rmdir /S /Q server\bootstrap
 copy "..\src\sample\sample.html" server\html
 copy "..\..\YaizuComLib\src\stkwebapp\stkcommon.js" server\html
 copy "..\..\YaizuComLib\src\stkwebapp\jquery-3.2.0.min.js" server\html
+copy "..\..\YaizuComLib\src\stkwebapp\IcoMoon-Free.ttf" server\html
+copy "..\..\YaizuComLib\src\stkwebapp\IcoMoon-Free.css" server\html
+copy "..\..\YaizuComLib\src\stkwebapp\squirrel.svg" server\html
 
 
 rem ########## Making installer ##########
