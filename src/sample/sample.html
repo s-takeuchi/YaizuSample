@@ -5,6 +5,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <link href="bootstrap-4.4.1-dist/css/bootstrap.min.css" rel="stylesheet" media="screen">
+    <link href="IcoMoon-Free.css" rel="stylesheet">
     <script src="jquery-3.2.0.min.js"></script>
     <script src="bootstrap-4.4.1-dist/js/bootstrap.bundle.min.js"></script>
 
@@ -267,9 +268,17 @@
             }
         }
         if (foundFlag == true) {
+            clearRsCommand();
+            addRsCommand('displayAgentStatusCommandDlg()', 'icon-stats-bars', true);
+            addRsCommand('displayExecCommandDlg()', 'icon-play', true);
+            addRsCommand('', 'icon-bin', true);
             $('#setAgentStatusCommand').removeClass('disabled');
             $('#execOpeCommand').removeClass('disabled');
         } else {
+            clearRsCommand();
+            addRsCommand('', 'icon-stats-bars', false);
+            addRsCommand('', 'icon-play', false);
+            addRsCommand('', 'icon-bin', false);
             $('#setAgentStatusCommand').addClass('disabled');
             $('#execOpeCommand').addClass('disabled');
         }
@@ -815,12 +824,19 @@
 
     function activateTopic(id) {
         refreshInfo();
-        var Rows = document.getElementsByClassName("row");
-        for (var Loop = 0; Loop < Rows.length; Loop++) {
-            Rows[Loop].style.display = 'none'
-        }
+        $('#agtinfo').css('display', 'none');
+        $('#svrinfo').css('display', 'none');
+        $('#command').css('display', 'none');
+        $('#loginfo').css('display', 'none');
+        $('#usermgt').css('display', 'none');
+
         var activateTarget = document.getElementById(id);
         activateTarget.style.display = 'block'
+
+        clearRsCommand();
+        if (id === 'agtinfo') {
+            switchAgentInfoButton();
+        }
     }
 
     function checkLogin() {
