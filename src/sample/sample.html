@@ -317,8 +317,8 @@
         $('#inputDlgModalBody').append(btnGrp);
         $('#inputDlgModalBody').append('</p>');
 
-        $('#inputDlgModalBody').append('<button type="button" id="OK" class="btn btn-primary" onclick="closeExecCommandDlg(true)">Execute</button> ');
-        $('#inputDlgModalBody').append('<button type="button" id="Cancel" class="btn btn-primary" onclick="closeExecCommandDlg(false)">Cancel</button> ');
+        $('#inputDlgModalBody').append('<button type="button" id="OK" class="btn btn-dark" onclick="closeExecCommandDlg(true)">Execute</button> ');
+        $('#inputDlgModalBody').append('<button type="button" id="Cancel" class="btn btn-dark" onclick="closeExecCommandDlg(false)">Cancel</button> ');
         $('#inputDlgModal').modal('show');
     }
 
@@ -374,8 +374,8 @@
         $('#inputDlgModalBody').append(btnGrp);
         $('#inputDlgModalBody').append('</p>');
 
-        $('#inputDlgModalBody').append('<button type="button" id="OK" class="btn btn-primary" onclick="closeAgentStatusCommandDlg(true)">OK</button> ');
-        $('#inputDlgModalBody').append('<button type="button" id="Cancel" class="btn btn-primary" onclick="closeAgentStatusCommandDlg(false)">Cancel</button> ');
+        $('#inputDlgModalBody').append('<button type="button" id="OK" class="btn btn-dark" onclick="closeAgentStatusCommandDlg(true)">OK</button> ');
+        $('#inputDlgModalBody').append('<button type="button" id="Cancel" class="btn btn-dark" onclick="closeAgentStatusCommandDlg(false)">Cancel</button> ');
         $('#inputDlgModal').modal('show');
     }
 
@@ -871,7 +871,7 @@
             { id : 'loginfo', actApiName : 'activateTopic', title : 'Audit Log' },
             { id : 'usermgt', actApiName : 'activateTopic', title : 'User Management' }
         ];
-        initMainPage(contents);
+        initMainPage('SERVAL', contents);
         $(function() {
             $(".modal-dialog").css({
                 "width" : "98%",
@@ -888,8 +888,8 @@
     <div id="inputDlgModal" class="modal fade" tabindex="-1" role="dialog" data-keyboard="false" data-backdrop="static">
         <div class="modal-dialog">
             <div class="modal-content">
-                <div class="modal-header" id="inputDlgModalTitle">
-                </div>
+                <h5 class="modal-header" id="inputDlgModalTitle">
+                </h5>
                 <div class="modal-body" id="inputDlgModalBody">
                 </div>
             </div>
