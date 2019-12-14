@@ -300,10 +300,7 @@
 
         var commandList = getArray(responseData['API_GET_COMMAND'].Command);
 
-        $('#inputDlgModalTitle').empty();
-        $('#inputDlgModalBody').empty();
-
-        $('#inputDlgModalTitle').append('<h5 class="modal-title">' + getClientMessage('SELOPCMD') + '</h5>');
+        var execCommandDlg = $('<div/>')
 
         var btnGrp = $('<div class="btn-group">');
         btnGrp.append('<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><span id="selectedExecCommand">' + getClientMessage('SELCMD') + '</span><span class="caret"></span></button>');
@@ -312,14 +309,15 @@
             ddMenu.append('<li role="presentation"><a onclick="selectExecCommand(' + loop + ')" role="menuitem" tabindex="-1" href="#">' + commandList[loop].Name + '</a></li>');
         }
         btnGrp.append(ddMenu);
-        $('#inputDlgModalBody').append('<p>');
-        $('#inputDlgModalBody').append(getClientMessage('COMMANDLABEL'));
-        $('#inputDlgModalBody').append(btnGrp);
-        $('#inputDlgModalBody').append('</p>');
+        execCommandDlg.append('<p>');
+        execCommandDlg.append(getClientMessage('COMMANDLABEL'));
+        execCommandDlg.append(btnGrp);
+        execCommandDlg.append('</p>');
 
-        $('#inputDlgModalBody').append('<button type="button" id="OK" class="btn btn-dark" onclick="closeExecCommandDlg(true)">Execute</button> ');
-        $('#inputDlgModalBody').append('<button type="button" id="Cancel" class="btn btn-dark" onclick="closeExecCommandDlg(false)">Cancel</button> ');
-        $('#inputDlgModal').modal('show');
+        execCommandDlg.append('<button type="button" id="OK" class="btn btn-dark" onclick="closeExecCommandDlg(true)">Execute</button> ');
+        execCommandDlg.append('<button type="button" id="Cancel" class="btn btn-dark" onclick="closeExecCommandDlg(false)">Cancel</button> ');
+
+        showInputModal('<h5 class="modal-title">' + getClientMessage('SELOPCMD') + '</h5>', execCommandDlg);
     }
 
     function closeExecCommandDlg(okFlag) {
@@ -334,7 +332,7 @@
             }
             apiCall(null, null, null, '', refreshInfo);
         }
-        $('#inputDlgModal').modal('hide');
+        closeInputModal();
     }
 
     function selectExecCommand(execCommand) {
@@ -357,10 +355,7 @@
 
         var commandList = getArray(responseData['API_GET_COMMAND'].Command);
 
-        $('#inputDlgModalTitle').empty();
-        $('#inputDlgModalBody').empty();
-
-        $('#inputDlgModalTitle').append('<h5 class="modal-title">' + getClientMessage('SELSTATUSCMD') + '</h5>');
+        var execSaCommandDlg = $('<div/>')
 
         var btnGrp = $('<div class="btn-group">');
         btnGrp.append('<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><span id="selectedAgentStatus">' + getAgentStatusCommand() + '</span><span class="caret"></span></button>');
@@ -369,14 +364,15 @@
             ddMenu.append('<li role="presentation"><a onclick="selectAgentStatusCommand(' + loop + ')" role="menuitem" tabindex="-1" href="#">' + commandList[loop].Name + '</a></li>');
         }
         btnGrp.append(ddMenu);
-        $('#inputDlgModalBody').append('<p>');
-        $('#inputDlgModalBody').append(getClientMessage('COMMANDLABEL'));
-        $('#inputDlgModalBody').append(btnGrp);
-        $('#inputDlgModalBody').append('</p>');
+        execSaCommandDlg.append('<p>');
+        execSaCommandDlg.append(getClientMessage('COMMANDLABEL'));
+        execSaCommandDlg.append(btnGrp);
+        execSaCommandDlg.append('</p>');
 
-        $('#inputDlgModalBody').append('<button type="button" id="OK" class="btn btn-dark" onclick="closeAgentStatusCommandDlg(true)">OK</button> ');
-        $('#inputDlgModalBody').append('<button type="button" id="Cancel" class="btn btn-dark" onclick="closeAgentStatusCommandDlg(false)">Cancel</button> ');
-        $('#inputDlgModal').modal('show');
+        execSaCommandDlg.append('<button type="button" id="OK" class="btn btn-dark" onclick="closeAgentStatusCommandDlg(true)">OK</button> ');
+        execSaCommandDlg.append('<button type="button" id="Cancel" class="btn btn-dark" onclick="closeAgentStatusCommandDlg(false)">Cancel</button> ');
+
+        showInputModal('<h5 class="modal-title">' + getClientMessage('SELSTATUSCMD') + '</h5>', execSaCommandDlg);
     }
 
     function closeAgentStatusCommandDlg(okFlag) {
@@ -391,7 +387,7 @@
             }
             apiCall(null, null, null, '', refreshInfo);
         }
-        $('#inputDlgModal').modal('hide');
+        closeInputModal();
     }
 
     function getAgentStatusCommand() {
@@ -879,16 +875,6 @@
 </head>
 
 <body>
-    <div id="inputDlgModal" class="modal fade" tabindex="-1" role="dialog" data-keyboard="false" data-backdrop="static">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <h5 class="modal-header" id="inputDlgModalTitle">
-                </h5>
-                <div class="modal-body" id="inputDlgModalBody">
-                </div>
-            </div>
-        </div>
-    </div>
 </body>
 
 </html>
