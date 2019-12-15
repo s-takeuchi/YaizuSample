@@ -842,7 +842,6 @@
         if (statusCode['API_GET_USER'] != 200) {
             return false;
         } else {
-            $('#container').show();
             userRole = responseData['API_GET_USER'].User.Role;
             if (userRole == 1) {
                 $('#menu-agtinfo').show();
