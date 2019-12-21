@@ -269,7 +269,7 @@
         }
         if (foundFlag == true) {
             clearRsCommand();
-            addRsCommand('', 'icon-checkmark', true);
+            addRsCommand('', 'icon-checkbox-checked', true);
             addRsCommand('displayAgentStatusCommandDlg()', 'icon-stats-bars', true);
             addRsCommand('displayExecCommandDlg()', 'icon-play', true);
             addRsCommand('', 'icon-bin', true);
@@ -277,7 +277,7 @@
             $('#execOpeCommand').removeClass('disabled');
         } else {
             clearRsCommand();
-            addRsCommand('', 'icon-checkmark', true);
+            addRsCommand('', 'icon-checkbox-checked', true);
             addRsCommand('', 'icon-stats-bars', false);
             addRsCommand('', 'icon-play', false);
             addRsCommand('', 'icon-bin', false);
@@ -303,7 +303,7 @@
         var execCommandDlg = $('<div/>')
 
         var btnGrp = $('<div class="btn-group">');
-        btnGrp.append('<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><span id="selectedExecCommand">' + getClientMessage('SELCMD') + '</span><span class="caret"></span></button>');
+        btnGrp.append('<button type="button" class="btn btn-dark dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><span id="selectedExecCommand">' + getClientMessage('SELCMD') + '</span><span class="caret"></span></button>');
         var ddMenu = $('<ul class="dropdown-menu" role="menu">');
         for (var loop = 0; commandList != null && loop < commandList.length; loop++) {
             ddMenu.append('<li role="presentation"><a onclick="selectExecCommand(' + loop + ')" role="menuitem" tabindex="-1" href="#">' + commandList[loop].Name + '</a></li>');
@@ -358,7 +358,7 @@
         var execSaCommandDlg = $('<div/>')
 
         var btnGrp = $('<div class="btn-group">');
-        btnGrp.append('<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><span id="selectedAgentStatus">' + getAgentStatusCommand() + '</span><span class="caret"></span></button>');
+        btnGrp.append('<button type="button" class="btn btn-dark dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><span id="selectedAgentStatus">' + getAgentStatusCommand() + '</span><span class="caret"></span></button>');
         var ddMenu = $('<ul class="dropdown-menu" role="menu">');
         for (var loop = 0; commandList != null && loop < commandList.length; loop++) {
             ddMenu.append('<li role="presentation"><a onclick="selectAgentStatusCommand(' + loop + ')" role="menuitem" tabindex="-1" href="#">' + commandList[loop].Name + '</a></li>');
@@ -465,7 +465,7 @@
             selectedPollingInterval = 3;
         }
         var btnGrp = $('<div class="btn-group">');
-        btnGrp.append('<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><span id="selectedPI">' + pollingIntervalStr[selectedPollingInterval] + '</span><span class="caret"></span></button>');
+        btnGrp.append('<button type="button" class="btn btn-dark dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><span id="selectedPI">' + pollingIntervalStr[selectedPollingInterval] + '</span><span class="caret"></span></button>');
         var ddMenu = $('<ul class="dropdown-menu" role="menu">');
         ddMenu.append('<li role="presentation"><a onclick="selectPollingInterval(0)" role="menuitem" tabindex="-1" href="#">' + pollingIntervalStr[0] + '</a></li>');
         ddMenu.append('<li role="presentation"><a onclick="selectPollingInterval(1)" role="menuitem" tabindex="-1" href="#">' + pollingIntervalStr[1] + '</a></li>');
@@ -488,7 +488,7 @@
             selectedStatusAcquisitionInterval = 3;
         }
         var btnGrp = $('<div class="btn-group">');
-        btnGrp.append('<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><span id="selectedSAI">' + statusAcquisitionIntervalStr[selectedStatusAcquisitionInterval] + '</span><span class="caret"></span></button>');
+        btnGrp.append('<button type="button" class="btn btn-dark dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><span id="selectedSAI">' + statusAcquisitionIntervalStr[selectedStatusAcquisitionInterval] + '</span><span class="caret"></span></button>');
         var ddMenu = $('<ul class="dropdown-menu" role="menu">');
         ddMenu.append('<li role="presentation"><a onclick="selectStatusAcquisitionInterval(0)" role="menuitem" tabindex="-1" href="#">' + statusAcquisitionIntervalStr[0] + '</a></li>');
         ddMenu.append('<li role="presentation"><a onclick="selectStatusAcquisitionInterval(1)" role="menuitem" tabindex="-1" href="#">' + statusAcquisitionIntervalStr[1] + '</a></li>');
