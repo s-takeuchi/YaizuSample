@@ -19,12 +19,12 @@ cp sample.service $BUILDDIR/SOURCES
 cp sample_nginx.conf $BUILDDIR/SOURCES
 cp sample.html $BUILDDIR/SOURCES
 cp sample.dat $BUILDDIR/SOURCES
+cp squirrel.svg $BUILDDIR/SOURCES
 cp ../../../YaizuComLib/src/stkwebapp/stkcommon.js $BUILDDIR/SOURCES
 cp ../../../YaizuComLib/src/stkwebapp/jquery-3.2.0.min.js $BUILDDIR/SOURCES
 cp ../../../YaizuComLib/src/stkwebapp/bootstrap-4.4.1-dist.zip $BUILDDIR/SOURCES
 cp ../../../YaizuComLib/src/stkwebapp/IcoMoon-Free.css $BUILDDIR/SOURCES
 cp ../../../YaizuComLib/src/stkwebapp/IcoMoon-Free.ttf $BUILDDIR/SOURCES
-cp ../../../YaizuComLib/src/stkwebapp/squirrel.svg $BUILDDIR/SOURCES
 cd ../../../YaizuComLib/src/stkwebapp
 make all
 cp stkwebappstop $BUILDDIR/SOURCES/samplestop

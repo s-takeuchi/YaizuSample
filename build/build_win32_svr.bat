@@ -114,11 +114,11 @@ xcopy /y /q /i /s /e "server\bootstrap\bootstrap-4.4.1-dist" server\html\bootstr
 if exist server\bootstrap rmdir /S /Q server\bootstrap
 
 copy "..\src\sample\sample.html" server\html
+copy "..\src\sample\squirrel.svg" server\html
 copy "..\..\YaizuComLib\src\stkwebapp\stkcommon.js" server\html
 copy "..\..\YaizuComLib\src\stkwebapp\jquery-3.2.0.min.js" server\html
 copy "..\..\YaizuComLib\src\stkwebapp\IcoMoon-Free.ttf" server\html
 copy "..\..\YaizuComLib\src\stkwebapp\IcoMoon-Free.css" server\html
-copy "..\..\YaizuComLib\src\stkwebapp\squirrel.svg" server\html
 
 
 rem ########## Making installer ##########
