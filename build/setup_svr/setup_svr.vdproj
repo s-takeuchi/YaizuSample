@@ -315,6 +315,12 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_CF2EC777451142AC9AE52D4ABD1898AB"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_D126FAF16DEF45E1A06E65753D706697"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -1464,6 +1470,26 @@
             "TargetName" = "8:bootstrap.min.js"
             "Tag" = "8:"
             "Folder" = "8:_97BBF0464A424B6AA07D795EDD0BAB5E"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_CF2EC777451142AC9AE52D4ABD1898AB"
+            {
+            "SourcePath" = "8:..\\server\\html\\stkcommon.css"
+            "TargetName" = "8:stkcommon.css"
+            "Tag" = "8:"
+            "Folder" = "8:_328950E660704BD7856D4AF4E7C70906"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"

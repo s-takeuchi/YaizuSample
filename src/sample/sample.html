@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <link href="bootstrap-4.4.1-dist/css/bootstrap.min.css" rel="stylesheet" media="screen">
     <link href="IcoMoon-Free.css" rel="stylesheet">
+    <link href="stkcommon.css" rel="stylesheet">
     <script src="jquery-3.2.0.min.js"></script>
     <script src="bootstrap-4.4.1-dist/js/bootstrap.bundle.min.js"></script>
 
@@ -262,7 +263,7 @@
     function switchAgentInfoButton() {
         var AgentInfo = getArray(responseData['API_GET_AGTINFO'].AgentInfo);
         var foundFlag = false;
-        for (var loop = 0; loop < AgentInfo.length; loop++) {
+        for (var loop = 0; AgentInfo != null && loop < AgentInfo.length; loop++) {
             if ($('#agtInfoId' + loop).prop('checked') == true) {
                 foundFlag = true;
             }
@@ -277,7 +278,11 @@
             $('#execOpeCommand').removeClass('disabled');
         } else {
             clearRsCommand();
-            addRsCommand('', 'icon-checkbox-checked', true);
+            if (AgentInfo != null && AgentInfo.length != 0) {
+                addRsCommand('', 'icon-checkbox-checked', true);
+            } else {
+                addRsCommand('', 'icon-checkbox-checked', false);
+            }
             addRsCommand('', 'icon-stats-bars', false);
             addRsCommand('', 'icon-play', false);
             addRsCommand('', 'icon-bin', false);
