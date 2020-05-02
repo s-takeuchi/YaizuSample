@@ -28,7 +28,7 @@ cp ../../../YaizuComLib/src/stkwebapp/IcoMoon-Free.css $BUILDDIR/SOURCES
 cp ../../../YaizuComLib/src/stkwebapp/IcoMoon-Free.ttf $BUILDDIR/SOURCES
 cd ../../../YaizuComLib/src/stkwebapp
 make all
-cp stkwebappstop $BUILDDIR/SOURCES/samplestop
+cp stkwebappstop $BUILDDIR/SOURCES/stopsample
 cd $BUILDDIR/SOURCES
 unzip $BUILDDIR/SOURCES/bootstrap-4.4.1-dist.zip
 cp $BUILDDIR/SOURCES/bootstrap-4.4.1-dist/css/* $BUILDDIR/SOURCES
@@ -65,7 +65,7 @@ Source16: bootstrap-reboot.css.map
 Source17: bootstrap-reboot.min.css
 Source18: bootstrap-reboot.min.css.map
 Source23: sample.dat
-Source24: samplestop
+Source24: stopsample
 Source25: stkcommon.js
 Source26: stkcommon.css
 Source30: bootstrap.bundle.js
@@ -157,7 +157,7 @@ install -p -m 644 %{SOURCE42} %{buildroot}/%{_datarootdir}/nginx/html/squirrel.s
 %{_datarootdir}/nginx/html/bootstrap-4.4.1-dist/js/bootstrap.min.js
 %{_datarootdir}/nginx/html/bootstrap-4.4.1-dist/js/bootstrap.min.js.map
 %config(noreplace) %{_sysconfdir}/sample.dat
-%{_bindir}/samplestop
+%{_bindir}/stopsample
 %{_datarootdir}/nginx/html/IcoMoon-Free.css
 %{_datarootdir}/nginx/html/IcoMoon-Free.ttf
 %{_datarootdir}/nginx/html/squirrel.svg

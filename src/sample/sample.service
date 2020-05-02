@@ -6,7 +6,7 @@ After=network.service
 Type=simple
 Restart=no
 ExecStart=/usr/bin/sample
-ExecStop=/usr/bin/samplestop sample.conf
+ExecStop=/usr/bin/stopsample sample.conf /usr/bin/sample
 KillMode=none
 
 [Install]
