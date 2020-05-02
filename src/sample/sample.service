@@ -7,7 +7,7 @@ Type=simple
 Restart=no
 ExecStart=/usr/bin/sample
 ExecStop=/usr/bin/stopsample sample.conf /usr/bin/sample
-KillMode=none
+KillMode=process
 
 [Install]
 WantedBy=multi-user.target
