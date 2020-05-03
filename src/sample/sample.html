@@ -798,7 +798,7 @@
     ////////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////////////////////////////////////////////////
 
-    function getLanguage() {
+    function initServal() {
         if (statusCode['API_GET_LANG'] == -1 || statusCode['API_GET_LANG'] == 0) {
             return;
         }
@@ -807,6 +807,7 @@
         } else {
             setClientLanguage(0);
         }
+        showLoginModal(checkLogin);
     }
 
     function refreshInfo() {
@@ -843,10 +844,18 @@
     }
 
     function checkLogin() {
-        sendRequestRecvResponse('GET', '/api/user/', null, 'API_GET_USER', false);
+        apiCallSync('GET', '/api/user/', null, 'API_GET_USER');
         if (statusCode['API_GET_USER'] != 200) {
             return false;
         } else {
+            var contents = [
+                { id : 'agtinfo', actApiName : 'activateTopic', title : 'Agent Info' },
+                { id : 'svrinfo', actApiName : 'activateTopic', title : 'Server Info' },
+                { id : 'command', actApiName : 'activateTopic', title : 'Command' },
+                { id : 'loginfo', actApiName : 'activateTopic', title : 'Audit Log' },
+                { id : 'usermgt', actApiName : 'activateTopic', title : 'User Management' }
+            ];
+            initMainPage('SERVAL', 'squirrel.svg', contents);
             userRole = responseData['API_GET_USER'].User.Role;
             if (userRole == 1) {
                 $('#menu-agtinfo').show();
@@ -863,16 +872,7 @@
 
     window.onload = function() {
         initClientMessage();
-        apiCall('GET', '/api/language/', null, 'API_GET_LANG', getLanguage);
-        var contents = [
-            { id : 'agtinfo', actApiName : 'activateTopic', title : 'Agent Info' },
-            { id : 'svrinfo', actApiName : 'activateTopic', title : 'Server Info' },
-            { id : 'command', actApiName : 'activateTopic', title : 'Command' },
-            { id : 'loginfo', actApiName : 'activateTopic', title : 'Audit Log' },
-            { id : 'usermgt', actApiName : 'activateTopic', title : 'User Management' }
-        ];
-        initMainPage('SERVAL', 'squirrel.svg', contents);
-        showLoginModal(checkLogin);
+        apiCall('GET', '/api/language/', null, 'API_GET_LANG', initServal);
     }
 
     </script>
