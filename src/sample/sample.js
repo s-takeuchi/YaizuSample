@@ -828,10 +828,17 @@ function activateTopic(id) {
     }
 }
 
-function checkLogin() {
-    apiCallSync('GET', '/api/user/', null, 'API_GET_USER');
-    if (statusCode['API_GET_USER'] != 200) {
-        return false;
+function checkLogin(dummyId, dummyPw) {
+    apiCall('GET', '/api/user/', null, 'API_GET_USER', checkLoginAfterApiCall);
+}
+
+function checkLoginAfterApiCall() {
+    if (statusCode['API_GET_USER'] == -1 || statusCode['API_GET_USER'] == 0) {
+        setLoginResult(2);
+        return;
+    } else if (statusCode['API_GET_USER'] != 200) {
+        setLoginResult(1);
+        return;
     } else {
         var contents = [
             { id : 'agtinfo', actApiName : 'activateTopic', title : 'Agent Info' },
@@ -851,7 +858,8 @@ function checkLogin() {
             $('#menu-usermgt').show();
         }
         refreshInfo();
-        return true;
+        setLoginResult(0);
+        return;
     }
 }
 
