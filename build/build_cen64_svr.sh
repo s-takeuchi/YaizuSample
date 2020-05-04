@@ -18,6 +18,7 @@ echo serviceport=8081 >> $BUILDDIR/SOURCES/sample.conf
 cp sample.service $BUILDDIR/SOURCES
 cp sample_nginx.conf $BUILDDIR/SOURCES
 cp sample.html $BUILDDIR/SOURCES
+cp sample.js $BUILDDIR/SOURCES
 cp sample.dat $BUILDDIR/SOURCES
 cp squirrel.svg $BUILDDIR/SOURCES
 cp ../../../YaizuComLib/src/stkwebapp/stkcommon.js $BUILDDIR/SOURCES
@@ -68,6 +69,7 @@ Source23: sample.dat
 Source24: stopsample
 Source25: stkcommon.js
 Source26: stkcommon.css
+Source27: sample.js
 Source30: bootstrap.bundle.js
 Source31: bootstrap.bundle.js.map
 Source32: bootstrap.bundle.min.js
@@ -114,6 +116,7 @@ install -p -m 644 %{SOURCE23} %{buildroot}/%{_sysconfdir}
 install -p -m 755 %{SOURCE24} %{buildroot}/%{_bindir}
 install -p -m 644 %{SOURCE25} %{buildroot}/%{_datarootdir}/nginx/html
 install -p -m 644 %{SOURCE26} %{buildroot}/%{_datarootdir}/nginx/html
+install -p -m 644 %{SOURCE27} %{buildroot}/%{_datarootdir}/nginx/html
 install -p -m 644 %{SOURCE30} %{buildroot}/%{_datarootdir}/nginx/html/bootstrap-4.4.1-dist/js
 install -p -m 644 %{SOURCE31} %{buildroot}/%{_datarootdir}/nginx/html/bootstrap-4.4.1-dist/js
 install -p -m 644 %{SOURCE32} %{buildroot}/%{_datarootdir}/nginx/html/bootstrap-4.4.1-dist/js
@@ -133,6 +136,7 @@ install -p -m 644 %{SOURCE42} %{buildroot}/%{_datarootdir}/nginx/html/squirrel.s
 %{_sysconfdir}/nginx/conf.d/sample_nginx.conf
 %config(noreplace) %{_sysconfdir}/systemd/system/sample.service
 %{_datarootdir}/nginx/html/sample.html
+%{_datarootdir}/nginx/html/sample.js
 %{_datarootdir}/nginx/html/stkcommon.js
 %{_datarootdir}/nginx/html/stkcommon.css
 %{_datarootdir}/nginx/html/jquery-3.2.0.min.js

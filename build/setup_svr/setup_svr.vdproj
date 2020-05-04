@@ -21,6 +21,12 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_065632D1340845D48908F6D00183D218"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_06A46CD034E34BD696E824267FDBD232"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -490,6 +496,26 @@
             "TargetName" = "8:nginx.vim"
             "Tag" = "8:"
             "Folder" = "8:_4B788674ED4E47FD926B63D19EFA211C"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_065632D1340845D48908F6D00183D218"
+            {
+            "SourcePath" = "8:..\\server\\html\\sample.js"
+            "TargetName" = "8:sample.js"
+            "Tag" = "8:"
+            "Folder" = "8:_328950E660704BD7856D4AF4E7C70906"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"

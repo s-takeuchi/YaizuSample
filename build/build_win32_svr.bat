@@ -85,6 +85,8 @@ echo Checking "sample.conf" existence...
 if not exist "..\src\sample\sample.conf" goto ERRORRAISED
 echo Checking "sample.html" existence...
 if not exist "..\src\sample\sample.html" goto ERRORRAISED
+echo Checking "sample.js" existence...
+if not exist "..\src\sample\sample.js" goto ERRORRAISED
 
 
 rem ########## Deployment of files and folders ##########
@@ -116,6 +118,7 @@ xcopy /y /q /i /s /e "server\bootstrap\bootstrap-4.4.1-dist" server\html\bootstr
 if exist server\bootstrap rmdir /S /Q server\bootstrap
 
 copy "..\src\sample\sample.html" server\html
+copy "..\src\sample\sample.js" server\html
 copy "..\src\sample\squirrel.svg" server\html
 copy "..\..\YaizuComLib\src\stkwebapp\stkcommon.js" server\html
 copy "..\..\YaizuComLib\src\stkwebapp\stkcommon.css" server\html
