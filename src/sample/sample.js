@@ -829,6 +829,7 @@ function activateTopic(id) {
 }
 
 function checkLogin(dummyId, dummyPw) {
+    setAuthenticationToken(dummyId + ' ' + dummyPw);
     apiCall('GET', '/api/user/', null, 'API_GET_USER', checkLoginAfterApiCall);
 }
 
