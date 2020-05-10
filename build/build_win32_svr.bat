@@ -50,21 +50,21 @@ if exist deployment\YaizuSample.msi del deployment\YaizuSample.msi
 rem ########## Building ##########
 echo;
 echo Building sample.sln...
-%DEVENV% "..\src\sample\sample.sln" /rebuild Release 
+%DEVENV% "..\src\sample\sample.sln" /rebuild "Release|x64"
 echo Building stkdatagui.sln...
-%DEVENV% "..\..\YaizuComLib\src\stkdatagui\stkdatagui.sln" /rebuild Release
+%DEVENV% "..\..\YaizuComLib\src\stkdatagui\stkdatagui.sln" /rebuild "Release|x64"
 echo Building stkwebappcmd.sln...
-%DEVENV% "..\..\YaizuComLib\src\stkwebapp\stkwebappcmd.sln" /rebuild Release
+%DEVENV% "..\..\YaizuComLib\src\stkwebapp\stkwebappcmd.sln" /rebuild "Release|x64"
 
 
 rem ########## Checking file existence ##########
 echo;
 echo Checking "sample.exe" existence...
-if not exist "..\src\sample\Release\sample.exe" goto ERRORRAISED
+if not exist "..\src\sample\x64\Release\sample.exe" goto ERRORRAISED
 echo Checking "stkdatagui.exe" existence...
-if not exist "..\..\YaizuComLib\src\stkdatagui\Release\stkdatagui.exe" goto ERRORRAISED
+if not exist "..\..\YaizuComLib\src\stkdatagui\x64\Release\stkdatagui.exe" goto ERRORRAISED
 echo Checking "stkwebappcmd.exe" existence...
-if not exist "..\..\YaizuComLib\src\stkwebapp\Release\stkwebappcmd.exe" goto ERRORRAISED
+if not exist "..\..\YaizuComLib\src\stkwebapp\x64\Release\stkwebappcmd.exe" goto ERRORRAISED
 echo Checking "nginx-1.12.2.zip" existence...
 if not exist "..\..\YaizuComLib\src\stkwebapp\nginx-1.12.2.zip" goto ERRORRAISED
 echo Checking "jquery-3.2.0.min.js" existence...
@@ -94,12 +94,12 @@ echo;
 echo Deployment of files and folders...
 
 mkdir server
-copy "..\src\sample\Release\sample.exe" server
+copy "..\src\sample\x64\Release\sample.exe" server
 copy "..\src\sample\sample.dat" server
 copy "..\src\sample\sample.conf" server
 copy "..\..\YaizuComLib\src\stkwebapp\stkwebappcmd.conf" server
-copy "..\..\YaizuComLib\src\stkdatagui\Release\stkdatagui.exe" server
-copy "..\..\YaizuComLib\src\stkwebapp\Release\stkwebappcmd.exe" server
+copy "..\..\YaizuComLib\src\stkdatagui\x64\Release\stkdatagui.exe" server
+copy "..\..\YaizuComLib\src\stkwebapp\x64\Release\stkwebappcmd.exe" server
 
 mkdir server\nginx
 copy "..\..\YaizuComLib\src\stkwebapp\nginx-1.12.2.zip" server\nginx

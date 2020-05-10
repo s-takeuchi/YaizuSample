@@ -612,7 +612,7 @@ void DataAccess::GetFullPathFromFileName(wchar_t FullPath[DA_MAXLEN_OF_SERVERFIL
 		ColumnDataWStr* ColDat = (ColumnDataWStr*)RecDatSvrInfo->GetColumn(4);
 		if (ColDat != NULL) {
 			StkPlWcsCpy(FullPath, DA_MAXLEN_OF_SERVERFILENAME, ColDat->GetValue());
-			int FullPathLen = StkPlWcsLen(FullPath);
+			int FullPathLen = (int)StkPlWcsLen(FullPath);
 			if (FullPathLen >= 1) {
 #ifdef WIN32
 				if (FullPath[FullPathLen - 1] != L'\\') {

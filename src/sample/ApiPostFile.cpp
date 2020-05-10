@@ -27,7 +27,7 @@ StkObject* ApiPostFile::ExecuteImpl(StkObject* ReqObj, int Method, wchar_t UrlPa
 			return NULL;
 		}
 		wchar_t* FileDataPtr = FileData;
-		int FileDataLen = StkPlWcsLen(FileData);
+		int FileDataLen = (int)StkPlWcsLen(FileData);
 		unsigned char* DataChar = new unsigned char[1000001];
 		int DataCharIndex = 0;
 		wchar_t HexNum[128];
