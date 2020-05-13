@@ -50,17 +50,17 @@ if exist deployment\YaizuSampleAgent.msi del deployment\YaizuSampleAgent.msi
 rem ########## Building ##########
 echo;
 echo Building agent.sln...
-%MSBUILD% "..\src\agent\agent.sln" /t:clean;build /p:Configuration=Release
+%MSBUILD% "..\src\agent\agent.sln" /t:clean;build /p:Configuration=Release /p:platform="x64"
 echo Building agentsvc.sln...
-%MSBUILD% "..\src\agentsvc\agentsvc.sln" /t:clean;build /p:Configuration=Release
+%MSBUILD% "..\src\agentsvc\agentsvc.sln" /t:clean;build /p:Configuration=Release /p:platform="x64"
 
 
 rem ########## Checking file existence ##########
 echo;
 echo Checking "agent.exe" existence...
-if not exist "..\src\agent\Release\agent.exe" goto ERRORRAISED
+if not exist "..\src\agent\x64\Release\agent.exe" goto ERRORRAISED
 echo Checking "agentsvc.exe" existence...
-if not exist "..\src\agentsvc\Release\agentsvc.exe" goto ERRORRAISED
+if not exist "..\src\agentsvc\x64\Release\agentsvc.exe" goto ERRORRAISED
 echo Checking "agent.conf" existence...
 if not exist "..\src\agent\agent.conf" goto ERRORRAISED
 echo Checking "svcadd.bat" existence...

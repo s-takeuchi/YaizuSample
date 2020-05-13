@@ -69,7 +69,7 @@ StkObject* GetAgentInfoForOpStatus(int Status)
 int LoadAndPostFile(char* FileName, StkWebAppSend* SndObj)
 {
 	wchar_t* FileNameWc = StkPlCreateWideCharFromUtf8(FileName);
-	int FileSize = StkPlGetFileSize(FileNameWc);
+	int FileSize = (int)StkPlGetFileSize(FileNameWc);
 	if (FileSize < 0) {
 		return -1;
 	}
@@ -125,7 +125,7 @@ int GetAndSaveFile(char* FileName, size_t FileSize, StkWebAppSend* SndObj)
 {
 	int Result = 0;
 
-	int LoopCnt = FileSize / 1000000 + 1;
+	int LoopCnt = (int)FileSize / 1000000 + 1;
 
 	for (int Loop = 0; Loop < LoopCnt; Loop++) {
 		char Url[128] = "";
@@ -144,7 +144,7 @@ int GetAndSaveFile(char* FileName, size_t FileSize, StkWebAppSend* SndObj)
 			if (StkPlWcsCmp(CurResObj2->GetName(), L"FileData") == 0) {
 				wchar_t* FileData = CurResObj2->GetStringValue();
 				wchar_t* FileDataPtr = FileData;
-				int FileDataLen = StkPlWcsLen(FileData);
+				int FileDataLen = (int)StkPlWcsLen(FileData);
 				unsigned char* DataChar = new unsigned char[1000001];
 				int DataCharIndex = 0;
 				wchar_t HexNum[128];
