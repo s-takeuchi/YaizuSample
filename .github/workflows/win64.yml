@@ -17,8 +17,8 @@ jobs:
         git clone -q --branch=master https://github.com/s-takeuchi/YaizuComLib.git ../YaizuComLib
         git checkout master
         cd build
-        ./build_win32_svr.bat
-        ./build_win32_agt.bat
+        ./build_win64_svr.bat
+        ./build_win64_agt.bat
     - name: exec test
       env:
         GITHUBACTIONS: true

@@ -50,31 +50,31 @@ rem ########## Building ##########
 echo;
 echo Building sample.sln...
 rem Considering execution privilege, .exe is built as Debug. (Debug=AsInvoker, Release=AsAdmin)
-%MSBUILD% "..\src\sample\sample.sln" /t:clean;build /p:Configuration=Debug
+%MSBUILD% "..\src\sample\sample.sln" /t:clean;build /p:Configuration=Debug /p:platform="x64"
 IF %ERRORLEVEL% NEQ 0 goto ERRORRAISED
 echo Building sampletest.sln...
-%MSBUILD% "..\test\sampletest\sampletest.sln" /t:clean;build /p:Configuration=Release
+%MSBUILD% "..\test\sampletest\sampletest.sln" /t:clean;build /p:Configuration=Release /p:platform="x64"
 IF %ERRORLEVEL% NEQ 0 goto ERRORRAISED
 
 
 rem ########## Checking file existence ##########
 echo;
 echo Checking "sample.exe" existence...
-if not exist "..\src\sample\Debug\sample.exe" goto ERRORRAISED
+if not exist "..\src\sample\x64\Debug\sample.exe" goto ERRORRAISED
 echo Checking "sampletest.exe" existence...
-if not exist "..\test\sampletest\Release\sampletest.exe" goto ERRORRAISED
+if not exist "..\test\sampletest\x64\Release\sampletest.exe" goto ERRORRAISED
 
 
 rem ########## Deployment of files and folders ##########
 echo;
 echo Deployment of files and folders...
 mkdir server
-copy "..\src\sample\Debug\sample.exe" server
+copy "..\src\sample\x64\Debug\sample.exe" server
 copy "..\src\sample\sample.dat" server
 copy "..\src\sample\sample.conf" server
 echo servicehost=localhost>> server\sample.conf
 echo serviceport=10009>> server\sample.conf
-copy "..\test\sampletest\Release\sampletest.exe" server
+copy "..\test\sampletest\x64\Release\sampletest.exe" server
 
 
 rem ########## Testing ##########
