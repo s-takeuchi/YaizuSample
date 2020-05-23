@@ -74,8 +74,8 @@ echo;
 echo Deployment of files and folders...
 
 mkdir agent
-copy "..\src\agent\Release\agent.exe" agent
-copy "..\src\agentsvc\Release\agentsvc.exe" agent
+copy "..\src\agent\x64\Release\agent.exe" agent
+copy "..\src\agentsvc\x64\Release\agentsvc.exe" agent
 copy "..\src\agent\agent.conf" agent
 copy "..\src\agentsvc\svcadd.bat" agent
 copy "..\src\agentsvc\svcdel.bat" agent
