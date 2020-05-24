@@ -78,6 +78,7 @@
       <AdditionalDependencies>Ws2_32.lib;x64\Release\stkwebapp.lib;x64\Release\commonfunc.lib;x64\Release\stksocket.lib;x64\Release\stkpl.lib;x64\Release\stkthread.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <SubSystem>Console</SubSystem>
       <LinkTimeCodeGeneration>UseLinkTimeCodeGeneration</LinkTimeCodeGeneration>
+      <UACExecutionLevel>RequireAdministrator</UACExecutionLevel>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
