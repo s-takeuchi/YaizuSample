@@ -1,3 +1,6 @@
+LDFLAGS = -L/usr/local/lib64 -L/usr/local/lib
+LIBS    = -lssl -lcrypto
+
 sample : sample.o ApiBase.o ApiGetLogInfo.o ApiGetServerInfo.o ApiPostServerInfo.o ApiGetAgentInfo.o ApiPostAgentInfo.o ApiGetCommandForStatus.o ApiGetCommandForOperation.o ApiGetCommand.o ApiPostCommand.o ApiDeleteCommand.o ApiGetFile.o ApiPostFile.o ApiGetLanguage.o ApiGetUser.o dataaccess.o
 	cd ../../../YaizuComLib/src/stkpl; make
 	cp ../../../YaizuComLib/src/stkpl/stkpl.a .
@@ -12,7 +15,7 @@ sample : sample.o ApiBase.o ApiGetLogInfo.o ApiGetServerInfo.o ApiPostServerInfo
 	cd ../../../YaizuComLib/src/stkdata; make
 	cp ../../../YaizuComLib/src/stkdata/stkdata.a .
 
-	g++ -o sample sample.o ApiBase.o ApiGetLogInfo.o ApiGetServerInfo.o ApiPostServerInfo.o ApiGetAgentInfo.o ApiPostAgentInfo.o ApiGetCommandForStatus.o ApiGetCommandForOperation.o ApiGetCommand.o ApiPostCommand.o ApiDeleteCommand.o ApiGetFile.o ApiPostFile.o ApiGetLanguage.o ApiGetUser.o dataaccess.o stkpl.a stkwebapp.a commonfunc.a stksocket.a stkthread.a stkdata.a -std=c++1z -lstdc++fs -pthread -static-libgcc -static-libstdc++
+	g++ -o sample sample.o ApiBase.o ApiGetLogInfo.o ApiGetServerInfo.o ApiPostServerInfo.o ApiGetAgentInfo.o ApiPostAgentInfo.o ApiGetCommandForStatus.o ApiGetCommandForOperation.o ApiGetCommand.o ApiPostCommand.o ApiDeleteCommand.o ApiGetFile.o ApiPostFile.o ApiGetLanguage.o ApiGetUser.o dataaccess.o stkpl.a stkwebapp.a commonfunc.a stksocket.a stkthread.a stkdata.a -std=c++1z -lstdc++fs -pthread -static-libgcc -static-libstdc++ $(LDFLAGS) $(LIBS)
 
 ApiBase.o : ApiBase.cpp
 	g++ -c ApiBase.cpp -std=c++1z
