@@ -20,7 +20,7 @@ jobs:
         sudo make install
         git clone -q --branch=master https://github.com/s-takeuchi/YaizuComLib.git ../YaizuComLib
         git checkout master
-        cd build
+        cd ../build
         ./build_cen64_svr.sh
         ./build_cen64_agt.sh
     - name: exec test
