@@ -14,6 +14,7 @@ jobs:
       env:
         GITHUBACTIONS: true
       run: |
+        choco install openssl
         git clone -q --branch=master https://github.com/s-takeuchi/YaizuComLib.git ../YaizuComLib
         git checkout master
         cd build

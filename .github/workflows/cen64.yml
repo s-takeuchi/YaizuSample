@@ -12,6 +12,12 @@ jobs:
     - uses: actions/checkout@v1
     - name: exec build
       run: |
+        wget https://www.openssl.org/source/openssl-1.1.1g.tar.gz
+        tar -zxf openssl-1.1.1g.tar.gz
+        cd openssl-1.1.1g
+        ./config
+        make
+        sudo make install
         git clone -q --branch=master https://github.com/s-takeuchi/YaizuComLib.git ../YaizuComLib
         git checkout master
         cd build
