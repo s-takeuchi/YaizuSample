@@ -55,7 +55,7 @@
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>Ws2_32.lib;x64\Debug\commonfunc.lib;x64\Debug\stkwebapp.lib;x64\Debug\stkpl.lib;x64\Debug\stksocket.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>Ws2_32.lib;x64\Debug\commonfunc.lib;x64\Debug\stkwebapp.lib;x64\Debug\stkpl.lib;x64\Debug\stksocket.lib;Crypt32.lib;C:\Program Files\OpenSSL-Win64\lib\VC\static\libssl64MTd.lib;C:\Program Files\OpenSSL-Win64\lib\VC\static\libcrypto64MTd.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -73,7 +73,7 @@
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalDependencies>Ws2_32.lib;x64\Release\commonfunc.lib;x64\Release\stkwebapp.lib;x64\Release\stkpl.lib;x64\Release\stksocket.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>Ws2_32.lib;x64\Release\commonfunc.lib;x64\Release\stkwebapp.lib;x64\Release\stkpl.lib;x64\Release\stksocket.lib;Crypt32.lib;C:\Program Files\OpenSSL-Win64\lib\VC\static\libssl64MT.lib;C:\Program Files\OpenSSL-Win64\lib\VC\static\libcrypto64MT.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
