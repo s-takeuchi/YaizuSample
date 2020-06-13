@@ -128,14 +128,19 @@ void InitMessageResource()
 	MessageProc::AddJpn(MSG_AGENTINFO_NOT_FOUND, L"指定したエージェント情報が見つかりません。");
 }
 
-void Server(wchar_t* IpAddr, int Port, int NumOfWorkerThreads, int ThreadInterval)
+void Server(wchar_t* IpAddr, int Port, int NumOfWorkerThreads, int ThreadInterval, bool SecureMode, const char* PrivateKey, const char* Certificate)
 {
 	int Ids[MAX_NUM_OF_STKTHREADS];
 	for (int Loop = 0; Loop < NumOfWorkerThreads; Loop++) {
 		Ids[Loop] = 1000 + Loop;
 	}
 
-	StkWebApp* Soc = new StkWebApp(Ids, NumOfWorkerThreads, IpAddr, Port);
+	StkWebApp* Soc = NULL;
+	if (SecureMode) {
+		Soc = new StkWebApp(Ids, NumOfWorkerThreads, IpAddr, Port, PrivateKey, Certificate);
+	} else {
+		Soc = new StkWebApp(Ids, NumOfWorkerThreads, IpAddr, Port);
+	}
 	Soc->SetSendBufSize(5000000);
 	Soc->SetRecvBufSize(5000000);
 	for (int Loop = 0; Loop < NumOfWorkerThreads; Loop++) {
@@ -214,6 +219,11 @@ int main(int Argc, char* Argv[])
 	int Port = 0;
 	int NumOfWorkerThreads = 0;
 	int ThreadInterval = 0;
+	bool SecureMode = false;
+	char SecureModeStr[256] = "";
+	char PrivateKey[256] = "";
+	char Certificate[256] = "";
+
 	StkProperties *Prop = new StkProperties();
 	
 	if (Prop->GetProperties(L"sample.conf") == 0) {
@@ -249,6 +259,29 @@ int main(int Argc, char* Argv[])
 			ThreadInterval = 200;
 		}
 		StkPlPrintf("threadinterval property = %d\r\n", ThreadInterval);
+
+		// securemode
+		if (Prop->GetPropertyStr("securemode", SecureModeStr) == 0) {
+			if (StkPlStrCmp(SecureModeStr, "true") == 0) {
+				SecureMode = true;
+			}
+			if (StkPlStrCmp(SecureModeStr, "false") == 0) {
+				SecureMode = false;
+			}
+		}
+		StkPlPrintf("securemode property = %s\r\n", SecureMode? "true" : "false");
+
+		// privatekey
+		if (Prop->GetPropertyStr("privatekey", PrivateKey) != 0) {
+			//
+		}
+		StkPlPrintf("privatekey property = %s\r\n", PrivateKey);
+
+		// certificate
+		if (Prop->GetPropertyStr("certificate", Certificate) != 0) {
+			//
+		}
+		StkPlPrintf("certificate property = %s\r\n", Certificate);
 	} else {
 		StkPlPrintf("sample.conf is not found.\r\n");
 		return -1;
@@ -257,7 +290,7 @@ int main(int Argc, char* Argv[])
 	DataAccess::GetInstance()->CreateTables(L"sample.dat");
 	DataAccess::GetInstance()->AddLogMsg(MessageProc::GetMsgEng(MSG_SERVICESTARTED), MessageProc::GetMsgJpn(MSG_SERVICESTARTED));
 	wchar_t* IpAddr = StkPlCreateWideCharFromUtf8(IpAddrTmp);
-	Server(IpAddr, Port, NumOfWorkerThreads, ThreadInterval);
+	Server(IpAddr, Port, NumOfWorkerThreads, ThreadInterval, SecureMode, PrivateKey, Certificate);
 	delete IpAddr;
 	DataAccess::GetInstance()->AddLogMsg(MessageProc::GetMsgEng(MSG_SERVICESTOPPED), MessageProc::GetMsgJpn(MSG_SERVICESTOPPED));
 	DataAccess::GetInstance()->StopAutoSave(L"sample.dat");
