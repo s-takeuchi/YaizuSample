@@ -377,11 +377,12 @@ int StatusLoop(int TargetId)
 	return 0;
 }
 
-int LoadPropertyFile(wchar_t HostOrIpAddr[256], int* PortNum, wchar_t PathToBucket[256], wchar_t LcHostName[256])
+int LoadPropertyFile(wchar_t HostOrIpAddr[256], int* PortNum, wchar_t PathToBucket[256], wchar_t LcHostName[256], char TrustedCert[256])
 {
 	char TmpHostOrIpAddr[256] = "";
 	char TmpPathToBucket[256] = "";
 	char TmpHostName[256] = "";
+	char TmpSecureMode[256] = "";
 	StkProperties *Prop = new StkProperties();
 	if (Prop->GetProperties(L"agent.conf") == 0) {
 		// For targethost
@@ -414,6 +415,26 @@ int LoadPropertyFile(wchar_t HostOrIpAddr[256], int* PortNum, wchar_t PathToBuck
 		}
 		StkPlPrintf("hostname property = %s\r\n", TmpHostName);
 		StkPlConvUtf8ToWideChar(LcHostName, 256, TmpHostName);
+
+		// For trustedcert
+		if (Prop->GetPropertyStr("trustedcert", TrustedCert) != 0) {
+			//
+		}
+		StkPlPrintf("trustedcert property = %s\r\n", TrustedCert);
+
+		// securemode
+		bool SecureMode = false;
+		if (Prop->GetPropertyStr("securemode", TmpSecureMode) == 0) {
+			if (StkPlStrCmp(TmpSecureMode, "true") == 0) {
+				SecureMode = true;
+			}
+			if (StkPlStrCmp(TmpSecureMode, "false") == 0) {
+				SecureMode = false;
+				StkPlStrCpy(TrustedCert, 256, "");
+			}
+		}
+		StkPlPrintf("securemode property = %s\r\n", SecureMode ? "true" : "false");
+
 	} else {
 		StkPlPrintf("agent.conf is not found.\r\n");
 		return -1;
@@ -421,10 +442,15 @@ int LoadPropertyFile(wchar_t HostOrIpAddr[256], int* PortNum, wchar_t PathToBuck
 	return 0;
 }
 
-void StartXxx(wchar_t HostOrIpAddr[256], int PortNum, int InvalidDirectory)
+void StartXxx(wchar_t HostOrIpAddr[256], int PortNum, int InvalidDirectory, char TrustedCert[256])
 {
-	SoForTh1 = new StkWebAppSend(1, HostOrIpAddr, PortNum);
-	SoForTh2 = new StkWebAppSend(2, HostOrIpAddr, PortNum);
+	if (TrustedCert == NULL || StkPlStrCmp(TrustedCert, "") == 0) {
+		SoForTh1 = new StkWebAppSend(1, HostOrIpAddr, PortNum);
+		SoForTh2 = new StkWebAppSend(2, HostOrIpAddr, PortNum);
+	} else {
+		SoForTh1 = new StkWebAppSend(1, HostOrIpAddr, PortNum, TrustedCert, NULL);
+		SoForTh2 = new StkWebAppSend(2, HostOrIpAddr, PortNum, TrustedCert, NULL);
+	}
 	SoForTh1->SetTimeoutInterval(60000 * 16);
 	SoForTh2->SetTimeoutInterval(60000 * 16);
 	SoForTh1->SetSendBufSize(5000000);
@@ -452,8 +478,9 @@ void LoadPropertyFileAndStart()
 	wchar_t HostOrIpAddr[256] = L"";
 	int PortNum = 0;
 	wchar_t PathToBucket[256] = L"";
+	char TrustedCert[256] = "";
 
-	LoadPropertyFile(HostOrIpAddr, &PortNum, PathToBucket, HostName);
+	LoadPropertyFile(HostOrIpAddr, &PortNum, PathToBucket, HostName, TrustedCert);
 	if (HostName == NULL || StkPlWcsCmp(HostName, L"") == 0) {
 		StkPlGetHostName(HostName, 256);
 	}
@@ -461,7 +488,7 @@ void LoadPropertyFileAndStart()
 	if (StkPlWcsCmp(PathToBucket, L"") != 0) {
 		InvalidDirectory = ChangeCurrentDirectory(PathToBucket);
 	}
-	StartXxx(HostOrIpAddr, PortNum, InvalidDirectory);
+	StartXxx(HostOrIpAddr, PortNum, InvalidDirectory, TrustedCert);
 }
 
 int main(int argc, char* argv[])
@@ -469,7 +496,7 @@ int main(int argc, char* argv[])
 	wchar_t HostOrIpAddr[256] = L"";
 	int PortNum = 0;
 	wchar_t PathToBucket[256] = L"";
-	if (argc == 5) {
+	if (argc >= 5) {
 		StkPlPrintf("Agent starts\r\n");
 		StkPlConvUtf8ToWideChar(HostOrIpAddr, 256, argv[1]);
 		PortNum = StkPlAtoi(argv[2]);
@@ -479,10 +506,14 @@ int main(int argc, char* argv[])
 			InvalidDirectory = ChangeCurrentDirectory(PathToBucket);
 		}
 		StkPlConvUtf8ToWideChar(HostName, 256, argv[4]);
-		StartXxx(HostOrIpAddr, PortNum, InvalidDirectory);
+		if (argc == 6) {
+			StartXxx(HostOrIpAddr, PortNum, InvalidDirectory, argv[5]);
+		} else {
+			StartXxx(HostOrIpAddr, PortNum, InvalidDirectory, NULL);
+		}
 		while (true) { StkPlSleepMs(1000); }
 	} else {
-		StkPlPrintf("Usage: %s  destination_host_name_or_IP_addres  port_number  path_to_bucket  host_name", argv[0]);
+		StkPlPrintf("Usage: %s  destination_host_name_or_IP_addres  port_number  path_to_bucket  host_name  [trusted_certificate]", argv[0]);
 #ifdef WIN32
 		StartServiceCtrlDispatcher(ServiceTable);
 #else
