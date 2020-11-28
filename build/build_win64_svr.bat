@@ -87,6 +87,10 @@ echo Checking "sample.html" existence...
 if not exist "..\src\sample\sample.html" goto ERRORRAISED
 echo Checking "sample.js" existence...
 if not exist "..\src\sample\sample.js" goto ERRORRAISED
+echo Checking "squirrel.svg" existence...
+if not exist "..\src\sample\squirrel.svg" goto ERRORRAISED
+echo Checking "favicon-16x16.png" existence...
+if not exist "..\src\sample\favicon-16x16.png" goto ERRORRAISED
 
 
 rem ########## Deployment of files and folders ##########
@@ -117,9 +121,11 @@ popd
 xcopy /y /q /i /s /e "server\bootstrap\bootstrap-4.4.1-dist" server\html\bootstrap-4.4.1-dist
 if exist server\bootstrap rmdir /S /Q server\bootstrap
 
+mkdir server\html\img
 copy "..\src\sample\sample.html" server\html
 copy "..\src\sample\sample.js" server\html
 copy "..\src\sample\squirrel.svg" server\html
+copy "..\src\sample\favicon-16x16.png" server\html\img
 copy "..\..\YaizuComLib\src\stkwebapp\stkcommon.js" server\html
 copy "..\..\YaizuComLib\src\stkwebapp\stkcommon.css" server\html
 copy "..\..\YaizuComLib\src\stkwebapp\jquery-3.2.0.min.js" server\html

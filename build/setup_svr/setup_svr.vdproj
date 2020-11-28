@@ -183,6 +183,12 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_79D8A5F9184646C28B3AB59FE52C9456"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_7D9A84495ACF4BD3AB05984F4A35286D"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -1050,6 +1056,26 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_79D8A5F9184646C28B3AB59FE52C9456"
+            {
+            "SourcePath" = "8:..\\server\\html\\img\\favicon-16x16.png"
+            "TargetName" = "8:favicon-16x16.png"
+            "Tag" = "8:"
+            "Folder" = "8:_60A6F4559EAC4C6DB320E8DE1C0B1909"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_7D9A84495ACF4BD3AB05984F4A35286D"
             {
             "SourcePath" = "8:..\\server\\html\\bootstrap-4.4.1-dist\\js\\bootstrap.bundle.min.js"
@@ -1788,6 +1814,17 @@
                     "Property" = "8:_004A3AA6A267473BB4767923BA29CEAF"
                         "Folders"
                         {
+                            "{9EF0B969-E518-4E46-987F-47570745A589}:_60A6F4559EAC4C6DB320E8DE1C0B1909"
+                            {
+                            "Name" = "8:img"
+                            "AlwaysCreate" = "11:FALSE"
+                            "Condition" = "8:"
+                            "Transitive" = "11:FALSE"
+                            "Property" = "8:_A317E81A997E404CA6DC8184C1EA4991"
+                                "Folders"
+                                {
+                                }
+                            }
                             "{9EF0B969-E518-4E46-987F-47570745A589}:_6784CC01D96B43E9A59A91F6CDA67D9B"
                             {
                             "Name" = "8:bootstrap-4.4.1-dist"

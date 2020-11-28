@@ -21,6 +21,7 @@ cp sample.html $BUILDDIR/SOURCES
 cp sample.js $BUILDDIR/SOURCES
 cp sample.dat $BUILDDIR/SOURCES
 cp squirrel.svg $BUILDDIR/SOURCES
+cp favicon-16x16.png $BUILDDIR/SOURCES
 cp ../../../YaizuComLib/src/stkwebapp/stkcommon.js $BUILDDIR/SOURCES
 cp ../../../YaizuComLib/src/stkwebapp/stkcommon.css $BUILDDIR/SOURCES
 cp ../../../YaizuComLib/src/stkwebapp/jquery-3.2.0.min.js $BUILDDIR/SOURCES
@@ -81,6 +82,7 @@ Source37: bootstrap.min.js.map
 Source40: IcoMoon-Free.css
 Source41: IcoMoon-Free.ttf
 Source42: squirrel.svg
+Source43: favicon-16x16.png
 
 %description
 YaizuSample!!
@@ -91,6 +93,7 @@ mkdir -p %{buildroot}/%{_sysconfdir}
 mkdir -p %{buildroot}/%{_sysconfdir}/nginx/conf.d
 mkdir -p %{buildroot}/%{_sysconfdir}/systemd/system
 mkdir -p %{buildroot}/%{_datarootdir}/nginx/html
+mkdir -p %{buildroot}/%{_datarootdir}/nginx/html/img
 mkdir -p %{buildroot}/%{_datarootdir}/nginx/html/bootstrap-4.4.1-dist/css
 mkdir -p %{buildroot}/%{_datarootdir}/nginx/html/bootstrap-4.4.1-dist/js
 
@@ -128,6 +131,7 @@ install -p -m 644 %{SOURCE37} %{buildroot}/%{_datarootdir}/nginx/html/bootstrap-
 install -p -m 644 %{SOURCE40} %{buildroot}/%{_datarootdir}/nginx/html/IcoMoon-Free.css
 install -p -m 644 %{SOURCE41} %{buildroot}/%{_datarootdir}/nginx/html/IcoMoon-Free.ttf
 install -p -m 644 %{SOURCE42} %{buildroot}/%{_datarootdir}/nginx/html/squirrel.svg
+install -p -m 644 %{SOURCE43} %{buildroot}/%{_datarootdir}/nginx/html/img/favicon-16x16.png
 
 
 %files
@@ -165,6 +169,7 @@ install -p -m 644 %{SOURCE42} %{buildroot}/%{_datarootdir}/nginx/html/squirrel.s
 %{_datarootdir}/nginx/html/IcoMoon-Free.css
 %{_datarootdir}/nginx/html/IcoMoon-Free.ttf
 %{_datarootdir}/nginx/html/squirrel.svg
+%{_datarootdir}/nginx/html/img/favicon-16x16.png
 
 
 %pre
