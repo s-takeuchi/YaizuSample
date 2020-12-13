@@ -1,0 +1,72 @@
+﻿<!DOCTYPE html>
+
+<html lang="ja">
+<HEAD>
+<title>YaizuSample</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<link rel="stylesheet" href="./style.css" type="text/css">
+</HEAD>
+
+<BODY>
+<div id="container">
+<H1>1. Property files</H1>
+
+<H2 ID="1.1">1.1 Server properties</H2>
+<div class="topic">
+<p>
+YaizuSample server loads sample.conf at the timing of process start.
+sample.conf can handle following properties.
+</p>
+<table class="tblstyle">
+<tr><th>Property name</th><th>Description</th></tr>
+<tr><td>servicehost</td><td>IP address or host name of server where listen to client connection.</td></tr>
+<tr><td>serviceport</td><td>Port number where listen to client connection.</td></tr>
+<tr><td>workerthreads</td><td>Number of worker threads handle client connection.<br/>
+                              This number includes threads for status acquisition and threads for operation.<br/>
+                              n (2 =&lt; n =&lt; 250)<br/>(defalult=250)</td></tr>
+<tr><td>threadinterval</td><td>Wait time in milliseconds which each thread takes.<br/>(default=200)</td></tr>
+<tr><td>securemode</td><td>Enable SSL/TLS connection.<br/>true or false can be specified.<br/>(defauld=false)</td></tr>
+<tr><td>privatekey</td><td>Path to private key file for secure connection.<br/></td></tr>
+<tr><td>certificate</td><td>Path to certificate file for secure connection.<br/></td></tr>
+<tr><td>trustedcert</td><td>Path to trusted certificate file for secure connection.<br/>This will be used by StkWebAppCmd.</td></tr>
+</table><br/>
+An example of sample.conf is shown below.<br/>
+<table class="tblstyle"><tr><td>
+<pre><code>servicehost=localhost
+serviceport=8081
+securemode=true
+privatekey=C:\Program Files\Example\server.key
+certificate=C:\Program Files\Example\server.crt
+trustedcert=C:\Program Files\Example\ca.crt</code></pre>
+</td></tr></table>
+</div><p>
+
+<H2 ID="1.2">1.2 Agent properties</H2>
+<div class="topic">
+<p>
+YaizuSample agent loads agent.conf at the timing of process start.
+agent.conf can handle following properties.
+</p>
+<table class="tblstyle">
+<tr><th>Property name</th><th>Description</th></tr>
+<tr><td>targethost</td><td>IP address or host name of destination server where agent connects to</td></tr>
+<tr><td>targetport</td><td>Port number where agent connects tos</td></tr>
+<tr><td>pathtobucket</td><td>Path to bucket</td></tr>
+<tr><td>hostname</td><td>Host name which server recognizes.</td></tr>
+<tr><td>securemode</td><td>Enable SSL/TLS connection.<br/>true or false can be specified.<br/>(defauld=false)</td></tr>
+<tr><td>trustedcert</td><td>Path to trusted certificate file for secure connection.<br/></td></tr>
+</table><br/>
+An example of agent.conf is shown below.<br/>
+<table class="tblstyle"><tr><td>
+<pre><code>targethost=localhost
+targetport=8081
+pathtobucket=c:\bucket_agent
+hostname=
+securemode=true
+trustedcert=C:\Program Files\Example\ca.crt</code></pre>
+</td></tr></table>
+</div><p>
+
+</div>
+</BODY>
+</html>

@@ -1,0 +1,764 @@
+﻿<!DOCTYPE html>
+
+<html lang="ja">
+
+<HEAD>
+<title>CmdFreak</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<link rel="stylesheet" href="./style.css" type="text/css">
+</HEAD>
+
+<BODY>
+<div id="container">
+<H1>2. 内部処理</H1>
+
+<H2 ID="2.1">2.1 REST API仕様</H2>
+<div class="topic">
+CmdFreakのREST APIは，以下の一覧に示すAPIをクライアント提供します。
+<table class="tblstyle">
+<tr><td>GET /api/system/</td><td>CmdFreakのサーバ情報(Build Time, Server Start Time, Number of Worker Thread)を取得する。</td></tr>
+<tr><td>GET /api/language/</td><td>クライアント（ブラウザ）の最優先の言語を取得する。</td></tr>
+<tr><td>GET /api/logs/</td><td>イベントログを取得する。</td></tr>
+<tr><td>GET /api/odbcinfo/</td><td>ODBCの情報を取得する。</td></tr>
+<tr><td>POST /api/odbcinfo/</td><td>ODBCの情報を設定する。</td></tr>
+<tr><td>GET /api/tableinfo/</td><td>テーブル情報を取得する。</td></tr>
+<tr><td>GET /api/records/</td><td>指定されたテーブルのレコードを取得する。</td></tr>
+<tr><td>GET /api/filterinfo/</td><td>フィルタ情報を取得する。</td></tr>
+<tr><td>POST /api/filterinfo/</td><td>フィルタ情報を設定する。</td></tr>
+<tr><td>GET /api/user/</td><td>ユーザー情報を取得する。</td></tr>
+<tr><td>POST /api/user/</td><td>ユーザー情報を設定する。</td></tr>
+<tr><td>DELETE /api/user/</td><td>ユーザー情報を削除する。</td></tr>
+<tr><td>GET /api/reccount/</td><td>指定されたテーブルのレコード数を取得する。</td></tr>
+</table>
+</div><p>
+
+
+<H2 ID="2.2">2.2 共通エラー</H2>
+<div class="topic">
+特定のAPIに依存せず共通で発生し得るエラーは以下の3種類です。<br/>
+<table class="tblstyle">
+<tr><th>ステータスコード</th><th>レスポンスコード</th><th>説明</th></tr>
+<tr><td>404</td><td>1001</td><td>クライアントからのリクエストに対応するAPIが定義されていない。</td></tr>
+<tr><td>400</td><td>1002</td><td>リクエストがJSONではないデータを含んでいるかHTTPヘッダのContent-Typeがapplication/jsonではない。</td></tr>
+<tr><td>400</td><td>1005</td><td>リクエストが壊れている。</td></tr>
+</table><p>
+上記のエラーは以下のレスポンスで返却されます。<br/>
+
+<ul>
+<li>レスポンス
+<pre>
+{
+  "Code" : 1234,
+  "MsgEng" : "abc",
+  "MsgJpn" : "あいう",
+}
+</pre>
+<table class="tblstyle">
+<tr><td>Code</td><td>Integer</td><td>結果コード。1001(HTTPステータスコード=404)，1002(HTTPステータスコード=400)，1005(HTTPステータスコード=400)。</td></tr>
+<tr><td>MsgEng</td><td>String</td><td>英文メッセージ。結果コードが0のときは空文字が返る。</td></tr>
+<tr><td>MsgJpn</td><td>String</td><td>和文メッセージ。結果コードが0のときは空文字が返る。</td></tr>
+</table><br/>
+</li>
+</ul>
+</div><p>
+
+
+<H2 ID="2.3">2.3 Get /api/system/</H2>
+<div class="topic">
+CmdFreakのサーバ情報(プログラム名称, バージョン, ビルド時刻, 起動時刻, 動作スレッド数)を取得します。
+<ul>
+<li>リクエスト
+<p>なし</p>
+</li>
+<li>レスポンス
+<pre>
+{
+  "Code" : 1234,
+  "MsgEng" : "abc",
+  "MsgJpn" : "あいう",
+  "Data" : {
+    "ProductName" : "CmdFreak",
+    "Version" : "1.1.0",
+    "BuildTime" : "May 21 2017 19:30:02",
+    "StartTime" : "May 21 2017 19:30:02",
+    "NumOfThreads" : 4
+  }
+}
+</pre>
+<table class="tblstyle">
+<tr><td>Code</td><td>Integer</td><td>結果コード。0:成功(HTTPステータスコード=200)，3124:認証エラー(HTTPステータスコード=401)。</td></tr>
+<tr><td>MsgEng</td><td>String</td><td>英文メッセージ。結果コードが0のときは空文字が返る。</td></tr>
+<tr><td>MsgJpn</td><td>String</td><td>和文メッセージ。結果コードが0のときは空文字が返る。</td></tr>
+<tr><td>Data</td><td>Element</td><td>結果コードが0でないとき，この要素は返却されない。</td></tr>
+<tr><td>ProductName</td><td>String</td><td>プログラム名称。"CmdFreak"</td></tr>
+<tr><td>Version</td><td>String</td><td>バージョン番号。</td></tr>
+<tr><td>BuildTime</td><td>String</td><td>プログラムをビルドした時間。</td></tr>
+<tr><td>StartTime</td><td>String</td><td>サービスを起動した時間。</td></tr>
+<tr><td>NumOfThreads</td><td>Integer</td><td>動作しているワーカースレッドの数。</td></tr>
+</table><br/>
+</li>
+</ul>
+</div><p>
+
+
+<H2 ID="2.4">2.4 Get /api/language/</H2>
+<div class="topic">
+クライアント（ブラウザ）の最優先の言語を取得します。<br/>
+具体的には，クライアント・リクエストのHTTPヘッダのAccept-Languageに指定した言語のうち，先頭に指定した言語（2文字）を取得します。<br/>
+Code要素が0ではないとき，Data要素は返されません。
+<ul>
+<li>リクエスト
+<p>なし</p>
+</li>
+<li>レスポンス
+<pre>
+{
+  "Code" : 1234,
+  "MsgEng" : "abc",
+  "MsgJpn" : "あいう",
+  "Data" : {
+    "ClientLanguage" : "ja",
+  }
+}
+</pre>
+<table class="tblstyle">
+<tr><td>Code</td><td>Integer</td><td>結果コード。0:成功(HTTPステータスコード=200), 3120:クライアントのロケールを検知できなかった(HTTPステータスコード=406)。</td></tr>
+<tr><td>MsgEng</td><td>String</td><td>英文メッセージ。結果コードが0のときは空文字が返る。</td></tr>
+<tr><td>MsgJpn</td><td>String</td><td>和文メッセージ。結果コードが0のときは空文字が返る。</td></tr>
+<tr><td>Data</td><td>Element</td><td>結果コードが0でないとき，この要素は返却されない。</td></tr>
+<tr><td>ClientLanguage</td><td>String</td><td>クライアント（ブラウザ）の最優先の言語(2文字; 日本語="ja"，英語="en")。</td></tr>
+</table><br/>
+</li>
+</ul>
+</div><p>
+
+
+<H2 ID="2.5">2.5 Get /api/logs/</H2>
+<div class="topic">
+イベントログを取得します。<br/>
+イベントログが複数あるときは配列形式のデータが返却されます。イベントログがひとつしかないときはオブジェクトが返却されます。
+<ul>
+<li>リクエスト
+<p>なし</p>
+</li>
+<li>レスポンス
+<pre>
+{
+  "Code" : 1234,
+  "MsgEng" : "abc",
+  "MsgJpn" : "あいう",
+  "Data" : {
+    "Log" : [
+      {
+        "Time" : "2019-04-07T22:22:18+09:00",
+        "MsgEn" : "CmdFreak service has stopped.",
+        "MsgJa" : "CmdFreakサービスを停止しました。"
+      },
+      {
+        "Time" : "2019-04-07T22:27:01+09:00",
+        "MsgEn" : "CmdFreak service has started.",
+        "MsgJa" : "CmdFreakサービスを開始しました。"
+      }
+    ]
+  }
+}
+</pre>
+<table class="tblstyle">
+<tr><td>Code</td><td>Integer</td><td>結果コード。0:成功(HTTPステータスコード=200)，3124:認証エラー(HTTPステータスコード=401)。</td></tr>
+<tr><td>MsgEng</td><td>String</td><td>英文メッセージ。結果コードが0のときは空文字が返る。</td></tr>
+<tr><td>MsgJpn</td><td>String</td><td>和文メッセージ。結果コードが0のときは空文字が返る。</td></tr>
+<tr><td>Data</td><td>Element</td><td>結果コードが0でないとき，この要素は返却されない。</td></tr>
+<tr><td>Log</td><td>Element</td><td></td></tr>
+<tr><td>Time</td><td>String</td><td>イベントログが登録された時刻。ISO 8601形式で返却される。</td></tr>
+<tr><td>MsgEn</td><td>String</td><td>イベントログの英語メッセージ。</td></tr>
+<tr><td>MsgJa</td><td>String</td><td>イベントログの日本語メッセージ。</td></tr>
+</table><br/>
+</li>
+</ul>
+</div><p>
+
+
+<H2 ID="2.6">2.6 Get /api/odbcinfo/</H2>
+<div class="topic">
+ODBCの情報を取得します。<br/>
+<ul>
+<li>リクエスト
+<pre>
+?query=default
+</pre>
+<table class="tblstyle">
+<tr><td>query</td><td>String</td><td>default:デフォルト接続文字列を取得したい場合。configured:設定済の接続文字列を取得したい場合。</td></tr>
+</table><br/>
+</li>
+<li>レスポンス
+<pre>
+<b><u>&lt;query=default&gt;</u></b>
+{
+  "Code" : 1234,
+  "MsgEng" : "abc",
+  "MsgJpn" : "あいう",
+  "Data" : {
+    "OdbcInfo" : [
+      {
+        "DbType" : "PostgreSQL",
+        "ConnStr" : "xxx",
+      },
+      {
+        "DbType" : "MySQL",
+        "ConnStr" : "xxx",
+      }
+    ]
+  }
+}
+</pre>
+<pre>
+<b><u>&lt;query=configured&gt;</u></b>
+{
+  "Code" : 1234,
+  "MsgEng" : "abc",
+  "MsgJpn" : "あいう",
+  "Data" : {
+    "OdbcInfo" : {
+      "DbType" : "PostgreSQL",
+      "ConnStr" : "xxx",
+      "Status" : "connectable"
+    }
+  }
+}
+</pre>
+<table class="tblstyle">
+<tr><td>Code</td><td>Integer</td><td>結果コード。0:成功(HTTPステータスコード=200)，3121:リクエストがquery=default, query=configuredの何れでもない(HTTPステータスコード=400)，3124:認証エラー(HTTPステータスコード=401)。</td></tr>
+<tr><td>MsgEng</td><td>String</td><td>英文メッセージ。結果コードが0のときは空文字が返る。</td></tr>
+<tr><td>MsgJpn</td><td>String</td><td>和文メッセージ。結果コードが0のときは空文字が返る。</td></tr>
+<tr><td>Data</td><td>Element</td><td>結果コードが0でないとき，この要素は返却されない。</td></tr>
+<tr><td>OdbcInfo</td><td>Element</td><td></td></tr>
+<tr><td>DbType</td><td>String</td><td>DBMSの種別。"PostgreSQL", "MySQL", "MariaDB", "Init"(未設定)の何れか。</td></tr>
+<tr><td>ConnStr</td><td>String</td><td>接続文字列。</td></tr>
+<tr><td>Status</td><td>String</td><td>DBMSへの接続可否。connectable:接続可能, unconnectable:接続不可能。query=configuredが指定されなかったとき，この要素は返却されない。</td></tr>
+</table><br/>
+</li>
+</ul>
+</div><p>
+
+
+<H2 ID="2.7">2.7 Post /api/odbcinfo/</H2>
+<div class="topic">
+ODBCの情報を設定します。<br/>
+<ul>
+<li>リクエスト
+<pre>
+{
+  "DbType" : "MySQL",
+  "ConnStr" : "xxx"
+}
+</pre>
+<table class="tblstyle">
+<tr><td>DbType</td><td>Integer</td><td>DBMSの種別。"PostgreSQL", "MySQL", "MariaDB"の何れか。</td></tr>
+<tr><td>ConnStr</td><td>String</td><td>接続文字列。</td></tr>
+</table><br/>
+</li>
+<li>レスポンス
+<pre>
+{
+  "Code" : 1234,
+  "MsgEng" : "abc",
+  "MsgJpn" : "あいう",
+  "Data" : {
+    "OdbcInfo" : {
+      "Status" : "connectable"
+    }
+  }
+}
+</pre>
+<table class="tblstyle">
+<tr><td>Code</td><td>Integer</td><td>結果コード。
+0:成功(HTTPステータスコード=200)，
+3121:リクエストにDbType，ConnStrが含まれていない(HTTPステータスコード=400)，
+3123:ConnStrが指定可能な長さの最大値を超えた(HTTPステータスコード=400)，
+3124:認証エラー(HTTPステータスコード=401)，
+3125:権限エラー(HTTPステータスコード=403)。
+</td></tr>
+<tr><td>MsgEng</td><td>String</td><td>英文メッセージ。結果コードが0のときは空文字が返る。</td></tr>
+<tr><td>MsgJpn</td><td>String</td><td>和文メッセージ。結果コードが0のときは空文字が返る。</td></tr>
+<tr><td>Data</td><td>Element</td><td>結果コードが0でないとき，この要素は返却されない。</td></tr>
+<tr><td>OdbcInfo</td><td>Element</td><td></td></tr>
+<tr><td>Status</td><td>String</td><td>DBMSへの接続可否。connectable:接続可能, unconnectable:接続不可能。</td></tr>
+</table><br/>
+</li>
+</ul>
+</div><p>
+
+
+<H2 ID="2.8">2.8 Get /api/tableinfo/</H2>
+<div class="topic">
+テーブル情報を取得します。<br/>
+<ul>
+<li>リクエスト
+<pre>
+<b><u>&lt;すべてのテーブルの名称を取得する場合&gt;</u></b>
+なし
+</pre>
+<pre>
+<b><u>&lt;特定のテーブルの詳細情報を取得する場合&gt;</u></b>
+?query=tablename
+</pre>
+<table class="tblstyle">
+<tr><td>query</td><td>String</td><td>テーブル名</td></tr>
+</table><br/>
+</li>
+<li>レスポンス
+<pre>
+<b><u>&lt;query指定なし&gt;</u></b>
+{
+  "Code" : 1234,
+  "MsgEng" : "abc",
+  "MsgJpn" : "あいう",
+  "Data" : {
+    "TableInfo" : [
+      {
+        "Name" : "aaa"
+      },
+      {
+        "Name" : "bbb"
+      },
+      {
+        "Name" : "ccc"
+      }
+    ]
+  }
+}
+</pre>
+<pre>
+<b><u>&lt;query指定あり&gt;</u></b>
+{
+  "Code" : 1234,
+  "MsgEng" : "abc",
+  "MsgJpn" : "あいう",
+  "Data" : {
+    "TableInfo" : {
+      "Name" : "aaa"
+      "ColumnInfo" : [
+        {
+          "title" : "xxx",
+          "width" : 100,
+          "datatype" : "integer",
+          "dataIndx" : 0,
+          "coltype" : "int(11)",
+          "isnull" : "YES"
+        },
+        {
+          "title" : "yyy",
+          "width" : 100,
+          "datatype" : "string",
+          "dataIndx" : 1,
+          "coltype" : "text",
+          "isnull" : "YES"
+        }
+      ]
+    }
+  }
+}
+</pre>
+<table class="tblstyle">
+<tr><td>Code</td><td>Integer</td><td>結果コード。0:成功(HTTPステータスコード=200), 3122:指定したテーブルが存在しない(HTTPステータスコード=404)，3124:認証エラー(HTTPステータスコード=401)。</td></tr>
+<tr><td>MsgEng</td><td>String</td><td>英文メッセージ。結果コードが0のときは空文字が返る。</td></tr>
+<tr><td>MsgJpn</td><td>String</td><td>和文メッセージ。結果コードが0のときは空文字が返る。</td></tr>
+<tr><td>Data</td><td>Element</td><td>結果コードが0でないとき，この要素は返却されない。</td></tr>
+<tr><td>TableInfo</td><td>Element</td><td>テーブル情報が存在しないとき，この要素は返却されない。</td></tr>
+<tr><td>Name</td><td>String</td><td>テーブル名称。</td></tr>
+<tr><td>ColumnInfo</td><td>Element</td><td>queryでテーブルを指定していないとき，またはカラム情報が存在しないとき，この要素は返却されない。</td></tr>
+<tr><td>title</td><td>String</td><td>カラム名</td></tr>
+<tr><td>width</td><td>Integer</td><td>pqgrid用表示幅</td></tr>
+<tr><td>datatype</td><td>String</td><td>pqgrid用データ種別</td></tr>
+<tr><td>dataIndx</td><td>String</td><td>pqgrid用インデックス値(0からはじまる通し番号)</td></tr>
+<tr><td>coltype</td><td>String</td><td>カラム種別</td></tr>
+<tr><td>isnull</td><td>String</td><td>NULLを許容するか(YES/NO)</td></tr>
+</table><br/>
+</li>
+</ul>
+</div><p>
+
+
+<H2 ID="2.9">2.9 Get /api/records/</H2>
+<div class="topic">
+指定されたテーブルのレコードを取得します。<br/>
+取得されるレコードは，"Post /api/filterinfo/"の設定によりフィルタリングされます。<br/>
+<ul>
+<li>リクエスト
+<pre>
+?query=tablename&sort=columnname&sortOrder=ASC&limit=30&offset=100
+</pre>
+<table class="tblstyle">
+<tr><td>query</td><td>String</td><td>レコードの取得対象となるテーブル名。</td></tr>
+<tr><td>sort</td><td>String</td><td>ソート対象となるカラム名。</td></tr>
+<tr><td>sortOrder</td><td>String</td><td>ソートする順番。"ASC":昇順, "DESC":降順。</td></tr>
+<tr><td>limit</td><td>Integer</td><td>取得するレコード数。</td></tr>
+<tr><td>offset</td><td>Integer</td><td>取得するレコードのオフセット。</td></tr>
+</table><br/>
+</li>
+<li>レスポンス
+<pre>
+{
+  "Code" : 1234,
+  "MsgEng" : "abc",
+  "MsgJpn" : "あいう",
+  "Data" : {
+    "Sort" : {
+        "Target" : "Sort target",
+        "Order" : "Sort order"
+    },
+    "Record" : [
+      {
+        "0" : "Aaa",
+        "1" : "Baa",
+        "2" : "Ccc"
+      },
+      {
+        "0" : "Xxx",
+        "1" : "Yyy",
+        "2" : "Zzz"
+      }
+    ]
+  }
+}
+</pre>
+<table class="tblstyle">
+<tr><td>Code</td><td>Integer</td><td>結果コード。
+0:成功(HTTPステータスコード=200), 
+3121:リクエストに?query=が含まれていない(HTTPステータスコード=400), 
+3122:指定したテーブルが存在しない(HTTPステータスコード=404), 
+3124:認証エラー(HTTPステータスコード=401)。
+</td></tr>
+<tr><td>MsgEng</td><td>String</td><td>英文メッセージ。結果コードが0のときは空文字が返る。</td></tr>
+<tr><td>MsgJpn</td><td>String</td><td>和文メッセージ。結果コードが0のときは空文字が返る。</td></tr>
+<tr><td>Data</td><td>Element</td><td>結果コードが0でないとき，この要素は返却されない。</td></tr>
+<tr><td>Sort</td><td>Element</td><td>sortクエリを指定しなかった場合，この要素は返却されない。</td></tr>
+<tr><td>Target</td><td>String</td><td>ソート対象となったカラム名。</td></tr>
+<tr><td>Order</td><td>String</td><td>ソート順序。"ASC":昇順, "DESC":降順。</td></tr>
+<tr><td>Record</td><td>Element</td><td>レコードが存在しないとき，この要素は返却されない。</td></tr>
+<tr><td>n</td><td>String</td><td>n(n=0,1,2,...)番目のカラム値。</td></tr>
+</table><br/>
+</li>
+</ul>
+</div><p>
+
+
+<H2 ID="2.10">2.10 Get /api/filterinfo/</H2>
+<div class="topic">
+フィルタ情報を取得します。<br/>
+<ul>
+<li>リクエスト
+<p>なし</p>
+</li>
+<li>レスポンス
+<pre>
+{
+  "Code" : 1234,
+  "MsgEng" : "abc",
+  "MsgJpn" : "あいう",
+  "Data" : {
+    "FilterInfo" : {
+      "Function" : "enable",
+      "Criteria" : [
+        {
+          "index" : 1,
+          "columnname" : "aaa",
+          "opetype" : 0,
+          "value" : "xxx"
+        },
+        {
+          "index" : 2,
+          "columnname" : "bbb",
+          "opetype" : 0,
+          "value" : "yyy"
+        }
+      ]
+    }
+  }
+}
+</pre>
+<table class="tblstyle">
+<tr><td>Code</td><td>Integer</td><td>結果コード。0:成功(HTTPステータスコード=200)，3124:認証エラー(HTTPステータスコード=401)。</td></tr>
+<tr><td>MsgEng</td><td>String</td><td>英文メッセージ。結果コードが0のときは空文字が返る。</td></tr>
+<tr><td>MsgJpn</td><td>String</td><td>和文メッセージ。結果コードが0のときは空文字が返る。</td></tr>
+<tr><td>Data</td><td>Element</td><td>結果コードが0でないとき，この要素は返却されない。</td></tr>
+<tr><td>FilterInfo</td><td>Element</td><td></td></tr>
+<tr><td>Function</td><td>String</td><td>フィルタリングの状態(有効／無効)を示す。<br/>enable:有効<br/>disable:無効</td></tr>
+<tr><td>Criteria</td><td>Element</td><td>フィルタリング条件。5つの要素が存在する。</td></tr>
+<tr><td>index</td><td>Integer</td><td>n(n=1,2,3,4,5)。全5個存在するフィルタリング条件のインデックス。</td></tr>
+<tr><td>columnname</td><td>String</td><td>フィルタリング対象のカラム名。*が返るときは未定義のフィルタリング条件。</td></tr>
+<tr><td>opetype</td><td>Integer</td><td>フィルタリングの比較演算子。<br/>
+0:   未指定<br/>
+1:   = <br/>
+2:   &lt;&gt; <br/>
+3:   &lt;= <br/>
+4:   &lt; <br/>
+5:   &gt;= <br/>
+6:   &gt; <br/>
+10:  like <br/>
+11:  not like <br/>
+20:  is null <br/>
+21:  is not null <br/>
+</td></tr>
+<tr><td>value</td><td>String</td><td>比較対象文字列</td></tr>
+</table><br/>
+</li>
+</ul>
+</div><p>
+
+
+<H2 ID="2.11">2.11 Post /api/filterinfo/</H2>
+<div class="topic">
+フィルタ情報を設定します。<br/>
+<ul>
+<li>リクエスト
+<pre>
+{
+  "Function" : "enable",
+  "Criteria" : {
+    "index" : 2,
+    "columnname" : "bbb",
+    "opetype" : 0,
+    "value" : "yyy"
+  }
+}
+</pre>
+<table class="tblstyle">
+<tr><td>Function</td><td>String</td><td>フィルタリングの状態(有効／無効)を示す。<br/>enable:有効<br/>disable:無効</td></tr>
+<tr><td>Criteria</td><td>Element</td><td>フィルタリング条件。1～5個の要素を指定可能。index, columnname, opetype, valueのいづれかまたはすべてが指定されていない場合，そのCriteriaの指定は無視される。</td></tr>
+<tr><td>index</td><td>Integer</td><td>n(n=1,2,3,4,5)。変更したいフィルタリング条件のインデックス。n=1,2,3,4,5のいづれでもない場合，そのCriteriaの指定は無視される。</td></tr>
+<tr><td>columnname</td><td>String</td><td>フィルタリング対象のカラム名。*を指定したときは未定義。</td></tr>
+<tr><td>opetype</td><td>Integer</td><td>フィルタリングの比較演算子。<br/>
+0:   未指定<br/>
+1:   = <br/>
+2:   &lt;&gt; <br/>
+3:   &lt;= <br/>
+4:   &lt; <br/>
+5:   &gt;= <br/>
+6:   &gt; <br/>
+10:  like <br/>
+11:  not like <br/>
+20:  is null <br/>
+21:  is not null <br/>
+</td></tr>
+<tr><td>value</td><td>String</td><td>比較対象文字列</td></tr>
+</table><br/>
+</li>
+<li>レスポンス
+<pre>
+{
+  "Code" : 1234,
+  "MsgEng" : "abc",
+  "MsgJpn" : "あいう",
+}
+</pre>
+<table class="tblstyle">
+<tr><td>Code</td><td>Integer</td><td>結果コード。0:成功(HTTPステータスコード=200)，3124:認証エラー(HTTPステータスコード=401)。</td></tr>
+<tr><td>MsgEng</td><td>String</td><td>英文メッセージ。結果コードが0のときは空文字が返る。</td></tr>
+<tr><td>MsgJpn</td><td>String</td><td>和文メッセージ。結果コードが0のときは空文字が返る。</td></tr>
+</table><br/>
+</li>
+</ul>
+</div><p>
+
+
+<H2 ID="2.12">2.12 Get /api/user/</H2>
+<div class="topic">
+ユーザー情報を取得します。<br/>
+?target=allは，管理者のみ指定可能。<br/>
+<ul>
+<li>リクエスト
+<pre>
+<b><u>&lt;すべてのユーザー情報を取得する場合(管理者のみ指定可能)&gt;</u></b>
+&target=all
+</pre>
+<pre>
+<b><u>&lt;ログインユーザーの情報のみを取得する&gt;</u></b>
+なし
+</pre>
+<table class="tblstyle">
+<tr><td>target</td><td>String</td><td>allのみ指定可能。</td></tr>
+</table><br/>
+<li>レスポンス
+<pre>
+{
+  "Code" : 1234,
+  "MsgEng" : "abc",
+  "MsgJpn" : "あいう",
+  "Data" : {
+    "User" : [
+      {
+        "Id" : 1,
+        "Name" : "aaa",
+        "Role" : 0
+      },
+      {
+        "Id" : 2,
+        "Name" : "bbb",
+        "Role" : 1
+      },
+    ]
+  }
+}
+</pre>
+<table class="tblstyle">
+<tr><td>Code</td><td>Integer</td><td>結果コード。0:成功(HTTPステータスコード=200)，3124:認証エラー(HTTPステータスコード=401)，3125:権限エラー(HTTPステータスコード=403)。</td></tr>
+<tr><td>MsgEng</td><td>String</td><td>英文メッセージ。結果コードが0のときは空文字が返る。</td></tr>
+<tr><td>MsgJpn</td><td>String</td><td>和文メッセージ。結果コードが0のときは空文字が返る。</td></tr>
+<tr><td>Data</td><td>Element</td><td>結果コードが0でないとき，この要素は返却されない。</td></tr>
+<tr><td>User</td><td>Element</td><td></td></tr>
+<tr><td>Id</td><td>Integer</td><td>ユーザーID</td></tr>
+<tr><td>Name</td><td>String</td><td>ユーザー名</td></tr>
+<tr><td>Role</td><td>Integer</td><td>ユーザー種別 (0:管理者, 1:一般ユーザー)</td></tr>
+</table><br/>
+</li>
+</ul>
+</div><p>
+
+
+<H2 ID="2.13">2.13 Post /api/user/</H2>
+<div class="topic">
+ユーザー情報を設定します。<br/>
+管理者のみ本APIを呼び出すことができます。<br/>
+<ul>
+<li>リクエスト
+<pre>
+{
+  "Id" : 0,
+  "Name" : "aaa",
+  "Password" : "xxx",
+  "Role" : 0,
+}
+</pre>
+<table class="tblstyle">
+<tr><td>Id</td><td>Integer</td><td>ユーザーID。既存のユーザー情報を変更する場合は指定。新規ユーザーを作成する場合は指定しない。既存ユーザー情報を変更する場合のみ指定する。</td></tr>
+<tr><td>Name</td><td>String</td><td>ユーザー名。最大31文字。新規ユーザーを作成する場合は必須。指定可能文字: a-z, A-Z, 0-9, @, .(ピリオド), -, _, /</td></tr>
+<tr><td>Password</td><td>String</td><td>パスワード。最大31文字。新規ユーザーを作成する場合は必須。指定可能文字: a-z, A-Z, 0-9, !, ?, .(ピリオド), +, -, $, %, #, &, *, /, =, @</td></tr>
+<tr><td>Role</td><td>Integer</td><td>ユーザー種別 (0:管理者, 1:一般ユーザー)。新規ユーザーを作成する場合は必須。</td></tr>
+</table><br/>
+<li>レスポンス
+<pre>
+{
+  "Code" : 1234,
+  "MsgEng" : "abc",
+  "MsgJpn" : "あいう",
+  "Data" : {
+    "User" : [
+      {
+        "Id" : 1,
+        "Name" : "aaa",
+        "Role" : 0
+      }
+  }
+}
+</pre>
+<table class="tblstyle">
+<tr><td>Code</td><td>Integer</td><td>
+  結果コード。
+  0:成功(HTTPステータスコード=200)，
+  3121:リクエストデータ不十分(HTTPステータスコード=400)，
+  3123:ユーザー名またはパスワードが指定可能な長さの最大値を超えた(HTTPステータスコード=400)，
+  3124:認証エラー(HTTPステータスコード=401)，
+  3125:権限エラー(HTTPステータスコード=403)，
+  3126:自分自身の情報の変更を試みた(HTTPステータスコード=400)，
+  3127:変更を試みたユーザー名はすでに使用されている(HTTPステータスコード=400)，
+  3128:指定したユーザーが存在しない(HTTPステータスコード=400)，
+  3134:登録可能ユーザー数の最大値超え(HTTPステータスコード=400)，
+  31XX:その他各種エラー(HTTPステータスコード=400)。
+</td></tr>
+<tr><td>MsgEng</td><td>String</td><td>英文メッセージ。結果コードが0のときは空文字が返る。</td></tr>
+<tr><td>MsgJpn</td><td>String</td><td>和文メッセージ。結果コードが0のときは空文字が返る。</td></tr>
+<tr><td>Data</td><td>Element</td><td>結果コードが0でないとき，この要素は返却されない。</td></tr>
+<tr><td>User</td><td>Element</td><td>追加したユーザーの情報</td></tr>
+<tr><td>Id</td><td>Integer</td><td>ユーザーID</td></tr>
+<tr><td>Name</td><td>String</td><td>ユーザー名</td></tr>
+<tr><td>Role</td><td>Integer</td><td>ユーザー種別 (0:管理者, 1:一般ユーザー)</td></tr>
+</table><br/>
+</li>
+</ul>
+</div><p>
+
+
+<H2 ID="2.14">2.14 Delete /api/user/</H2>
+<div class="topic">
+ユーザー情報を削除します。<br/>
+管理者のみ本APIを呼び出すことができます。<br/>
+<ul>
+<li>リクエスト
+<pre>
+/api/user/n/</pre>
+<table class="tblstyle">
+<tr><td>n</td><td>Integer</td><td>削除対象のユーザーID</td></tr>
+</table><br/>
+<li>レスポンス
+<pre>
+{
+  "Code" : 1234,
+  "MsgEng" : "abc",
+  "MsgJpn" : "あいう",
+}
+</pre>
+<table class="tblstyle">
+<tr><td>Code</td><td>Integer</td><td>
+  結果コード。
+  0:成功(HTTPステータスコード=200)，
+  3121:ユーザーID未指定(HTTPステータスコード=400)，
+  3124:認証エラー(HTTPステータスコード=401)，
+  3125:権限エラー(HTTPステータスコード=403)，
+  3126:自分自身の削除を試みた(HTTPステータスコード=400)，
+  3128:指定したユーザーが存在しない(HTTPステータスコード=400)。
+</td></tr>
+<tr><td>MsgEng</td><td>String</td><td>英文メッセージ。結果コードが0のときは空文字が返る。</td></tr>
+<tr><td>MsgJpn</td><td>String</td><td>和文メッセージ。結果コードが0のときは空文字が返る。</td></tr>
+</table><br/>
+</li>
+</ul>
+</div><p>
+
+
+<H2 ID="2.15">2.15 Get /api/reccount/</H2>
+<div class="topic">
+指定されたテーブルのレコード数を取得します。<br/>
+取得されるレコード数は，"Post /api/filterinfo/"の設定によりフィルタリングされます。<br/>
+<ul>
+<li>リクエスト
+<pre>
+?query=tablename
+</pre>
+<table class="tblstyle">
+<tr><td>query</td><td>String</td><td>レコードの取得対象となるテーブル名。</td></tr>
+</table><br/>
+</li>
+<li>レスポンス
+<pre>
+{
+  "Code" : 1234,
+  "MsgEng" : "abc",
+  "MsgJpn" : "あいう",
+  "Data" : {
+    "NumOfRecords" : 123
+  }
+}
+</pre>
+<table class="tblstyle">
+<tr><td>Code</td><td>Integer</td><td>結果コード。
+0:成功(HTTPステータスコード=200), 
+3121:リクエストに?query=が含まれていない(HTTPステータスコード=400), 
+3122:指定したテーブルが存在しない(HTTPステータスコード=404), 
+3124:認証エラー(HTTPステータスコード=401)。
+</td></tr>
+<tr><td>MsgEng</td><td>String</td><td>英文メッセージ。結果コードが0のときは空文字が返る。</td></tr>
+<tr><td>MsgJpn</td><td>String</td><td>和文メッセージ。結果コードが0のときは空文字が返る。</td></tr>
+<tr><td>Data</td><td>Element</td><td>結果コードが0でないとき，この要素は返却されない。</td></tr>
+<tr><td>NumOfRecords</td><td>Integer</td><td>取得したレコード数。</td></tr>
+</table><br/>
+</li>
+</ul>
+</div><p>
+
+
+</div>
+</BODY>
+
+</html>
+
