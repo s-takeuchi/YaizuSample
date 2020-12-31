@@ -179,9 +179,9 @@ void Server(wchar_t* IpAddr, int Port, int NumOfWorkerThreads, int ThreadInterva
 	ApiPostFile* ApiPostFileObj = new ApiPostFile();
 	int Add12 = Soc->AddReqHandler(StkWebAppExec::STKWEBAPP_METHOD_POST, L"/api/file/", (StkWebAppExec*)ApiPostFileObj);
 	ApiGetLanguage* ApiGetLanguageObj = new ApiGetLanguage();
-	int Add13 = Soc->AddReqHandler(StkWebAppExec::STKWEBAPP_METHOD_GET, L"/api/language/", (StkWebAppExec*)ApiGetLanguageObj);
+	int Add13 = Soc->AddReqHandler(StkWebAppExec::STKWEBAPP_METHOD_GET, L"/api/language_old/", (StkWebAppExec*)ApiGetLanguageObj);
 	ApiGetUser* ApiGetUserObj = new ApiGetUser();
-	int Add14 = Soc->AddReqHandler(StkWebAppExec::STKWEBAPP_METHOD_GET, L"/api/user$", (StkWebAppExec*)ApiGetUserObj);
+	int Add14 = Soc->AddReqHandler(StkWebAppExec::STKWEBAPP_METHOD_GET, L"/api/user_old$", (StkWebAppExec*)ApiGetUserObj);
 
 	////////// Main logic starts
 	Soc->TheLoop();
@@ -199,8 +199,8 @@ void Server(wchar_t* IpAddr, int Port, int NumOfWorkerThreads, int ThreadInterva
 	int Del10 = Soc->DeleteReqHandler(StkWebAppExec::STKWEBAPP_METHOD_GET, L"/api/opcommand/$/");
 	int Del11 = Soc->DeleteReqHandler(StkWebAppExec::STKWEBAPP_METHOD_GET, L"/api/file/$/$/");
 	int Del12 = Soc->DeleteReqHandler(StkWebAppExec::STKWEBAPP_METHOD_POST, L"/api/file/");
-	int Del13 = Soc->DeleteReqHandler(StkWebAppExec::STKWEBAPP_METHOD_GET, L"/api/language/");
-	int Del14 = Soc->DeleteReqHandler(StkWebAppExec::STKWEBAPP_METHOD_GET, L"/api/user$");
+	int Del13 = Soc->DeleteReqHandler(StkWebAppExec::STKWEBAPP_METHOD_GET, L"/api/language_old/");
+	int Del14 = Soc->DeleteReqHandler(StkWebAppExec::STKWEBAPP_METHOD_GET, L"/api/user_old$");
 
 	ApiGetCommandForStatus::StopFlag = true;
 	ApiGetCommandForOperation::StopFlag = true;

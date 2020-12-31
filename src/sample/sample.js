@@ -807,7 +807,7 @@ function refreshInfo() {
         apiCall('GET', '/api/command/', null, 'API_GET_COMMAND', displayCommand);
         apiCall('GET', '/api/log/', null, 'API_GET_LOGS', displayLogInfo);
     } else {
-        apiCall('GET', '/api/user/?target=all', null, 'API_GET_USER', displayUser);
+        apiCall('GET', '/api/user_old/?target=all', null, 'API_GET_USER', displayUser);
     }
 }
 
@@ -830,7 +830,7 @@ function activateTopic(id) {
 
 function checkLogin(dummyId, dummyPw) {
     setAuthenticationToken(dummyId + ' ' + dummyPw);
-    apiCall('GET', '/api/user/', null, 'API_GET_USER', checkLoginAfterApiCall);
+    apiCall('GET', '/api/user_old/', null, 'API_GET_USER', checkLoginAfterApiCall);
 }
 
 function checkLoginAfterApiCall() {
@@ -866,6 +866,6 @@ function checkLoginAfterApiCall() {
 
 window.onload = function() {
     initClientMessage();
-    apiCall('GET', '/api/language/', null, 'API_GET_LANG', initServal);
+    apiCall('GET', '/api/language_old/', null, 'API_GET_LANG', initServal);
 }
 
