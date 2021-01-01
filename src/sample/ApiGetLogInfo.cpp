@@ -16,17 +16,15 @@ StkObject* ApiGetLogInfo::ExecuteImpl(StkObject* ReqObj, int Method, wchar_t Url
 	int Count = DataAccess::GetInstance()->GetLogs(TimeUtc, TimeLocal, Msg, MsgJa);
 
 	StkObject* TmpObj = new StkObject(L"");
+	StkObject* TmpObjD = new StkObject(L"Data");
 	for (int Loop = 0; Loop < Count; Loop++) {
 		StkObject* TmpObjC = new StkObject(L"Log");
-		TmpObjC->AppendChildElement(new StkObject(L"TimeUtc", TimeUtc[Loop]));
-		TmpObjC->AppendChildElement(new StkObject(L"TimeLocal", TimeLocal[Loop]));
-		if (LocaleType == 1) {
-			TmpObjC->AppendChildElement(new StkObject(L"Msg", MsgJa[Loop]));
-		} else {
-			TmpObjC->AppendChildElement(new StkObject(L"Msg", Msg[Loop]));
-		}
-		TmpObj->AppendChildElement(TmpObjC);
+		TmpObjC->AppendChildElement(new StkObject(L"Time", TimeLocal[Loop]));
+		TmpObjC->AppendChildElement(new StkObject(L"MsgJa", MsgJa[Loop]));
+		TmpObjC->AppendChildElement(new StkObject(L"MsgEN", Msg[Loop]));
+		TmpObjD->AppendChildElement(TmpObjC);
 	}
+	TmpObj->AppendChildElement(TmpObjD);
 	TmpObj->AppendChildElement(new StkObject(L"Msg0", L""));
 	*ResultCode = 200;
 	return TmpObj;

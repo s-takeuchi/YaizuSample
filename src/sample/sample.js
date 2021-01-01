@@ -122,7 +122,7 @@ function displayLogInfo() {
         displayAlertDanger('#loginfo', getClientMessage('CONNERR'));
         return;
     }
-    var Log = getArray(responseData['API_GET_LOGS'].Log);
+    var Log = getArray(responseData['API_GET_LOGS'].Data.Log);
     if (Log == null) {
         $('#loginfo').append(getClientMessage('NOLOGINFO'));
         return;
@@ -137,7 +137,11 @@ function displayLogInfo() {
 
     var tBody = $('<tbody>');
     for (var Loop = 0; Loop < Log.length; Loop++) {
-        tBody.append('<tr><td>' + Log[Loop].TimeUtc + '<br/>' + Log[Loop].TimeLocal + '</td><td>' + Log[Loop].Msg + '</td></tr>');
+        if (getClientLanguage() == 1) {
+            tBody.append('<tr><td>' + Log[Loop].Time + '</td><td>' + Log[Loop].MsgJa + '</td></tr>');
+        } else {
+            tBody.append('<tr><td>' + Log[Loop].Time + '</td><td>' + Log[Loop].MsgEn + '</td></tr>');
+        }
     }
     logData.append(tBody);
     $('#loginfo').append(logData);
