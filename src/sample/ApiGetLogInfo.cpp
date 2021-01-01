@@ -21,7 +21,7 @@ StkObject* ApiGetLogInfo::ExecuteImpl(StkObject* ReqObj, int Method, wchar_t Url
 		StkObject* TmpObjC = new StkObject(L"Log");
 		TmpObjC->AppendChildElement(new StkObject(L"Time", TimeLocal[Loop]));
 		TmpObjC->AppendChildElement(new StkObject(L"MsgJa", MsgJa[Loop]));
-		TmpObjC->AppendChildElement(new StkObject(L"MsgEN", Msg[Loop]));
+		TmpObjC->AppendChildElement(new StkObject(L"MsgEn", Msg[Loop]));
 		TmpObjD->AppendChildElement(TmpObjC);
 	}
 	TmpObj->AppendChildElement(TmpObjD);

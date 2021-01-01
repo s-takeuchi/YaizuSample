@@ -67,7 +67,7 @@ int DataAccess::CreateTables(const wchar_t* DataFileName)
 			ColumnDefWStr ColDefLogTimeLocal(L"TimeLocal", DA_MAXLEN_OF_TIME);
 			ColumnDefWStr ColDefLogMsg(L"Message", DA_MAXLEN_OF_LOGMSG);
 			ColumnDefWStr ColDefLogMsgJa(L"MessageJa", DA_MAXLEN_OF_LOGMSG);
-			TableDef TabDefLog(L"Log", DA_MAXNUM_OF_LOGRECORDS);
+			TableDef TabDefLog(L"LogOld", DA_MAXNUM_OF_LOGRECORDS);
 			TabDefLog.AddColumnDef(&ColDefLogId);
 			TabDefLog.AddColumnDef(&ColDefLogTimeUtc);
 			TabDefLog.AddColumnDef(&ColDefLogTimeLocal);
@@ -150,7 +150,7 @@ int DataAccess::CreateTables(const wchar_t* DataFileName)
 			ColumnDefWStr ColDefUserName(L"Name", DA_MAXLEN_OF_USERNAME);
 			ColumnDefWStr ColDefUserPassword(L"Password", DA_MAXLEN_OF_PASSWORD);
 			ColumnDefInt ColDefUserRole(L"Role");
-			TableDef TabDefUser(L"User", DA_MAXNUM_OF_USERRECORDS);
+			TableDef TabDefUser(L"UserOld", DA_MAXNUM_OF_USERRECORDS);
 			TabDefUser.AddColumnDef(&ColDefUserId);
 			TabDefUser.AddColumnDef(&ColDefUserName);
 			TabDefUser.AddColumnDef(&ColDefUserPassword);
@@ -202,11 +202,11 @@ int DataAccess::CreateTables(const wchar_t* DataFileName)
 			ColDatUser[1] = new ColumnDataWStr(L"Name", L"admin@a.a");
 			ColDatUser[2] = new ColumnDataWStr(L"Password", L"manager");
 			ColDatUser[3] = new ColumnDataInt(L"Role", 0);
-			RecordData* RecUser = new RecordData(L"User", ColDatUser, 4);
+			RecordData* RecUser = new RecordData(L"UserOld", ColDatUser, 4);
 			// Add record
-			LockTable(L"User", LOCK_EXCLUSIVE);
+			LockTable(L"UserOld", LOCK_EXCLUSIVE);
 			int Ret = InsertRecord(RecUser);
-			UnlockTable(L"User");
+			UnlockTable(L"UserOld");
 			delete RecUser;
 		}
 		{
@@ -215,11 +215,11 @@ int DataAccess::CreateTables(const wchar_t* DataFileName)
 			ColDatUser[1] = new ColumnDataWStr(L"Name", L"takeuchi@a.a");
 			ColDatUser[2] = new ColumnDataWStr(L"Password", L"takeuchi");
 			ColDatUser[3] = new ColumnDataInt(L"Role", 1);
-			RecordData* RecUser = new RecordData(L"User", ColDatUser, 4);
+			RecordData* RecUser = new RecordData(L"UserOld", ColDatUser, 4);
 			// Add record
-			LockTable(L"User", LOCK_EXCLUSIVE);
+			LockTable(L"UserOld", LOCK_EXCLUSIVE);
 			int Ret = InsertRecord(RecUser);
-			UnlockTable(L"User");
+			UnlockTable(L"UserOld");
 			delete RecUser;
 		}
 		// For property table
@@ -821,11 +821,11 @@ int DataAccess::AddLogMsg(const wchar_t LogMsg[DA_MAXLEN_OF_LOGMSG], const wchar
 	ColDatLog[2] = new ColumnDataWStr(L"TimeLocal", TimeLocalBuf);
 	ColDatLog[3] = new ColumnDataWStr(L"Message", LogMsg);
 	ColDatLog[4] = new ColumnDataWStr(L"MessageJa", LogMsgJa);
-	RecordData* RecDatLog = new RecordData(L"Log", ColDatLog, 5);
+	RecordData* RecDatLog = new RecordData(L"LogOld", ColDatLog, 5);
 	// Add record
-	LockTable(L"Log", LOCK_EXCLUSIVE);
+	LockTable(L"LogOld", LOCK_EXCLUSIVE);
 	int Ret = InsertRecord(RecDatLog);
-	UnlockTable(L"Log");
+	UnlockTable(L"LogOld");
 	delete RecDatLog;
 	MaxLogId++;
 	return 0;
@@ -836,9 +836,9 @@ int DataAccess::AddLogMsg(const wchar_t LogMsg[DA_MAXLEN_OF_LOGMSG], const wchar
 // Return : Maximum log id
 int DataAccess::GetMaxLogId()
 {
-	LockTable(L"Log", LOCK_SHARE);
-	RecordData* RecDatLog = GetRecord(L"Log");
-	UnlockTable(L"Log");
+	LockTable(L"LogOld", LOCK_SHARE);
+	RecordData* RecDatLog = GetRecord(L"LogOld");
+	UnlockTable(L"LogOld");
 
 	RecordData* CurrRecDat = RecDatLog;
 	int MaxLogId = 0;
@@ -859,9 +859,9 @@ int DataAccess::GetMaxLogId()
 // Return : Number of logs
 int DataAccess::GetNumOfLogs()
 {
-	LockTable(L"Log", LOCK_SHARE);
-	RecordData* RecDatLog = GetRecord(L"Log");
-	UnlockTable(L"Log");
+	LockTable(L"LogOld", LOCK_SHARE);
+	RecordData* RecDatLog = GetRecord(L"LogOld");
+	UnlockTable(L"LogOld");
 
 	RecordData* CurrRecDat = RecDatLog;
 	int NumOfLogs = 0;
@@ -884,10 +884,10 @@ int DataAccess::GetLogs(
 	wchar_t LogMsg[DA_MAXNUM_OF_LOGRECORDS][DA_MAXLEN_OF_LOGMSG],
 	wchar_t LogMsgJa[DA_MAXNUM_OF_LOGRECORDS][DA_MAXLEN_OF_LOGMSG])
 {
-	LockTable(L"Log", LOCK_EXCLUSIVE);
-	AzSortRecord(L"Log", L"Id");
-	RecordData* RecDatLog = GetRecord(L"Log");
-	UnlockTable(L"Log");
+	LockTable(L"LogOld", LOCK_EXCLUSIVE);
+	AzSortRecord(L"LogOld", L"Id");
+	RecordData* RecDatLog = GetRecord(L"LogOld");
+	UnlockTable(L"LogOld");
 
 	int NumOfRec = 0;
 	RecordData* CurrRecDat = RecDatLog;
@@ -929,10 +929,10 @@ int DataAccess::DeleteOldLogs()
 {
 	int NumOfLogs = GetNumOfLogs();
 	if (NumOfLogs >= DA_MAXNUM_OF_LOGRECORDS - 10) {
-		LockTable(L"Log", LOCK_EXCLUSIVE);
-		AzSortRecord(L"Log", L"Id");
-		RecordData* RecDatLog = GetRecord(L"Log");
-		UnlockTable(L"Log");
+		LockTable(L"LogOld", LOCK_EXCLUSIVE);
+		AzSortRecord(L"LogOld", L"Id");
+		RecordData* RecDatLog = GetRecord(L"LogOld");
+		UnlockTable(L"LogOld");
 		int ExceededNumOfLogs = NumOfLogs - (DA_MAXNUM_OF_LOGRECORDS - 10);
 		RecordData* CurrRecDat = RecDatLog;
 		for (int Loop = 0; Loop < ExceededNumOfLogs; Loop++) {
@@ -941,10 +941,10 @@ int DataAccess::DeleteOldLogs()
 
 			ColumnData* DelColDat[1];
 			DelColDat[0] = new ColumnDataInt(L"Id", ValueId);
-			RecordData* DelRecDat = new RecordData(L"Log", DelColDat, 1);
-			LockTable(L"Log", LOCK_EXCLUSIVE);
+			RecordData* DelRecDat = new RecordData(L"LogOld", DelColDat, 1);
+			LockTable(L"LogOld", LOCK_EXCLUSIVE);
 			DeleteRecord(DelRecDat);
-			UnlockTable(L"Log");
+			UnlockTable(L"LogOld");
 			delete DelRecDat;
 
 			CurrRecDat = CurrRecDat->GetNextRecord();
@@ -959,10 +959,10 @@ bool DataAccess::GetTargetUserByName(wchar_t Name[DA_MAXLEN_OF_USERNAME], int* I
 {
 	ColumnData* ColDat[1];
 	ColDat[0] = new ColumnDataWStr(L"Name", Name);
-	RecordData* SearchUser = new RecordData(L"User", ColDat, 1);
-	LockTable(L"User", LOCK_SHARE);
+	RecordData* SearchUser = new RecordData(L"UserOld", ColDat, 1);
+	LockTable(L"UserOld", LOCK_SHARE);
 	RecordData* RecDatUser = GetRecord(SearchUser);
-	UnlockTable(L"User");
+	UnlockTable(L"UserOld");
 	delete SearchUser;
 	if (RecDatUser != NULL) {
 		ColumnDataInt* ColDatId = (ColumnDataInt*)RecDatUser->GetColumn(0);
@@ -985,9 +985,9 @@ int DataAccess::GetTargetUsers(int Id[DA_MAXNUM_OF_USERRECORDS],
 								wchar_t Password[DA_MAXNUM_OF_USERRECORDS][DA_MAXLEN_OF_PASSWORD],
 								int Role[DA_MAXNUM_OF_USERRECORDS])
 {
-	LockTable(L"User", LOCK_SHARE);
-	RecordData* RecDatUser = GetRecord(L"User");
-	UnlockTable(L"User");
+	LockTable(L"UserOld", LOCK_SHARE);
+	RecordData* RecDatUser = GetRecord(L"UserOld");
+	UnlockTable(L"UserOld");
 	RecordData* CurRecDatUser = RecDatUser;
 	if (!CurRecDatUser) {
 		return 0;
