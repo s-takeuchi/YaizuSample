@@ -14,7 +14,7 @@ StkObject* ApiGetUser::ExecuteImpl(StkObject* ReqObj, int Method, wchar_t UrlPat
 		*ResultCode = 403;
 		return NULL;
 	}
-	DataAccess::GetInstance()->GetTargetUserByName(UserName, &UserId, UserPassword, &Role, TargetUrl);
+	DataAccess::GetInstance()->GetTargetUserByName(UserName, &UserId, UserPassword, &Role);
 	if (StkPlWcsStr(UrlPath, L"?target=all") != NULL) {
 		if (Role != 0) {
 			*ResultCode = 403;
@@ -24,28 +24,29 @@ StkObject* ApiGetUser::ExecuteImpl(StkObject* ReqObj, int Method, wchar_t UrlPat
 		wchar_t AryUserName[DA_MAXNUM_OF_USERRECORDS][DA_MAXLEN_OF_USERNAME];
 		wchar_t AryUserPassword[DA_MAXNUM_OF_USERRECORDS][DA_MAXLEN_OF_PASSWORD];
 		int AryRole[DA_MAXNUM_OF_USERRECORDS];
-		wchar_t AryTargetUrl[DA_MAXNUM_OF_USERRECORDS][DA_MAXLEN_OF_TARGETURL];
-		int Cnt = DataAccess::GetInstance()->GetTargetUsers(AryUserId, AryUserName, AryUserPassword, AryRole, AryTargetUrl);
+		int Cnt = DataAccess::GetInstance()->GetTargetUsers(AryUserId, AryUserName, AryUserPassword, AryRole);
 		StkObject* TmpObj = new StkObject(L"");
+		StkObject* TmpObjD = new StkObject(L"Data");
 		for (int Loop = 0; Loop < Cnt; Loop++) {
 			StkObject* TmpObjC = new StkObject(L"User");
 			TmpObjC->AppendChildElement(new StkObject(L"Id", AryUserId[Loop]));
 			TmpObjC->AppendChildElement(new StkObject(L"Name", AryUserName[Loop]));
 			TmpObjC->AppendChildElement(new StkObject(L"Role", AryRole[Loop]));
-			TmpObjC->AppendChildElement(new StkObject(L"Url", AryTargetUrl[Loop]));
-			TmpObj->AppendChildElement(TmpObjC);
+			TmpObjD->AppendChildElement(TmpObjC);
 		}
+		TmpObj->AppendChildElement(TmpObjD);
 		TmpObj->AppendChildElement(new StkObject(L"Msg0", L""));
 		*ResultCode = 200;
 		return TmpObj;
 	} else {
 		StkObject* TmpObj = new StkObject(L"");
+		StkObject* TmpObjD = new StkObject(L"Data");
 		StkObject* TmpObjC = new StkObject(L"User");
 		TmpObjC->AppendChildElement(new StkObject(L"Id", UserId));
 		TmpObjC->AppendChildElement(new StkObject(L"Name", UserName));
 		TmpObjC->AppendChildElement(new StkObject(L"Role", Role));
-		TmpObjC->AppendChildElement(new StkObject(L"Url", TargetUrl));
-		TmpObj->AppendChildElement(TmpObjC);
+		TmpObjD->AppendChildElement(TmpObjC);
+		TmpObj->AppendChildElement(TmpObjD);
 		TmpObj->AppendChildElement(new StkObject(L"Msg0", L""));
 		*ResultCode = 200;
 		return TmpObj;

@@ -13,7 +13,7 @@ void TestGetUser(StkWebAppSend* StkWebAppSendObj)
 			StkPlPrintf("[NG]\n");
 			StkPlExit(1);
 		}
-		StkObject* ResUserObj = ResObj->GetFirstChildElement();
+		StkObject* ResUserObj = ResObj->GetFirstChildElement()->GetFirstChildElement();
 		if (ResUserObj == NULL || StkPlWcsCmp(ResUserObj->GetName(), L"User") != 0) {
 			StkPlPrintf("[NG]\n");
 			StkPlExit(1);

@@ -717,12 +717,12 @@ function displayUser() {
         displayAlertDanger('#usermgt', getClientMessage('CONNERR'));
         return;
     }
-    var userList = getArray(responseData['API_GET_USER'].User);
+    var userList = getArray(responseData['API_GET_USER'].Data.User);
     if (userList == null) {
         $('#usermgt').append(getClientMessage('NOUSEREXIST'));
     }
 
-    if (responseData['API_GET_USER'].User !== undefined) {
+    if (responseData['API_GET_USER'].Data.User !== undefined) {
         var userListTable = $('<table>');
         userListTable.addClass('table table-striped');
 
@@ -760,7 +760,7 @@ function deleteUser() {
 }
 
 function selectUser(userId) {
-    var userList = getArray(responseData['API_GET_USER'].User);
+    var userList = getArray(responseData['API_GET_USER'].Data.User);
     selectedUser = userName;
     for (loop = 0; loop < userList.length; loop++) {
         if (userList[loop].Id == userId) {
@@ -849,7 +849,7 @@ function checkLoginAfterApiCall() {
             { id : 'usermgt', actApiName : 'activateTopic', title : 'User Management' }
         ];
         initMainPage('SERVAL', 'squirrel.svg', contents);
-        userRole = responseData['API_GET_USER'].User.Role;
+        userRole = responseData['API_GET_USER'].Data.User.Role;
         if (userRole == 1) {
             $('#menu-agtinfo').show();
             $('#menu-svrinfo').show();

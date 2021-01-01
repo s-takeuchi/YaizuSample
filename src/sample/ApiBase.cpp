@@ -22,7 +22,7 @@ bool ApiBase::CheckCredentials(wchar_t* Token, wchar_t* Name)
 	wchar_t Password[DA_MAXLEN_OF_PASSWORD];
 	int Role = 0;
 	wchar_t Url[DA_MAXLEN_OF_TARGETURL];
-	bool Ret = DataAccess::GetInstance()->GetTargetUserByName(TmpName, &Id, Password, &Role, Url);
+	bool Ret = DataAccess::GetInstance()->GetTargetUserByName(TmpName, &Id, Password, &Role);
 	if (Ret == false) {
 		return false;
 	}
@@ -47,7 +47,7 @@ bool ApiBase::IsAdminUser(wchar_t* Token)
 	if (!CheckCredentials(Token, UserName)) {
 		return false;
 	}
-	DataAccess::GetInstance()->GetTargetUserByName(UserName, &UserId, UserPassword, &Role, TargetUrl);
+	DataAccess::GetInstance()->GetTargetUserByName(UserName, &UserId, UserPassword, &Role);
 	if (Role != 0) {
 		return false;
 	}

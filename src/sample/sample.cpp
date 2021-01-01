@@ -6,6 +6,7 @@
 #include "../../../YaizuComLib/src/stksocket/stksocket.h"
 #include "../../../YaizuComLib/src/stkwebapp/StkWebApp.h"
 #include "../../../YaizuComLib/src/stkwebapp/StkWebAppExec.h"
+#include "../../../YaizuComLib/src/stkwebapp_um/stkwebapp_um.h"
 #include "ApiGetLogInfo.h"
 #include "ApiGetServerInfo.h"
 #include "ApiPostServerInfo.h"
