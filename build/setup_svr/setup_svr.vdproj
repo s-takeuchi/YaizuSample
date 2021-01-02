@@ -15,6 +15,12 @@
     {
         "Entry"
         {
+        "MsmKey" = "8:_0252FD8C510E4EA191C1112AEDA46FF8"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_0476B0CF92864ADFBF9B59B39E8D835C"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -496,6 +502,26 @@
         }
         "File"
         {
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_0252FD8C510E4EA191C1112AEDA46FF8"
+            {
+            "SourcePath" = "8:..\\server\\html\\stkcommon_um.js"
+            "TargetName" = "8:stkcommon_um.js"
+            "Tag" = "8:"
+            "Folder" = "8:_328950E660704BD7856D4AF4E7C70906"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_0476B0CF92864ADFBF9B59B39E8D835C"
             {
             "SourcePath" = "8:..\\server\\contrib\\vim\\syntax\\nginx.vim"

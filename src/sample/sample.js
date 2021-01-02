@@ -25,6 +25,9 @@ var command_msg = '';
 var usermgt_msg = '';
 
 function initClientMessage() {
+    addClientMessage('USER_MGMT', {'en':'User Management', 'ja':'ユーザー管理'});
+    addClientMessage('USER_CHG_PW', {'en':'Change Password', 'ja':'パスワードの変更'});
+
     addClientMessage('AGENTINFO', {'en':' Agent Info', 'ja':' Agent Info'});
     addClientMessage('SERVERINFO', {'en':' Server Info', 'ja':' Server Info'});
     addClientMessage('COMMAND', {'en':' Command', 'ja':' Command'});
@@ -820,6 +823,14 @@ function refreshInfo() {
 }
 
 function activateTopic(id) {
+    if (id === 'cmdfreakchgpw') {
+        transDisplayChgPassword();
+        return;
+    }
+    if (id === 'cmdfreakusermgmt') {
+        transDisplayUser();
+        return;
+    }
     refreshInfo();
     $('#agtinfo').css('display', 'none');
     $('#svrinfo').css('display', 'none');
@@ -870,6 +881,18 @@ function checkLoginAfterApiCall() {
             $('#menu-loginfo').show();
             $('#menu-usermgt').show();
         }
+        var usermenuContents = [];
+        if (userRole == 1) {
+            usermenuContents = [
+                { id: 'cmdfreakchgpw', actApiName: 'activateTopic', title: getClientMessage('USER_CHG_PW') }
+            ];
+        } else {
+            usermenuContents = [
+                { id: 'cmdfreakusermgmt', actApiName: 'activateTopic', title: getClientMessage('USER_MGMT') },
+                { id: 'cmdfreakchgpw', actApiName: 'activateTopic', title: getClientMessage('USER_CHG_PW') }
+            ];
+        }
+        addRsUserMenu(usermenuContents);
         refreshInfo();
         setLoginResult(0);
         return;
@@ -880,4 +903,3 @@ window.onload = function() {
     initClientMessage();
     apiCall('GET', '/api/language_old/', null, 'API_GET_LANG', initServal);
 }
-

@@ -24,6 +24,7 @@ cp squirrel.svg $BUILDDIR/SOURCES
 cp favicon-16x16.png $BUILDDIR/SOURCES
 cp ../../../YaizuComLib/src/stkwebapp/stkcommon.js $BUILDDIR/SOURCES
 cp ../../../YaizuComLib/src/stkwebapp/stkcommon.css $BUILDDIR/SOURCES
+cp ../../../YaizuComLib/src/stkwebapp_um/stkcommon_um.js $BUILDDIR/SOURCES
 cp ../../../YaizuComLib/src/stkwebapp/jquery-3.2.0.min.js $BUILDDIR/SOURCES
 cp ../../../YaizuComLib/src/stkwebapp/bootstrap-4.4.1-dist.zip $BUILDDIR/SOURCES
 cp ../../../YaizuComLib/src/stkwebapp/IcoMoon-Free.css $BUILDDIR/SOURCES
@@ -70,7 +71,8 @@ Source23: sample.dat
 Source24: stopsample
 Source25: stkcommon.js
 Source26: stkcommon.css
-Source27: sample.js
+Source27: stkcommon_um.js
+Source28: sample.js
 Source30: bootstrap.bundle.js
 Source31: bootstrap.bundle.js.map
 Source32: bootstrap.bundle.min.js
@@ -120,6 +122,7 @@ install -p -m 755 %{SOURCE24} %{buildroot}/%{_bindir}
 install -p -m 644 %{SOURCE25} %{buildroot}/%{_datarootdir}/nginx/html
 install -p -m 644 %{SOURCE26} %{buildroot}/%{_datarootdir}/nginx/html
 install -p -m 644 %{SOURCE27} %{buildroot}/%{_datarootdir}/nginx/html
+install -p -m 644 %{SOURCE28} %{buildroot}/%{_datarootdir}/nginx/html
 install -p -m 644 %{SOURCE30} %{buildroot}/%{_datarootdir}/nginx/html/bootstrap-4.4.1-dist/js
 install -p -m 644 %{SOURCE31} %{buildroot}/%{_datarootdir}/nginx/html/bootstrap-4.4.1-dist/js
 install -p -m 644 %{SOURCE32} %{buildroot}/%{_datarootdir}/nginx/html/bootstrap-4.4.1-dist/js
@@ -143,6 +146,7 @@ install -p -m 644 %{SOURCE43} %{buildroot}/%{_datarootdir}/nginx/html/img/favico
 %{_datarootdir}/nginx/html/sample.js
 %{_datarootdir}/nginx/html/stkcommon.js
 %{_datarootdir}/nginx/html/stkcommon.css
+%{_datarootdir}/nginx/html/stkcommon_um.js
 %{_datarootdir}/nginx/html/jquery-3.2.0.min.js
 %{_datarootdir}/nginx/html/bootstrap-4.4.1-dist/css/bootstrap.css
 %{_datarootdir}/nginx/html/bootstrap-4.4.1-dist/css/bootstrap.css.map

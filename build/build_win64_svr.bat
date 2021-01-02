@@ -75,6 +75,8 @@ echo Checking "bootstrap-4.4.1-dist.zip" existence...
 if not exist "..\..\YaizuComLib\src\stkwebapp\bootstrap-4.4.1-dist.zip" goto ERRORRAISED
 echo Checking "stkcommon.js" existence...
 if not exist "..\..\YaizuComLib\src\stkwebapp\stkcommon.js" goto ERRORRAISED
+echo Checking "stkcommon_um.js" existence...
+if not exist "..\..\YaizuComLib\src\stkwebapp_um\stkcommon_um.js" goto ERRORRAISED
 echo Checking "stkcommon.css" existence...
 if not exist "..\..\YaizuComLib\src\stkwebapp\stkcommon.css" goto ERRORRAISED
 echo Checking "stkwebappcmd.conf" existence...
@@ -128,6 +130,7 @@ copy "..\src\sample\squirrel.svg" server\html
 copy "..\src\sample\favicon-16x16.png" server\html\img
 copy "..\..\YaizuComLib\src\stkwebapp\stkcommon.js" server\html
 copy "..\..\YaizuComLib\src\stkwebapp\stkcommon.css" server\html
+copy "..\..\YaizuComLib\src\stkwebapp_um\stkcommon_um.js" server\html
 copy "..\..\YaizuComLib\src\stkwebapp\jquery-3.2.0.min.js" server\html
 copy "..\..\YaizuComLib\src\stkwebapp\IcoMoon-Free.ttf" server\html
 copy "..\..\YaizuComLib\src\stkwebapp\IcoMoon-Free.css" server\html
