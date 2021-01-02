@@ -1,11 +1,13 @@
 LDFLAGS = -L/usr/local/lib64 -L/usr/local/lib
 LIBS    = -lssl -lcrypto
 
-sample : sample.o ApiBase.o ApiGetLogInfo.o ApiGetServerInfo.o ApiPostServerInfo.o ApiGetAgentInfo.o ApiPostAgentInfo.o ApiGetCommandForStatus.o ApiGetCommandForOperation.o ApiGetCommand.o ApiPostCommand.o ApiDeleteCommand.o ApiGetFile.o ApiPostFile.o ApiGetLanguage.o ApiGetUser.o dataaccess.o
+sample : sample.o ApiBase.o ApiGetLogInfo.o ApiGetServerInfo.o ApiPostServerInfo.o ApiGetAgentInfo.o ApiPostAgentInfo.o ApiGetCommandForStatus.o ApiGetCommandForOperation.o ApiGetCommand.o ApiPostCommand.o ApiDeleteCommand.o ApiGetFile.o ApiPostFile.o ApiGetLanguage.o dataaccess.o
 	cd ../../../YaizuComLib/src/stkpl; make
 	cp ../../../YaizuComLib/src/stkpl/stkpl.a .
 	cd ../../../YaizuComLib/src/stkwebapp; make
 	cp ../../../YaizuComLib/src/stkwebapp/stkwebapp.a .
+	cd ../../../YaizuComLib/src/stkwebapp_um; make
+	cp ../../../YaizuComLib/src/stkwebapp_um/stkwebapp_um.a .
 	cd ../../../YaizuComLib/src/commonfunc; make
 	cp ../../../YaizuComLib/src/commonfunc/commonfunc.a .
 	cd ../../../YaizuComLib/src/stksocket; make
@@ -15,7 +17,7 @@ sample : sample.o ApiBase.o ApiGetLogInfo.o ApiGetServerInfo.o ApiPostServerInfo
 	cd ../../../YaizuComLib/src/stkdata; make
 	cp ../../../YaizuComLib/src/stkdata/stkdata.a .
 
-	g++ -o sample sample.o ApiBase.o ApiGetLogInfo.o ApiGetServerInfo.o ApiPostServerInfo.o ApiGetAgentInfo.o ApiPostAgentInfo.o ApiGetCommandForStatus.o ApiGetCommandForOperation.o ApiGetCommand.o ApiPostCommand.o ApiDeleteCommand.o ApiGetFile.o ApiPostFile.o ApiGetLanguage.o ApiGetUser.o dataaccess.o stkpl.a stkwebapp.a commonfunc.a stksocket.a stkthread.a stkdata.a -std=c++1z -lstdc++fs -pthread -static-libgcc -static-libstdc++ $(LDFLAGS) $(LIBS)
+	g++ -o sample sample.o ApiBase.o ApiGetLogInfo.o ApiGetServerInfo.o ApiPostServerInfo.o ApiGetAgentInfo.o ApiPostAgentInfo.o ApiGetCommandForStatus.o ApiGetCommandForOperation.o ApiGetCommand.o ApiPostCommand.o ApiDeleteCommand.o ApiGetFile.o ApiPostFile.o ApiGetLanguage.o dataaccess.o stkpl.a stkwebapp.a stkwebapp_um.a commonfunc.a stksocket.a stkthread.a stkdata.a -std=c++1z -lstdc++fs -pthread -static-libgcc -static-libstdc++ $(LDFLAGS) $(LIBS)
 
 ApiBase.o : ApiBase.cpp
 	g++ -c ApiBase.cpp -std=c++1z
@@ -59,9 +61,6 @@ ApiPostFile.o : ApiPostFile.cpp
 ApiGetLanguage.o : ApiGetLanguage.cpp
 	g++ -c ApiGetLanguage.cpp -std=c++1z
 
-ApiGetUser.o : ApiGetUser.cpp
-	g++ -c ApiGetUser.cpp -std=c++1z
-
 dataaccess.o : dataaccess.cpp
 	g++ -c dataaccess.cpp -std=c++1z
 
@@ -72,6 +71,7 @@ clean :
 	rm -f *.o *.a sample
 	cd ../../../YaizuComLib/src/stkpl; make clean
 	cd ../../../YaizuComLib/src/stkwebapp; make clean
+	cd ../../../YaizuComLib/src/stkwebapp_um; make clean
 	cd ../../../YaizuComLib/src/commonfunc; make clean
 	cd ../../../YaizuComLib/src/stksocket; make clean
 	cd ../../../YaizuComLib/src/stkthread; make clean
