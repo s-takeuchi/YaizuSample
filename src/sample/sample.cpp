@@ -20,7 +20,6 @@
 #include "ApiGetFile.h"
 #include "ApiPostFile.h"
 #include "ApiGetLanguage.h"
-#include "ApiGetUser.h"
 #include "dataaccess.h"
 #include "MessageCode.h"
 
@@ -181,8 +180,7 @@ void Server(wchar_t* IpAddr, int Port, int NumOfWorkerThreads, int ThreadInterva
 	int Add12 = Soc->AddReqHandler(StkWebAppExec::STKWEBAPP_METHOD_POST, L"/api/file/", (StkWebAppExec*)ApiPostFileObj);
 	ApiGetLanguage* ApiGetLanguageObj = new ApiGetLanguage();
 	int Add13 = Soc->AddReqHandler(StkWebAppExec::STKWEBAPP_METHOD_GET, L"/api/language_old/", (StkWebAppExec*)ApiGetLanguageObj);
-	ApiGetUser* ApiGetUserObj = new ApiGetUser();
-	int Add14 = Soc->AddReqHandler(StkWebAppExec::STKWEBAPP_METHOD_GET, L"/api/user_old$", (StkWebAppExec*)ApiGetUserObj);
+	StkWebAppUm_RegisterApi(Soc);
 
 	////////// Main logic starts
 	Soc->TheLoop();
@@ -201,7 +199,7 @@ void Server(wchar_t* IpAddr, int Port, int NumOfWorkerThreads, int ThreadInterva
 	int Del11 = Soc->DeleteReqHandler(StkWebAppExec::STKWEBAPP_METHOD_GET, L"/api/file/$/$/");
 	int Del12 = Soc->DeleteReqHandler(StkWebAppExec::STKWEBAPP_METHOD_POST, L"/api/file/");
 	int Del13 = Soc->DeleteReqHandler(StkWebAppExec::STKWEBAPP_METHOD_GET, L"/api/language_old/");
-	int Del14 = Soc->DeleteReqHandler(StkWebAppExec::STKWEBAPP_METHOD_GET, L"/api/user_old$");
+	StkWebAppUm_UnregisterApi(Soc);
 
 	ApiGetCommandForStatus::StopFlag = true;
 	ApiGetCommandForOperation::StopFlag = true;
@@ -289,6 +287,8 @@ int main(int Argc, char* Argv[])
 	}
 
 	DataAccess::GetInstance()->CreateTables(L"sample.dat");
+	StkWebAppUm_Init();
+	StkWebAppUm_CreateTable();
 	DataAccess::GetInstance()->AddLogMsg(MessageProc::GetMsgEng(MSG_SERVICESTARTED), MessageProc::GetMsgJpn(MSG_SERVICESTARTED));
 	wchar_t* IpAddr = StkPlCreateWideCharFromUtf8(IpAddrTmp);
 	Server(IpAddr, Port, NumOfWorkerThreads, ThreadInterval, SecureMode, PrivateKey, Certificate);

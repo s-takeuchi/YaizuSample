@@ -1,7 +1,7 @@
 ﻿#pragma once
 #include "../../../YaizuComLib/src/stkwebapp/StkWebAppExec.h"
 
-class ApiBase : public StkWebAppExec
+class ApiOldBase : public StkWebAppExec
 {
 protected:
 	virtual StkObject* ExecuteImpl(StkObject*, int, wchar_t[StkWebAppExec::URL_PATH_LENGTH], int*, int, wchar_t*) = 0;

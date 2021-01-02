@@ -811,7 +811,11 @@ function refreshInfo() {
         apiCall('GET', '/api/command/', null, 'API_GET_COMMAND', displayCommand);
         apiCall('GET', '/api/log/', null, 'API_GET_LOGS', displayLogInfo);
     } else {
-        apiCall('GET', '/api/user_old/?target=all', null, 'API_GET_USER', displayUser);
+        apiCall('GET', '/api/agent/', null, 'API_GET_AGTINFO', displayAgentInfo);
+        apiCall('GET', '/api/server/', null, 'API_GET_SVRINFO', displayServerInfo);
+        apiCall('GET', '/api/command/', null, 'API_GET_COMMAND', displayCommand);
+        apiCall('GET', '/api/log/', null, 'API_GET_LOGS', displayLogInfo);
+        apiCall('GET', '/api/user/?target=all', null, 'API_GET_USER', displayUser);
     }
 }
 
@@ -834,7 +838,7 @@ function activateTopic(id) {
 
 function checkLogin(dummyId, dummyPw) {
     setAuthenticationToken(dummyId + ' ' + dummyPw);
-    apiCall('GET', '/api/user_old/', null, 'API_GET_USER', checkLoginAfterApiCall);
+    apiCall('GET', '/api/user/', null, 'API_GET_USER', checkLoginAfterApiCall);
 }
 
 function checkLoginAfterApiCall() {
@@ -860,6 +864,10 @@ function checkLoginAfterApiCall() {
             $('#menu-command').show();
             $('#menu-loginfo').show();
         } else {
+            $('#menu-agtinfo').show();
+            $('#menu-svrinfo').show();
+            $('#menu-command').show();
+            $('#menu-loginfo').show();
             $('#menu-usermgt').show();
         }
         refreshInfo();

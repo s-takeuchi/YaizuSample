@@ -5,7 +5,7 @@
 #include "dataaccess.h"
 #include "MessageCode.h"
 
-bool ApiBase::CheckCredentials(wchar_t* Token, wchar_t* Name)
+bool ApiOldBase::CheckCredentials(wchar_t* Token, wchar_t* Name)
 {
 	if (Token == NULL || *Token == L'\0') {
 		return false;
@@ -36,7 +36,7 @@ bool ApiBase::CheckCredentials(wchar_t* Token, wchar_t* Name)
 	}
 }
 
-bool ApiBase::IsAdminUser(wchar_t* Token)
+bool ApiOldBase::IsAdminUser(wchar_t* Token)
 {
 	int UserId = 0;
 	wchar_t UserName[DA_MAXLEN_OF_USERNAME] = L"";
@@ -52,7 +52,7 @@ bool ApiBase::IsAdminUser(wchar_t* Token)
 	return true;
 }
 
-StkObject* ApiBase::Execute(StkObject* ReqObj, int Method, wchar_t UrlPath[StkWebAppExec::URL_PATH_LENGTH], int* ResultCode, wchar_t* HttpHeader)
+StkObject* ApiOldBase::Execute(StkObject* ReqObj, int Method, wchar_t UrlPath[StkWebAppExec::URL_PATH_LENGTH], int* ResultCode, wchar_t* HttpHeader)
 {
 	wchar_t Locale[3] = L"";
 	int LocaleType = -1;
@@ -71,35 +71,35 @@ StkObject* ApiBase::Execute(StkObject* ReqObj, int Method, wchar_t UrlPath[StkWe
 	return ExecuteImpl(ReqObj, Method, UrlPath, ResultCode, LocaleType, Token);
 }
 
-StkObject* ApiBase::CommonError_NoElemInRequest(const wchar_t* ElemName)
+StkObject* ApiOldBase::CommonError_NoElemInRequest(const wchar_t* ElemName)
 {
 	wchar_t Msg[1024] = L"";
 	StkPlSwPrintf(Msg, 1024, MessageProc::GetMsg(MSG_NO_ELEM_IN_REQUEST), ElemName);
 	return new StkObject(L"Msg0", Msg);
 }
 
-StkObject* ApiBase::CommonError_StringLenError(const wchar_t* Name, int MaxLen)
+StkObject* ApiOldBase::CommonError_StringLenError(const wchar_t* Name, int MaxLen)
 {
 	wchar_t Msg[1024] = L"";
 	StkPlSwPrintf(Msg, 1024, MessageProc::GetMsg(MSG_STRING_LEN_ERROR), Name, MaxLen);
 	return new StkObject(L"Msg0", Msg);
 }
 
-StkObject* ApiBase::CommonError_NoRequest()
+StkObject* ApiOldBase::CommonError_NoRequest()
 {
 	wchar_t Msg[1024] = L"";
 	StkPlSwPrintf(Msg, 1024, MessageProc::GetMsg(MSG_NOREQUEST));
 	return new StkObject(L"Msg0", Msg);
 }
 
-StkObject* ApiBase::CommonError_NoExecRight()
+StkObject* ApiOldBase::CommonError_NoExecRight()
 {
 	wchar_t Msg[1024] = L"";
 	StkPlSwPrintf(Msg, 1024, MessageProc::GetMsg(MSG_NO_EXEC_RIGHT));
 	return new StkObject(L"Msg0", Msg);
 }
 
-StkObject* ApiBase::CommonError_ForbiddenChar(const wchar_t* Name)
+StkObject* ApiOldBase::CommonError_ForbiddenChar(const wchar_t* Name)
 {
 	wchar_t Msg[1024] = L"";
 	StkPlSwPrintf(Msg, 1024, MessageProc::GetMsg(MSG_FORBIDDEN_CHAR), Name);

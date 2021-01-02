@@ -5,10 +5,10 @@
 void TestGetUser(StkWebAppSend* StkWebAppSendObj)
 {
 	{
-		StkPlPrintf("GetUser(admin@a.a) ... ");
+		StkPlPrintf("GetUser(admin) ... ");
 		int ResultCode = 0;
-		StkWebAppSendObj->SetAutholization("Bearer admin@a.a manager");
-		StkObject* ResObj = StkWebAppSendObj->SendRequestRecvResponse(StkWebAppSend::STKWEBAPP_METHOD_GET, "/api/user_old/", NULL, &ResultCode);
+		StkWebAppSendObj->SetAutholization("Bearer admin manager");
+		StkObject* ResObj = StkWebAppSendObj->SendRequestRecvResponse(StkWebAppSend::STKWEBAPP_METHOD_GET, "/api/user/", NULL, &ResultCode);
 		if (ResObj == NULL) {
 			StkPlPrintf("[NG]\n");
 			StkPlExit(1);
@@ -23,10 +23,10 @@ void TestGetUser(StkWebAppSend* StkWebAppSendObj)
 	}
 
 	{
-		StkPlPrintf("GetUser(admin@a.a + Method=OPTIONS) ... ");
+		StkPlPrintf("GetUser(admin + Method=OPTIONS) ... ");
 		int ResultCode = 0;
-		StkWebAppSendObj->SetAutholization("Bearer admin@a.a manager");
-		StkObject* ResObj = StkWebAppSendObj->SendRequestRecvResponse(StkWebAppSend::STKWEBAPP_METHOD_OPTIONS, "/api/user_old/", NULL, &ResultCode);
+		StkWebAppSendObj->SetAutholization("Bearer admin manager");
+		StkObject* ResObj = StkWebAppSendObj->SendRequestRecvResponse(StkWebAppSend::STKWEBAPP_METHOD_OPTIONS, "/api/user/", NULL, &ResultCode);
 		if (ResObj != NULL || ResultCode != 200) {
 			StkPlPrintf("[NG]\n");
 			StkPlExit(1);
@@ -39,9 +39,9 @@ void TestGetUser(StkWebAppSend* StkWebAppSendObj)
 		StkPlPrintf("GetUser(dummy) ... ");
 		int ResultCode = 0;
 		StkWebAppSendObj->SetAutholization("Bearer dummy dummy");
-		StkObject* ResObj = StkWebAppSendObj->SendRequestRecvResponse(StkWebAppSend::STKWEBAPP_METHOD_GET, "/api/user_old/", NULL, &ResultCode);
-		if (ResultCode != 403) {
-			StkPlPrintf("[NG]\n");
+		StkObject* ResObj = StkWebAppSendObj->SendRequestRecvResponse(StkWebAppSend::STKWEBAPP_METHOD_GET, "/api/user/", NULL, &ResultCode);
+		if (ResultCode != 401) {
+			StkPlPrintf("[NG] Res=%d\n", ResultCode);
 			StkPlExit(1);
 		}
 		StkPlPrintf("[OK]\n");
@@ -94,7 +94,7 @@ void TestNewAgentInfoNotificationNormal(StkWebAppSend* StkWebAppSendObj)
 	}
 	int ErrCode = 0;
 	StkObject* ReqObj = StkObject::CreateObjectFromJson(L"{\"AgentInfo\" : {\"Name\":\"testagent\", \"Status\":-980}}", &ErrCode);
-	bool Result = TestForGetApi(StkWebAppSendObj, "/api/agent/", "Bearer admin@a.a manager", ReqObj);
+	bool Result = TestForGetApi(StkWebAppSendObj, "/api/agent/", "Bearer admin manager", ReqObj);
 	if (Result != true) {
 		StkPlPrintf("[NG]\n");
 		StkPlExit(1);

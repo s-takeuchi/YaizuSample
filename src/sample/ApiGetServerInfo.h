@@ -3,7 +3,7 @@
 #include "../../../YaizuComLib/src/stkwebapp/StkWebAppExec.h"
 #include "ApiBase.h"
 
-class ApiGetServerInfo : ApiBase
+class ApiGetServerInfo : ApiOldBase
 {
 private:
 	wchar_t StartTimeUtc[DA_MAXLEN_OF_TIME];
