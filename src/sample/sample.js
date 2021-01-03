@@ -32,12 +32,10 @@ function initClientMessage() {
     addClientMessage('SERVERINFO', {'en':' Server Info', 'ja':' Server Info'});
     addClientMessage('COMMAND', {'en':' Command', 'ja':' Command'});
     addClientMessage('AUDITLOG', {'en':' Audit Log', 'ja':' Audit Log'});
-    addClientMessage('USERMGT', {'en':' User Management', 'ja':' User Management'});
 
     addClientMessage('NOLOGINFO', {'en':'<p>No log information</p>', 'ja':'<p>ログはありません</p>'});
     addClientMessage('NOAGTINFO', {'en':'<p>No agent information</p>', 'ja':'<p>エージェント情報はありません</p>'});
     addClientMessage('NOCMDEXIST', {'en':'<p>No command exists</p>', 'ja':'<p>コマンドはありません</p>'});
-    addClientMessage('NOUSEREXIST', {'en':'<p>No user exists</p>', 'ja':'<p>ユーザーは存在しません</p>'});
 
     addClientMessage('AINAME', {'en':'Name', 'ja':'名称'});
     addClientMessage('AISTATUS', {'en':'Status', 'ja':'状態'});
@@ -86,11 +84,6 @@ function initClientMessage() {
     addClientMessage('COMUPDATED', {'en':'The specified command has been updated.', 'ja':'指定したコマンドが更新されました。'});
     addClientMessage('COMDELETED', {'en':'The specified command has been deleted', 'ja':'指定したコマンドが削除されました。'});
     addClientMessage('COMMANDLABEL', {'en':'Command : ', 'ja':'コマンド : '});
-
-    addClientMessage('USERNAME', {'en':'User Name', 'ja':'ユーザー名'});
-    addClientMessage('USERROLE', {'en':'User Role', 'ja':'ユーザーロール'});
-    addClientMessage('USERROLEADMIN', {'en':'Administrator', 'ja':'管理者'});
-    addClientMessage('USERROLEUSER', {'en':'General User', 'ja':'一般ユーザー'});
 
     addClientMessage('LOGEVENTTIME', {'en':'Event Occurrence Time', 'ja':'イベント発生時刻'});
     addClientMessage('LOGEVENT', {'en':'Event', 'ja':'イベント'});
@@ -718,78 +711,6 @@ function refreshAfterDeleteCommand() {
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 
-function displayUser() {
-    $('#usermgt').append('<h2>' + getClientMessage('USERMGT') + '</h2>');
-    if (statusCode['API_GET_USER'] == -1 || statusCode['API_GET_USER'] == 0) {
-        displayAlertDanger('#usermgt', getClientMessage('CONNERR'));
-        return;
-    }
-    var userList = getArray(responseData['API_GET_USER'].Data.User);
-    if (userList == null) {
-        $('#usermgt').append(getClientMessage('NOUSEREXIST'));
-    }
-
-    if (responseData['API_GET_USER'].Data.User !== undefined) {
-        var userListTable = $('<table>');
-        userListTable.addClass('table table-striped');
-
-        var tHead = $('<thead>');
-        tHead.append('<tr><th>' + getClientMessage('USERNAME') + '</th><th>' + getClientMessage('USERROLE') + '</th></tr>');
-        userListTable.append(tHead);
-
-        var tBody = $('<tbody>');
-        for (var Loop = 0; Loop < userList.length; Loop++) {
-            var StrUserRole = '';
-            if (userList[Loop].Role == 0) {
-                StrUserRole = getClientMessage('USERROLEADMIN');
-            } else {
-                StrUserRole = getClientMessage('USERROLEUSER');
-            }
-            tBody.append('<tr><td><div class="radio"><label><input type="radio" id="radioUser' + userList[Loop].Id + '" name="optradio" onclick="selectUser(\''+ userList[Loop].Id + '\')"/>' + userList[Loop].Name + '</label></div></td><td>' + StrUserRole + '</td></tr>');
-        }
-        userListTable.append(tBody);
-        $('#usermgt').append(userListTable);
-    }
-    $('#usermgt').append('<div class="form-group"><label for="userName">' + getClientMessage('USERNAME') + '</label><input type="text" class="form-control" id="userName" placeholder="' + getClientMessage('USERNAME') + '"></div>');
-    $('#usermgt').append('<div class="form-group"><label for="userType">' + getClientMessage('USERROLE') + '</label><select class="form-control" id="userRole"><option>' + getClientMessage('USERROLEADMIN') + '</option><option>' + getClientMessage('USERROLEUSER') + '</option></select></div>');
-    $('#usermgt').append('<div id="usermgt_errmsg"/>');
-    $('#usermgt').append('<button type="button" id="userBtnAdd" class="btn btn-primary" onclick="updateUser(false)">' + getClientMessage('COMADD') + '</button> ');
-    $('#usermgt').append('<button type="button" id="userBtnUpdate" class="btn btn-primary disabled" onclick="updateUser(true)">' + getClientMessage('COMUPDATE') + '</button> ');
-    $('#usermgt').append('<button type="button" id="userBtnDelete" class="btn btn-primary disabled" onclick="deleteUser()">' + getClientMessage('COMDELETE') + '</button> ');
-    $('#usermgt').append('<p></p>');
-    $('td').css('vertical-align', 'middle');
-}
-
-function updateUser(updateFlag) {
-}
-
-function deleteUser() {
-}
-
-function selectUser(userId) {
-    var userList = getArray(responseData['API_GET_USER'].Data.User);
-    selectedUser = userName;
-    for (loop = 0; loop < userList.length; loop++) {
-        if (userList[loop].Id == userId) {
-            var roleStr = '';
-            if (userList[loop].Role == 0) {
-                roleStr = getClientMessage('USERROLEADMIN');
-            } else {
-                roleStr = getClientMessage('USERROLEUSER');
-            }
-            $('#userName').val(userList[loop].Name);
-            $('#userRole').val(roleStr);
-            $('#userBtnUpdate').removeClass('disabled');
-            $('#userBtnDelete').removeClass('disabled');
-        }
-    }
-}
-
-////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////
-
 function initServal() {
     if (statusCode['API_GET_LANG'] == -1 || statusCode['API_GET_LANG'] == 0) {
         return;
@@ -808,18 +729,10 @@ function refreshInfo() {
     $('#command').empty();
     $('#loginfo').empty();
     $('#usermgt').empty();
-    if (userRole == 1) {
-        apiCall('GET', '/api/agent/', null, 'API_GET_AGTINFO', displayAgentInfo);
-        apiCall('GET', '/api/server/', null, 'API_GET_SVRINFO', displayServerInfo);
-        apiCall('GET', '/api/command/', null, 'API_GET_COMMAND', displayCommand);
-        apiCall('GET', '/api/log/', null, 'API_GET_LOGS', displayLogInfo);
-    } else {
-        apiCall('GET', '/api/agent/', null, 'API_GET_AGTINFO', displayAgentInfo);
-        apiCall('GET', '/api/server/', null, 'API_GET_SVRINFO', displayServerInfo);
-        apiCall('GET', '/api/command/', null, 'API_GET_COMMAND', displayCommand);
-        apiCall('GET', '/api/log/', null, 'API_GET_LOGS', displayLogInfo);
-        apiCall('GET', '/api/user/?target=all', null, 'API_GET_USER', displayUser);
-    }
+    apiCall('GET', '/api/agent/', null, 'API_GET_AGTINFO', displayAgentInfo);
+    apiCall('GET', '/api/server/', null, 'API_GET_SVRINFO', displayServerInfo);
+    apiCall('GET', '/api/command/', null, 'API_GET_COMMAND', displayCommand);
+    apiCall('GET', '/api/log/', null, 'API_GET_LOGS', displayLogInfo);
 }
 
 function activateTopic(id) {
@@ -864,23 +777,14 @@ function checkLoginAfterApiCall() {
             { id : 'agtinfo', actApiName : 'activateTopic', title : 'Agent Info' },
             { id : 'svrinfo', actApiName : 'activateTopic', title : 'Server Info' },
             { id : 'command', actApiName : 'activateTopic', title : 'Command' },
-            { id : 'loginfo', actApiName : 'activateTopic', title : 'Audit Log' },
-            { id : 'usermgt', actApiName : 'activateTopic', title : 'User Management' }
+            { id : 'loginfo', actApiName : 'activateTopic', title : 'Audit Log' }
         ];
         initMainPage('SERVAL', 'squirrel.svg', contents);
         userRole = responseData['API_GET_USER'].Data.User.Role;
-        if (userRole == 1) {
-            $('#menu-agtinfo').show();
-            $('#menu-svrinfo').show();
-            $('#menu-command').show();
-            $('#menu-loginfo').show();
-        } else {
-            $('#menu-agtinfo').show();
-            $('#menu-svrinfo').show();
-            $('#menu-command').show();
-            $('#menu-loginfo').show();
-            $('#menu-usermgt').show();
-        }
+        $('#menu-agtinfo').show();
+        $('#menu-svrinfo').show();
+        $('#menu-command').show();
+        $('#menu-loginfo').show();
         var usermenuContents = [];
         if (userRole == 1) {
             usermenuContents = [
