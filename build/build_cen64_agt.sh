@@ -61,6 +61,8 @@ fi
 %post
 if [ \$1 = 1 ]; then
     echo "New installation (post)"
+    mkdir -p %{_datadir}/serval
+    echo pathtobucket=%{_datadir}/serval >> %{_sysconfdir}/agent.conf
     setsebool httpd_can_network_connect on -P
     systemctl daemon-reload
     systemctl start agent.service
