@@ -736,14 +736,6 @@ function refreshInfo() {
 }
 
 function activateTopic(id) {
-    if (id === 'cmdfreakchgpw') {
-        transDisplayChgPassword();
-        return;
-    }
-    if (id === 'cmdfreakusermgmt') {
-        transDisplayUser();
-        return;
-    }
     refreshInfo();
     $('#agtinfo').css('display', 'none');
     $('#svrinfo').css('display', 'none');
@@ -788,12 +780,12 @@ function checkLoginAfterApiCall() {
         var usermenuContents = [];
         if (userRole == 1) {
             usermenuContents = [
-                { id: 'cmdfreakchgpw', actApiName: 'activateTopic', title: getClientMessage('USER_CHG_PW') }
+                { actApiName: 'transDisplayChgPassword()', title: getClientMessage('USER_CHG_PW') }
             ];
         } else {
             usermenuContents = [
-                { id: 'cmdfreakusermgmt', actApiName: 'activateTopic', title: getClientMessage('USER_MGMT') },
-                { id: 'cmdfreakchgpw', actApiName: 'activateTopic', title: getClientMessage('USER_CHG_PW') }
+                { actApiName: 'transDisplayUser()', title: getClientMessage('USER_MGMT') },
+                { actApiName: 'transDisplayChgPassword()', title: getClientMessage('USER_CHG_PW') }
             ];
         }
         addRsUserMenu(usermenuContents);
