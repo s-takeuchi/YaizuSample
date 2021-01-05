@@ -112,7 +112,14 @@ function getArray(targetObject) {
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 
+function transDisplayLogInfo() {
+    apiCall('GET', '/api/log/', null, 'API_GET_LOGS', displayLogInfo);
+}
+
 function displayLogInfo() {
+    drowContainer($('<div id="loginfo" class="row col-xs-12" style="display:block"></div>'));
+    clearRsCommand();
+
     $('#loginfo').append('<h2>' + getClientMessage('AUDITLOG') + '</h2>');
     if (statusCode['API_GET_LOGS'] == -1 || statusCode['API_GET_LOGS'] == 0) {
         displayAlertDanger('#loginfo', getClientMessage('CONNERR'));
@@ -149,7 +156,18 @@ function displayLogInfo() {
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 
+function transDisplayAgentInfo() {
+    let contents = [{ method: 'GET', url: '/api/agent/', request: null, keystring: 'API_GET_AGTINFO' },
+                    { method: 'GET', url: '/api/command/', request: null, keystring: 'API_GET_COMMAND' }
+    ];
+    MultiApiCall(contents, displayAgentInfo);
+}
+
 function displayAgentInfo() {
+    drowContainer($('<div id="agtinfo" class="row col-xs-12" style="display:block"></div>'));
+    clearRsCommand();
+    switchAgentInfoButton();
+
     $('#agtinfo').append('<h2>' + getClientMessage('AGENTINFO') + '</h2>');
     if (statusCode['API_GET_AGTINFO'] == -1 || statusCode['API_GET_AGTINFO'] == 0) {
         displayAlertDanger('#agtinfo', getClientMessage('CONNERR'));
@@ -420,7 +438,14 @@ function selectAgentStatusCommand(agentStatusCommand) {
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 
+function transDisplayServerInfo() {
+    apiCall('GET', '/api/server/', null, 'API_GET_SVRINFO', displayServerInfo);
+}
+
 function displayServerInfo() {
+    drowContainer($('<div id="svrinfo" class="row col-xs-12" style="display:block"></div>'));
+    clearRsCommand();
+
     $('#svrinfo').append('<h2>' + getClientMessage('SERVERINFO') + '</h2>');
     if (statusCode['API_GET_SVRINFO'] == -1 || statusCode['API_GET_SVRINFO'] == 0) {
         displayAlertDanger('#svrinfo', getClientMessage('CONNERR'));
@@ -554,7 +579,7 @@ function refreshAfterUpdateServerInfo() {
         displayAlertDanger('#svrinfo_errmsg', responseData['API_POST_SVRINFO'].Msg0);
         return;
     }
-    refreshInfo();
+    transDisplayServerInfo();
     svrinfo_msg = getClientMessage('SIUPDATED');
 }
 
@@ -563,7 +588,14 @@ function refreshAfterUpdateServerInfo() {
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 
+function transDisplayCommand() {
+    apiCall('GET', '/api/command/', null, 'API_GET_COMMAND', displayCommand);
+}
+
 function displayCommand() {
+    drowContainer($('<div id="command" class="row col-xs-12" style="display:block"></div>'));
+    clearRsCommand();
+
     $('#command').append('<h2>' + getClientMessage('COMMAND') + '</h2>');
     if (statusCode['API_GET_COMMAND'] == -1 || statusCode['API_GET_COMMAND'] == 0) {
         displayAlertDanger('#command', getClientMessage('CONNERR'));
@@ -674,7 +706,7 @@ function refreshAfterAddCommand() {
         displayAlertDanger('#command_errmsg', responseData['API_POST_COMMAND'].Msg0);
         return;
     }
-    refreshInfo();
+    transDisplayCommand();
     command_msg = getClientMessage('COMADDED');
 }
 
@@ -688,7 +720,7 @@ function refreshAfterUpdateCommand() {
         displayAlertDanger('#command_errmsg', responseData['API_POST_COMMAND'].Msg0);
         return;
     }
-    refreshInfo();
+    transDisplayCommand();
     command_msg = getClientMessage('COMUPDATED');
 }
 
@@ -702,7 +734,7 @@ function refreshAfterDeleteCommand() {
         displayAlertDanger('#command_errmsg', responseData['API_DELETE_COMMAND'].Msg0);
         return;
     }
-    refreshInfo();
+    transDisplayCommand();
     command_msg = getClientMessage('COMDELETED');
 }
 
@@ -723,35 +755,6 @@ function initServal() {
     showLoginModal(checkLogin);
 }
 
-function refreshInfo() {
-    $('#agtinfo').empty();
-    $('#svrinfo').empty();
-    $('#command').empty();
-    $('#loginfo').empty();
-    $('#usermgt').empty();
-    apiCall('GET', '/api/agent/', null, 'API_GET_AGTINFO', displayAgentInfo);
-    apiCall('GET', '/api/server/', null, 'API_GET_SVRINFO', displayServerInfo);
-    apiCall('GET', '/api/command/', null, 'API_GET_COMMAND', displayCommand);
-    apiCall('GET', '/api/log/', null, 'API_GET_LOGS', displayLogInfo);
-}
-
-function activateTopic(id) {
-    refreshInfo();
-    $('#agtinfo').css('display', 'none');
-    $('#svrinfo').css('display', 'none');
-    $('#command').css('display', 'none');
-    $('#loginfo').css('display', 'none');
-    $('#usermgt').css('display', 'none');
-
-    var activateTarget = document.getElementById(id);
-    activateTarget.style.display = 'block'
-
-    clearRsCommand();
-    if (id === 'agtinfo') {
-        switchAgentInfoButton();
-    }
-}
-
 function checkLogin(dummyId, dummyPw) {
     setAuthenticationToken(dummyId + ' ' + dummyPw);
     apiCall('GET', '/api/user/', null, 'API_GET_USER', checkLoginAfterApiCall);
@@ -766,10 +769,10 @@ function checkLoginAfterApiCall() {
         return;
     } else {
         var contents = [
-            { id : 'agtinfo', actApiName : "activateTopic('agtinfo')", title : 'Agent Info' },
-            { id : 'svrinfo', actApiName : "activateTopic('svrinfo')", title : 'Server Info' },
-            { id : 'command', actApiName : "activateTopic('command')", title : 'Command' },
-            { id : 'loginfo', actApiName : "activateTopic('loginfo')", title : 'Audit Log' }
+            { actApiName : "transDisplayAgentInfo()", title : 'Agent Info' },
+            { actApiName : "transDisplayServerInfo()", title : 'Server Info' },
+            { actApiName : "transDisplayCommand()", title : 'Command' },
+            { actApiName : "transDisplayLogInfo()", title : 'Audit Log' }
         ];
         initMainPage('SERVAL', 'squirrel.svg', contents);
 
@@ -786,7 +789,6 @@ function checkLoginAfterApiCall() {
             ];
         }
         addRsUserMenu(usermenuContents);
-        refreshInfo();
         setLoginResult(0);
         return;
     }
