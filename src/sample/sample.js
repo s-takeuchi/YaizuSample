@@ -766,17 +766,14 @@ function checkLoginAfterApiCall() {
         return;
     } else {
         var contents = [
-            { id : 'agtinfo', actApiName : 'activateTopic', title : 'Agent Info' },
-            { id : 'svrinfo', actApiName : 'activateTopic', title : 'Server Info' },
-            { id : 'command', actApiName : 'activateTopic', title : 'Command' },
-            { id : 'loginfo', actApiName : 'activateTopic', title : 'Audit Log' }
+            { id : 'agtinfo', actApiName : "activateTopic('agtinfo')", title : 'Agent Info' },
+            { id : 'svrinfo', actApiName : "activateTopic('svrinfo')", title : 'Server Info' },
+            { id : 'command', actApiName : "activateTopic('command')", title : 'Command' },
+            { id : 'loginfo', actApiName : "activateTopic('loginfo')", title : 'Audit Log' }
         ];
         initMainPage('SERVAL', 'squirrel.svg', contents);
+
         userRole = responseData['API_GET_USER'].Data.User.Role;
-        $('#menu-agtinfo').show();
-        $('#menu-svrinfo').show();
-        $('#menu-command').show();
-        $('#menu-loginfo').show();
         var usermenuContents = [];
         if (userRole == 1) {
             usermenuContents = [
