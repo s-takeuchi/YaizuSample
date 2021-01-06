@@ -1,10 +1,12 @@
 #include "../../../YaizuComLib/src/stkpl/StkPl.h"
+#include "../../../YaizuComLib/src/stkwebapp_um/ApiBase.h"
 #include "dataaccess.h"
 #include "ApiGetCommand.h"
 
-StkObject* ApiGetCommand::ExecuteImpl(StkObject* ReqObj, int Method, wchar_t UrlPath[StkWebAppExec::URL_PATH_LENGTH], int* ResultCode, int LocaleType, wchar_t* Token)
+StkObject* ApiGetCommand::ExecuteImpl(StkObject* ReqObj, int Method, wchar_t UrlPath[StkWebAppExec::URL_PATH_LENGTH], int* ResultCode, wchar_t Locale[3], wchar_t* Token)
 {
-	if (!CheckCredentials(Token)) {
+	wchar_t UserName[ApiBase::MAXLEN_OF_USERNAME];
+	if (!CheckCredentials(Token, UserName)) {
 		*ResultCode = 403;
 		return NULL;
 	}

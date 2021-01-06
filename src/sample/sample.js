@@ -113,7 +113,7 @@ function getArray(targetObject) {
 ////////////////////////////////////////////////////////////////////////////////
 
 function transDisplayLogInfo() {
-    apiCall('GET', '/api/log/', null, 'API_GET_LOGS', displayLogInfo);
+    apiCall('GET', '/api/logs/', null, 'API_GET_LOGS', displayLogInfo);
 }
 
 function displayLogInfo() {
@@ -124,7 +124,11 @@ function displayLogInfo() {
     if (statusCode['API_GET_LOGS'] == -1 || statusCode['API_GET_LOGS'] == 0) {
         displayAlertDanger('#loginfo', getClientMessage('CONNERR'));
         return;
+    } else if (statusCode['API_GET_LOGS'] != 200) {
+        displayAlertDanger('#loginfo', getSvrMsg(responseData['API_GET_LOGS']));
+        return;
     }
+
     var Log = getArray(responseData['API_GET_LOGS'].Data.Log);
     if (Log == null) {
         $('#loginfo').append(getClientMessage('NOLOGINFO'));
@@ -747,7 +751,7 @@ function initServal() {
     if (statusCode['API_GET_LANG'] == -1 || statusCode['API_GET_LANG'] == 0) {
         return;
     }
-    if (responseData['API_GET_LANG'].ClientLanguage == 'ja') {
+    if (responseData['API_GET_LANG'].Data.ClientLanguage === 'ja') {
         setClientLanguage(1);
     } else {
         setClientLanguage(0);
@@ -796,5 +800,5 @@ function checkLoginAfterApiCall() {
 
 window.onload = function() {
     initClientMessage();
-    apiCall('GET', '/api/language_old/', null, 'API_GET_LANG', initServal);
+    apiCall('GET', '/api/language/', null, 'API_GET_LANG', initServal);
 }

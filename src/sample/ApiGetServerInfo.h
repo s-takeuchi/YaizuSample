@@ -1,9 +1,8 @@
 ﻿#pragma once
 #include "dataaccess.h"
-#include "../../../YaizuComLib/src/stkwebapp/StkWebAppExec.h"
-#include "ApiBase.h"
+#include "../../../YaizuComLib/src/stkwebapp_um/ApiBase.h"
 
-class ApiGetServerInfo : ApiOldBase
+class ApiGetServerInfo : ApiBase
 {
 private:
 	wchar_t StartTimeUtc[DA_MAXLEN_OF_TIME];
@@ -11,5 +10,5 @@ private:
 
 public:
 	ApiGetServerInfo();
-	StkObject* ExecuteImpl(StkObject*, int, wchar_t[StkWebAppExec::URL_PATH_LENGTH], int*, int, wchar_t*);
+	StkObject* ExecuteImpl(StkObject*, int, wchar_t[StkWebAppExec::URL_PATH_LENGTH], int*, wchar_t[3], wchar_t*);
 };

@@ -7,7 +7,6 @@
 #include "../../../YaizuComLib/src/stkwebapp/StkWebApp.h"
 #include "../../../YaizuComLib/src/stkwebapp/StkWebAppExec.h"
 #include "../../../YaizuComLib/src/stkwebapp_um/stkwebapp_um.h"
-#include "ApiGetLogInfo.h"
 #include "ApiGetServerInfo.h"
 #include "ApiPostServerInfo.h"
 #include "ApiGetAgentInfo.h"
@@ -19,7 +18,6 @@
 #include "ApiGetCommandForOperation.h"
 #include "ApiGetFile.h"
 #include "ApiPostFile.h"
-#include "ApiGetLanguage.h"
 #include "dataaccess.h"
 #include "MessageCode.h"
 
@@ -154,8 +152,6 @@ void Server(wchar_t* IpAddr, int Port, int NumOfWorkerThreads, int ThreadInterva
 	ApiGetCommandForStatus::StopFlag = false;
 	ApiGetCommandForOperation::StopFlag = false;
 
-	ApiGetLogInfo* ApiGetLogInfoObj = new ApiGetLogInfo();
-	int Add1 = Soc->AddReqHandler(StkWebAppExec::STKWEBAPP_METHOD_GET, L"/api/log/", (StkWebAppExec*)ApiGetLogInfoObj);
 	ApiGetServerInfo* ApiGetServerInfoObj = new ApiGetServerInfo();
 	int Add2 = Soc->AddReqHandler(StkWebAppExec::STKWEBAPP_METHOD_GET, L"/api/server/", (StkWebAppExec*)ApiGetServerInfoObj);
 	ApiGetAgentInfo* ApiGetAgentInfoObj = new ApiGetAgentInfo();
@@ -178,15 +174,12 @@ void Server(wchar_t* IpAddr, int Port, int NumOfWorkerThreads, int ThreadInterva
 	int Add11 = Soc->AddReqHandler(StkWebAppExec::STKWEBAPP_METHOD_GET, L"/api/file/$/$/", (StkWebAppExec*)ApiGetFileObj);
 	ApiPostFile* ApiPostFileObj = new ApiPostFile();
 	int Add12 = Soc->AddReqHandler(StkWebAppExec::STKWEBAPP_METHOD_POST, L"/api/file/", (StkWebAppExec*)ApiPostFileObj);
-	ApiGetLanguage* ApiGetLanguageObj = new ApiGetLanguage();
-	int Add13 = Soc->AddReqHandler(StkWebAppExec::STKWEBAPP_METHOD_GET, L"/api/language_old/", (StkWebAppExec*)ApiGetLanguageObj);
 	StkWebAppUm_RegisterApi(Soc);
 
 	////////// Main logic starts
 	Soc->TheLoop();
 	////////// Main logic ends
 
-	int Del1 = Soc->DeleteReqHandler(StkWebAppExec::STKWEBAPP_METHOD_GET, L"/api/log/");
 	int Del2 = Soc->DeleteReqHandler(StkWebAppExec::STKWEBAPP_METHOD_GET, L"/api/server/");
 	int Del3 = Soc->DeleteReqHandler(StkWebAppExec::STKWEBAPP_METHOD_GET, L"/api/agent/");
 	int Del4 = Soc->DeleteReqHandler(StkWebAppExec::STKWEBAPP_METHOD_POST, L"/api/agent/");
@@ -198,7 +191,6 @@ void Server(wchar_t* IpAddr, int Port, int NumOfWorkerThreads, int ThreadInterva
 	int Del10 = Soc->DeleteReqHandler(StkWebAppExec::STKWEBAPP_METHOD_GET, L"/api/opcommand/$/");
 	int Del11 = Soc->DeleteReqHandler(StkWebAppExec::STKWEBAPP_METHOD_GET, L"/api/file/$/$/");
 	int Del12 = Soc->DeleteReqHandler(StkWebAppExec::STKWEBAPP_METHOD_POST, L"/api/file/");
-	int Del13 = Soc->DeleteReqHandler(StkWebAppExec::STKWEBAPP_METHOD_GET, L"/api/language_old/");
 	StkWebAppUm_UnregisterApi(Soc);
 
 	ApiGetCommandForStatus::StopFlag = true;
