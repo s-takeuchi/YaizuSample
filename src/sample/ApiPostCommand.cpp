@@ -1,4 +1,5 @@
 ﻿#include "../../../YaizuComLib/src/stkpl/StkPl.h"
+#include "../../../YaizuComLib/src/stkwebapp_um/stkwebapp_um.h"
 #include "../../../YaizuComLib/src/stkwebapp_um/ApiBase.h"
 #include "../../../YaizuComLib/src/commonfunc/msgproc.h"
 #include "dataaccess.h"
@@ -125,7 +126,7 @@ StkObject* ApiPostCommand::ExecuteImpl(StkObject* ReqObj, int Method, wchar_t Ur
 		StkPlSwPrintf(LogMsg, 256, L"%ls [%ls]", MessageProc::GetMsgEng(MSG_COMMODIFY), Name);
 		StkPlSwPrintf(LogMsgJa, 256, L"%ls [%ls]", MessageProc::GetMsgJpn(MSG_COMMODIFY), Name);
 	}
-	DataAccess::GetInstance()->AddLogMsg(LogMsg, LogMsgJa);
+	AddLogMsg(LogMsg, LogMsgJa);
 
 	ResObj->AppendChildElement(new StkObject(L"Msg0", L""));
 	*ResultCode = 200;

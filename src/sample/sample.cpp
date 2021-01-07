@@ -7,6 +7,7 @@
 #include "../../../YaizuComLib/src/stkwebapp/StkWebApp.h"
 #include "../../../YaizuComLib/src/stkwebapp/StkWebAppExec.h"
 #include "../../../YaizuComLib/src/stkwebapp_um/stkwebapp_um.h"
+#include "../../../YaizuComLib/src/stkwebapp_um/stkwebapp_um.h"
 #include "ApiGetServerInfo.h"
 #include "ApiPostServerInfo.h"
 #include "ApiGetAgentInfo.h"
@@ -283,11 +284,11 @@ int main(int Argc, char* Argv[])
 	DataAccess::GetInstance()->CreateTables(L"sample.dat");
 	StkWebAppUm_Init();
 	StkWebAppUm_CreateTable();
-	DataAccess::GetInstance()->AddLogMsg(MessageProc::GetMsgEng(MSG_SERVICESTARTED), MessageProc::GetMsgJpn(MSG_SERVICESTARTED));
+	AddLogMsg(MessageProc::GetMsgEng(MSG_SERVICESTARTED), MessageProc::GetMsgJpn(MSG_SERVICESTARTED));
 	wchar_t* IpAddr = StkPlCreateWideCharFromUtf8(IpAddrTmp);
 	Server(IpAddr, Port, NumOfWorkerThreads, ThreadInterval, SecureMode, PrivateKey, Certificate);
 	delete IpAddr;
-	DataAccess::GetInstance()->AddLogMsg(MessageProc::GetMsgEng(MSG_SERVICESTOPPED), MessageProc::GetMsgJpn(MSG_SERVICESTOPPED));
+	AddLogMsg(MessageProc::GetMsgEng(MSG_SERVICESTOPPED), MessageProc::GetMsgJpn(MSG_SERVICESTOPPED));
 	DataAccess::GetInstance()->StopAutoSave(L"sample.dat");
 
 	return 0;

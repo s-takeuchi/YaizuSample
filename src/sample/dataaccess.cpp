@@ -792,45 +792,6 @@ int DataAccess::SetMaxCommandId(int Id)
 	return Id;
 }
 
-// Add log message
-// LogMsg [in] : Message which you want to insert
-// Return : always zero returned.
-int DataAccess::AddLogMsg(const wchar_t LogMsg[DA_MAXLEN_OF_LOGMSG], const wchar_t LogMsgJa[DA_MAXLEN_OF_LOGMSG])
-{
-	static int MaxLogId = 0;
-	if (MaxLogId == 0) {
-		MaxLogId = GetMaxLogId() + 1;
-	}
-	static int DelCnt = 0;
-	if (DelCnt == 0) {
-		DeleteOldLogs();
-	}
-	DelCnt++;
-	if (DelCnt == 10) {
-		DelCnt = 0;
-	}
-
-	wchar_t TimeLocalBuf[64] = L"";
-	wchar_t TimeUtcBuf[64] = L"";
-	StkPlGetWTimeInIso8601(TimeLocalBuf, true);
-	StkPlGetWTimeInIso8601(TimeUtcBuf, false);
-	// New record information
-	ColumnData *ColDatLog[5];
-	ColDatLog[0] = new ColumnDataInt(L"Id", MaxLogId);
-	ColDatLog[1] = new ColumnDataWStr(L"TimeUtc", TimeUtcBuf);
-	ColDatLog[2] = new ColumnDataWStr(L"TimeLocal", TimeLocalBuf);
-	ColDatLog[3] = new ColumnDataWStr(L"Message", LogMsg);
-	ColDatLog[4] = new ColumnDataWStr(L"MessageJa", LogMsgJa);
-	RecordData* RecDatLog = new RecordData(L"LogOld", ColDatLog, 5);
-	// Add record
-	LockTable(L"LogOld", LOCK_EXCLUSIVE);
-	int Ret = InsertRecord(RecDatLog);
-	UnlockTable(L"LogOld");
-	delete RecDatLog;
-	MaxLogId++;
-	return 0;
-}
-
 // Get maximum log id.
 // This method checks all of registered log ids and returns the maximum id
 // Return : Maximum log id

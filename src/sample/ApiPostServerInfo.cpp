@@ -1,4 +1,5 @@
 #include "../../../YaizuComLib/src/stkpl/StkPl.h"
+#include "../../../YaizuComLib/src/stkwebapp_um/stkwebapp_um.h"
 #include "../../../YaizuComLib/src/stkwebapp_um/ApiBase.h"
 #include "../../../YaizuComLib/src/commonfunc/msgproc.h"
 #include "dataaccess.h"
@@ -62,7 +63,7 @@ StkObject* ApiPostServerInfo::ExecuteImpl(StkObject* ReqObj, int Method, wchar_t
 		wchar_t LogMsgJa[256] = L"";
 		StkPlSwPrintf(LogMsg, 256, L"%ls [Polling Interval=%d sec, Status Acquisition Interval=%d sec, Bucket Path=%ls]", MessageProc::GetMsgEng(MSG_SVRINFOUPDATED), PInterval, SaInterval, BucketPath);
 		StkPlSwPrintf(LogMsgJa, 256, L"%ls [Polling Interval=%d sec, Status Acquisition Interval=%d sec, Bucket Path=%ls]", MessageProc::GetMsgJpn(MSG_SVRINFOUPDATED), PInterval, SaInterval, BucketPath);
-		DataAccess::GetInstance()->AddLogMsg(LogMsg, LogMsgJa);
+		AddLogMsg(LogMsg, LogMsgJa);
 	} else {
 		TmpObj->AppendChildElement(new StkObject(L"Msg0", MessageProc::GetMsg(MSG_NOREQUEST)));
 		*ResultCode = 400;
