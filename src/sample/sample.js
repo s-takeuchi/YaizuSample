@@ -342,7 +342,7 @@ function closeExecCommandDlg(okFlag) {
                 apiCall('POST', '/api/agent/', ReqObj, 'API_POST_AGTINFO', null);
             }
         }
-        apiCall(null, null, null, '', refreshInfo);
+        apiCall(null, null, null, '', transDisplayAgentInfo);
     }
     closeInputModal();
 }
@@ -397,7 +397,7 @@ function closeAgentStatusCommandDlg(okFlag) {
                 apiCall('POST', '/api/agent/', ReqObj, 'API_POST_AGTINFO', null);
             }
         }
-        apiCall(null, null, null, '', refreshInfo);
+        apiCall(null, null, null, '', transDisplayAgentInfo);
     }
     closeInputModal();
 }

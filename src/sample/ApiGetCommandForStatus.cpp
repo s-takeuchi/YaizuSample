@@ -1,5 +1,6 @@
 #include "dataaccess.h"
 #include "../../../YaizuComLib/src/stkpl/StkPl.h"
+#include "../../../YaizuComLib/src/stkwebapp_um/ApiBase.h"
 #include "../../../YaizuComLib/src/commonfunc/StkStringParser.h"
 #include "../../../YaizuComLib/src/commonfunc/msgproc.h"
 #include "ApiGetCommandForStatus.h"
@@ -7,7 +8,7 @@
 
 bool ApiGetCommandForStatus::StopFlag;
 
-StkObject* ApiGetCommandForStatus::ExecuteImpl(StkObject* ReqObj, int Method, wchar_t UrlPath[StkWebAppExec::URL_PATH_LENGTH], int* ResultCode, int LocaleType, wchar_t* Token)
+StkObject* ApiGetCommandForStatus::ExecuteImpl(StkObject* ReqObj, int Method, wchar_t UrlPath[StkWebAppExec::URL_PATH_LENGTH], int* ResultCode, wchar_t Locale[3], wchar_t* Token)
 {
 	wchar_t TargetAgtName[DA_MAXLEN_OF_AGTNAME];
 	StkStringParser::ParseInto1Param(UrlPath, L"/api/statuscommand/$/", L'$', TargetAgtName, DA_MAXLEN_OF_AGTNAME);

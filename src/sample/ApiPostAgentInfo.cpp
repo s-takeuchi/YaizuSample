@@ -1,10 +1,46 @@
 #include "../../../YaizuComLib/src/stkpl/StkPl.h"
+#include "../../../YaizuComLib/src/stkwebapp_um/ApiBase.h"
 #include "../../../YaizuComLib/src/commonfunc/msgproc.h"
 #include "dataaccess.h"
 #include "MessageCode.h"
 #include "ApiPostAgentInfo.h"
 
-StkObject* ApiPostAgentInfo::ExecuteImpl(StkObject* ReqObj, int Method, wchar_t UrlPath[StkWebAppExec::URL_PATH_LENGTH], int* ResultCode, int LocaleType, wchar_t* Token)
+StkObject* ApiPostAgentInfo::CommonError_NoElemInRequest(const wchar_t* ElemName)
+{
+	wchar_t Msg[1024] = L"";
+	StkPlSwPrintf(Msg, 1024, MessageProc::GetMsg(MSG_NO_ELEM_IN_REQUEST), ElemName);
+	return new StkObject(L"Msg0", Msg);
+}
+
+StkObject* ApiPostAgentInfo::CommonError_StringLenError(const wchar_t* Name, int MaxLen)
+{
+	wchar_t Msg[1024] = L"";
+	StkPlSwPrintf(Msg, 1024, MessageProc::GetMsg(MSG_STRING_LEN_ERROR), Name, MaxLen);
+	return new StkObject(L"Msg0", Msg);
+}
+
+StkObject* ApiPostAgentInfo::CommonError_NoRequest()
+{
+	wchar_t Msg[1024] = L"";
+	StkPlSwPrintf(Msg, 1024, MessageProc::GetMsg(MSG_NOREQUEST));
+	return new StkObject(L"Msg0", Msg);
+}
+
+StkObject* ApiPostAgentInfo::CommonError_NoExecRight()
+{
+	wchar_t Msg[1024] = L"";
+	StkPlSwPrintf(Msg, 1024, MessageProc::GetMsg(MSG_NO_EXEC_RIGHT));
+	return new StkObject(L"Msg0", Msg);
+}
+
+StkObject* ApiPostAgentInfo::CommonError_ForbiddenChar(const wchar_t* Name)
+{
+	wchar_t Msg[1024] = L"";
+	StkPlSwPrintf(Msg, 1024, MessageProc::GetMsg(MSG_FORBIDDEN_CHAR), Name);
+	return new StkObject(L"Msg0", Msg);
+}
+
+StkObject* ApiPostAgentInfo::ExecuteImpl(StkObject* ReqObj, int Method, wchar_t UrlPath[StkWebAppExec::URL_PATH_LENGTH], int* ResultCode, wchar_t Locale[3], wchar_t* Token)
 {
 	wchar_t Name[DA_MAXLEN_OF_AGTNAME] = L"";
 	int Status = 0;

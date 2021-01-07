@@ -124,6 +124,8 @@ void InitMessageResource()
 	MessageProc::AddJpn(MSG_FORBIDDEN_CHAR, L"\"%ls\"は使用禁止文字が含まれています。");
 	MessageProc::AddEng(MSG_AGENTINFO_NOT_FOUND, L"The specified agent information is not found.");
 	MessageProc::AddJpn(MSG_AGENTINFO_NOT_FOUND, L"指定したエージェント情報が見つかりません。");
+
+	MessageProc::SetLocaleMode(MessageProc::LOCALE_MODE_ENGLISH);
 }
 
 void Server(wchar_t* IpAddr, int Port, int NumOfWorkerThreads, int ThreadInterval, bool SecureMode, const char* PrivateKey, const char* Certificate)

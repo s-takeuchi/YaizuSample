@@ -1,4 +1,5 @@
 ﻿#include "../../../YaizuComLib/src/stkpl/StkPl.h"
+#include "../../../YaizuComLib/src/stkwebapp_um/ApiBase.h"
 #include "../../../YaizuComLib/src/commonfunc/msgproc.h"
 #include "dataaccess.h"
 #include "MessageCode.h"
@@ -15,7 +16,7 @@ bool ApiPostCommand::CheckFileNameChar(wchar_t* Ptr)
 	return true;
 }
 
-StkObject* ApiPostCommand::ExecuteImpl(StkObject* ReqObj, int Method, wchar_t UrlPath[StkWebAppExec::URL_PATH_LENGTH], int* ResultCode, int LocaleType, wchar_t* Token)
+StkObject* ApiPostCommand::ExecuteImpl(StkObject* ReqObj, int Method, wchar_t UrlPath[StkWebAppExec::URL_PATH_LENGTH], int* ResultCode, wchar_t Locale[3], wchar_t* Token)
 {
 	StkObject* ResObj = new StkObject(L"");
 	if (ReqObj == NULL) {
