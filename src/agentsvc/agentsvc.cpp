@@ -29,14 +29,6 @@ int main(int argc, char* argv[])
 				StkPlCloseFile(FileHndl);
 			}
 			{
-				StkPlSwPrintf(TmpCmd, FILENAME_MAX + 32, L"cmd /c \"%ls\\svcadd.bat\"", TmpPath2);
-				char* TmpCmds = StkPlCreateUtf8FromWideChar(TmpCmd);
-				StkPlPrintf("%s\r\n", TmpCmds);
-				StkPlSleepMs(1000);
-				system(TmpCmds);
-				delete TmpCmds;
-			}
-			{
 				StkPlSwPrintf(TmpCmd, FILENAME_MAX + 32, L"cmd /c mkdir \"%ls\\work\"", TmpPath2);
 				char* TmpCmds = StkPlCreateUtf8FromWideChar(TmpCmd);
 				StkPlPrintf("%s\r\n", TmpCmds);
@@ -58,6 +50,14 @@ int main(int argc, char* argv[])
 				CreateProcess(NULL, TmpCmd, NULL, NULL, false, NORMAL_PRIORITY_CLASS | CREATE_NO_WINDOW, NULL, NULL, &si_acl, &pi_acl);
 				HANDLE AclProcHndl = pi_acl.hProcess;
 				WaitForSingleObject(AclProcHndl, INFINITE);
+			}
+			{
+				StkPlSwPrintf(TmpCmd, FILENAME_MAX + 32, L"cmd /c \"%ls\\svcadd.bat\"", TmpPath2);
+				char* TmpCmds = StkPlCreateUtf8FromWideChar(TmpCmd);
+				StkPlPrintf("%s\r\n", TmpCmds);
+				StkPlSleepMs(1000);
+				system(TmpCmds);
+				delete TmpCmds;
 			}
 		} else if (StkPlStrCmp(argv[1], "svcdel") == 0) {
 			StkPlSwPrintf(TmpCmd, FILENAME_MAX + 32, L"cmd /c \"%ls\\svcdel.bat\"", TmpPath2);
