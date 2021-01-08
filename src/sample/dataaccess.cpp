@@ -60,24 +60,6 @@ int DataAccess::CreateTables(const wchar_t* DataFileName)
 
 	if (StkPlGetFileSize(Buf) == 0) {
 		LockAllTable(2);
-		// Log table
-		{
-			ColumnDefInt ColDefLogId(L"Id");
-			ColumnDefWStr ColDefLogTimeUtc(L"TimeUtc", DA_MAXLEN_OF_TIME);
-			ColumnDefWStr ColDefLogTimeLocal(L"TimeLocal", DA_MAXLEN_OF_TIME);
-			ColumnDefWStr ColDefLogMsg(L"Message", DA_MAXLEN_OF_LOGMSG);
-			ColumnDefWStr ColDefLogMsgJa(L"MessageJa", DA_MAXLEN_OF_LOGMSG);
-			TableDef TabDefLog(L"LogOld", DA_MAXNUM_OF_LOGRECORDS);
-			TabDefLog.AddColumnDef(&ColDefLogId);
-			TabDefLog.AddColumnDef(&ColDefLogTimeUtc);
-			TabDefLog.AddColumnDef(&ColDefLogTimeLocal);
-			TabDefLog.AddColumnDef(&ColDefLogMsg);
-			TabDefLog.AddColumnDef(&ColDefLogMsgJa);
-			if (CreateTable(&TabDefLog) != 0) {
-				UnlockAllTable();
-				return -1;
-			}
-		}
 		// Agent info table
 		{
 			ColumnDefWStr ColDefAgtName(L"Name", DA_MAXLEN_OF_AGTNAME);
@@ -144,22 +126,6 @@ int DataAccess::CreateTables(const wchar_t* DataFileName)
 				return -1;
 			}
 		}
-		// User table
-		{
-			ColumnDefInt ColDefUserId(L"Id");
-			ColumnDefWStr ColDefUserName(L"Name", DA_MAXLEN_OF_USERNAME);
-			ColumnDefWStr ColDefUserPassword(L"Password", DA_MAXLEN_OF_PASSWORD);
-			ColumnDefInt ColDefUserRole(L"Role");
-			TableDef TabDefUser(L"UserOld", DA_MAXNUM_OF_USERRECORDS);
-			TabDefUser.AddColumnDef(&ColDefUserId);
-			TabDefUser.AddColumnDef(&ColDefUserName);
-			TabDefUser.AddColumnDef(&ColDefUserPassword);
-			TabDefUser.AddColumnDef(&ColDefUserRole);
-			if (CreateTable(&TabDefUser) != 0) {
-				UnlockAllTable();
-				return -1;
-			}
-		}
 		// Property table
 		{
 			ColumnDefWStr ColDefPropertyName(L"Name", DA_MAXLEN_OF_PROPERTY_NAME);
@@ -194,33 +160,6 @@ int DataAccess::CreateTables(const wchar_t* DataFileName)
 			int Ret = InsertRecord(RecSvrInfo);
 			UnlockTable(L"ServerInfo");
 			delete RecSvrInfo;
-		}
-		// For user table
-		{
-			ColumnData *ColDatUser[4];
-			ColDatUser[0] = new ColumnDataInt(L"Id", 0);
-			ColDatUser[1] = new ColumnDataWStr(L"Name", L"admin");
-			ColDatUser[2] = new ColumnDataWStr(L"Password", L"manager");
-			ColDatUser[3] = new ColumnDataInt(L"Role", 0);
-			RecordData* RecUser = new RecordData(L"UserOld", ColDatUser, 4);
-			// Add record
-			LockTable(L"UserOld", LOCK_EXCLUSIVE);
-			int Ret = InsertRecord(RecUser);
-			UnlockTable(L"UserOld");
-			delete RecUser;
-		}
-		{
-			ColumnData *ColDatUser[4];
-			ColDatUser[0] = new ColumnDataInt(L"Id", 1);
-			ColDatUser[1] = new ColumnDataWStr(L"Name", L"takeuchi");
-			ColDatUser[2] = new ColumnDataWStr(L"Password", L"takeuchi");
-			ColDatUser[3] = new ColumnDataInt(L"Role", 1);
-			RecordData* RecUser = new RecordData(L"UserOld", ColDatUser, 4);
-			// Add record
-			LockTable(L"UserOld", LOCK_EXCLUSIVE);
-			int Ret = InsertRecord(RecUser);
-			UnlockTable(L"UserOld");
-			delete RecUser;
 		}
 		// For property table
 		{
@@ -790,183 +729,6 @@ int DataAccess::SetMaxCommandId(int Id)
 	delete RecDatSvr;
 	delete RecDatSvrFind;
 	return Id;
-}
-
-// Get maximum log id.
-// This method checks all of registered log ids and returns the maximum id
-// Return : Maximum log id
-int DataAccess::GetMaxLogId()
-{
-	LockTable(L"LogOld", LOCK_SHARE);
-	RecordData* RecDatLog = GetRecord(L"LogOld");
-	UnlockTable(L"LogOld");
-
-	RecordData* CurrRecDat = RecDatLog;
-	int MaxLogId = 0;
-	while (CurrRecDat != NULL) {
-		ColumnDataInt* ColDat = (ColumnDataInt*)CurrRecDat->GetColumn(0);
-		int CurrId = ColDat->GetValue();
-		if (CurrId > MaxLogId) {
-			MaxLogId = CurrId;
-		}
-		CurrRecDat = CurrRecDat->GetNextRecord();
-	}
-	delete RecDatLog;
-	return MaxLogId;
-}
-
-// Get number of logs.
-// This method gets number of logs
-// Return : Number of logs
-int DataAccess::GetNumOfLogs()
-{
-	LockTable(L"LogOld", LOCK_SHARE);
-	RecordData* RecDatLog = GetRecord(L"LogOld");
-	UnlockTable(L"LogOld");
-
-	RecordData* CurrRecDat = RecDatLog;
-	int NumOfLogs = 0;
-	while (CurrRecDat != NULL) {
-		NumOfLogs++;
-		CurrRecDat = CurrRecDat->GetNextRecord();
-	}
-	delete RecDatLog;
-	return NumOfLogs;
-}
-
-// Get log information
-// LogMsgTimeUtc [out] : Acquired UTC time
-// LogMsgTimeLocal [out] : Acquired local time
-// LogMsg [out] : Acquired log message
-// Return : Number of acquired log messages
-int DataAccess::GetLogs(
-	wchar_t LogMsgTimeUtc[DA_MAXNUM_OF_LOGRECORDS][DA_MAXLEN_OF_TIME],
-	wchar_t LogMsgTimeLocal[DA_MAXNUM_OF_LOGRECORDS][DA_MAXLEN_OF_TIME],
-	wchar_t LogMsg[DA_MAXNUM_OF_LOGRECORDS][DA_MAXLEN_OF_LOGMSG],
-	wchar_t LogMsgJa[DA_MAXNUM_OF_LOGRECORDS][DA_MAXLEN_OF_LOGMSG])
-{
-	LockTable(L"LogOld", LOCK_EXCLUSIVE);
-	AzSortRecord(L"LogOld", L"Id");
-	RecordData* RecDatLog = GetRecord(L"LogOld");
-	UnlockTable(L"LogOld");
-
-	int NumOfRec = 0;
-	RecordData* CurrRecDat = RecDatLog;
-	while (CurrRecDat != NULL) {
-		ColumnDataWStr* ColDatTimeUtc = (ColumnDataWStr*)CurrRecDat->GetColumn(1);
-		ColumnDataWStr* ColDatTimeLocal = (ColumnDataWStr*)CurrRecDat->GetColumn(2);
-		ColumnDataWStr* ColDatMsg = (ColumnDataWStr*)CurrRecDat->GetColumn(3);
-		ColumnDataWStr* ColDatMsgJa = (ColumnDataWStr*)CurrRecDat->GetColumn(4);
-		if (ColDatTimeUtc != NULL && ColDatTimeUtc->GetValue() != NULL) {
-			StkPlSwPrintf(LogMsgTimeUtc[NumOfRec], DA_MAXLEN_OF_TIME, ColDatTimeUtc->GetValue());
-		} else {
-			StkPlSwPrintf(LogMsgTimeUtc[NumOfRec], DA_MAXLEN_OF_TIME, L"");
-		}
-		if (ColDatTimeLocal != NULL && ColDatTimeLocal->GetValue() != NULL) {
-			StkPlSwPrintf(LogMsgTimeLocal[NumOfRec], DA_MAXLEN_OF_TIME, ColDatTimeLocal->GetValue());
-		} else {
-			StkPlSwPrintf(LogMsgTimeLocal[NumOfRec], DA_MAXLEN_OF_TIME, L"");
-		}
-		if (ColDatMsg != NULL && ColDatMsg->GetValue() != NULL) {
-			StkPlSwPrintf(LogMsg[NumOfRec], DA_MAXLEN_OF_LOGMSG, ColDatMsg->GetValue());
-		} else {
-			StkPlSwPrintf(LogMsg[NumOfRec], DA_MAXLEN_OF_LOGMSG, L"");
-		}
-		if (ColDatMsgJa != NULL && ColDatMsgJa->GetValue() != NULL) {
-			StkPlSwPrintf(LogMsgJa[NumOfRec], DA_MAXLEN_OF_LOGMSG, ColDatMsgJa->GetValue());
-		} else {
-			StkPlSwPrintf(LogMsgJa[NumOfRec], DA_MAXLEN_OF_LOGMSG, L"");
-		}
-		NumOfRec++;
-		CurrRecDat = CurrRecDat->GetNextRecord();
-	}
-	delete RecDatLog;
-	return NumOfRec;
-}
-
-// This function deletes old logs.
-// Return : Always zero returned
-int DataAccess::DeleteOldLogs()
-{
-	int NumOfLogs = GetNumOfLogs();
-	if (NumOfLogs >= DA_MAXNUM_OF_LOGRECORDS - 10) {
-		LockTable(L"LogOld", LOCK_EXCLUSIVE);
-		AzSortRecord(L"LogOld", L"Id");
-		RecordData* RecDatLog = GetRecord(L"LogOld");
-		UnlockTable(L"LogOld");
-		int ExceededNumOfLogs = NumOfLogs - (DA_MAXNUM_OF_LOGRECORDS - 10);
-		RecordData* CurrRecDat = RecDatLog;
-		for (int Loop = 0; Loop < ExceededNumOfLogs; Loop++) {
-			ColumnDataInt* ColDatId = (ColumnDataInt*)CurrRecDat->GetColumn(0);
-			int ValueId = ColDatId->GetValue();
-
-			ColumnData* DelColDat[1];
-			DelColDat[0] = new ColumnDataInt(L"Id", ValueId);
-			RecordData* DelRecDat = new RecordData(L"LogOld", DelColDat, 1);
-			LockTable(L"LogOld", LOCK_EXCLUSIVE);
-			DeleteRecord(DelRecDat);
-			UnlockTable(L"LogOld");
-			delete DelRecDat;
-
-			CurrRecDat = CurrRecDat->GetNextRecord();
-		}
-		delete RecDatLog;
-	}
-
-	return 0;
-}
-
-bool DataAccess::GetTargetUserByName(wchar_t Name[DA_MAXLEN_OF_USERNAME], int* Id, wchar_t Password[DA_MAXLEN_OF_PASSWORD], int* Role)
-{
-	ColumnData* ColDat[1];
-	ColDat[0] = new ColumnDataWStr(L"Name", Name);
-	RecordData* SearchUser = new RecordData(L"UserOld", ColDat, 1);
-	LockTable(L"UserOld", LOCK_SHARE);
-	RecordData* RecDatUser = GetRecord(SearchUser);
-	UnlockTable(L"UserOld");
-	delete SearchUser;
-	if (RecDatUser != NULL) {
-		ColumnDataInt* ColDatId = (ColumnDataInt*)RecDatUser->GetColumn(0);
-		ColumnDataWStr* ColDatPw = (ColumnDataWStr*)RecDatUser->GetColumn(2);
-		ColumnDataInt* ColDatRole = (ColumnDataInt*)RecDatUser->GetColumn(3);
-		if (ColDatId != NULL && ColDatPw != NULL && ColDatRole != NULL) {
-			*Id = ColDatId->GetValue();
-			StkPlWcsCpy(Password, DA_MAXLEN_OF_PASSWORD, ColDatPw->GetValue());
-			*Role = ColDatRole->GetValue();
-		}
-	} else {
-		return false;
-	}
-	delete RecDatUser;
-	return true;
-}
-
-int DataAccess::GetTargetUsers(int Id[DA_MAXNUM_OF_USERRECORDS],
-								wchar_t Name[DA_MAXNUM_OF_USERRECORDS][DA_MAXLEN_OF_USERNAME],
-								wchar_t Password[DA_MAXNUM_OF_USERRECORDS][DA_MAXLEN_OF_PASSWORD],
-								int Role[DA_MAXNUM_OF_USERRECORDS])
-{
-	LockTable(L"UserOld", LOCK_SHARE);
-	RecordData* RecDatUser = GetRecord(L"UserOld");
-	UnlockTable(L"UserOld");
-	RecordData* CurRecDatUser = RecDatUser;
-	if (!CurRecDatUser) {
-		return 0;
-	}
-	int Loop = 0;
-	for (; CurRecDatUser; Loop++) {
-		ColumnDataWStr* ColDatName = (ColumnDataWStr*)CurRecDatUser->GetColumn(1);
-		ColumnDataWStr* ColDatPw = (ColumnDataWStr*)CurRecDatUser->GetColumn(2);
-		ColumnDataInt* ColDatRole = (ColumnDataInt*)CurRecDatUser->GetColumn(3);
-		if (ColDatName != NULL && ColDatPw != NULL && ColDatRole != NULL) {
-			StkPlWcsCpy(Name[Loop], DA_MAXLEN_OF_PASSWORD, ColDatName->GetValue());
-			StkPlWcsCpy(Password[Loop], DA_MAXLEN_OF_PASSWORD, ColDatPw->GetValue());
-			Role[Loop] = ColDatRole->GetValue();
-		}
-		CurRecDatUser = CurRecDatUser->GetNextRecord();
-	}
-	delete RecDatUser;
-	return Loop;
 }
 
 int DataAccess::IncreaseId(const wchar_t* Name)

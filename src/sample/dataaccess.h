@@ -67,13 +67,6 @@ public:
 	int SetCommand(int, wchar_t[DA_MAXLEN_OF_CMDNAME], int, char[DA_MAXLEN_OF_CMDSCRIPT], wchar_t[DA_MAXLEN_OF_SERVERFILENAME], wchar_t[DA_MAXLEN_OF_AGENTFILENAME]);
 	int DeleteCommand(int);
 
-	int GetMaxLogId();
-	int GetNumOfLogs();
-	int GetLogs(wchar_t[DA_MAXNUM_OF_LOGRECORDS][DA_MAXLEN_OF_TIME], wchar_t[DA_MAXNUM_OF_LOGRECORDS][DA_MAXLEN_OF_TIME], wchar_t[DA_MAXNUM_OF_LOGRECORDS][DA_MAXLEN_OF_LOGMSG], wchar_t[DA_MAXNUM_OF_LOGRECORDS][DA_MAXLEN_OF_LOGMSG]);
-	int DeleteOldLogs();
-
-	bool GetTargetUserByName(wchar_t[DA_MAXLEN_OF_USERNAME], int*, wchar_t[DA_MAXLEN_OF_PASSWORD], int*);
-	int GetTargetUsers(int[DA_MAXNUM_OF_USERRECORDS], wchar_t[DA_MAXNUM_OF_USERRECORDS][DA_MAXLEN_OF_USERNAME], wchar_t[DA_MAXNUM_OF_USERRECORDS][DA_MAXLEN_OF_PASSWORD], int[DA_MAXNUM_OF_USERRECORDS]);
 	int IncreaseId(const wchar_t*);
 
 	void SetPropertyValueInt(const wchar_t*, const int);
