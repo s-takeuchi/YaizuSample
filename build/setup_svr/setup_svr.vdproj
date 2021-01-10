@@ -476,7 +476,7 @@
             "{4AA51A2D-7D85-4A59-BA75-B0809FC8B380}:_94F7569C02484E9ABD2854EFFD50BD7F"
             {
             "Name" = "8:stkwebappcmd.exe"
-            "Condition" = "8:"
+            "Condition" = "8:NOT Installed"
             "Object" = "8:_4BF20778C63C471B924A7D2E8542E6B8"
             "FileType" = "3:2"
             "InstallAction" = "3:1"
