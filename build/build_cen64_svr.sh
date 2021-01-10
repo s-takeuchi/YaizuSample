@@ -191,6 +191,8 @@ fi
 %post
 if [ \$1 = 1 ]; then
     echo "New installation (post)"
+    mkdir -p %{_datadir}/serval
+    echo workdir=%{_datadir}/serval >> %{_sysconfdir}/sample.conf
     setsebool httpd_can_network_connect on -P
     semanage port -a -t http_port_t -p tcp 8080
     semanage port -a -t http_port_t -p tcp 8081
