@@ -12,18 +12,60 @@
 <H1>3. Deployment</H1>
 
 <H2 ID="3.1">3.1 AWS deployment</H2>
+<h3 ID="3.1.1">3.1.1 AWS (CloudFront + S3 + EC2)</h3>
 <div class="topic">
-Deployment procedures for AWS are described below.<br/>
+Deployment procedures for AWS (CloudFront + S3 + EC2) are described below.<br/>
 <ol>
-<li>Install Serval server</li>
+<li>Deploy Javascript, HTML, CSS, image files to S3.</li>
+<li>Install YaizuSample server</li>
 <li>Allow port number 8081 for EC2 security group.</li>
-<li>svrUrl change pf stkcommon.js (for cross domain access)</li>
-<li>sample.conf servicehost=IP address</li>
+<li>Change svrUrl in stkcommon.js for cross domain access. Configure svrUrl="https://server.example.xxx".</li>
+<li>sample.conf servicehost=IP address where CloudFront connects to</li>
+<li>Configure Route53 and CloudFron for static files and REST API.</li>
+<li>Configure certificate.</li>
 <li>Restart Serval server</li>
-<li>Update Serval client</li>
-<li>stkcommon.js ; change svrhost="https://commander.red-squirrels.net"</li>
 </ol>
 </div><p>
+
+
+<h3 ID="3.1.2">3.1.2 AWS (Lightsail)</h3>
+<div class="topic">
+Deployment procedures for AWS (Lightsail) are described below.<br/>
+<ol>
+<li>Install YaizuSample server</li>
+<li>Allow port number 8080 for Lightsail network.</li>
+<li>Configure Route53 for static files and REST API.</li>
+<li>Install and configure Let's Encrypt</li>
+<li>Configure nginx.conf</li>
+<li>Restart Serval server</li>
+</ol>
+<pre><code>
+$ sudo wget -r --no-parent -A 'epel-release-*.rpm' http://dl.fedoraproject.org/pub/epel/7/x86_64/Packages/e/
+$ sudo rpm -Uvh dl.fedoraproject.org/pub/epel/7/x86_64/Packages/e/epel-release-*.rpm
+$ sudo yum-config-manager --enable epel*
+$ sudo yum install certbot python2-certbot-nginx
+$ sudo certbot --nginx
+  Reply for queries
+
+Modify server block.
+server {
+    ....
+    ssl          on;
+    server_name  serval.red-squirrels.net;
+    ssl_certificate "/etc/letsencrypt/live/serval.red-squirrels.net/fullchain.pem";
+    ssl_certificate_key "/etc/letsencrypt/live/serval.red-squirrels.net/privkey.pem";
+    ....
+}
+
+$ sudo systemctl reload nginx.service
+
+$ sudo crontab -u root -e
+Edit as follows.
+0 0,12 * * * root certbot renew --no-self-upgrade
+
+$ sudo crontab -u root -l</code></pre>
+</div><p>
+
 
 </div>
 </BODY>
