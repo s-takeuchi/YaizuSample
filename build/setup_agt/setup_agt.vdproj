@@ -122,7 +122,7 @@
             "{4AA51A2D-7D85-4A59-BA75-B0809FC8B380}:_BA4B09CF73214C0E98030D6DCC72EAA8"
             {
             "Name" = "8:agentsvc.exe"
-            "Condition" = "8:"
+            "Condition" = "8:NOT Installed"
             "Object" = "8:_27116796C75148F89970CE538CEBCA0A"
             "FileType" = "3:2"
             "InstallAction" = "3:1"
