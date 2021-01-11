@@ -217,6 +217,7 @@ int main(int Argc, char* Argv[])
 	char SecureModeStr[256] = "";
 	char PrivateKey[256] = "";
 	char Certificate[256] = "";
+	char WorkDir[256] = "";
 
 	StkProperties *Prop = new StkProperties();
 	
@@ -276,6 +277,12 @@ int main(int Argc, char* Argv[])
 			//
 		}
 		StkPlPrintf("certificate property = %s\r\n", Certificate);
+
+		// workdir
+		if (Prop->GetPropertyStr("workdir", WorkDir) != 0) {
+			//
+		}
+		StkPlPrintf("workdir property = %s\r\n", WorkDir);
 	} else {
 		StkPlPrintf("sample.conf is not found.\r\n");
 		return -1;
@@ -286,8 +293,15 @@ int main(int Argc, char* Argv[])
 	StkWebAppUm_CreateTable();
 	AddLogMsg(MessageProc::GetMsgEng(MSG_SERVICESTARTED), MessageProc::GetMsgJpn(MSG_SERVICESTARTED));
 	wchar_t* IpAddr = StkPlCreateWideCharFromUtf8(IpAddrTmp);
+	wchar_t* WorkDirWc = StkPlCreateWideCharFromUtf8(WorkDir);
+	DataAccess::GetInstance()->UpdateBucketPath(WorkDirWc);
+
+	// Launch threads start
 	Server(IpAddr, Port, NumOfWorkerThreads, ThreadInterval, SecureMode, PrivateKey, Certificate);
+	// Launch threads end
+
 	delete IpAddr;
+	delete WorkDirWc;
 	AddLogMsg(MessageProc::GetMsgEng(MSG_SERVICESTOPPED), MessageProc::GetMsgJpn(MSG_SERVICESTOPPED));
 	DataAccess::GetInstance()->StopAutoSave(L"sample.dat");
 

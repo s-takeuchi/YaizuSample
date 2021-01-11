@@ -534,7 +534,7 @@ int DataAccess::SetServerInfo(int PInterval, int SaInterval, wchar_t BucketPath[
 	delete RecDatSvr;
 	delete RecDatSvrFind;
 
-	return 0;
+	return Ret;
 }
 
 void DataAccess::GetFullPathFromFileName(wchar_t FullPath[DA_MAXLEN_OF_SERVERFILENAME], const wchar_t FileName[DA_MAXLEN_OF_SERVERFILENAME])
@@ -563,6 +563,25 @@ void DataAccess::GetFullPathFromFileName(wchar_t FullPath[DA_MAXLEN_OF_SERVERFIL
 		}
 	}
 	delete RecDatSvrInfo;
+}
+
+int DataAccess::UpdateBucketPath(wchar_t* WorkDirPath)
+{
+	ColumnData *ColDatSvrFind[1];
+	ColDatSvrFind[0] = new ColumnDataInt(L"Id", 0);
+	RecordData* RecDatSvrFind = new RecordData(L"ServerInfo", ColDatSvrFind, 1);
+
+	ColumnData *ColDatSvr[1];
+	ColDatSvr[0] = new ColumnDataWStr(L"BucketPath", WorkDirPath);
+	RecordData* RecDatSvr = new RecordData(L"ServerInfo", ColDatSvr, 1);
+
+	LockTable(L"ServerInfo", LOCK_EXCLUSIVE);
+	int Ret = UpdateRecord(RecDatSvrFind, RecDatSvr);
+	UnlockTable(L"ServerInfo");
+	delete RecDatSvr;
+	delete RecDatSvrFind;
+
+	return Ret;
 }
 
 int DataAccess::GetCommand(int Id[DA_MAXNUM_OF_CMDRECORDS], wchar_t Name[DA_MAXNUM_OF_CMDRECORDS][DA_MAXLEN_OF_CMDNAME], int Type[DA_MAXNUM_OF_CMDRECORDS], char Script[DA_MAXNUM_OF_CMDRECORDS][DA_MAXLEN_OF_CMDSCRIPT], wchar_t ServerFileName[DA_MAXNUM_OF_CMDRECORDS][DA_MAXLEN_OF_SERVERFILENAME], wchar_t AgentFileName[DA_MAXNUM_OF_CMDRECORDS][DA_MAXLEN_OF_AGENTFILENAME])

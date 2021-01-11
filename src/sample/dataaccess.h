@@ -60,6 +60,7 @@ public:
 	int GetMaxCommandId();
 	int SetMaxCommandId(int);
 	void GetFullPathFromFileName(wchar_t[DA_MAXLEN_OF_SERVERFILENAME], const wchar_t[DA_MAXLEN_OF_SERVERFILENAME]);
+	int UpdateBucketPath(wchar_t*);
 
 	int GetCommand(int[DA_MAXNUM_OF_CMDRECORDS], wchar_t[DA_MAXNUM_OF_CMDRECORDS][DA_MAXLEN_OF_CMDNAME], int[DA_MAXNUM_OF_CMDRECORDS], char[DA_MAXNUM_OF_CMDRECORDS][DA_MAXLEN_OF_CMDSCRIPT], wchar_t[DA_MAXNUM_OF_CMDRECORDS][DA_MAXLEN_OF_SERVERFILENAME], wchar_t[DA_MAXNUM_OF_CMDRECORDS][DA_MAXLEN_OF_AGENTFILENAME]);
 	int GetCommandNameById(int, wchar_t[DA_MAXLEN_OF_CMDNAME]);
