@@ -28,8 +28,7 @@ int StatusChecker(int Id)
 
 	int PInterval = 0;
 	int SaInterval = 0;
-	wchar_t BucketPath[DA_MAXLEN_OF_BUCKETPATH] = L"";
-	DataAccess::GetInstance()->GetServerInfo(&PInterval, &SaInterval, BucketPath);
+	DataAccess::GetInstance()->GetServerInfo(&PInterval, &SaInterval);
 
 	wchar_t AgtName[DA_MAXNUM_OF_AGTRECORDS][DA_MAXLEN_OF_AGTNAME];
 	int Status[DA_MAXNUM_OF_AGTRECORDS];

@@ -494,7 +494,7 @@ long long DataAccess::GetAgentInfoForReqTime(wchar_t AgtName[DA_MAXLEN_OF_AGTNAM
 	return ReqTime;
 }
 
-int  DataAccess::GetServerInfo(int* PInterval, int* SaInterval, wchar_t BucketPath[DA_MAXLEN_OF_BUCKETPATH])
+int  DataAccess::GetServerInfo(int* PInterval, int* SaInterval)
 {
 	LockTable(L"ServerInfo", LOCK_SHARE);
 	RecordData* RecDatSvr = GetRecord(L"ServerInfo");
@@ -504,29 +504,26 @@ int  DataAccess::GetServerInfo(int* PInterval, int* SaInterval, wchar_t BucketPa
 	}
 	ColumnDataInt* ColDatPInterval = (ColumnDataInt*)RecDatSvr->GetColumn(1);
 	ColumnDataInt* ColDatSaInterval = (ColumnDataInt*)RecDatSvr->GetColumn(2);
-	ColumnDataWStr* ColDatBucketPath = (ColumnDataWStr*)RecDatSvr->GetColumn(4);
-	if (ColDatPInterval == NULL || ColDatSaInterval == NULL || ColDatBucketPath == NULL) {
+	if (ColDatPInterval == NULL || ColDatSaInterval == NULL) {
 		delete RecDatSvr;
 		return -1;
 	}
 	*PInterval = ColDatPInterval->GetValue();
 	*SaInterval = ColDatSaInterval->GetValue();
-	StkPlWcsCpy(BucketPath, DA_MAXLEN_OF_BUCKETPATH, ColDatBucketPath->GetValue());
 	delete RecDatSvr;
 	return 0;
 }
 
-int DataAccess::SetServerInfo(int PInterval, int SaInterval, wchar_t BucketPath[DA_MAXLEN_OF_BUCKETPATH])
+int DataAccess::SetServerInfo(int PInterval, int SaInterval)
 {
 	ColumnData *ColDatSvrFind[1];
 	ColDatSvrFind[0] = new ColumnDataInt(L"Id", 0);
 	RecordData* RecDatSvrFind = new RecordData(L"ServerInfo", ColDatSvrFind, 1);
 
-	ColumnData *ColDatSvr[3];
+	ColumnData *ColDatSvr[2];
 	ColDatSvr[0] = new ColumnDataInt(L"PInterval", PInterval);
 	ColDatSvr[1] = new ColumnDataInt(L"SaInterval", SaInterval);
-	ColDatSvr[2] = new ColumnDataWStr(L"BucketPath", BucketPath);
-	RecordData* RecDatSvr = new RecordData(L"ServerInfo", ColDatSvr, 3);
+	RecordData* RecDatSvr = new RecordData(L"ServerInfo", ColDatSvr, 2);
 
 	LockTable(L"ServerInfo", LOCK_EXCLUSIVE);
 	int Ret = UpdateRecord(RecDatSvrFind, RecDatSvr);

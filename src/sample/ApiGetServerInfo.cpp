@@ -19,8 +19,7 @@ StkObject* ApiGetServerInfo::ExecuteImpl(StkObject* ReqObj, int Method, wchar_t 
 
 	int PInterval = 0;
 	int SaInterval = 0;
-	wchar_t BucketPath[DA_MAXLEN_OF_BUCKETPATH];
-	DataAccess::GetInstance()->GetServerInfo(&PInterval, &SaInterval, BucketPath);
+	DataAccess::GetInstance()->GetServerInfo(&PInterval, &SaInterval);
 	StkObject* TmpObj = new StkObject(L"");
 	StkObject* TmpObjC = new StkObject(L"ServerInfo");
 	TmpObjC->AppendChildElement(new StkObject(L"StartTimeUtc", StartTimeUtc));
@@ -28,7 +27,6 @@ StkObject* ApiGetServerInfo::ExecuteImpl(StkObject* ReqObj, int Method, wchar_t 
 	TmpObjC->AppendChildElement(new StkObject(L"Version", L"1.0.0"));
 	TmpObjC->AppendChildElement(new StkObject(L"PollingInterval", PInterval));
 	TmpObjC->AppendChildElement(new StkObject(L"StatusAcquisitionInterval", SaInterval));
-	TmpObjC->AppendChildElement(new StkObject(L"BucketPath", BucketPath));
 	TmpObj->AppendChildElement(TmpObjC);
 	TmpObj->AppendChildElement(new StkObject(L"Msg0", L""));
 	*ResultCode = 200;

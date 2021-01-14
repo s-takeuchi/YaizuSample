@@ -29,8 +29,7 @@ StkObject* ApiGetCommandForOperation::ExecuteImpl(StkObject* ReqObj, int Method,
 
 		int PInterval = 0;
 		int SaInterval = 0;
-		wchar_t BucketPath[DA_MAXLEN_OF_BUCKETPATH] = L"";
-		DataAccess::GetInstance()->GetServerInfo(&PInterval, &SaInterval, BucketPath);
+		DataAccess::GetInstance()->GetServerInfo(&PInterval, &SaInterval);
 		if (PInterval <= 0) {
 			PInterval = 30;
 		}

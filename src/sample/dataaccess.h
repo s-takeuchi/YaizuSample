@@ -55,8 +55,8 @@ public:
 	int GetAgentInfoForOpStatus(wchar_t[DA_MAXLEN_OF_AGTNAME]);
 	long long GetAgentInfoForReqTime(wchar_t[DA_MAXLEN_OF_AGTNAME]);
 
-	int GetServerInfo(int*, int*, wchar_t [DA_MAXLEN_OF_BUCKETPATH]);
-	int SetServerInfo(int, int, wchar_t[DA_MAXLEN_OF_BUCKETPATH]);
+	int GetServerInfo(int*, int*);
+	int SetServerInfo(int, int);
 	int GetMaxCommandId();
 	int SetMaxCommandId(int);
 	void GetFullPathFromFileName(wchar_t[DA_MAXLEN_OF_SERVERFILENAME], const wchar_t[DA_MAXLEN_OF_SERVERFILENAME]);

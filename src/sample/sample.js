@@ -66,7 +66,6 @@ function initClientMessage() {
     addClientMessage('SISVRVERSION', {'en':'Server Version : ', 'ja':'サーバーバージョン : '});
     addClientMessage('SIPOLLINTVL', {'en':'Polling Interval : ', 'ja':'ポーリング間隔 : '});
     addClientMessage('SISTACQINTVL', {'en':'Status Acquisition Interval : ', 'ja':'状態取得間隔 : '});
-    addClientMessage('SIPATHTOBUCKET', {'en':'Path to bucket : ', 'ja':'バケットのパス : '});
     addClientMessage('SIUPDATEBTN', {'en':'Update', 'ja':'更新'});
     addClientMessage('SIUPDATED', {'en':'The server information has been updated.', 'ja':'サーバー情報が更新されました。'});
 
@@ -520,11 +519,6 @@ function displayServerInfo() {
     $('#svrinfo').append(btnGrp);
     $('#svrinfo').append('</p>');
 
-    $('#svrinfo').append('<p>');
-    $('#svrinfo').append('<div class="form-group"><label for="bucketPath">' + getClientMessage('SIPATHTOBUCKET') + '</label><input type="text" class="form-control" id="bucketPath" placeholder="Path to bucket"></div>');
-    $('#svrinfo').append('</p>');
-    $('#bucketPath').val(responseData['API_GET_SVRINFO'].ServerInfo.BucketPath);
-
     $('#svrinfo').append('<div id="svrinfo_errmsg">');
 
     $('#svrinfo').append('<p>');
@@ -570,7 +564,7 @@ function getStatusAcquisitionInterval(interval) {
 function updateServerInfo() {
     var pInterval = getPollingInterval(selectedPollingInterval);
     var saInterval = getStatusAcquisitionInterval(selectedStatusAcquisitionInterval);
-    apiCall('POST', '/api/server/', {"ServerInfo":{"PInterval":pInterval, "SaInterval":saInterval, "BucketPath":$('#bucketPath').val()}}, 'API_POST_SVRINFO', refreshAfterUpdateServerInfo);
+    apiCall('POST', '/api/server/', {"ServerInfo":{"PInterval":pInterval, "SaInterval":saInterval}}, 'API_POST_SVRINFO', refreshAfterUpdateServerInfo);
 }
 
 function refreshAfterUpdateServerInfo() {

@@ -10,7 +10,6 @@ StkObject* ApiPostServerInfo::ExecuteImpl(StkObject* ReqObj, int Method, wchar_t
 {
 	int PInterval = 0;
 	int SaInterval = 0;
-	wchar_t BucketPath[DA_MAXLEN_OF_BUCKETPATH] = L"";
 	StkObject* TmpObj = new StkObject(L"");
 	if (ReqObj != NULL) {
 		*ResultCode = 200;
@@ -27,9 +26,6 @@ StkObject* ApiPostServerInfo::ExecuteImpl(StkObject* ReqObj, int Method, wchar_t
 			}
 			if (StkPlWcsCmp(CurObj->GetName(), L"StatusAcquisitionInterval") == 0) {
 				SaInterval = CurObj->GetIntValue();
-			}
-			if (StkPlWcsCmp(CurObj->GetName(), L"BucketPath") == 0) {
-				StkPlWcsCpy(BucketPath, DA_MAXLEN_OF_BUCKETPATH, CurObj->GetStringValue());
 			}
 			CurObj = CurObj->GetNext();
 		}
@@ -57,12 +53,12 @@ StkObject* ApiPostServerInfo::ExecuteImpl(StkObject* ReqObj, int Method, wchar_t
 			*ResultCode = 400;
 			return TmpObj;
 		}
-		DataAccess::GetInstance()->SetServerInfo(PInterval, SaInterval, BucketPath);
+		DataAccess::GetInstance()->SetServerInfo(PInterval, SaInterval);
 
 		wchar_t LogMsg[256] = L"";
 		wchar_t LogMsgJa[256] = L"";
-		StkPlSwPrintf(LogMsg, 256, L"%ls [Polling Interval=%d sec, Status Acquisition Interval=%d sec, Bucket Path=%ls]", MessageProc::GetMsgEng(MSG_SVRINFOUPDATED), PInterval, SaInterval, BucketPath);
-		StkPlSwPrintf(LogMsgJa, 256, L"%ls [Polling Interval=%d sec, Status Acquisition Interval=%d sec, Bucket Path=%ls]", MessageProc::GetMsgJpn(MSG_SVRINFOUPDATED), PInterval, SaInterval, BucketPath);
+		StkPlSwPrintf(LogMsg, 256, L"%ls [Polling Interval=%d sec, Status Acquisition Interval=%d sec]", MessageProc::GetMsgEng(MSG_SVRINFOUPDATED), PInterval, SaInterval);
+		StkPlSwPrintf(LogMsgJa, 256, L"%ls [Polling Interval=%d sec, Status Acquisition Interval=%d sec]", MessageProc::GetMsgJpn(MSG_SVRINFOUPDATED), PInterval, SaInterval);
 		AddLogMsg(LogMsg, LogMsgJa);
 	} else {
 		TmpObj->AppendChildElement(new StkObject(L"Msg0", MessageProc::GetMsg(MSG_NOREQUEST)));
