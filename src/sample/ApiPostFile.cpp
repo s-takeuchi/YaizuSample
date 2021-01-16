@@ -1,6 +1,7 @@
-#include "dataaccess.h"
 #include "../../../YaizuComLib/src/stkpl/StkPl.h"
 #include "../../../YaizuComLib/src/stkwebapp_um/ApiBase.h"
+#include "sample.h"
+#include "dataaccess.h"
 #include "ApiPostFile.h"
 
 StkObject* ApiPostFile::ExecuteImpl(StkObject* ReqObj, int Method, wchar_t UrlPath[StkWebAppExec::URL_PATH_LENGTH], int* ResultCode, wchar_t Locale[3], wchar_t* Token)
@@ -58,8 +59,8 @@ StkObject* ApiPostFile::ExecuteImpl(StkObject* ReqObj, int Method, wchar_t UrlPa
 		}
 		DataChar[DataCharIndex] = '\0';
 		void* FilePtr = NULL;
-		wchar_t TargetFullPath[DA_MAXLEN_OF_SERVERFILENAME];
-		DataAccess::GetInstance()->GetFullPathFromFileName(TargetFullPath, FileName);
+		wchar_t TargetFullPath[FILENAME_MAX];
+		GetFullPathFromFileName(TargetFullPath, FileName);
 		if (Offset == 0) {
 			FilePtr = StkPlOpenFileForWrite(TargetFullPath);
 		} else {

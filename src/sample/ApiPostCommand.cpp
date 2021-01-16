@@ -3,7 +3,7 @@
 #include "../../../YaizuComLib/src/stkwebapp_um/ApiBase.h"
 #include "../../../YaizuComLib/src/commonfunc/msgproc.h"
 #include "dataaccess.h"
-#include "MessageCode.h"
+#include "sample.h"
 #include "ApiPostCommand.h"
 
 bool ApiPostCommand::CheckFileNameChar(wchar_t* Ptr)

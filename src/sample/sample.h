@@ -1,5 +1,7 @@
 #pragma once
 
+#include "../../../YaizuComLib/src/stkpl/StkPl.h"
+
 // Audit log
 #define MSG_COMDELETE            4000
 #define MSG_COMADD               4001
@@ -36,3 +38,11 @@
 #define MSG_NO_EXEC_RIGHT        4204
 #define MSG_FORBIDDEN_CHAR       4205
 #define MSG_AGENTINFO_NOT_FOUND  4206
+
+// Global variables
+class Global {
+public:
+	static wchar_t Global_WorkDirPath[FILENAME_MAX];
+};
+
+void GetFullPathFromFileName(wchar_t[FILENAME_MAX], const wchar_t[FILENAME_MAX]);

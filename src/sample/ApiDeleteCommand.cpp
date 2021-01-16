@@ -4,7 +4,7 @@
 #include "../../../YaizuComLib/src/stkwebapp_um/stkwebapp_um.h"
 #include "../../../YaizuComLib/src/stkwebapp_um/ApiBase.h"
 #include "dataaccess.h"
-#include "MessageCode.h"
+#include "sample.h"
 #include "ApiDeleteCommand.h"
 
 StkObject* ApiDeleteCommand::ExecuteImpl(StkObject* ReqObj, int Method, wchar_t UrlPath[StkWebAppExec::URL_PATH_LENGTH], int* ResultCode, wchar_t Locale[3], wchar_t* Token)

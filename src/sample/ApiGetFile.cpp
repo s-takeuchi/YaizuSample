@@ -1,7 +1,8 @@
-#include "dataaccess.h"
 #include "../../../YaizuComLib/src/stkpl/StkPl.h"
 #include "../../../YaizuComLib/src/stkwebapp_um/ApiBase.h"
 #include "../../../YaizuComLib/src/commonfunc/StkStringParser.h"
+#include "sample.h"
+#include "dataaccess.h"
 #include "ApiGetFile.h"
 
 StkObject* ApiGetFile::ExecuteImpl(StkObject* ReqObj, int Method, wchar_t UrlPath[StkWebAppExec::URL_PATH_LENGTH], int* ResultCode, wchar_t Locale[3], wchar_t* Token)
@@ -10,8 +11,8 @@ StkObject* ApiGetFile::ExecuteImpl(StkObject* ReqObj, int Method, wchar_t UrlPat
 	wchar_t OffsetStr[16];
 	StkStringParser::ParseInto2Params(UrlPath, L"/api/file/$/$/", L'$', TargetFileName, FILENAME_MAX, OffsetStr, 16);
 	size_t Offset = StkPlWcsToL(OffsetStr);
-	wchar_t TargetFullPath[DA_MAXLEN_OF_SERVERFILENAME];
-	DataAccess::GetInstance()->GetFullPathFromFileName(TargetFullPath, TargetFileName);
+	wchar_t TargetFullPath[FILENAME_MAX];
+	GetFullPathFromFileName(TargetFullPath, TargetFileName);
 	size_t FileSize = StkPlGetFileSize(TargetFullPath);
 	if (FileSize < 0) {
 		StkObject* TmpObj = new StkObject(L"");

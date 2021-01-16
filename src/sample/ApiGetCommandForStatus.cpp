@@ -1,10 +1,10 @@
-#include "dataaccess.h"
 #include "../../../YaizuComLib/src/stkpl/StkPl.h"
 #include "../../../YaizuComLib/src/stkwebapp_um/ApiBase.h"
 #include "../../../YaizuComLib/src/commonfunc/StkStringParser.h"
 #include "../../../YaizuComLib/src/commonfunc/msgproc.h"
+#include "sample.h"
+#include "dataaccess.h"
 #include "ApiGetCommandForStatus.h"
-#include "MessageCode.h"
 
 bool ApiGetCommandForStatus::StopFlag;
 
@@ -118,8 +118,8 @@ StkObject* ApiGetCommandForStatus::ExecuteImpl(StkObject* ReqObj, int Method, wc
 					CommandObj->AppendChildElement(new StkObject(L"Type", Type[FoundIndex]));
 					CommandObj->AppendChildElement(new StkObject(L"Script", WScript));
 					CommandObj->AppendChildElement(new StkObject(L"ServerFileName", ServerFileName[FoundIndex]));
-					wchar_t TargetFullPath[DA_MAXLEN_OF_SERVERFILENAME];
-					DataAccess::GetInstance()->GetFullPathFromFileName(TargetFullPath, ServerFileName[FoundIndex]);
+					wchar_t TargetFullPath[FILENAME_MAX];
+					GetFullPathFromFileName(TargetFullPath, ServerFileName[FoundIndex]);
 					size_t FileSize = StkPlGetFileSize(TargetFullPath);
 					CommandObj->AppendChildElement(new StkObject(L"ServerFileSize", (int)FileSize));
 					CommandObj->AppendChildElement(new StkObject(L"AgentFileName", AgentFileName[FoundIndex]));

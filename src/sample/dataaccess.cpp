@@ -1,7 +1,8 @@
-﻿#include "dataaccess.h"
-#include "../../../YaizuComLib/src/stkpl/StkPl.h"
+﻿#include "../../../YaizuComLib/src/stkpl/StkPl.h"
 #include "../../../YaizuComLib/src/stkdata/stkdata.h"
 #include "../../../YaizuComLib/src/stkdata/stkdataapi.h"
+#include "sample.h"
+#include "dataaccess.h"
 
 DataAccess* DataAccess::ThisInstance;
 
@@ -532,34 +533,6 @@ int DataAccess::SetServerInfo(int PInterval, int SaInterval)
 	delete RecDatSvrFind;
 
 	return Ret;
-}
-
-void DataAccess::GetFullPathFromFileName(wchar_t FullPath[DA_MAXLEN_OF_SERVERFILENAME], const wchar_t FileName[DA_MAXLEN_OF_SERVERFILENAME])
-{
-	LockTable(L"ServerInfo", LOCK_SHARE);
-	RecordData* RecDatSvrInfo = GetRecord(L"ServerInfo");
-	UnlockTable(L"ServerInfo");
-	int MaxCommandId = 0;
-	if (RecDatSvrInfo != NULL) {
-		ColumnDataWStr* ColDat = (ColumnDataWStr*)RecDatSvrInfo->GetColumn(4);
-		if (ColDat != NULL) {
-			StkPlWcsCpy(FullPath, DA_MAXLEN_OF_SERVERFILENAME, ColDat->GetValue());
-			int FullPathLen = (int)StkPlWcsLen(FullPath);
-			if (FullPathLen >= 1) {
-#ifdef WIN32
-				if (FullPath[FullPathLen - 1] != L'\\') {
-					StkPlWcsCat(FullPath, DA_MAXLEN_OF_SERVERFILENAME, L"\\");
-				}
-#else
-				if (FullPath[FullPathLen - 1] != L'/') {
-					StkPlWcsCat(FullPath, DA_MAXLEN_OF_SERVERFILENAME, L"/");
-				}
-#endif
-			}
-			StkPlWcsCat(FullPath, DA_MAXLEN_OF_SERVERFILENAME, FileName);
-		}
-	}
-	delete RecDatSvrInfo;
 }
 
 int DataAccess::UpdateBucketPath(wchar_t* WorkDirPath)

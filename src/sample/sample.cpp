@@ -8,6 +8,7 @@
 #include "../../../YaizuComLib/src/stkwebapp/StkWebAppExec.h"
 #include "../../../YaizuComLib/src/stkwebapp_um/stkwebapp_um.h"
 #include "../../../YaizuComLib/src/stkwebapp_um/stkwebapp_um.h"
+#include "sample.h"
 #include "ApiGetServerInfo.h"
 #include "ApiPostServerInfo.h"
 #include "ApiGetAgentInfo.h"
@@ -20,7 +21,26 @@
 #include "ApiGetFile.h"
 #include "ApiPostFile.h"
 #include "dataaccess.h"
-#include "MessageCode.h"
+
+wchar_t Global::Global_WorkDirPath[FILENAME_MAX];
+
+void GetFullPathFromFileName(wchar_t FullPath[FILENAME_MAX], const wchar_t FileName[FILENAME_MAX])
+{
+	StkPlWcsCpy(FullPath, FILENAME_MAX, Global::Global_WorkDirPath);
+	int FullPathLen = (int)StkPlWcsLen(FullPath);
+	if (FullPathLen >= 1) {
+#ifdef WIN32
+		if (FullPath[FullPathLen - 1] != L'\\') {
+			StkPlWcsCat(FullPath, FILENAME_MAX, L"\\");
+		}
+#else
+		if (FullPath[FullPathLen - 1] != L'/') {
+			StkPlWcsCat(FullPath, FILENAME_MAX, L"/");
+		}
+#endif
+	}
+	StkPlWcsCat(FullPath, FILENAME_MAX, FileName);
+}
 
 int StatusChecker(int Id)
 {
@@ -293,6 +313,7 @@ int main(int Argc, char* Argv[])
 	AddLogMsg(MessageProc::GetMsgEng(MSG_SERVICESTARTED), MessageProc::GetMsgJpn(MSG_SERVICESTARTED));
 	wchar_t* IpAddr = StkPlCreateWideCharFromUtf8(IpAddrTmp);
 	wchar_t* WorkDirWc = StkPlCreateWideCharFromUtf8(WorkDir);
+	StkPlWcsCpy(Global::Global_WorkDirPath, FILENAME_MAX, WorkDirWc);
 	DataAccess::GetInstance()->UpdateBucketPath(WorkDirWc);
 
 	// Launch threads start
