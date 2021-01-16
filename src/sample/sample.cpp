@@ -314,7 +314,6 @@ int main(int Argc, char* Argv[])
 	wchar_t* IpAddr = StkPlCreateWideCharFromUtf8(IpAddrTmp);
 	wchar_t* WorkDirWc = StkPlCreateWideCharFromUtf8(WorkDir);
 	StkPlWcsCpy(Global::Global_WorkDirPath, FILENAME_MAX, WorkDirWc);
-	DataAccess::GetInstance()->UpdateBucketPath(WorkDirWc);
 
 	// Launch threads start
 	Server(IpAddr, Port, NumOfWorkerThreads, ThreadInterval, SecureMode, PrivateKey, Certificate);

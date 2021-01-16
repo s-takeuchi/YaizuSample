@@ -95,13 +95,11 @@ int DataAccess::CreateTables(const wchar_t* DataFileName)
 			ColumnDefInt ColDefSvrPi(L"PInterval");
 			ColumnDefInt ColDefSvrSai(L"SaInterval");
 			ColumnDefInt ColDefSvrMaxComId(L"MaxCommandId");
-			ColumnDefWStr ColDefSvrBucketPath(L"BucketPath", DA_MAXLEN_OF_BUCKETPATH);
 			TableDef TabDefSvrInfo(L"ServerInfo", 1);
 			TabDefSvrInfo.AddColumnDef(&ColDefSvrId);
 			TabDefSvrInfo.AddColumnDef(&ColDefSvrPi);
 			TabDefSvrInfo.AddColumnDef(&ColDefSvrSai);
 			TabDefSvrInfo.AddColumnDef(&ColDefSvrMaxComId);
-			TabDefSvrInfo.AddColumnDef(&ColDefSvrBucketPath);
 			if (CreateTable(&TabDefSvrInfo) != 0) {
 				UnlockAllTable();
 				return -1;
@@ -145,17 +143,12 @@ int DataAccess::CreateTables(const wchar_t* DataFileName)
 
 		// For server info table
 		{
-			ColumnData *ColDatSvr[6];
+			ColumnData *ColDatSvr[4];
 			ColDatSvr[0] = new ColumnDataInt(L"Id", 0);
 			ColDatSvr[1] = new ColumnDataInt(L"PInterval", 300);
 			ColDatSvr[2] = new ColumnDataInt(L"SaInterval", 1800);
 			ColDatSvr[3] = new ColumnDataInt(L"MaxCommandId", 1);
-#ifdef WIN32
-			ColDatSvr[4] = new ColumnDataWStr(L"BucketPath", L"\\");
-#else
-			ColDatSvr[4] = new ColumnDataWStr(L"BucketPath", L"/");
-#endif
-			RecordData* RecSvrInfo = new RecordData(L"ServerInfo", ColDatSvr, 5);
+			RecordData* RecSvrInfo = new RecordData(L"ServerInfo", ColDatSvr, 4);
 			// Add record
 			LockTable(L"ServerInfo", LOCK_EXCLUSIVE);
 			int Ret = InsertRecord(RecSvrInfo);
@@ -525,25 +518,6 @@ int DataAccess::SetServerInfo(int PInterval, int SaInterval)
 	ColDatSvr[0] = new ColumnDataInt(L"PInterval", PInterval);
 	ColDatSvr[1] = new ColumnDataInt(L"SaInterval", SaInterval);
 	RecordData* RecDatSvr = new RecordData(L"ServerInfo", ColDatSvr, 2);
-
-	LockTable(L"ServerInfo", LOCK_EXCLUSIVE);
-	int Ret = UpdateRecord(RecDatSvrFind, RecDatSvr);
-	UnlockTable(L"ServerInfo");
-	delete RecDatSvr;
-	delete RecDatSvrFind;
-
-	return Ret;
-}
-
-int DataAccess::UpdateBucketPath(wchar_t* WorkDirPath)
-{
-	ColumnData *ColDatSvrFind[1];
-	ColDatSvrFind[0] = new ColumnDataInt(L"Id", 0);
-	RecordData* RecDatSvrFind = new RecordData(L"ServerInfo", ColDatSvrFind, 1);
-
-	ColumnData *ColDatSvr[1];
-	ColDatSvr[0] = new ColumnDataWStr(L"BucketPath", WorkDirPath);
-	RecordData* RecDatSvr = new RecordData(L"ServerInfo", ColDatSvr, 1);
 
 	LockTable(L"ServerInfo", LOCK_EXCLUSIVE);
 	int Ret = UpdateRecord(RecDatSvrFind, RecDatSvr);
