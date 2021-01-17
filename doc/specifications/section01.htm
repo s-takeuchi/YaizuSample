@@ -29,7 +29,7 @@ sample.conf can handle following properties.
 <tr><td>securemode</td><td>Enable SSL/TLS connection.<br/>true or false can be specified.<br/>(defauld=false)</td></tr>
 <tr><td>privatekey</td><td>Path to private key file for secure connection.<br/></td></tr>
 <tr><td>certificate</td><td>Path to certificate file for secure connection.<br/></td></tr>
-<tr><td>trustedcert</td><td>Path to trusted certificate file for secure connection.<br/>This will be used by StkWebAppCmd.</td></tr>
+<tr><td>trustedcert</td><td>Path to trusted certificate file for secure connection.<br/>This is used by StkWebAppCmd.</td></tr>
 <tr><td>workdir</td><td>Work directory</td></tr>
 </table><br/>
 An example of sample.conf is shown below.<br/>
@@ -85,6 +85,19 @@ Windows edition<br/>
 <ul>
 <li>/etc/agent.conf<br/>Properties flie of agent</li>
 <li>/usr/share/servalagt<br/>Work folder of agent</li>
+</ul>
+
+<p>
+YaizuSample server uses following folders and files.<br/>
+</p>
+Windows edition<br/>
+<ul>
+<li>&lt;Installation folder&gt;\sample.conf<br/>Properties flie of server</li>
+<li>&lt;Installation folder&gt;\work<br/>Work folder of server</li>
+</ul>Linux edition<br/>
+<ul>
+<li>/etc/sample.conf<br/>Properties flie of server</li>
+<li>/usr/share/serval<br/>Work folder of server</li>
 </ul>
 </div><p>
 
