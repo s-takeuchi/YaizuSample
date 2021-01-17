@@ -401,11 +401,11 @@ int LoadPropertyFile(wchar_t HostOrIpAddr[256], int* PortNum, wchar_t PathToBuck
 		StkPlPrintf("targetport property = %d\r\n", *PortNum);
 
 		// For pathtobucket
-		if (Prop->GetPropertyStr("pathtobucket", TmpPathToBucket) != 0) {
-			StkPlPrintf("pathtobucket property is not found.\r\n");
+		if (Prop->GetPropertyStr("workdir", TmpPathToBucket) != 0) {
+			StkPlPrintf("workdir property is not found.\r\n");
 			return -1;
 		}
-		StkPlPrintf("pathtobucket property = %s\r\n", TmpPathToBucket);
+		StkPlPrintf("workdir property = %s\r\n", TmpPathToBucket);
 		StkPlConvUtf8ToWideChar(PathToBucket, 256, TmpPathToBucket);
 
 		// For hostname

@@ -30,7 +30,7 @@ sample.conf can handle following properties.
 <tr><td>privatekey</td><td>Path to private key file for secure connection.<br/></td></tr>
 <tr><td>certificate</td><td>Path to certificate file for secure connection.<br/></td></tr>
 <tr><td>trustedcert</td><td>Path to trusted certificate file for secure connection.<br/>This will be used by StkWebAppCmd.</td></tr>
-<tr><td>workdir</td><td>Path to bucket</td></tr>
+<tr><td>workdir</td><td>Work directory</td></tr>
 </table><br/>
 An example of sample.conf is shown below.<br/>
 <table class="tblstyle"><tr><td>
@@ -55,7 +55,7 @@ agent.conf can handle following properties.
 <tr><th>Property name</th><th>Description</th></tr>
 <tr><td>targethost</td><td>IP address or host name of destination server where agent connects to</td></tr>
 <tr><td>targetport</td><td>Port number where agent connects tos</td></tr>
-<tr><td>pathtobucket</td><td>Path to bucket</td></tr>
+<tr><td>workdir</td><td>Work directory</td></tr>
 <tr><td>hostname</td><td>Host name which server recognizes.</td></tr>
 <tr><td>securemode</td><td>Enable SSL/TLS connection.<br/>true or false can be specified.<br/>(defauld=false)</td></tr>
 <tr><td>trustedcert</td><td>Path to trusted certificate file for secure connection.<br/></td></tr>
@@ -64,7 +64,7 @@ An example of agent.conf is shown below.<br/>
 <table class="tblstyle"><tr><td>
 <pre><code>targethost=localhost
 targetport=8081
-pathtobucket=c:\bucket_agent
+workdir=c:\bucket_agent
 hostname=
 securemode=true
 trustedcert=C:\Program Files\Example\ca.crt</code></pre>

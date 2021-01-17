@@ -18,7 +18,7 @@ int main(int argc, char* argv[])
 			{
 				char WorkDirPath[512] = "";
 				char* TmpCmd2s = StkPlCreateUtf8FromWideChar(TmpPath2);
-				StkPlSPrintf(WorkDirPath, 512, "pathtobucket=%s\\work\r\n", TmpCmd2s);
+				StkPlSPrintf(WorkDirPath, 512, "workdir=%s\\work\r\n", TmpCmd2s);
 				StkPlPrintf(WorkDirPath);
 				delete TmpCmd2s;
 				StkPlSwPrintf(TmpCmd, FILENAME_MAX + 32, L"%ls\\agent.conf", TmpPath2);
