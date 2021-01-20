@@ -8,18 +8,17 @@
 
 StkObject* ApiPostServerInfo::ExecuteImpl(StkObject* ReqObj, int Method, wchar_t UrlPath[StkWebAppExec::URL_PATH_LENGTH], int* ResultCode, wchar_t Locale[3], wchar_t* Token)
 {
-	int PInterval = 0;
-	int SaInterval = 0;
+	int PInterval = -1;
+	int SaInterval = -1;
 	StkObject* TmpObj = new StkObject(L"");
 	if (ReqObj != NULL) {
 		*ResultCode = 200;
-		StkObject* ServerInfo = ReqObj->GetFirstChildElement();
-		if (ServerInfo == NULL) {
-			TmpObj->AppendChildElement(new StkObject(L"Msg0", MessageProc::GetMsg(MSG_NOSVRINFOREQUEST)));
+		StkObject* CurObj = ReqObj->GetFirstChildElement();
+		if (CurObj == NULL) {
+			AddCodeAndMsg(TmpObj, MSG_NOSVRINFOREQUEST, MessageProc::GetMsgEng(MSG_NOSVRINFOREQUEST), MessageProc::GetMsgJpn(MSG_NOSVRINFOREQUEST));
 			*ResultCode = 400;
 			return TmpObj;
 		}
-		StkObject* CurObj = ServerInfo->GetFirstChildElement();
 		while (CurObj) {
 			if (StkPlWcsCmp(CurObj->GetName(), L"PollingInterval") == 0) {
 				PInterval = CurObj->GetIntValue();
@@ -29,27 +28,23 @@ StkObject* ApiPostServerInfo::ExecuteImpl(StkObject* ReqObj, int Method, wchar_t
 			}
 			CurObj = CurObj->GetNext();
 		}
-		StkObject* PIntervalObj = ServerInfo->GetFirstChildElement();
-		if (PIntervalObj == NULL) {
-			TmpObj->AppendChildElement(new StkObject(L"Msg0", MessageProc::GetMsg(MSG_NOPOLLINGINTVL)));
+		if (PInterval == -1) {
+			AddCodeAndMsg(TmpObj, MSG_NOPOLLINGINTVL, MessageProc::GetMsgEng(MSG_NOPOLLINGINTVL), MessageProc::GetMsgJpn(MSG_NOPOLLINGINTVL));
 			*ResultCode = 400;
 			return TmpObj;
 		}
-		StkObject* SaIntervalObj = PIntervalObj->GetNext();
-		if (SaIntervalObj == NULL) {
-			TmpObj->AppendChildElement(new StkObject(L"Msg0", MessageProc::GetMsg(MSG_NOSAINTVL)));
+		if (SaInterval == -1) {
+			AddCodeAndMsg(TmpObj, MSG_NOSAINTVL, MessageProc::GetMsgEng(MSG_NOSAINTVL), MessageProc::GetMsgJpn(MSG_NOSAINTVL));
 			*ResultCode = 400;
 			return TmpObj;
 		}
-		PInterval = PIntervalObj->GetIntValue();
-		SaInterval = SaIntervalObj->GetIntValue();
 		if (PInterval < 30 || PInterval > 900) {
-			TmpObj->AppendChildElement(new StkObject(L"Msg0", MessageProc::GetMsg(MSG_INVALIDPOINTVL)));
+			AddCodeAndMsg(TmpObj, MSG_INVALIDPOINTVL, MessageProc::GetMsgEng(MSG_INVALIDPOINTVL), MessageProc::GetMsgJpn(MSG_INVALIDPOINTVL));
 			*ResultCode = 400;
 			return TmpObj;
 		}
 		if (SaInterval < 300 || SaInterval > 3600) {
-			TmpObj->AppendChildElement(new StkObject(L"Msg0", MessageProc::GetMsg(MSG_INVALIDSVINTVL)));
+			AddCodeAndMsg(TmpObj, MSG_INVALIDSVINTVL, MessageProc::GetMsgEng(MSG_INVALIDSVINTVL), MessageProc::GetMsgJpn(MSG_INVALIDSVINTVL));
 			*ResultCode = 400;
 			return TmpObj;
 		}
@@ -61,12 +56,12 @@ StkObject* ApiPostServerInfo::ExecuteImpl(StkObject* ReqObj, int Method, wchar_t
 		StkPlSwPrintf(LogMsgJa, 256, L"%ls [Polling Interval=%d sec, Status Acquisition Interval=%d sec]", MessageProc::GetMsgJpn(MSG_SVRINFOUPDATED), PInterval, SaInterval);
 		AddLogMsg(LogMsg, LogMsgJa);
 	} else {
-		TmpObj->AppendChildElement(new StkObject(L"Msg0", MessageProc::GetMsg(MSG_NOREQUEST)));
+		AddCodeAndMsg(TmpObj, MSG_NOREQUEST, MessageProc::GetMsgEng(MSG_NOREQUEST), MessageProc::GetMsgJpn(MSG_NOREQUEST));
 		*ResultCode = 400;
 		return TmpObj;
 	}
 
-	TmpObj->AppendChildElement(new StkObject(L"Msg0", L""));
+	AddCodeAndMsg(TmpObj, 0, L"", L"");
 	*ResultCode = 200;
 	return TmpObj;
 }

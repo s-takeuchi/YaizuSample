@@ -466,20 +466,20 @@ function displayServerInfo() {
     StartTimeTbl.append(tHead);
 
     var tBody = $('<tbody>');
-    tBody.append('<tr><td>' + responseData['API_GET_SVRINFO'].ServerInfo.StartTimeUtc + '</td><td>' + responseData['API_GET_SVRINFO'].ServerInfo.StartTimeLocal + '</td></tr>');
+    tBody.append('<tr><td>' + responseData['API_GET_SVRINFO'].Data.ServerInfo.StartTimeUtc + '</td><td>' + responseData['API_GET_SVRINFO'].Data.ServerInfo.StartTimeLocal + '</td></tr>');
     StartTimeTbl.append(tBody);
 
-    $('#svrinfo').append('<h4>' + getClientMessage('SISVRVERSION') + responseData['API_GET_SVRINFO'].ServerInfo.Version + '</h4>');
+    $('#svrinfo').append('<h4>' + getClientMessage('SISVRVERSION') + responseData['API_GET_SVRINFO'].Data.ServerInfo.Version + '</h4>');
     $('#svrinfo').append(StartTimeTbl);
 
     // Polling Interval
-    if (responseData['API_GET_SVRINFO'].ServerInfo.PollingInterval == 30) {
+    if (responseData['API_GET_SVRINFO'].Data.ServerInfo.PollingInterval == 30) {
         selectedPollingInterval = 0;
-    } else if (responseData['API_GET_SVRINFO'].ServerInfo.PollingInterval == 60) {
+    } else if (responseData['API_GET_SVRINFO'].Data.ServerInfo.PollingInterval == 60) {
         selectedPollingInterval = 1;
-    } else if (responseData['API_GET_SVRINFO'].ServerInfo.PollingInterval == 300) {
+    } else if (responseData['API_GET_SVRINFO'].Data.ServerInfo.PollingInterval == 300) {
         selectedPollingInterval = 2;
-    } else if (responseData['API_GET_SVRINFO'].ServerInfo.PollingInterval == 900) {
+    } else if (responseData['API_GET_SVRINFO'].Data.ServerInfo.PollingInterval == 900) {
         selectedPollingInterval = 3;
     }
     var btnGrp = $('<div class="btn-group">');
@@ -496,13 +496,13 @@ function displayServerInfo() {
     $('#svrinfo').append('</p>');
 
     // Status Acquisition Interval
-    if (responseData['API_GET_SVRINFO'].ServerInfo.StatusAcquisitionInterval == 300) {
+    if (responseData['API_GET_SVRINFO'].Data.ServerInfo.StatusAcquisitionInterval == 300) {
         selectedStatusAcquisitionInterval = 0;
-    } else if (responseData['API_GET_SVRINFO'].ServerInfo.StatusAcquisitionInterval == 900) {
+    } else if (responseData['API_GET_SVRINFO'].Data.ServerInfo.StatusAcquisitionInterval == 900) {
         selectedStatusAcquisitionInterval = 1;
-    } else if (responseData['API_GET_SVRINFO'].ServerInfo.StatusAcquisitionInterval == 1800) {
+    } else if (responseData['API_GET_SVRINFO'].Data.ServerInfo.StatusAcquisitionInterval == 1800) {
         selectedStatusAcquisitionInterval = 2;
-    } else if (responseData['API_GET_SVRINFO'].ServerInfo.StatusAcquisitionInterval == 3600) {
+    } else if (responseData['API_GET_SVRINFO'].Data.ServerInfo.StatusAcquisitionInterval == 3600) {
         selectedStatusAcquisitionInterval = 3;
     }
     var btnGrp = $('<div class="btn-group">');
@@ -564,7 +564,7 @@ function getStatusAcquisitionInterval(interval) {
 function updateServerInfo() {
     var pInterval = getPollingInterval(selectedPollingInterval);
     var saInterval = getStatusAcquisitionInterval(selectedStatusAcquisitionInterval);
-    apiCall('POST', '/api/server/', {"ServerInfo":{"PInterval":pInterval, "SaInterval":saInterval}}, 'API_POST_SVRINFO', refreshAfterUpdateServerInfo);
+    apiCall('POST', '/api/server/', {"PollingInterval":pInterval, "StatusAcquisitionInterval":saInterval}, 'API_POST_SVRINFO', refreshAfterUpdateServerInfo);
 }
 
 function refreshAfterUpdateServerInfo() {
@@ -574,7 +574,7 @@ function refreshAfterUpdateServerInfo() {
         return;
     }
     if (statusCode['API_POST_SVRINFO'] == 400) {
-        displayAlertDanger('#svrinfo_errmsg', responseData['API_POST_SVRINFO'].Msg0);
+        displayAlertDanger('#svrinfo_errmsg', getSvrMsg(responseData['API_POST_SVRINFO']));
         return;
     }
     transDisplayServerInfo();
