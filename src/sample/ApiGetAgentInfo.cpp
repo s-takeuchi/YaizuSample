@@ -23,6 +23,7 @@ StkObject* ApiGetAgentInfo::ExecuteImpl(StkObject* ReqObj, int Method, wchar_t U
 	int Count = DataAccess::GetInstance()->GetAgentInfo(Name, Status, StatusCmd, OpStatus, OpCmd, TimeUtc, TimeLocal, UdTimeUtc, UdTimeLocal);
 
 	StkObject* TmpObj = new StkObject(L"");
+	StkObject* TmpObjD = new StkObject(L"Data");
 	for (int Loop = 0; Loop < Count; Loop++) {
 		StkObject* TmpObjC = new StkObject(L"AgentInfo");
 		TmpObjC->AppendChildElement(new StkObject(L"Name", Name[Loop]));
@@ -34,9 +35,10 @@ StkObject* ApiGetAgentInfo::ExecuteImpl(StkObject* ReqObj, int Method, wchar_t U
 		TmpObjC->AppendChildElement(new StkObject(L"TimeLocal", TimeLocal[Loop]));
 		TmpObjC->AppendChildElement(new StkObject(L"UdTimeUtc", UdTimeUtc[Loop]));
 		TmpObjC->AppendChildElement(new StkObject(L"UdTimeLocal", UdTimeLocal[Loop]));
-		TmpObj->AppendChildElement(TmpObjC);
+		TmpObjD->AppendChildElement(TmpObjC);
+		TmpObj->AppendChildElement(TmpObjD);
 	}
-	TmpObj->AppendChildElement(new StkObject(L"Msg0", L""));
+	AddCodeAndMsg(TmpObj, 0, L"", L"");
 	*ResultCode = 200;
 	return TmpObj;
 }

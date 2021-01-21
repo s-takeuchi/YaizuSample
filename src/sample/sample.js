@@ -176,7 +176,7 @@ function displayAgentInfo() {
         displayAlertDanger('#agtinfo', getClientMessage('CONNERR'));
         return;
     }
-    var AgentInfo = getArray(responseData['API_GET_AGTINFO'].AgentInfo);
+    var AgentInfo = getArray(responseData['API_GET_AGTINFO'].Data.AgentInfo);
     if (AgentInfo == null) {
         $('#agtinfo').append(getClientMessage('NOAGTINFO'));
         return;
@@ -267,7 +267,7 @@ function getTooltipStr() {
 }
 
 function switchAgentInfoButton() {
-    var AgentInfo = getArray(responseData['API_GET_AGTINFO'].AgentInfo);
+    var AgentInfo = getArray(responseData['API_GET_AGTINFO'].Data.AgentInfo);
     var foundFlag = false;
     for (var loop = 0; AgentInfo != null && loop < AgentInfo.length; loop++) {
         if ($('#agtInfoId' + loop).prop('checked') == true) {
@@ -298,7 +298,7 @@ function switchAgentInfoButton() {
 }
 
 function displayExecCommandDlg() {
-    var AgentInfo = getArray(responseData['API_GET_AGTINFO'].AgentInfo);
+    var AgentInfo = getArray(responseData['API_GET_AGTINFO'].Data.AgentInfo);
     var foundFlag = false;
     for (var loop = 0; loop < AgentInfo.length; loop++) {
         if ($('#agtInfoId' + loop).prop('checked') == true) {
@@ -334,7 +334,7 @@ function displayExecCommandDlg() {
 function closeExecCommandDlg(okFlag) {
     if (okFlag == true && selectedOperationCommand != -1) {
         var commandList = getArray(responseData['API_GET_COMMAND'].Command);
-        var AgentInfo = getArray(responseData['API_GET_AGTINFO'].AgentInfo);
+        var AgentInfo = getArray(responseData['API_GET_AGTINFO'].Data.AgentInfo);
         for (var loop = 0; loop < AgentInfo.length; loop++) {
             if ($('#agtInfoId' + loop).prop('checked') == true) {
                 var ReqObj = { AgentInfo : { Name : AgentInfo[loop].Name, OpCmd : commandList[selectedOperationCommand].Id }};
@@ -353,7 +353,7 @@ function selectExecCommand(execCommand) {
 }
 
 function displayAgentStatusCommandDlg() {
-    var AgentInfo = getArray(responseData['API_GET_AGTINFO'].AgentInfo);
+    var AgentInfo = getArray(responseData['API_GET_AGTINFO'].Data.AgentInfo);
     var foundFlag = false;
     for (var loop = 0; loop < AgentInfo.length; loop++) {
         if ($('#agtInfoId' + loop).prop('checked') == true) {
@@ -389,7 +389,7 @@ function displayAgentStatusCommandDlg() {
 function closeAgentStatusCommandDlg(okFlag) {
     if (okFlag == true && selectedAgentStatusCommand != -1) {
         var commandList = getArray(responseData['API_GET_COMMAND'].Command);
-        var AgentInfo = getArray(responseData['API_GET_AGTINFO'].AgentInfo);
+        var AgentInfo = getArray(responseData['API_GET_AGTINFO'].Data.AgentInfo);
         for (var loop = 0; loop < AgentInfo.length; loop++) {
             if ($('#agtInfoId' + loop).prop('checked') == true) {
                 var ReqObj = { AgentInfo : { Name : AgentInfo[loop].Name, StatusCmd : commandList[selectedAgentStatusCommand].Id }};
@@ -402,7 +402,7 @@ function closeAgentStatusCommandDlg(okFlag) {
 }
 
 function getAgentStatusCommand() {
-    var AgentInfo = getArray(responseData['API_GET_AGTINFO'].AgentInfo);
+    var AgentInfo = getArray(responseData['API_GET_AGTINFO'].Data.AgentInfo);
     var commandList = getArray(responseData['API_GET_COMMAND'].Command);
     var allSame = true;
     var commandId = -1;
