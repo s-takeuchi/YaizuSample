@@ -181,7 +181,7 @@ function displayAgentInfo() {
         $('#agtinfo').append(getClientMessage('NOAGTINFO'));
         return;
     }
-    var commandList = getArray(responseData['API_GET_COMMAND'].Command);
+    var commandList = getArray(responseData['API_GET_COMMAND'].Data.Command);
 
     selectedAgentStatusCommand = -1;
     selectedOperationCommand = -1;
@@ -309,7 +309,7 @@ function displayExecCommandDlg() {
         return;
     }
 
-    var commandList = getArray(responseData['API_GET_COMMAND'].Command);
+    var commandList = getArray(responseData['API_GET_COMMAND'].Data.Command);
 
     var execCommandDlg = $('<div/>')
 
@@ -333,7 +333,7 @@ function displayExecCommandDlg() {
 
 function closeExecCommandDlg(okFlag) {
     if (okFlag == true && selectedOperationCommand != -1) {
-        var commandList = getArray(responseData['API_GET_COMMAND'].Command);
+        var commandList = getArray(responseData['API_GET_COMMAND'].Data.Command);
         var AgentInfo = getArray(responseData['API_GET_AGTINFO'].Data.AgentInfo);
         for (var loop = 0; loop < AgentInfo.length; loop++) {
             if ($('#agtInfoId' + loop).prop('checked') == true) {
@@ -347,7 +347,7 @@ function closeExecCommandDlg(okFlag) {
 }
 
 function selectExecCommand(execCommand) {
-    var commandList = getArray(responseData['API_GET_COMMAND'].Command);
+    var commandList = getArray(responseData['API_GET_COMMAND'].Data.Command);
     $('#selectedExecCommand').text(commandList[execCommand].Name);
     selectedOperationCommand = execCommand;
 }
@@ -364,7 +364,7 @@ function displayAgentStatusCommandDlg() {
         return;
     }
 
-    var commandList = getArray(responseData['API_GET_COMMAND'].Command);
+    var commandList = getArray(responseData['API_GET_COMMAND'].Data.Command);
 
     var execSaCommandDlg = $('<div/>')
 
@@ -388,7 +388,7 @@ function displayAgentStatusCommandDlg() {
 
 function closeAgentStatusCommandDlg(okFlag) {
     if (okFlag == true && selectedAgentStatusCommand != -1) {
-        var commandList = getArray(responseData['API_GET_COMMAND'].Command);
+        var commandList = getArray(responseData['API_GET_COMMAND'].Data.Command);
         var AgentInfo = getArray(responseData['API_GET_AGTINFO'].Data.AgentInfo);
         for (var loop = 0; loop < AgentInfo.length; loop++) {
             if ($('#agtInfoId' + loop).prop('checked') == true) {
@@ -403,7 +403,7 @@ function closeAgentStatusCommandDlg(okFlag) {
 
 function getAgentStatusCommand() {
     var AgentInfo = getArray(responseData['API_GET_AGTINFO'].Data.AgentInfo);
-    var commandList = getArray(responseData['API_GET_COMMAND'].Command);
+    var commandList = getArray(responseData['API_GET_COMMAND'].Data.Command);
     var allSame = true;
     var commandId = -1;
     var commandStr = '';
@@ -431,7 +431,7 @@ function getAgentStatusCommand() {
 }
 
 function selectAgentStatusCommand(agentStatusCommand) {
-    var commandList = getArray(responseData['API_GET_COMMAND'].Command);
+    var commandList = getArray(responseData['API_GET_COMMAND'].Data.Command);
     $('#selectedAgentStatus').text(commandList[agentStatusCommand].Name);
     selectedAgentStatusCommand = agentStatusCommand;
 }
@@ -603,14 +603,14 @@ function displayCommand() {
         displayAlertSuccess('#command', command_msg);
         command_msg = '';
     }
-    var commandList = getArray(responseData['API_GET_COMMAND'].Command);
+    var commandList = getArray(responseData['API_GET_COMMAND'].Data.Command);
     if (commandList == null) {
         $('#command').append(getClientMessage('NOCMDEXIST'));
     }
 
     selectedCommand = -1;
 
-    if (responseData['API_GET_COMMAND'].Command !== undefined) {
+    if (responseData['API_GET_COMMAND'].Data.Command !== undefined) {
         var commandListTable = $('<table>');
         commandListTable.addClass('table table-striped');
 
@@ -673,7 +673,7 @@ function deleteCommand() {
 }
 
 function selectCommand(targetId) {
-    var commandList = getArray(responseData['API_GET_COMMAND'].Command);
+    var commandList = getArray(responseData['API_GET_COMMAND'].Data.Command);
     selectedCommand = targetId;
     for (loop = 0; loop < commandList.length; loop++) {
         if (commandList[loop].Id == targetId) {

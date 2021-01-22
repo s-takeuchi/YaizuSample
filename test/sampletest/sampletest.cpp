@@ -93,7 +93,7 @@ void TestNewAgentInfoNotificationNormal(StkWebAppSend* StkWebAppSendObj)
 		delete ResObj;
 	}
 	int ErrCode = 0;
-	StkObject* ReqObj = StkObject::CreateObjectFromJson(L"{\"AgentInfo\" : {\"Name\":\"testagent\", \"Status\":-980}}", &ErrCode);
+	StkObject* ReqObj = StkObject::CreateObjectFromJson(L"{ \"Data\" : {\"AgentInfo\" : {\"Name\":\"testagent\", \"Status\":-980}}}", &ErrCode);
 	bool Result = TestForGetApi(StkWebAppSendObj, "/api/agent/", "Bearer admin manager", ReqObj);
 	if (Result != true) {
 		StkPlPrintf("[NG]\n");

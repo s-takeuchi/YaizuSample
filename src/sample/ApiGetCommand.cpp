@@ -20,6 +20,7 @@ StkObject* ApiGetCommand::ExecuteImpl(StkObject* ReqObj, int Method, wchar_t Url
 
 	int ResCount = DataAccess::GetInstance()->GetCommand(Id, Name, Type, Script, ServerFileName, AgentFileName);
 	StkObject* TmpObj = new StkObject(L"");
+	StkObject* TmpObjD = new StkObject(L"Data");
 	for (int Loop = 0; Loop < ResCount; Loop++) {
 		StkObject* CmdObj = new StkObject(L"Command");
 		CmdObj->AppendChildElement(new StkObject(L"Id", Id[Loop]));
@@ -28,9 +29,10 @@ StkObject* ApiGetCommand::ExecuteImpl(StkObject* ReqObj, int Method, wchar_t Url
 		CmdObj->AppendChildElement(new StkObject(L"Script", (wchar_t*)Script[Loop]));
 		CmdObj->AppendChildElement(new StkObject(L"ServerFileName", ServerFileName[Loop]));
 		CmdObj->AppendChildElement(new StkObject(L"AgentFileName", AgentFileName[Loop]));
-		TmpObj->AppendChildElement(CmdObj);
+		TmpObjD->AppendChildElement(CmdObj);
+		TmpObj->AppendChildElement(TmpObjD);
 	}
-	TmpObj->AppendChildElement(new StkObject(L"Msg0", L""));
+	AddCodeAndMsg(TmpObj, 0, L"", L"");
 	*ResultCode = 200;
 	return TmpObj;
 }
