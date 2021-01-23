@@ -129,6 +129,10 @@ void InitMessageResource()
 	MessageProc::AddEng(MSG_INVALIDSVINTVL, L"The value of \"StatusAcquisitionInterval\" is out of permission. Specify the value in the range of 300-3600.");
 	MessageProc::AddJpn(MSG_INVALIDSVINTVL, L"\"StatusAcquisitionInterval\"の値が許可された範囲を超えました。300-3600の範囲で指定してください。");
 	
+	// Agent Info
+	MessageProc::AddEng(MSG_AGENTINFO_NOT_FOUND, L"The specified agent information is not found.");
+	MessageProc::AddJpn(MSG_AGENTINFO_NOT_FOUND, L"指定したエージェント情報が見つかりません。");
+
 	// Common error message
 	MessageProc::AddEng(MSG_NO_ELEM_IN_REQUEST, L"No \"%ls\" element has been presented in the request.");
 	MessageProc::AddJpn(MSG_NO_ELEM_IN_REQUEST, L"リクエストに\"%ls\"要素が存在しません。");
@@ -140,8 +144,6 @@ void InitMessageResource()
 	MessageProc::AddJpn(MSG_NO_EXEC_RIGHT, L"ユーザーは，このリクエストの実行権限を持っていません。");
 	MessageProc::AddEng(MSG_FORBIDDEN_CHAR, L"\"%ls\" includes forbidden character(s).");
 	MessageProc::AddJpn(MSG_FORBIDDEN_CHAR, L"\"%ls\"は使用禁止文字が含まれています。");
-	MessageProc::AddEng(MSG_AGENTINFO_NOT_FOUND, L"The specified agent information is not found.");
-	MessageProc::AddJpn(MSG_AGENTINFO_NOT_FOUND, L"指定したエージェント情報が見つかりません。");
 
 	MessageProc::SetLocaleMode(MessageProc::LOCALE_MODE_ENGLISH);
 }

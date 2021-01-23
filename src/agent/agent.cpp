@@ -47,22 +47,18 @@ StkObject* GetAgentInfo(int Status)
 	StkObject* NewObj = new StkObject(L"");
 	StkPlGetWTimeInIso8601(StatusTimeUtc, false);
 	StkPlGetWTimeInIso8601(StatusTimeLocal, true);
-	StkObject* AgentInfo = new StkObject(L"AgentInfo");
-	AgentInfo->AppendChildElement(new StkObject(L"Name", HostName));
-	AgentInfo->AppendChildElement(new StkObject(L"Status", Status));
-	AgentInfo->AppendChildElement(new StkObject(L"StatusTimeUtc", StatusTimeUtc));
-	AgentInfo->AppendChildElement(new StkObject(L"StatusTimeLocal", StatusTimeLocal));
-	NewObj->AppendChildElement(AgentInfo);
+	NewObj->AppendChildElement(new StkObject(L"Name", HostName));
+	NewObj->AppendChildElement(new StkObject(L"Status", Status));
+	NewObj->AppendChildElement(new StkObject(L"StatusTimeUtc", StatusTimeUtc));
+	NewObj->AppendChildElement(new StkObject(L"StatusTimeLocal", StatusTimeLocal));
 	return NewObj;
 }
 
 StkObject* GetAgentInfoForOpStatus(int Status)
 {
 	StkObject* NewObj = new StkObject(L"");
-	StkObject* AgentInfo = new StkObject(L"AgentInfo");
-	AgentInfo->AppendChildElement(new StkObject(L"Name", HostName));
-	AgentInfo->AppendChildElement(new StkObject(L"OpStatus", Status));
-	NewObj->AppendChildElement(AgentInfo);
+	NewObj->AppendChildElement(new StkObject(L"Name", HostName));
+	NewObj->AppendChildElement(new StkObject(L"OpStatus", Status));
 	return NewObj;
 }
 

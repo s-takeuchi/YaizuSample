@@ -30,13 +30,15 @@
 #define MSG_INVALIDPOINTVL       4043
 #define MSG_INVALIDSVINTVL       4044
 
+// Agent Info
+#define MSG_AGENTINFO_NOT_FOUND  4060
+
 // Common error message
 #define MSG_NO_ELEM_IN_REQUEST   4201
 #define MSG_STRING_LEN_ERROR     4202
 #define MSG_NOREQUEST            4203
 #define MSG_NO_EXEC_RIGHT        4204
 #define MSG_FORBIDDEN_CHAR       4205
-#define MSG_AGENTINFO_NOT_FOUND  4206
 
 // Global variables
 class Global {

@@ -40,23 +40,24 @@ StkObject* ApiPostAgentInfo::ExecuteImpl(StkObject* ReqObj, int Method, wchar_t 
 	int StatusCmd = -1;
 	int OpStatus = 0;
 	int OpCmd = -1;
+	bool AgentNameFlag = false;
 	bool StatusCmdFlag = false;
 	bool OpStatusFlag = false;
 	bool OpCmdFlag = false;
 	wchar_t StatusTimeUtc[DA_MAXLEN_OF_TIME] = L"";
 	wchar_t StatusTimeLocal[DA_MAXLEN_OF_TIME] = L"";
 	if (ReqObj != NULL) {
-		StkObject* AgentInfo = ReqObj->GetFirstChildElement();
-		if (AgentInfo == NULL || StkPlWcsCmp(AgentInfo->GetName(), L"AgentInfo") != 0) {
-			*ResultCode = 400;
+		StkObject* CurrAgentInfo = ReqObj->GetFirstChildElement();
+		if (CurrAgentInfo == NULL) {
 			StkObject* ResObj = new StkObject(L"");
-			CommonError_NoElemInRequest(ResObj, L"AgentInfo");
+			AddCodeAndMsg(ResObj, MSG_NOREQUEST, MessageProc::GetMsgEng(MSG_NOREQUEST), MessageProc::GetMsgJpn(MSG_NOREQUEST));
+			*ResultCode = 400;
 			return ResObj;
 		}
-		StkObject* CurrAgentInfo = AgentInfo->GetFirstChildElement();
 		while (CurrAgentInfo) {
 			if (StkPlWcsCmp(CurrAgentInfo->GetName(), L"Name") == 0) {
 				StkPlWcsCpy(Name, DA_MAXLEN_OF_AGTNAME, CurrAgentInfo->GetStringValue());
+				AgentNameFlag = true;
 				if (StkPlCheckHostName(Name) == false) {
 					*ResultCode = 400;
 					StkObject* ResObj = new StkObject(L"");
@@ -86,6 +87,12 @@ StkObject* ApiPostAgentInfo::ExecuteImpl(StkObject* ReqObj, int Method, wchar_t 
 				StkPlWcsCpy(StatusTimeLocal, DA_MAXLEN_OF_TIME, CurrAgentInfo->GetStringValue());
 			}
 			CurrAgentInfo = CurrAgentInfo->GetNext();
+		}
+		if (AgentNameFlag == false) {
+			*ResultCode = 400;
+			StkObject* ResObj = new StkObject(L"");
+			CommonError_NoElemInRequest(ResObj, L"Name");
+			return ResObj;
 		}
 		if (StatusCmdFlag) {
 			DataAccess::GetInstance()->SetAgentInfoForStatusCmd(Name, StatusCmd);

@@ -337,7 +337,7 @@ function closeExecCommandDlg(okFlag) {
         var AgentInfo = getArray(responseData['API_GET_AGTINFO'].Data.AgentInfo);
         for (var loop = 0; loop < AgentInfo.length; loop++) {
             if ($('#agtInfoId' + loop).prop('checked') == true) {
-                var ReqObj = { AgentInfo : { Name : AgentInfo[loop].Name, OpCmd : commandList[selectedOperationCommand].Id }};
+                var ReqObj = { Name : AgentInfo[loop].Name, OpCmd : commandList[selectedOperationCommand].Id };
                 apiCall('POST', '/api/agent/', ReqObj, 'API_POST_AGTINFO', null);
             }
         }
@@ -392,7 +392,7 @@ function closeAgentStatusCommandDlg(okFlag) {
         var AgentInfo = getArray(responseData['API_GET_AGTINFO'].Data.AgentInfo);
         for (var loop = 0; loop < AgentInfo.length; loop++) {
             if ($('#agtInfoId' + loop).prop('checked') == true) {
-                var ReqObj = { AgentInfo : { Name : AgentInfo[loop].Name, StatusCmd : commandList[selectedAgentStatusCommand].Id }};
+                var ReqObj = { Name : AgentInfo[loop].Name, StatusCmd : commandList[selectedAgentStatusCommand].Id };
                 apiCall('POST', '/api/agent/', ReqObj, 'API_POST_AGTINFO', null);
             }
         }

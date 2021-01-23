@@ -78,12 +78,10 @@ void TestNewAgentInfoNotificationNormal(StkWebAppSend* StkWebAppSendObj)
 		StkObject* NewObj = new StkObject(L"");
 		StkPlGetWTimeInIso8601(StatusTimeUtc, false);
 		StkPlGetWTimeInIso8601(StatusTimeLocal, true);
-		StkObject* AgentInfo = new StkObject(L"AgentInfo");
-		AgentInfo->AppendChildElement(new StkObject(L"Name", L"testagent"));
-		AgentInfo->AppendChildElement(new StkObject(L"Status", -980));
-		AgentInfo->AppendChildElement(new StkObject(L"StatusTimeUtc", StatusTimeUtc));
-		AgentInfo->AppendChildElement(new StkObject(L"StatusTimeLocal", StatusTimeLocal));
-		NewObj->AppendChildElement(AgentInfo);
+		NewObj->AppendChildElement(new StkObject(L"Name", L"testagent"));
+		NewObj->AppendChildElement(new StkObject(L"Status", -980));
+		NewObj->AppendChildElement(new StkObject(L"StatusTimeUtc", StatusTimeUtc));
+		NewObj->AppendChildElement(new StkObject(L"StatusTimeLocal", StatusTimeLocal));
 
 		StkObject* ResObj = StkWebAppSendObj->SendRequestRecvResponse(StkWebAppSend::STKWEBAPP_METHOD_POST, "/api/agent/", NewObj, &ResultCode);
 		if (ResultCode != 200) {
@@ -153,7 +151,7 @@ void TestNewAgentInfoNotificationForbiddenChar(StkWebAppSend* StkWebAppSendObj)
 	wchar_t ReqStr[256] = L"";
 
 	for (int Loop = 0; Loop < 3; Loop++) {
-		StkPlSwPrintf(ReqStr, 256, L"{\"AgentInfo\" : {\"Name\":\"%ls\", \"Status\":-980}}", HostName[Loop]);
+		StkPlSwPrintf(ReqStr, 256, L"{\"Name\":\"%ls\", \"Status\":-980}", HostName[Loop]);
 		int ResultCode = 0;
 		int ErrCode = 0;
 		StkObject* ReqObj = StkObject::CreateObjectFromJson(ReqStr, &ErrCode);
