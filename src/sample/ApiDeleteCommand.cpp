@@ -18,7 +18,7 @@ StkObject* ApiDeleteCommand::ExecuteImpl(StkObject* ReqObj, int Method, wchar_t 
 
 	StkObject* TmpObj = new StkObject(L"");
 	if (RetName == 0 && RetDel == 0) {
-		TmpObj->AppendChildElement(new StkObject(L"Msg0", L""));
+		AddCodeAndMsg(TmpObj, 0, L"", L"");
 		*ResultCode = 200;
 
 		wchar_t LogMsg[256] = L"";
@@ -27,7 +27,7 @@ StkObject* ApiDeleteCommand::ExecuteImpl(StkObject* ReqObj, int Method, wchar_t 
 		StkPlSwPrintf(LogMsgJa, 256, L"%ls [%ls]", MessageProc::GetMsgJpn(MSG_COMDELETE), CmdName);
 		AddLogMsg(LogMsg, LogMsgJa);
 	} else {
-		TmpObj->AppendChildElement(new StkObject(L"Msg0", MessageProc::GetMsg(MSG_COMMANDNOTEXIST)));
+		AddCodeAndMsg(TmpObj, MSG_COMMANDNOTEXIST, MessageProc::GetMsgEng(MSG_COMMANDNOTEXIST), MessageProc::GetMsgJpn(MSG_COMMANDNOTEXIST));
 		*ResultCode = 400;
 	}
 	return TmpObj;

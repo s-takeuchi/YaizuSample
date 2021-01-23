@@ -1,6 +1,7 @@
 #include "../../../YaizuComLib/src/stkpl/StkPl.h"
 #include "../../../YaizuComLib/src/stkwebapp_um/ApiBase.h"
 #include "../../../YaizuComLib/src/commonfunc/StkStringParser.h"
+#include "../../../YaizuComLib/src/commonfunc/msgproc.h"
 #include "sample.h"
 #include "dataaccess.h"
 #include "ApiGetFile.h"
@@ -16,13 +17,13 @@ StkObject* ApiGetFile::ExecuteImpl(StkObject* ReqObj, int Method, wchar_t UrlPat
 	size_t FileSize = StkPlGetFileSize(TargetFullPath);
 	if (FileSize < 0) {
 		StkObject* TmpObj = new StkObject(L"");
-		TmpObj->AppendChildElement(new StkObject(L"Msg0", L"Target File does not exist."));
+		AddCodeAndMsg(TmpObj, MSG_FILE_NOTEXIST, MessageProc::GetMsgEng(MSG_FILE_NOTEXIST), MessageProc::GetMsgJpn(MSG_FILE_NOTEXIST));
 		*ResultCode = 400;
 		return TmpObj;
 	}
 	if (Offset > FileSize) {
 		StkObject* TmpObj = new StkObject(L"");
-		TmpObj->AppendChildElement(new StkObject(L"Msg0", L"The specified offset exceeds the file size."));
+		AddCodeAndMsg(TmpObj, MSG_FILE_EXCEED_SIZE, MessageProc::GetMsgEng(MSG_FILE_EXCEED_SIZE), MessageProc::GetMsgJpn(MSG_FILE_EXCEED_SIZE));
 		*ResultCode = 400;
 		return TmpObj;
 	}
@@ -44,8 +45,10 @@ StkObject* ApiGetFile::ExecuteImpl(StkObject* ReqObj, int Method, wchar_t UrlPat
 	delete Buffer;
 
 	StkObject* TmpObj = new StkObject(L"");
-	TmpObj->AppendChildElement(new StkObject(L"FileData", HexBuf));
-	TmpObj->AppendChildElement(new StkObject(L"Msg0", L""));
+	StkObject* TmpObjD = new StkObject(L"Data");
+	AddCodeAndMsg(TmpObj, 0, L"", L"");
+	TmpObjD->AppendChildElement(new StkObject(L"FileData", HexBuf));
+	TmpObj->AppendChildElement(TmpObjD);
 	delete HexBuf;
 	*ResultCode = 200;
 	return TmpObj;

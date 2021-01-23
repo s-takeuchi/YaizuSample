@@ -137,6 +137,9 @@ int GetAndSaveFile(char* FileName, size_t FileSize, StkWebAppSend* SndObj)
 
 		StkObject* CurResObj2 = ResObj2->GetFirstChildElement();
 		while (CurResObj2) {
+			if (StkPlWcsCmp(CurResObj2->GetName(), L"Data") == 0) {
+				CurResObj2 = CurResObj2->GetFirstChildElement();
+			}
 			if (StkPlWcsCmp(CurResObj2->GetName(), L"FileData") == 0) {
 				wchar_t* FileData = CurResObj2->GetStringValue();
 				wchar_t* FileDataPtr = FileData;

@@ -131,6 +131,12 @@ void InitMessageResource()
 	MessageProc::AddEng(MSG_AGENTINFO_NOT_FOUND, L"The specified agent information is not found.");
 	MessageProc::AddJpn(MSG_AGENTINFO_NOT_FOUND, L"指定したエージェント情報が見つかりません。");
 
+	// File
+	MessageProc::AddEng(MSG_FILE_NOTEXIST, L"The specified agent information is not found.");
+	MessageProc::AddJpn(MSG_FILE_NOTEXIST, L"指定したエージェント情報が見つかりません。");
+	MessageProc::AddEng(MSG_FILE_EXCEED_SIZE, L"The specified offset exceeds the file size.");
+	MessageProc::AddJpn(MSG_FILE_EXCEED_SIZE, L"指定したオフセットがファイルサイズを超過しました。");
+
 	// Common error message
 	MessageProc::AddEng(MSG_NO_ELEM_IN_REQUEST, L"No \"%ls\" element has been presented in the request.");
 	MessageProc::AddJpn(MSG_NO_ELEM_IN_REQUEST, L"リクエストに\"%ls\"要素が存在しません。");

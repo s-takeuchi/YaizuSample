@@ -32,6 +32,10 @@
 // Agent Info
 #define MSG_AGENTINFO_NOT_FOUND  4060
 
+// File
+#define MSG_FILE_NOTEXIST        4080
+#define MSG_FILE_EXCEED_SIZE     4081
+
 // Common error message
 #define MSG_NO_ELEM_IN_REQUEST   4201
 #define MSG_STRING_LEN_ERROR     4202
