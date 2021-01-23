@@ -124,8 +124,6 @@ void InitMessageResource()
 	MessageProc::AddJpn(MSG_NOPOLLINGINTVL, L"リクエストに\"PollingInterval\"要素が存在しません。");
 	MessageProc::AddEng(MSG_NOSAINTVL, L"No \"StatusAcquisitionInterval\" element has been presented in the request.");
 	MessageProc::AddJpn(MSG_NOSAINTVL, L"リクエストに\"StatusAcquisitionInterval\"要素が存在しません。");
-	MessageProc::AddEng(MSG_NOSVRINFOREQUEST, L"No \"ServerInfo\" related element has been presented in the request.");
-	MessageProc::AddJpn(MSG_NOSVRINFOREQUEST, L"リクエストに\"ServerInfo\"に関連する要素が存在しません。");
 	MessageProc::AddEng(MSG_INVALIDPOINTVL, L"The value of \"PollingInterval\" is out of permission. Specify the value in the range of 30-900.");
 	MessageProc::AddJpn(MSG_INVALIDPOINTVL, L"\"PollingInterval\"の値が許可された範囲を超えました。30-900の範囲で指定してください。");
 	MessageProc::AddEng(MSG_INVALIDSVINTVL, L"The value of \"StatusAcquisitionInterval\" is out of permission. Specify the value in the range of 300-3600.");

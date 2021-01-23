@@ -108,10 +108,17 @@ void TestNewAgentInfoNotificationNull(StkWebAppSend* StkWebAppSendObj)
 	StkPlPrintf("New agent information notification (NULL) ... ");
 	int ResultCode = 0;
 	StkObject* ResObj = StkWebAppSendObj->SendRequestRecvResponse(StkWebAppSend::STKWEBAPP_METHOD_POST, "/api/agent/", NULL, &ResultCode);
-	if (ResultCode != 400 || ResObj == NULL || StkPlWcsStr(ResObj->GetFirstChildElement()->GetStringValue(), L"No ") == NULL) {
+	if (ResultCode != 400 || ResObj == NULL) {
 		StkPlPrintf("[NG]\n");
 		StkPlExit(1);
 	}
+	StkObject* ChkObj = new StkObject(L"Code", 4203);
+	StkObject* FndObj = ResObj->Contains(ChkObj);
+	if (FndObj == NULL) {
+		StkPlPrintf("[NG]\n");
+		StkPlExit(1);
+	}
+	delete ChkObj;
 	StkPlPrintf("[OK]\n");
 	delete ResObj;
 }
@@ -123,10 +130,17 @@ void TestNewAgentInfoNotificationNoAgentInfo(StkWebAppSend* StkWebAppSendObj)
 	int ErrCode = 0;
 	StkObject* ReqObj = StkObject::CreateObjectFromJson(L"{\"XXX\" : {\"Name\":\"testagent\", \"Status\":-980}}", &ErrCode);
 	StkObject* ResObj = StkWebAppSendObj->SendRequestRecvResponse(StkWebAppSend::STKWEBAPP_METHOD_POST, "/api/agent/", ReqObj, &ResultCode);
-	if (ResultCode != 400 || ResObj == NULL || StkPlWcsStr(ResObj->GetFirstChildElement()->GetStringValue(), L"No ") == NULL) {
+	if (ResultCode != 400 || ResObj == NULL) {
 		StkPlPrintf("[NG]\n");
 		StkPlExit(1);
 	}
+	StkObject* ChkObj = new StkObject(L"Code", 4201);
+	StkObject* FndObj = ResObj->Contains(ChkObj);
+	if (FndObj == NULL) {
+		StkPlPrintf("[NG]\n");
+		StkPlExit(1);
+	}
+	delete ChkObj;
 	StkPlPrintf("[OK]\n");
 	delete ReqObj;
 	delete ResObj;
@@ -144,10 +158,17 @@ void TestNewAgentInfoNotificationForbiddenChar(StkWebAppSend* StkWebAppSendObj)
 		int ErrCode = 0;
 		StkObject* ReqObj = StkObject::CreateObjectFromJson(ReqStr, &ErrCode);
 		StkObject* ResObj = StkWebAppSendObj->SendRequestRecvResponse(StkWebAppSend::STKWEBAPP_METHOD_POST, "/api/agent/", ReqObj, &ResultCode);
-		if (ResultCode != 400 || ResObj == NULL || StkPlWcsStr(ResObj->GetFirstChildElement()->GetStringValue(), L"forbidden ") == NULL) {
+		if (ResultCode != 400 || ResObj == NULL) {
 			StkPlPrintf("[NG]\n");
 			StkPlExit(1);
 		}
+		StkObject* ChkObj = new StkObject(L"Code", 4205);
+		StkObject* FndObj = ResObj->Contains(ChkObj);
+		if (FndObj == NULL) {
+			StkPlPrintf("[NG]\n");
+			StkPlExit(1);
+		}
+		delete ChkObj;
 		delete ReqObj;
 		delete ResObj;
 	}

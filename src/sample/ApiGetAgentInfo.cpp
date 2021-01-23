@@ -36,9 +36,9 @@ StkObject* ApiGetAgentInfo::ExecuteImpl(StkObject* ReqObj, int Method, wchar_t U
 		TmpObjC->AppendChildElement(new StkObject(L"UdTimeUtc", UdTimeUtc[Loop]));
 		TmpObjC->AppendChildElement(new StkObject(L"UdTimeLocal", UdTimeLocal[Loop]));
 		TmpObjD->AppendChildElement(TmpObjC);
-		TmpObj->AppendChildElement(TmpObjD);
 	}
 	AddCodeAndMsg(TmpObj, 0, L"", L"");
+	TmpObj->AppendChildElement(TmpObjD);
 	*ResultCode = 200;
 	return TmpObj;
 }

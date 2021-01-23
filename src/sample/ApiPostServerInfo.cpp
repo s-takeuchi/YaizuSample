@@ -15,7 +15,7 @@ StkObject* ApiPostServerInfo::ExecuteImpl(StkObject* ReqObj, int Method, wchar_t
 		*ResultCode = 200;
 		StkObject* CurObj = ReqObj->GetFirstChildElement();
 		if (CurObj == NULL) {
-			AddCodeAndMsg(TmpObj, MSG_NOSVRINFOREQUEST, MessageProc::GetMsgEng(MSG_NOSVRINFOREQUEST), MessageProc::GetMsgJpn(MSG_NOSVRINFOREQUEST));
+			AddCodeAndMsg(TmpObj, MSG_NOREQUEST, MessageProc::GetMsgEng(MSG_NOREQUEST), MessageProc::GetMsgJpn(MSG_NOREQUEST));
 			*ResultCode = 400;
 			return TmpObj;
 		}

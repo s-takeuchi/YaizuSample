@@ -25,7 +25,6 @@
 #define MSG_DUPCMDNAME           4028
 
 // Server Info
-#define MSG_NOSVRINFOREQUEST     4040
 #define MSG_NOPOLLINGINTVL       4041
 #define MSG_NOSAINTVL            4042
 #define MSG_INVALIDPOINTVL       4043

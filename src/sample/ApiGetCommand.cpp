@@ -30,9 +30,9 @@ StkObject* ApiGetCommand::ExecuteImpl(StkObject* ReqObj, int Method, wchar_t Url
 		CmdObj->AppendChildElement(new StkObject(L"ServerFileName", ServerFileName[Loop]));
 		CmdObj->AppendChildElement(new StkObject(L"AgentFileName", AgentFileName[Loop]));
 		TmpObjD->AppendChildElement(CmdObj);
-		TmpObj->AppendChildElement(TmpObjD);
 	}
 	AddCodeAndMsg(TmpObj, 0, L"", L"");
+	TmpObj->AppendChildElement(TmpObjD);
 	*ResultCode = 200;
 	return TmpObj;
 }

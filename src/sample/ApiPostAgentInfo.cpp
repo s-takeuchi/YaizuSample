@@ -6,39 +6,31 @@
 #include "sample.h"
 #include "ApiPostAgentInfo.h"
 
-StkObject* ApiPostAgentInfo::CommonError_NoElemInRequest(const wchar_t* ElemName)
+void ApiPostAgentInfo::CommonError_NoElemInRequest(StkObject* TmpObj, const wchar_t* ElemName)
 {
-	wchar_t Msg[1024] = L"";
-	StkPlSwPrintf(Msg, 1024, MessageProc::GetMsg(MSG_NO_ELEM_IN_REQUEST), ElemName);
-	return new StkObject(L"Msg0", Msg);
+	wchar_t MsgEng[1024] = L"";
+	wchar_t MsgJpn[1024] = L"";
+	StkPlSwPrintf(MsgEng, 1024, MessageProc::GetMsgEng(MSG_NO_ELEM_IN_REQUEST), ElemName);
+	StkPlSwPrintf(MsgJpn, 1024, MessageProc::GetMsgJpn(MSG_NO_ELEM_IN_REQUEST), ElemName);
+	AddCodeAndMsg(TmpObj, MSG_NO_ELEM_IN_REQUEST, MsgEng, MsgJpn);
 }
 
-StkObject* ApiPostAgentInfo::CommonError_StringLenError(const wchar_t* Name, int MaxLen)
+void ApiPostAgentInfo::CommonError_StringLenError(StkObject* TmpObj, const wchar_t* Name, int MaxLen)
 {
-	wchar_t Msg[1024] = L"";
-	StkPlSwPrintf(Msg, 1024, MessageProc::GetMsg(MSG_STRING_LEN_ERROR), Name, MaxLen);
-	return new StkObject(L"Msg0", Msg);
+	wchar_t MsgEng[1024] = L"";
+	wchar_t MsgJpn[1024] = L"";
+	StkPlSwPrintf(MsgEng, 1024, MessageProc::GetMsgEng(MSG_STRING_LEN_ERROR), Name, MaxLen);
+	StkPlSwPrintf(MsgJpn, 1024, MessageProc::GetMsgJpn(MSG_STRING_LEN_ERROR), Name, MaxLen);
+	AddCodeAndMsg(TmpObj, MSG_STRING_LEN_ERROR, MsgEng, MsgJpn);
 }
 
-StkObject* ApiPostAgentInfo::CommonError_NoRequest()
+void ApiPostAgentInfo::CommonError_ForbiddenChar(StkObject* TmpObj, const wchar_t* Name)
 {
-	wchar_t Msg[1024] = L"";
-	StkPlSwPrintf(Msg, 1024, MessageProc::GetMsg(MSG_NOREQUEST));
-	return new StkObject(L"Msg0", Msg);
-}
-
-StkObject* ApiPostAgentInfo::CommonError_NoExecRight()
-{
-	wchar_t Msg[1024] = L"";
-	StkPlSwPrintf(Msg, 1024, MessageProc::GetMsg(MSG_NO_EXEC_RIGHT));
-	return new StkObject(L"Msg0", Msg);
-}
-
-StkObject* ApiPostAgentInfo::CommonError_ForbiddenChar(const wchar_t* Name)
-{
-	wchar_t Msg[1024] = L"";
-	StkPlSwPrintf(Msg, 1024, MessageProc::GetMsg(MSG_FORBIDDEN_CHAR), Name);
-	return new StkObject(L"Msg0", Msg);
+	wchar_t MsgEng[1024] = L"";
+	wchar_t MsgJpn[1024] = L"";
+	StkPlSwPrintf(MsgEng, 1024, MessageProc::GetMsgEng(MSG_FORBIDDEN_CHAR), Name);
+	StkPlSwPrintf(MsgJpn, 1024, MessageProc::GetMsgJpn(MSG_FORBIDDEN_CHAR), Name);
+	AddCodeAndMsg(TmpObj, MSG_FORBIDDEN_CHAR, MsgEng, MsgJpn);
 }
 
 StkObject* ApiPostAgentInfo::ExecuteImpl(StkObject* ReqObj, int Method, wchar_t UrlPath[StkWebAppExec::URL_PATH_LENGTH], int* ResultCode, wchar_t Locale[3], wchar_t* Token)
@@ -58,7 +50,7 @@ StkObject* ApiPostAgentInfo::ExecuteImpl(StkObject* ReqObj, int Method, wchar_t 
 		if (AgentInfo == NULL || StkPlWcsCmp(AgentInfo->GetName(), L"AgentInfo") != 0) {
 			*ResultCode = 400;
 			StkObject* ResObj = new StkObject(L"");
-			ResObj->AppendChildElement(CommonError_NoElemInRequest(L"AgentInfo"));
+			CommonError_NoElemInRequest(ResObj, L"AgentInfo");
 			return ResObj;
 		}
 		StkObject* CurrAgentInfo = AgentInfo->GetFirstChildElement();
@@ -68,7 +60,7 @@ StkObject* ApiPostAgentInfo::ExecuteImpl(StkObject* ReqObj, int Method, wchar_t 
 				if (StkPlCheckHostName(Name) == false) {
 					*ResultCode = 400;
 					StkObject* ResObj = new StkObject(L"");
-					ResObj->AppendChildElement(CommonError_ForbiddenChar(L"Name"));
+					CommonError_ForbiddenChar(ResObj, L"Name");
 					return ResObj;
 				}
 			}
@@ -147,12 +139,12 @@ StkObject* ApiPostAgentInfo::ExecuteImpl(StkObject* ReqObj, int Method, wchar_t 
 	} else {
 		*ResultCode = 400;
 		StkObject* ResObj = new StkObject(L"");
-		ResObj->AppendChildElement(CommonError_NoRequest());
+		AddCodeAndMsg(ResObj, MSG_NOREQUEST, MessageProc::GetMsgEng(MSG_NOREQUEST), MessageProc::GetMsgJpn(MSG_NOREQUEST));
 		return ResObj;
 	}
 
 	StkObject* TmpObj = new StkObject(L"");
-	TmpObj->AppendChildElement(new StkObject(L"Msg0", L""));
+	AddCodeAndMsg(TmpObj, 0, L"", L"");
 	*ResultCode = 200;
 	return TmpObj;
 }
