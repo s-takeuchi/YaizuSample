@@ -657,10 +657,10 @@ function updateCommand(updateFlag) {
         comTypeInt = 1;
     }
     if (updateFlag == false) {
-        var ReqObj = { Command : { Name : $("#commandName").val(), Type : comTypeInt, Script : $("#commandScript").val(), ServerFileName : $("#serverFileName").val(), AgentFileName : $("#agentFileName").val() }};
+        var ReqObj = { Name : $("#commandName").val(), Type : comTypeInt, Script : $("#commandScript").val(), ServerFileName : $("#serverFileName").val(), AgentFileName : $("#agentFileName").val() };
         apiCall('POST', '/api/command/', ReqObj, 'API_POST_COMMAND', refreshAfterAddCommand);
     } else {
-        var ReqObj = { Command : { Id : selectedCommand, Name : $("#commandName").val(), Type : comTypeInt, Script : $("#commandScript").val(), ServerFileName : $("#serverFileName").val(), AgentFileName : $("#agentFileName").val() }};
+        var ReqObj = { Id : selectedCommand, Name : $("#commandName").val(), Type : comTypeInt, Script : $("#commandScript").val(), ServerFileName : $("#serverFileName").val(), AgentFileName : $("#agentFileName").val() };
         apiCall('POST', '/api/command/', ReqObj, 'API_POST_COMMAND', refreshAfterUpdateCommand);
     }
 }
@@ -701,7 +701,7 @@ function refreshAfterAddCommand() {
         return;
     }
     if (statusCode['API_POST_COMMAND'] == 400) {
-        displayAlertDanger('#command_errmsg', responseData['API_POST_COMMAND'].Msg0);
+        displayAlertDanger('#command_errmsg', getSvrMsg(responseData['API_POST_COMMAND']));
         return;
     }
     transDisplayCommand();
@@ -715,7 +715,7 @@ function refreshAfterUpdateCommand() {
         return;
     }
     if (statusCode['API_POST_COMMAND'] == 400) {
-        displayAlertDanger('#command_errmsg', responseData['API_POST_COMMAND'].Msg0);
+        displayAlertDanger('#command_errmsg', getSvrMsg(responseData['API_POST_COMMAND']));
         return;
     }
     transDisplayCommand();

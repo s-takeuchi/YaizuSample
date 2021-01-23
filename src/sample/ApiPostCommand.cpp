@@ -21,13 +21,13 @@ StkObject* ApiPostCommand::ExecuteImpl(StkObject* ReqObj, int Method, wchar_t Ur
 {
 	StkObject* ResObj = new StkObject(L"");
 	if (ReqObj == NULL) {
-		ResObj->AppendChildElement(new StkObject(L"Msg0", MessageProc::GetMsg(MSG_NOREQUEST)));
+		AddCodeAndMsg(ResObj, MSG_NOREQUEST, MessageProc::GetMsgEng(MSG_NOREQUEST), MessageProc::GetMsgJpn(MSG_NOREQUEST));
 		*ResultCode = 400;
 		return ResObj;
 	}
-	StkObject* CommandObj = ReqObj->GetFirstChildElement();
-	if (CommandObj == NULL) {
-		ResObj->AppendChildElement(new StkObject(L"Msg0", MessageProc::GetMsg(MSG_NOCOMMANDREQUEST)));
+	StkObject* CurObj = ReqObj->GetFirstChildElement();
+	if (CurObj == NULL) {
+		AddCodeAndMsg(ResObj, MSG_NOREQUEST, MessageProc::GetMsgEng(MSG_NOREQUEST), MessageProc::GetMsgJpn(MSG_NOREQUEST));
 		*ResultCode = 400;
 		return ResObj;
 	}
@@ -37,13 +37,12 @@ StkObject* ApiPostCommand::ExecuteImpl(StkObject* ReqObj, int Method, wchar_t Ur
 	wchar_t Script[DA_MAXLEN_OF_CMDSCRIPT] = L"";
 	wchar_t ServerFileName[DA_MAXLEN_OF_SERVERFILENAME] = L"";
 	wchar_t AgentFileName[DA_MAXLEN_OF_SERVERFILENAME] = L"";
-	StkObject* CurObj = CommandObj->GetFirstChildElement();
 	while (CurObj) {
 		if (StkPlWcsCmp(CurObj->GetName(), L"Id") == 0) {
 			Id = CurObj->GetIntValue();
 		} else if (StkPlWcsCmp(CurObj->GetName(), L"Name") == 0) {
 			if (StkPlWcsLen(CurObj->GetStringValue()) >= DA_MAXLEN_OF_CMDNAME) {
-				ResObj->AppendChildElement(new StkObject(L"Msg0", MessageProc::GetMsg(MSG_COMNAMELENGTHERR)));
+				AddCodeAndMsg(ResObj, MSG_COMNAMELENGTHERR, MessageProc::GetMsgEng(MSG_COMNAMELENGTHERR), MessageProc::GetMsgJpn(MSG_COMNAMELENGTHERR));
 				*ResultCode = 400;
 				return ResObj;
 			}
@@ -52,31 +51,31 @@ StkObject* ApiPostCommand::ExecuteImpl(StkObject* ReqObj, int Method, wchar_t Ur
 			Type = CurObj->GetIntValue();
 		} else if (StkPlWcsCmp(CurObj->GetName(), L"Script") == 0) {
 			if (StkPlWcsLen(CurObj->GetStringValue()) >= DA_MAXLEN_OF_CMDSCRIPT / 2) {
-				ResObj->AppendChildElement(new StkObject(L"Msg0", MessageProc::GetMsg(MSG_COMSCRIPTLENERR)));
+				AddCodeAndMsg(ResObj, MSG_COMSCRIPTLENERR, MessageProc::GetMsgEng(MSG_COMSCRIPTLENERR), MessageProc::GetMsgJpn(MSG_COMSCRIPTLENERR));
 				*ResultCode = 400;
 				return ResObj;
 			}
 			StkPlWcsCpy(Script, DA_MAXLEN_OF_CMDSCRIPT, CurObj->GetStringValue());
 		} else if (StkPlWcsCmp(CurObj->GetName(), L"ServerFileName") == 0) {
 			if (StkPlWcsLen(CurObj->GetStringValue()) >= DA_MAXLEN_OF_SERVERFILENAME) {
-				ResObj->AppendChildElement(new StkObject(L"Msg0", MessageProc::GetMsg(MSG_FILENAMELENERR)));
+				AddCodeAndMsg(ResObj, MSG_FILENAMELENERR, MessageProc::GetMsgEng(MSG_FILENAMELENERR), MessageProc::GetMsgJpn(MSG_FILENAMELENERR));
 				*ResultCode = 400;
 				return ResObj;
 			}
 			if (!CheckFileNameChar(CurObj->GetStringValue())) {
-				ResObj->AppendChildElement(new StkObject(L"Msg0", MessageProc::GetMsg(MSG_FILENAMEFBDNCHAR)));
+				AddCodeAndMsg(ResObj, MSG_FILENAMEFBDNCHAR, MessageProc::GetMsgEng(MSG_FILENAMEFBDNCHAR), MessageProc::GetMsgJpn(MSG_FILENAMEFBDNCHAR));
 				*ResultCode = 400;
 				return ResObj;
 			}
 			StkPlWcsCpy(ServerFileName, DA_MAXLEN_OF_SERVERFILENAME, CurObj->GetStringValue());
 		} else if (StkPlWcsCmp(CurObj->GetName(), L"AgentFileName") == 0) {
 			if (StkPlWcsLen(CurObj->GetStringValue()) >= DA_MAXLEN_OF_AGENTFILENAME) {
-				ResObj->AppendChildElement(new StkObject(L"Msg0", MessageProc::GetMsg(MSG_FILENAMELENERR)));
+				AddCodeAndMsg(ResObj, MSG_FILENAMELENERR, MessageProc::GetMsgEng(MSG_FILENAMELENERR), MessageProc::GetMsgJpn(MSG_FILENAMELENERR));
 				*ResultCode = 400;
 				return ResObj;
 			}
 			if (!CheckFileNameChar(CurObj->GetStringValue())) {
-				ResObj->AppendChildElement(new StkObject(L"Msg0", MessageProc::GetMsg(MSG_FILENAMEFBDNCHAR)));
+				AddCodeAndMsg(ResObj, MSG_FILENAMEFBDNCHAR, MessageProc::GetMsgEng(MSG_FILENAMEFBDNCHAR), MessageProc::GetMsgJpn(MSG_FILENAMEFBDNCHAR));
 				*ResultCode = 400;
 				return ResObj;
 			}
@@ -87,7 +86,7 @@ StkObject* ApiPostCommand::ExecuteImpl(StkObject* ReqObj, int Method, wchar_t Ur
 	if (Id == -1) {
 		// for command addition
 		if (DataAccess::GetInstance()->CheckCommandExistenceByName(Name)) {
-			ResObj->AppendChildElement(new StkObject(L"Msg0", MessageProc::GetMsg(MSG_DUPCMDNAME)));
+			AddCodeAndMsg(ResObj, MSG_DUPCMDNAME, MessageProc::GetMsgEng(MSG_DUPCMDNAME), MessageProc::GetMsgJpn(MSG_DUPCMDNAME));
 			*ResultCode = 400;
 			return ResObj;
 		}
@@ -100,19 +99,19 @@ StkObject* ApiPostCommand::ExecuteImpl(StkObject* ReqObj, int Method, wchar_t Ur
 		DataAccess::GetInstance()->GetCommandNameById(Id, TmpName);
 		if (StkPlWcsCmp(TmpName, Name) != 0) {
 			if (DataAccess::GetInstance()->CheckCommandExistenceByName(Name)) {
-				ResObj->AppendChildElement(new StkObject(L"Msg0", MessageProc::GetMsg(MSG_DUPCMDNAME)));
+				AddCodeAndMsg(ResObj, MSG_DUPCMDNAME, MessageProc::GetMsgEng(MSG_DUPCMDNAME), MessageProc::GetMsgJpn(MSG_DUPCMDNAME));
 				*ResultCode = 400;
 				return ResObj;
 			}
 		}
 		if (DataAccess::GetInstance()->GetCommandNameById(Id, TmpName) != 0) {
-			ResObj->AppendChildElement(new StkObject(L"Msg0", MessageProc::GetMsg(MSG_COMMANDNOTEXIST)));
+			AddCodeAndMsg(ResObj, MSG_COMMANDNOTEXIST, MessageProc::GetMsgEng(MSG_COMMANDNOTEXIST), MessageProc::GetMsgJpn(MSG_COMMANDNOTEXIST));
 			*ResultCode = 400;
 			return ResObj;
 		}
 	}
 	if (StkPlWcsCmp(Name, L"") == 0) {
-		ResObj->AppendChildElement(new StkObject(L"Msg0", MessageProc::GetMsg(MSG_NOCOMMANDNAME)));
+		AddCodeAndMsg(ResObj, MSG_NOCOMMANDNAME, MessageProc::GetMsgEng(MSG_NOCOMMANDNAME), MessageProc::GetMsgJpn(MSG_NOCOMMANDNAME));
 		*ResultCode = 400;
 		return ResObj;
 	}
@@ -128,7 +127,7 @@ StkObject* ApiPostCommand::ExecuteImpl(StkObject* ReqObj, int Method, wchar_t Ur
 	}
 	AddLogMsg(LogMsg, LogMsgJa);
 
-	ResObj->AppendChildElement(new StkObject(L"Msg0", L""));
+	AddCodeAndMsg(ResObj, 0, L"", L"");
 	*ResultCode = 200;
 	return ResObj;
 }

@@ -104,8 +104,6 @@ void InitMessageResource()
 	// Command
 	MessageProc::AddEng(MSG_COMMANDNOTEXIST, L"The specified command does not exist.");
 	MessageProc::AddJpn(MSG_COMMANDNOTEXIST, L"指定したコマンドは存在しません。");
-	MessageProc::AddEng(MSG_NOCOMMANDREQUEST, L"No \"Command\" element has been presented in the request.");
-	MessageProc::AddJpn(MSG_NOCOMMANDREQUEST, L"リクエストに\"Command\"要素が存在しません。");
 	MessageProc::AddEng(MSG_NOCOMMANDNAME, L"No command name has been specified.");
 	MessageProc::AddJpn(MSG_NOCOMMANDNAME, L"コマンド名が指定されていません。");
 	MessageProc::AddEng(MSG_COMNAMELENGTHERR, L"Length of command name exceeds the limitation. Maximum 31 characters can be specified as a command name.");
