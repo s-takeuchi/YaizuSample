@@ -729,7 +729,7 @@ function refreshAfterDeleteCommand() {
         return;
     }
     if (statusCode['API_DELETE_COMMAND'] == 400) {
-        displayAlertDanger('#command_errmsg', responseData['API_DELETE_COMMAND'].Msg0);
+        displayAlertDanger('#command_errmsg', getSvrMsg(responseData['API_DELETE_COMMAND']));
         return;
     }
     transDisplayCommand();

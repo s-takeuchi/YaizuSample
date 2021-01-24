@@ -73,7 +73,7 @@ StkObject* ApiPostFile::ExecuteImpl(StkObject* ReqObj, int Method, wchar_t UrlPa
 		delete DataChar;
 	}
 	StkObject* TmpObj = new StkObject(L"");
-	TmpObj->AppendChildElement(new StkObject(L"Msg0", L""));
+	AddCodeAndMsg(TmpObj, 0, L"", L"");
 	*ResultCode = 200;
 	return TmpObj;
 }
