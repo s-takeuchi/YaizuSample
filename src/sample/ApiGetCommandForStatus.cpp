@@ -52,7 +52,7 @@ StkObject* ApiGetCommandForStatus::ExecuteImpl(StkObject* ReqObj, int Method, wc
 			(SaInterval == 1800 && Min % 30 == 0 && Sec < 5) ||
 			(SaInterval == 3600 && Min == 0      && Sec < 5)) {
 
-			TmpObj->AppendChildElement(new StkObject(L"Msg0", L"Execution"));
+			AddCodeAndMsg(TmpObj, 0, L"", L"");
 			*ResultCode = 200;
 
 			int Id[DA_MAXNUM_OF_CMDRECORDS];
@@ -113,6 +113,7 @@ StkObject* ApiGetCommandForStatus::ExecuteImpl(StkObject* ReqObj, int Method, wc
 					*Ptr = L'\0';
 
 					StkObject* DatObj = new StkObject(L"Data");
+					DatObj->AppendChildElement(new StkObject(L"Status", L"Execution"));
 					StkObject* CommandObj = new StkObject(L"Command");
 					CommandObj->AppendChildElement(new StkObject(L"Id", Id[FoundIndex]));
 					CommandObj->AppendChildElement(new StkObject(L"Name", Name[FoundIndex]));
@@ -135,7 +136,10 @@ StkObject* ApiGetCommandForStatus::ExecuteImpl(StkObject* ReqObj, int Method, wc
 			(PInterval == 60 && Sec < 5) ||
 			(PInterval == 300 && Min % 5 == 0 && Sec < 5) ||
 			(PInterval == 900 && Min % 15 == 0 && Sec < 5)) {
-			TmpObj->AppendChildElement(new StkObject(L"Msg0", L"Timeout"));
+			AddCodeAndMsg(TmpObj, 0, L"", L"");
+			StkObject* DatObj = new StkObject(L"Data");
+			DatObj->AppendChildElement(new StkObject(L"Status", L"Timeout"));
+			TmpObj->AppendChildElement(DatObj);
 			*ResultCode = 200;
 			break;
 		}

@@ -78,8 +78,9 @@ StkObject* ApiGetCommandForOperation::ExecuteImpl(StkObject* ReqObj, int Method,
 					}
 					*Ptr = L'\0';
 
-					TmpObj->AppendChildElement(new StkObject(L"Msg0", L"Execution"));
+					AddCodeAndMsg(TmpObj, 0, L"", L"");
 					StkObject* DatObj = new StkObject(L"Data");
+					DatObj->AppendChildElement(new StkObject(L"Status", L"Execution"));
 					StkObject* CommandObj = new StkObject(L"Command");
 					CommandObj->AppendChildElement(new StkObject(L"Id", Id[Loop]));
 					CommandObj->AppendChildElement(new StkObject(L"Name", Name[Loop]));
@@ -97,15 +98,6 @@ StkObject* ApiGetCommandForOperation::ExecuteImpl(StkObject* ReqObj, int Method,
 					break;
 				}
 			}
-			break;
-		}
-
-		if ((PInterval == 30 && Sec % 30 < 5) ||
-			(PInterval == 60 && Sec < 5) ||
-			(PInterval == 300 && Min % 5 == 0 && Sec < 5) ||
-			(PInterval == 900 && Min % 15 == 0 && Sec < 5)) {
-			TmpObj->AppendChildElement(new StkObject(L"Msg0", L"Timeout"));
-			*ResultCode = 200;
 			break;
 		}
 	}

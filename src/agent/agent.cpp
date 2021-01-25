@@ -316,9 +316,12 @@ int OperationLoop(int TargetId)
 		while (TargetObj) {
 			char TmpTime[64] = "";
 			StkPlGetTimeInIso8601(TmpTime, true);
-			if (StkPlWcsCmp(TargetObj->GetName(), L"Msg0") == 0 && StkPlWcsCmp(TargetObj->GetStringValue(), L"Timeout") == 0) {
+			if (StkPlWcsCmp(TargetObj->GetName(), L"Data") == 0) {
+				TargetObj = TargetObj->GetFirstChildElement();
+				continue;
+			} else if (StkPlWcsCmp(TargetObj->GetName(), L"Status") == 0 && StkPlWcsCmp(TargetObj->GetStringValue(), L"Timeout") == 0) {
 				StkPlPrintf("Get Command For Operation >> Timeout [%s]\r\n", TmpTime);
-			} else if (StkPlWcsCmp(TargetObj->GetName(), L"Msg0") == 0 && StkPlWcsCmp(TargetObj->GetStringValue(), L"Execution") == 0) {
+			} else if (StkPlWcsCmp(TargetObj->GetName(), L"Status") == 0 && StkPlWcsCmp(TargetObj->GetStringValue(), L"Execution") == 0) {
 				StkPlPrintf("Get Command For Operation >> Execute [%s]\r\n", TmpTime);
 
 				StkObject* ResObjStart = SoForTh2->SendRequestRecvResponse(StkWebAppSend::STKWEBAPP_METHOD_POST, "/api/agent/", GetAgentInfoForOpStatus(RESULTCODE_OPCOMMANDSTART), &Result);
@@ -357,9 +360,12 @@ int StatusLoop(int TargetId)
 		while (TargetObj) {
 			char TmpTime[64] = "";
 			StkPlGetTimeInIso8601(TmpTime, true);
-			if (StkPlWcsCmp(TargetObj->GetName(), L"Msg0") == 0 && StkPlWcsCmp(TargetObj->GetStringValue(), L"Timeout") == 0) {
+			if (StkPlWcsCmp(TargetObj->GetName(), L"Data") == 0) {
+				TargetObj = TargetObj->GetFirstChildElement();
+				continue;
+			} else if (StkPlWcsCmp(TargetObj->GetName(), L"Status") == 0 && StkPlWcsCmp(TargetObj->GetStringValue(), L"Timeout") == 0) {
 				StkPlPrintf("Get Command For Status >> Timeout [%s]\r\n", TmpTime);
-			} else if (StkPlWcsCmp(TargetObj->GetName(), L"Msg0") == 0 && StkPlWcsCmp(TargetObj->GetStringValue(), L"Execution") == 0) {
+			} else if (StkPlWcsCmp(TargetObj->GetName(), L"Status") == 0 && StkPlWcsCmp(TargetObj->GetStringValue(), L"Execution") == 0) {
 				StkPlPrintf("Get Command For Status >> Execute [%s]\r\n", TmpTime);
 				StkObject* CommandSearch = ResGetCommandForStatus->GetFirstChildElement();
 
