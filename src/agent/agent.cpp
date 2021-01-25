@@ -139,6 +139,7 @@ int GetAndSaveFile(char* FileName, size_t FileSize, StkWebAppSend* SndObj)
 		while (CurResObj2) {
 			if (StkPlWcsCmp(CurResObj2->GetName(), L"Data") == 0) {
 				CurResObj2 = CurResObj2->GetFirstChildElement();
+				continue;
 			}
 			if (StkPlWcsCmp(CurResObj2->GetName(), L"FileData") == 0) {
 				wchar_t* FileData = CurResObj2->GetStringValue();
@@ -203,6 +204,11 @@ int CommonProcess(StkObject* CommandSearch, char TmpTime[64], StkWebAppSend* Snd
 {
 	int ReturnCode = RESULTCODE_NOSCRIPT;
 	while (CommandSearch) {
+		if (StkPlWcsCmp(CommandSearch->GetName(), L"Data") == 0) {
+			CommandSearch = CommandSearch->GetFirstChildElement();
+			continue;
+		}
+
 		if (StkPlWcsCmp(CommandSearch->GetName(), L"Command") == 0) {
 			char* TmpName = NULL;
 			char* TmpScript = NULL;
@@ -314,11 +320,11 @@ int OperationLoop(int TargetId)
 				StkPlPrintf("Get Command For Operation >> Timeout [%s]\r\n", TmpTime);
 			} else if (StkPlWcsCmp(TargetObj->GetName(), L"Msg0") == 0 && StkPlWcsCmp(TargetObj->GetStringValue(), L"Execution") == 0) {
 				StkPlPrintf("Get Command For Operation >> Execute [%s]\r\n", TmpTime);
-				StkObject* CommandSearch = ResGetCommandForOp->GetFirstChildElement();
 
 				StkObject* ResObjStart = SoForTh2->SendRequestRecvResponse(StkWebAppSend::STKWEBAPP_METHOD_POST, "/api/agent/", GetAgentInfoForOpStatus(RESULTCODE_OPCOMMANDSTART), &Result);
 				delete ResObjStart;
 
+				StkObject* CommandSearch = ResGetCommandForOp->GetFirstChildElement();
 				int ReturnCode = CommonProcess(CommandSearch, TmpTime, SoForTh2, true);
 
 				StkObject* ResObjEnd = SoForTh2->SendRequestRecvResponse(StkWebAppSend::STKWEBAPP_METHOD_POST, "/api/agent/", GetAgentInfoForOpStatus(ReturnCode), &Result);

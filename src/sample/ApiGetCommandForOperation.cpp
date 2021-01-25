@@ -79,6 +79,7 @@ StkObject* ApiGetCommandForOperation::ExecuteImpl(StkObject* ReqObj, int Method,
 					*Ptr = L'\0';
 
 					TmpObj->AppendChildElement(new StkObject(L"Msg0", L"Execution"));
+					StkObject* DatObj = new StkObject(L"Data");
 					StkObject* CommandObj = new StkObject(L"Command");
 					CommandObj->AppendChildElement(new StkObject(L"Id", Id[Loop]));
 					CommandObj->AppendChildElement(new StkObject(L"Name", Name[Loop]));
@@ -90,7 +91,8 @@ StkObject* ApiGetCommandForOperation::ExecuteImpl(StkObject* ReqObj, int Method,
 					size_t FileSize = StkPlGetFileSize(TargetFullPath);
 					CommandObj->AppendChildElement(new StkObject(L"ServerFileSize", (int)FileSize));
 					CommandObj->AppendChildElement(new StkObject(L"AgentFileName", AgentFileName[Loop]));
-					TmpObj->AppendChildElement(CommandObj);
+					DatObj->AppendChildElement(CommandObj);
+					TmpObj->AppendChildElement(DatObj);
 					*ResultCode = 200;
 					break;
 				}
