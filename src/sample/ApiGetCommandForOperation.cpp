@@ -15,7 +15,7 @@ StkObject* ApiGetCommandForOperation::ExecuteImpl(StkObject* ReqObj, int Method,
 	StkObject* TmpObj = new StkObject(L"");
 
 	if (!DataAccess::GetInstance()->CheckExistenceOfTargetAgent(TargetAgtName)) {
-		TmpObj->AppendChildElement(new StkObject(L"Msg0", MessageProc::GetMsg(MSG_AGENTINFO_NOT_FOUND)));
+		AddCodeAndMsg(TmpObj, MSG_AGENTINFO_NOT_FOUND, MessageProc::GetMsgEng(MSG_AGENTINFO_NOT_FOUND), MessageProc::GetMsgJpn(MSG_AGENTINFO_NOT_FOUND));
 		*ResultCode = 400;
 		return TmpObj;
 	}

@@ -42,6 +42,7 @@
 #define MSG_NOREQUEST            4203
 #define MSG_NO_EXEC_RIGHT        4204
 #define MSG_FORBIDDEN_CHAR       4205
+#define MSG_COMMON_AUTH_ERROR    4206
 
 // Global variables
 class Global {

@@ -169,13 +169,18 @@ function transDisplayAgentInfo() {
 function displayAgentInfo() {
     drowContainer($('<div id="agtinfo" class="row col-xs-12" style="display:block"></div>'));
     clearRsCommand();
-    switchAgentInfoButton();
 
     $('#agtinfo').append('<h2>' + getClientMessage('AGENTINFO') + '</h2>');
     if (statusCode['API_GET_AGTINFO'] == -1 || statusCode['API_GET_AGTINFO'] == 0) {
         displayAlertDanger('#agtinfo', getClientMessage('CONNERR'));
         return;
     }
+    if (statusCode['API_GET_AGTINFO'] != 200) {
+        displayAlertDanger('#agtinfo', getSvrMsg(responseData['API_GET_AGTINFO']));
+        return;
+    }
+    switchAgentInfoButton();
+
     var AgentInfo = getArray(responseData['API_GET_AGTINFO'].Data.AgentInfo);
     if (AgentInfo == null) {
         $('#agtinfo').append(getClientMessage('NOAGTINFO'));
@@ -454,6 +459,11 @@ function displayServerInfo() {
         displayAlertDanger('#svrinfo', getClientMessage('CONNERR'));
         return;
     }
+    if (statusCode['API_GET_SVRINFO'] != 200) {
+        displayAlertDanger('#svrinfo', getSvrMsg(responseData['API_GET_SVRINFO']));
+        return;
+    }
+
     if (svrinfo_msg !== '') {
         displayAlertSuccess('#svrinfo', svrinfo_msg);
         svrinfo_msg = '';

@@ -148,6 +148,8 @@ void InitMessageResource()
 	MessageProc::AddJpn(MSG_NO_EXEC_RIGHT, L"ユーザーは，このリクエストの実行権限を持っていません。");
 	MessageProc::AddEng(MSG_FORBIDDEN_CHAR, L"\"%ls\" includes forbidden character(s).");
 	MessageProc::AddJpn(MSG_FORBIDDEN_CHAR, L"\"%ls\"は使用禁止文字が含まれています。");
+	MessageProc::AddEng(MSG_COMMON_AUTH_ERROR, L"Authentication error occurred.");
+	MessageProc::AddJpn(MSG_COMMON_AUTH_ERROR, L"認証エラーが発生しました。");
 
 	MessageProc::SetLocaleMode(MessageProc::LOCALE_MODE_ENGLISH);
 }
