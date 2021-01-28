@@ -1,14 +1,19 @@
 #include "../../../YaizuComLib/src/stkpl/StkPl.h"
 #include "../../../YaizuComLib/src/stkwebapp_um/ApiBase.h"
+#include "../../../YaizuComLib/src/commonfunc/msgproc.h"
 #include "dataaccess.h"
+#include "sample.h"
 #include "ApiGetCommand.h"
 
 StkObject* ApiGetCommand::ExecuteImpl(StkObject* ReqObj, int Method, wchar_t UrlPath[StkWebAppExec::URL_PATH_LENGTH], int* ResultCode, wchar_t Locale[3], wchar_t* Token)
 {
+	StkObject* TmpObj = new StkObject(L"");
+
 	wchar_t UserName[ApiBase::MAXLEN_OF_USERNAME];
 	if (!CheckCredentials(Token, UserName)) {
+		AddCodeAndMsg(TmpObj, MSG_COMMON_AUTH_ERROR, MessageProc::GetMsgEng(MSG_COMMON_AUTH_ERROR), MessageProc::GetMsgJpn(MSG_COMMON_AUTH_ERROR));
 		*ResultCode = 403;
-		return NULL;
+		return TmpObj;
 	}
 
 	int Id[DA_MAXNUM_OF_CMDRECORDS];
@@ -19,7 +24,6 @@ StkObject* ApiGetCommand::ExecuteImpl(StkObject* ReqObj, int Method, wchar_t Url
 	wchar_t AgentFileName[DA_MAXNUM_OF_CMDRECORDS][DA_MAXLEN_OF_AGENTFILENAME];
 
 	int ResCount = DataAccess::GetInstance()->GetCommand(Id, Name, Type, Script, ServerFileName, AgentFileName);
-	StkObject* TmpObj = new StkObject(L"");
 	StkObject* TmpObjD = new StkObject(L"Data");
 	for (int Loop = 0; Loop < ResCount; Loop++) {
 		StkObject* CmdObj = new StkObject(L"Command");

@@ -609,6 +609,10 @@ function displayCommand() {
         displayAlertDanger('#command', getClientMessage('CONNERR'));
         return;
     }
+    if (statusCode['API_GET_COMMAND'] != 200) {
+        displayAlertDanger('#command', getSvrMsg(responseData['API_GET_COMMAND']));
+        return;
+    }
     if (command_msg !== '') {
         displayAlertSuccess('#command', command_msg);
         command_msg = '';
