@@ -84,6 +84,13 @@ StkObject* ApiGetCommandForStatus::ExecuteImpl(StkObject* ReqObj, int Method, wc
 				}
 			}
 
+			// In case no command is specified
+			if (ResCmdCount == 0 && ReAgtCount >= 1 && TargetAgtIndex != -1) {
+				StkObject* DatObj = new StkObject(L"Data");
+				DatObj->AppendChildElement(new StkObject(L"Status", L"Execution"));
+				TmpObj->AppendChildElement(DatObj);
+			}
+
 			if (ResCmdCount >= 1 && ReAgtCount >= 1 && TargetAgtIndex != -1) {
 				int FoundIndex = -1;
 				for (int Loop = 0; Loop < ResCmdCount; Loop++) {
