@@ -20,6 +20,14 @@ bool ApiPostCommand::CheckFileNameChar(wchar_t* Ptr)
 StkObject* ApiPostCommand::ExecuteImpl(StkObject* ReqObj, int Method, wchar_t UrlPath[StkWebAppExec::URL_PATH_LENGTH], int* ResultCode, wchar_t Locale[3], wchar_t* Token)
 {
 	StkObject* ResObj = new StkObject(L"");
+
+	wchar_t UserName[ApiBase::MAXLEN_OF_USERNAME];
+	if (!CheckCredentials(Token, UserName)) {
+		AddCodeAndMsg(ResObj, MSG_COMMON_AUTH_ERROR, MessageProc::GetMsgEng(MSG_COMMON_AUTH_ERROR), MessageProc::GetMsgJpn(MSG_COMMON_AUTH_ERROR));
+		*ResultCode = 403;
+		return ResObj;
+	}
+
 	if (ReqObj == NULL) {
 		AddCodeAndMsg(ResObj, MSG_NOREQUEST, MessageProc::GetMsgEng(MSG_NOREQUEST), MessageProc::GetMsgJpn(MSG_NOREQUEST));
 		*ResultCode = 400;

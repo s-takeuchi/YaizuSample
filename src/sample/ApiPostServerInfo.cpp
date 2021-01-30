@@ -8,9 +8,17 @@
 
 StkObject* ApiPostServerInfo::ExecuteImpl(StkObject* ReqObj, int Method, wchar_t UrlPath[StkWebAppExec::URL_PATH_LENGTH], int* ResultCode, wchar_t Locale[3], wchar_t* Token)
 {
+	StkObject* TmpObj = new StkObject(L"");
+
+	wchar_t UserName[ApiBase::MAXLEN_OF_USERNAME];
+	if (!CheckCredentials(Token, UserName)) {
+		AddCodeAndMsg(TmpObj, MSG_COMMON_AUTH_ERROR, MessageProc::GetMsgEng(MSG_COMMON_AUTH_ERROR), MessageProc::GetMsgJpn(MSG_COMMON_AUTH_ERROR));
+		*ResultCode = 403;
+		return TmpObj;
+	}
+
 	int PInterval = -1;
 	int SaInterval = -1;
-	StkObject* TmpObj = new StkObject(L"");
 	if (ReqObj != NULL) {
 		*ResultCode = 200;
 		StkObject* CurObj = ReqObj->GetFirstChildElement();

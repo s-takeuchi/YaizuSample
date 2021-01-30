@@ -9,6 +9,15 @@
 
 StkObject* ApiDeleteCommand::ExecuteImpl(StkObject* ReqObj, int Method, wchar_t UrlPath[StkWebAppExec::URL_PATH_LENGTH], int* ResultCode, wchar_t Locale[3], wchar_t* Token)
 {
+	StkObject* TmpObj = new StkObject(L"");
+
+	wchar_t UserName[ApiBase::MAXLEN_OF_USERNAME];
+	if (!CheckCredentials(Token, UserName)) {
+		AddCodeAndMsg(TmpObj, MSG_COMMON_AUTH_ERROR, MessageProc::GetMsgEng(MSG_COMMON_AUTH_ERROR), MessageProc::GetMsgJpn(MSG_COMMON_AUTH_ERROR));
+		*ResultCode = 403;
+		return TmpObj;
+	}
+
 	wchar_t TargetIdStr[16] = L"";
 	StkStringParser::ParseInto1Param(UrlPath, L"/api/command/$/", L'$', TargetIdStr, 16);
 	int TargetId = StkPlWcsToL(TargetIdStr);
@@ -16,7 +25,6 @@ StkObject* ApiDeleteCommand::ExecuteImpl(StkObject* ReqObj, int Method, wchar_t 
 	int RetName = DataAccess::GetInstance()->GetCommandNameById(TargetId, CmdName);
 	int RetDel = DataAccess::GetInstance()->DeleteCommand(TargetId);
 
-	StkObject* TmpObj = new StkObject(L"");
 	if (RetName == 0 && RetDel == 0) {
 		AddCodeAndMsg(TmpObj, 0, L"", L"");
 		*ResultCode = 200;
