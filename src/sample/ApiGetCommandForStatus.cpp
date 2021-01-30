@@ -84,9 +84,8 @@ StkObject* ApiGetCommandForStatus::ExecuteImpl(StkObject* ReqObj, int Method, wc
 				}
 			}
 
-			// In case no command is specified
-			if (ResCmdCount == 0 && ReAgtCount >= 1 && TargetAgtIndex != -1) {
-				StkObject* DatObj = new StkObject(L"Data");
+			StkObject* DatObj = new StkObject(L"Data");
+			if (ReAgtCount >= 1 && TargetAgtIndex != -1) {
 				DatObj->AppendChildElement(new StkObject(L"Status", L"Execution"));
 				TmpObj->AppendChildElement(DatObj);
 			}
@@ -119,8 +118,6 @@ StkObject* ApiGetCommandForStatus::ExecuteImpl(StkObject* ReqObj, int Method, wc
 					}
 					*Ptr = L'\0';
 
-					StkObject* DatObj = new StkObject(L"Data");
-					DatObj->AppendChildElement(new StkObject(L"Status", L"Execution"));
 					StkObject* CommandObj = new StkObject(L"Command");
 					CommandObj->AppendChildElement(new StkObject(L"Id", Id[FoundIndex]));
 					CommandObj->AppendChildElement(new StkObject(L"Name", Name[FoundIndex]));
