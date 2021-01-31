@@ -27,6 +27,11 @@ StkObject* ApiPostCommand::ExecuteImpl(StkObject* ReqObj, int Method, wchar_t Ur
 		*ResultCode = 403;
 		return ResObj;
 	}
+	if (!IsAdminUser(Token)) {
+		AddCodeAndMsg(ResObj, MSG_NO_EXEC_RIGHT, MessageProc::GetMsgEng(MSG_NO_EXEC_RIGHT), MessageProc::GetMsgJpn(MSG_NO_EXEC_RIGHT));
+		*ResultCode = 403;
+		return ResObj;
+	}
 
 	if (ReqObj == NULL) {
 		AddCodeAndMsg(ResObj, MSG_NOREQUEST, MessageProc::GetMsgEng(MSG_NOREQUEST), MessageProc::GetMsgJpn(MSG_NOREQUEST));

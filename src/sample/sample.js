@@ -583,7 +583,7 @@ function refreshAfterUpdateServerInfo() {
         displayAlertDanger('#svrinfo_errmsg', getClientMessage('CONNERR'));
         return;
     }
-    if (statusCode['API_POST_SVRINFO'] == 400) {
+    if (statusCode['API_POST_SVRINFO'] != 200) {
         displayAlertDanger('#svrinfo_errmsg', getSvrMsg(responseData['API_POST_SVRINFO']));
         return;
     }
@@ -714,7 +714,7 @@ function refreshAfterAddCommand() {
         displayAlertDanger('#command_errmsg', getClientMessage('CONNERR'));
         return;
     }
-    if (statusCode['API_POST_COMMAND'] == 400) {
+    if (statusCode['API_POST_COMMAND'] != 200) {
         displayAlertDanger('#command_errmsg', getSvrMsg(responseData['API_POST_COMMAND']));
         return;
     }
@@ -728,7 +728,7 @@ function refreshAfterUpdateCommand() {
         displayAlertDanger('#command_errmsg', getClientMessage('CONNERR'));
         return;
     }
-    if (statusCode['API_POST_COMMAND'] == 400) {
+    if (statusCode['API_POST_COMMAND'] != 200) {
         displayAlertDanger('#command_errmsg', getSvrMsg(responseData['API_POST_COMMAND']));
         return;
     }
@@ -742,7 +742,7 @@ function refreshAfterDeleteCommand() {
         displayAlertDanger('#command_errmsg', getClientMessage('CONNERR'));
         return;
     }
-    if (statusCode['API_DELETE_COMMAND'] == 400) {
+    if (statusCode['API_DELETE_COMMAND'] != 200) {
         displayAlertDanger('#command_errmsg', getSvrMsg(responseData['API_DELETE_COMMAND']));
         return;
     }

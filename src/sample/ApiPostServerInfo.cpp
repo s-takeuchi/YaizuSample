@@ -16,6 +16,11 @@ StkObject* ApiPostServerInfo::ExecuteImpl(StkObject* ReqObj, int Method, wchar_t
 		*ResultCode = 403;
 		return TmpObj;
 	}
+	if (!IsAdminUser(Token)) {
+		AddCodeAndMsg(TmpObj, MSG_NO_EXEC_RIGHT, MessageProc::GetMsgEng(MSG_NO_EXEC_RIGHT), MessageProc::GetMsgJpn(MSG_NO_EXEC_RIGHT));
+		*ResultCode = 403;
+		return TmpObj;
+	}
 
 	int PInterval = -1;
 	int SaInterval = -1;
