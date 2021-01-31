@@ -12,7 +12,7 @@ StkObject* ApiGetAgentInfo::ExecuteImpl(StkObject* ReqObj, int Method, wchar_t U
 	wchar_t UserName[ApiBase::MAXLEN_OF_USERNAME];
 	if (!CheckCredentials(Token, UserName)) {
 		AddCodeAndMsg(TmpObj, MSG_COMMON_AUTH_ERROR, MessageProc::GetMsgEng(MSG_COMMON_AUTH_ERROR), MessageProc::GetMsgJpn(MSG_COMMON_AUTH_ERROR));
-		*ResultCode = 403;
+		*ResultCode = 401;
 		return TmpObj;
 	}
 

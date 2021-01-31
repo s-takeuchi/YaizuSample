@@ -16,8 +16,8 @@
 <div class="topic">
 CmdFreakのREST APIは，以下の一覧に示すAPIをクライアント提供します。
 <table class="tblstyle">
-<tr><td>GET /api/system/</td><td>CmdFreakのサーバ情報(Build Time, Server Start Time, Number of Worker Thread)を取得する。</td></tr>
-<tr><td>GET /api/language/</td><td>クライアント（ブラウザ）の最優先の言語を取得する。</td></tr>
+<tr><td>GET /api/server/</td><td>Acquires server information of YaizuSample.</td></tr>
+<tr><td>POST /api/server/</td><td>Configure server information.</td></tr>
 <tr><td>GET /api/logs/</td><td>イベントログを取得する。</td></tr>
 <tr><td>GET /api/odbcinfo/</td><td>ODBCの情報を取得する。</td></tr>
 <tr><td>POST /api/odbcinfo/</td><td>ODBCの情報を設定する。</td></tr>
@@ -63,70 +63,84 @@ CmdFreakのREST APIは，以下の一覧に示すAPIをクライアント提供�
 </div><p>
 
 
-<H2 ID="2.3">2.3 Get /api/system/</H2>
+<H2 ID="2.3">2.3 Get /api/server/</H2>
 <div class="topic">
-CmdFreakのサーバ情報(プログラム名称, バージョン, ビルド時刻, 起動時刻, 動作スレッド数)を取得します。
+Acquires server information of YaizuSample.<br/>
 <ul>
-<li>リクエスト
-<p>なし</p>
+<li>Request
+<p>nothing</p>
 </li>
-<li>レスポンス
+<li>Response
 <pre>
 {
   "Code" : 1234,
   "MsgEng" : "abc",
   "MsgJpn" : "あいう",
   "Data" : {
-    "ProductName" : "CmdFreak",
-    "Version" : "1.1.0",
-    "BuildTime" : "May 21 2017 19:30:02",
-    "StartTime" : "May 21 2017 19:30:02",
-    "NumOfThreads" : 4
+    "ServerInfo" : {
+        "StartTimeUtc" : "2021-01-31T04:56:22+00:00",
+        "StartTimeLocal" : "2021-01-31T04:56:22+00:00",
+        "Version" : "1.0.0",
+        "PollingInterval" : 30,
+        "StatusAcquisitionInterval" : 300
+    }
   }
 }
 </pre>
 <table class="tblstyle">
-<tr><td>Code</td><td>Integer</td><td>結果コード。0:成功(HTTPステータスコード=200)，3124:認証エラー(HTTPステータスコード=401)。</td></tr>
-<tr><td>MsgEng</td><td>String</td><td>英文メッセージ。結果コードが0のときは空文字が返る。</td></tr>
-<tr><td>MsgJpn</td><td>String</td><td>和文メッセージ。結果コードが0のときは空文字が返る。</td></tr>
-<tr><td>Data</td><td>Element</td><td>結果コードが0でないとき，この要素は返却されない。</td></tr>
-<tr><td>ProductName</td><td>String</td><td>プログラム名称。"CmdFreak"</td></tr>
-<tr><td>Version</td><td>String</td><td>バージョン番号。</td></tr>
-<tr><td>BuildTime</td><td>String</td><td>プログラムをビルドした時間。</td></tr>
-<tr><td>StartTime</td><td>String</td><td>サービスを起動した時間。</td></tr>
-<tr><td>NumOfThreads</td><td>Integer</td><td>動作しているワーカースレッドの数。</td></tr>
+<tr><td>Code</td><td>Integer</td><td>Result code. 0:success(HTTP status code=200)，4206:Authorization error(HTTP status code=401)</td></tr>
+<tr><td>MsgEng</td><td>String</td><td>English message. 0 is returned when result code is 0.</td></tr>
+<tr><td>MsgJpn</td><td>String</td><td>Japanese message. 0 is returned when result code is 0.</td></tr>
+<tr><td>Data</td><td>Element</td><td>Not returned when result code is not zero.</td></tr>
+<tr><td>ServerInfo</td><td>Element</td><td></td></tr>
+<tr><td>StartTimeUtc</td><td>String</td><td>Service start date and time in UTC</td></tr>
+<tr><td>StartTimeLocal</td><td>String</td><td>Service start date and time in localtime</td></tr>
+<tr><td>Version</td><td>String</td><td>Server version number</td></tr>
+<tr><td>PollingInterval</td><td>Integer</td><td>Polling interval in second from agent to server</td></tr>
+<tr><td>StatusAcquisitionInterval</td><td>Integer</td><td>Status acquisition interval in second</td></tr>
 </table><br/>
 </li>
 </ul>
 </div><p>
 
 
-<H2 ID="2.4">2.4 Get /api/language/</H2>
+<H2 ID="2.4">2.4 Post /api/server/</H2>
 <div class="topic">
-クライアント（ブラウザ）の最優先の言語を取得します。<br/>
-具体的には，クライアント・リクエストのHTTPヘッダのAccept-Languageに指定した言語のうち，先頭に指定した言語（2文字）を取得します。<br/>
-Code要素が0ではないとき，Data要素は返されません。
+Configure server information.<br/>
 <ul>
-<li>リクエスト
-<p>なし</p>
+<li>Request
+<pre>
+{
+  "PollingInterval" : 60,
+  "StatusAcquisitionInterval" : 30
+}
+</pre>
+<table class="tblstyle">
+<tr><td>PollingInterval</td><td>Integer</td><td>Polling interval in second from agent to server</td></tr>
+<tr><td>StatusAcquisitionInterval</td><td>Integer</td><td>Status acquisition interval in second</td></tr>
+</table><br/>
 </li>
-<li>レスポンス
+<li>Response
 <pre>
 {
   "Code" : 1234,
   "MsgEng" : "abc",
   "MsgJpn" : "あいう",
-  "Data" : {
-    "ClientLanguage" : "ja",
-  }
 }
 </pre>
 <table class="tblstyle">
-<tr><td>Code</td><td>Integer</td><td>結果コード。0:成功(HTTPステータスコード=200), 3120:クライアントのロケールを検知できなかった(HTTPステータスコード=406)。</td></tr>
-<tr><td>MsgEng</td><td>String</td><td>英文メッセージ。結果コードが0のときは空文字が返る。</td></tr>
-<tr><td>MsgJpn</td><td>String</td><td>和文メッセージ。結果コードが0のときは空文字が返る。</td></tr>
-<tr><td>Data</td><td>Element</td><td>結果コードが0でないとき，この要素は返却されない。</td></tr>
-<tr><td>ClientLanguage</td><td>String</td><td>クライアント（ブラウザ）の最優先の言語(2文字; 日本語="ja"，英語="en")。</td></tr>
+<tr><td>Code</td><td>Integer</td><td>Result code. 
+                                     0:success(HTTP status code=200)
+                                     4206:Authorization error(HTTP status code=401),
+                                     4204:Access Right error(HTTP status code=403),
+                                     4203:No request specified(HTTP status code=400),
+                                     4041:No polling interval is specified(HTTP status code=400),
+                                     4042:No status acquisition inverval is specified(HTTP status code=400),
+                                     4043:The specified polling interval is invalid(HTTP status code=400),
+                                     4044:The specified status acquisition interval is invalid(HTTP status code=400)
+</td></tr>
+<tr><td>MsgEng</td><td>String</td><td>English message. 0 is returned when result code is 0.</td></tr>
+<tr><td>MsgJpn</td><td>String</td><td>Japanese message. 0 is returned when result code is 0.</td></tr>
 </table><br/>
 </li>
 </ul>
