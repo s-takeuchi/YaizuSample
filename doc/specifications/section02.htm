@@ -18,8 +18,8 @@ CmdFreakのREST APIは，以下の一覧に示すAPIをクライアント提供�
 <table class="tblstyle">
 <tr><td>GET /api/server/</td><td>Acquires server information of YaizuSample.</td></tr>
 <tr><td>POST /api/server/</td><td>Configure server information.</td></tr>
-<tr><td>GET /api/logs/</td><td>イベントログを取得する。</td></tr>
-<tr><td>GET /api/odbcinfo/</td><td>ODBCの情報を取得する。</td></tr>
+<tr><td>GET /api/command/n/</td><td>Get command information</td></tr>
+<tr><td>POST /api/command/</td><td>Configure command information</td></tr>
 <tr><td>POST /api/odbcinfo/</td><td>ODBCの情報を設定する。</td></tr>
 <tr><td>GET /api/tableinfo/</td><td>テーブル情報を取得する。</td></tr>
 <tr><td>GET /api/records/</td><td>指定されたテーブルのレコードを取得する。</td></tr>
@@ -89,8 +89,8 @@ Acquires server information of YaizuSample.<br/>
 </pre>
 <table class="tblstyle">
 <tr><td>Code</td><td>Integer</td><td>Result code. 0:success(HTTP status code=200)，4206:Authorization error(HTTP status code=401)</td></tr>
-<tr><td>MsgEng</td><td>String</td><td>English message. 0 is returned when result code is 0.</td></tr>
-<tr><td>MsgJpn</td><td>String</td><td>Japanese message. 0 is returned when result code is 0.</td></tr>
+<tr><td>MsgEng</td><td>String</td><td>English message. Empty string is returned when result code is 0.</td></tr>
+<tr><td>MsgJpn</td><td>String</td><td>Japanese message. Empty string is returned when result code is 0.</td></tr>
 <tr><td>Data</td><td>Element</td><td>Not returned when result code is not zero.</td></tr>
 <tr><td>ServerInfo</td><td>Element</td><td></td></tr>
 <tr><td>StartTimeUtc</td><td>String</td><td>Service start date and time in UTC</td></tr>
@@ -139,21 +139,20 @@ Configure server information.<br/>
                                      4043:The specified polling interval is invalid(HTTP status code=400),
                                      4044:The specified status acquisition interval is invalid(HTTP status code=400)
 </td></tr>
-<tr><td>MsgEng</td><td>String</td><td>English message. 0 is returned when result code is 0.</td></tr>
-<tr><td>MsgJpn</td><td>String</td><td>Japanese message. 0 is returned when result code is 0.</td></tr>
+<tr><td>MsgEng</td><td>String</td><td>English message. Empty string is returned when result code is 0.</td></tr>
+<tr><td>MsgJpn</td><td>String</td><td>Japanese message. Empty string is returned when result code is 0.</td></tr>
 </table><br/>
 </li>
 </ul>
 </div><p>
 
 
-<H2 ID="2.5">2.5 Get /api/logs/</H2>
+<H2 ID="2.5">2.5 Get /api/command/n/</H2>
 <div class="topic">
-イベントログを取得します。<br/>
-イベントログが複数あるときは配列形式のデータが返却されます。イベントログがひとつしかないときはオブジェクトが返却されます。
+Get command information.<br/>
 <ul>
 <li>リクエスト
-<p>なし</p>
+<p>n in URL means command ID.</p>
 </li>
 <li>レスポンス
 <pre>
@@ -162,37 +161,38 @@ Configure server information.<br/>
   "MsgEng" : "abc",
   "MsgJpn" : "あいう",
   "Data" : {
-    "Log" : [
+    "Command" : [
       {
-        "Time" : "2019-04-07T22:22:18+09:00",
-        "MsgEn" : "CmdFreak service has stopped.",
-        "MsgJa" : "CmdFreakサービスを停止しました。"
-      },
-      {
-        "Time" : "2019-04-07T22:27:01+09:00",
-        "MsgEn" : "CmdFreak service has started.",
-        "MsgJa" : "CmdFreakサービスを開始しました。"
+        "Id" : 1,
+        "Name" : "Command name",
+        "Type" : 0,
+        "Script" : "echo hello!!",
+        "ServerFileName" : "aaa.dat",
+        "AgentFileName" : "bbb.dat"
       }
     ]
   }
 }
 </pre>
 <table class="tblstyle">
-<tr><td>Code</td><td>Integer</td><td>結果コード。0:成功(HTTPステータスコード=200)，3124:認証エラー(HTTPステータスコード=401)。</td></tr>
-<tr><td>MsgEng</td><td>String</td><td>英文メッセージ。結果コードが0のときは空文字が返る。</td></tr>
-<tr><td>MsgJpn</td><td>String</td><td>和文メッセージ。結果コードが0のときは空文字が返る。</td></tr>
-<tr><td>Data</td><td>Element</td><td>結果コードが0でないとき，この要素は返却されない。</td></tr>
-<tr><td>Log</td><td>Element</td><td></td></tr>
-<tr><td>Time</td><td>String</td><td>イベントログが登録された時刻。ISO 8601形式で返却される。</td></tr>
-<tr><td>MsgEn</td><td>String</td><td>イベントログの英語メッセージ。</td></tr>
-<tr><td>MsgJa</td><td>String</td><td>イベントログの日本語メッセージ。</td></tr>
+<tr><td>Code</td><td>Integer</td><td>Result code. 0:success(HTTP status code=200)，4206:Authorization error(HTTP status code=401)</td></tr>
+<tr><td>MsgEng</td><td>String</td><td>English message. Empty string is returned when result code is 0.</td></tr>
+<tr><td>MsgJpn</td><td>String</td><td>Japanese message. Empty string is returned when result code is 0.</td></tr>
+<tr><td>Data</td><td>Element</td><td>Not returned when result code is not zero.</td></tr>
+<tr><td>Command</td><td>Element</td><td></td></tr>
+<tr><td>Id</td><td>Integer</td><td>Command ID</td></tr>
+<tr><td>Name</td><td>String</td><td>Command name</td></tr>
+<tr><td>Type</td><td>Integer</td><td>0: Linux, 1:Windows</td></tr>
+<tr><td>Script</td><td>String</td><td>Command script</td></tr>
+<tr><td>ServerFileName</td><td>String</td><td>File name (not path) copied to agent.</td></tr>
+<tr><td>AgentFileName</td><td>String</td><td>File name (not path) copied to server.</td></tr>
 </table><br/>
 </li>
 </ul>
 </div><p>
 
 
-<H2 ID="2.6">2.6 Get /api/odbcinfo/</H2>
+<H2 ID="2.6">2.6 Post /api/command/</H2>
 <div class="topic">
 ODBCの情報を取得します。<br/>
 <ul>
