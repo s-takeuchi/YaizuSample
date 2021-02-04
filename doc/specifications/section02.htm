@@ -63,7 +63,7 @@ CmdFreakのREST APIは，以下の一覧に示すAPIをクライアント提供�
 </div><p>
 
 
-<H2 ID="2.3">2.3 Get /api/server/</H2>
+<H2 ID="2.3">2.3 GET /api/server/</H2>
 <div class="topic">
 Acquires server information of YaizuSample.<br/>
 <ul>
@@ -104,7 +104,7 @@ Acquires server information of YaizuSample.<br/>
 </div><p>
 
 
-<H2 ID="2.4">2.4 Post /api/server/</H2>
+<H2 ID="2.4">2.4 POST /api/server/</H2>
 <div class="topic">
 Configure server information.<br/>
 <ul>
@@ -147,7 +147,7 @@ Configure server information.<br/>
 </div><p>
 
 
-<H2 ID="2.5">2.5 Get /api/command/n/</H2>
+<H2 ID="2.5">2.5 GET /api/command/n/</H2>
 <div class="topic">
 Get command information.<br/>
 <ul>
@@ -192,63 +192,54 @@ Get command information.<br/>
 </div><p>
 
 
-<H2 ID="2.6">2.6 Post /api/command/</H2>
+<H2 ID="2.6">2.6 POST /api/command/</H2>
 <div class="topic">
-ODBCの情報を取得します。<br/>
+Configure command information<br/>
 <ul>
-<li>リクエスト
+<li>Request
 <pre>
-?query=default
+{
+  "Id" : 1,
+  "Name" : "Command name",
+  "Type" : 0,
+  "Script" : "echo hello!!",
+  "ServerFileName" : "aaa.dat",
+  "AgentFileName" : "bbb.dat"
+}
 </pre>
 <table class="tblstyle">
-<tr><td>query</td><td>String</td><td>default:デフォルト接続文字列を取得したい場合。configured:設定済の接続文字列を取得したい場合。</td></tr>
+<tr><td>Id</td><td>Integer</td><td>Specify command ID if you want to edit existing command. Do not specify if you want to create new command.</td></tr>
+<tr><td>Name</td><td>String</td><td>Command name</td></tr>
+<tr><td>Type</td><td>Integer</td><td>0: Linux, 1:Windows</td></tr>
+<tr><td>Script</td><td>String</td><td>Command script</td></tr>
+<tr><td>ServerFileName</td><td>String</td><td>File name (not path) copied to agent.</td></tr>
+<tr><td>AgentFileName</td><td>String</td><td>File name (not path) copied to server.</td></tr>
 </table><br/>
 </li>
-<li>レスポンス
+<li>Response
 <pre>
-<b><u>&lt;query=default&gt;</u></b>
 {
   "Code" : 1234,
   "MsgEng" : "abc",
   "MsgJpn" : "あいう",
-  "Data" : {
-    "OdbcInfo" : [
-      {
-        "DbType" : "PostgreSQL",
-        "ConnStr" : "xxx",
-      },
-      {
-        "DbType" : "MySQL",
-        "ConnStr" : "xxx",
-      }
-    ]
-  }
-}
-</pre>
-<pre>
-<b><u>&lt;query=configured&gt;</u></b>
-{
-  "Code" : 1234,
-  "MsgEng" : "abc",
-  "MsgJpn" : "あいう",
-  "Data" : {
-    "OdbcInfo" : {
-      "DbType" : "PostgreSQL",
-      "ConnStr" : "xxx",
-      "Status" : "connectable"
-    }
-  }
 }
 </pre>
 <table class="tblstyle">
-<tr><td>Code</td><td>Integer</td><td>結果コード。0:成功(HTTPステータスコード=200)，3121:リクエストがquery=default, query=configuredの何れでもない(HTTPステータスコード=400)，3124:認証エラー(HTTPステータスコード=401)。</td></tr>
-<tr><td>MsgEng</td><td>String</td><td>英文メッセージ。結果コードが0のときは空文字が返る。</td></tr>
-<tr><td>MsgJpn</td><td>String</td><td>和文メッセージ。結果コードが0のときは空文字が返る。</td></tr>
-<tr><td>Data</td><td>Element</td><td>結果コードが0でないとき，この要素は返却されない。</td></tr>
-<tr><td>OdbcInfo</td><td>Element</td><td></td></tr>
-<tr><td>DbType</td><td>String</td><td>DBMSの種別。"PostgreSQL", "MySQL", "MariaDB", "Init"(未設定)の何れか。</td></tr>
-<tr><td>ConnStr</td><td>String</td><td>接続文字列。</td></tr>
-<tr><td>Status</td><td>String</td><td>DBMSへの接続可否。connectable:接続可能, unconnectable:接続不可能。query=configuredが指定されなかったとき，この要素は返却されない。</td></tr>
+<tr><td>Code</td><td>Integer</td><td>Result code
+                                     0:success(HTTP status code=200),
+                                     4206:Authorization error(HTTP status code=401),
+                                     4204:Access Right error(HTTP status code=403),
+                                     4203:No request specified(HTTP status code=400),
+                                     4024:Length of command name is invalid(HTTP status code=400),
+                                     4025:Length of script is invalid(HTTP status code=400),
+                                     4026:Length of file name is invalid(HTTP status code=400),
+                                     4027:Forbidden character is specified in file name(HTTP status code=400),
+                                     4028:Duplicated command name is specified(HTTP status code=400),
+                                     4020:Specified command ID does not exist(HTTP status code=400),
+                                     4023:Command name is not presented(HTTP status code=400),
+</td></tr>
+<tr><td>MsgEng</td><td>String</td><td>English message. Empty string is returned when result code is 0.</td></tr>
+<tr><td>MsgJpn</td><td>String</td><td>Japanese message. Empty string is returned when result code is 0.</td></tr>
 </table><br/>
 </li>
 </ul>
