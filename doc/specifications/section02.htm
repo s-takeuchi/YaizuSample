@@ -20,9 +20,9 @@ CmdFreakのREST APIは，以下の一覧に示すAPIをクライアント提供�
 <tr><td>POST /api/server/</td><td>Configure server information.</td></tr>
 <tr><td>GET /api/command/n/</td><td>Get command information</td></tr>
 <tr><td>POST /api/command/</td><td>Configure command information</td></tr>
-<tr><td>POST /api/odbcinfo/</td><td>ODBCの情報を設定する。</td></tr>
-<tr><td>GET /api/tableinfo/</td><td>テーブル情報を取得する。</td></tr>
-<tr><td>GET /api/records/</td><td>指定されたテーブルのレコードを取得する。</td></tr>
+<tr><td>DELETE /api/command/n/</td><td>Delete command information</td></tr>
+<tr><td>GET /api/statuscommand/</td><td>Get command information for status acquisition</td></tr>
+<tr><td>GET /api/opcommand/</td><td>Get command information for operation</td></tr>
 <tr><td>GET /api/filterinfo/</td><td>フィルタ情報を取得する。</td></tr>
 <tr><td>POST /api/filterinfo/</td><td>フィルタ情報を設定する。</td></tr>
 <tr><td>GET /api/user/</td><td>ユーザー情報を取得する。</td></tr>
@@ -151,10 +151,10 @@ Configure server information.<br/>
 <div class="topic">
 Get command information.<br/>
 <ul>
-<li>リクエスト
-<p>n in URL means command ID.</p>
+<li>Request
+<p>n in URL means ID of command which you want to acquire.</p>
 </li>
-<li>レスポンス
+<li>Response
 <pre>
 {
   "Code" : 1234,
@@ -194,7 +194,7 @@ Get command information.<br/>
 
 <H2 ID="2.6">2.6 POST /api/command/</H2>
 <div class="topic">
-Configure command information<br/>
+Configure command information.<br/>
 <ul>
 <li>Request
 <pre>
@@ -246,48 +246,30 @@ Configure command information<br/>
 </div><p>
 
 
-<H2 ID="2.7">2.7 Post /api/odbcinfo/</H2>
+<H2 ID="2.7">2.7 DELETE /api/command/n/</H2>
 <div class="topic">
-ODBCの情報を設定します。<br/>
+Delete command information.<br/>
 <ul>
-<li>リクエスト
-<pre>
-{
-  "DbType" : "MySQL",
-  "ConnStr" : "xxx"
-}
-</pre>
-<table class="tblstyle">
-<tr><td>DbType</td><td>Integer</td><td>DBMSの種別。"PostgreSQL", "MySQL", "MariaDB"の何れか。</td></tr>
-<tr><td>ConnStr</td><td>String</td><td>接続文字列。</td></tr>
-</table><br/>
+<li>Request
+<p>n in URL means ID of command which you want to delete.</p>
 </li>
-<li>レスポンス
+<li>Response
 <pre>
 {
   "Code" : 1234,
   "MsgEng" : "abc",
   "MsgJpn" : "あいう",
-  "Data" : {
-    "OdbcInfo" : {
-      "Status" : "connectable"
-    }
-  }
 }
 </pre>
 <table class="tblstyle">
-<tr><td>Code</td><td>Integer</td><td>結果コード。
-0:成功(HTTPステータスコード=200)，
-3121:リクエストにDbType，ConnStrが含まれていない(HTTPステータスコード=400)，
-3123:ConnStrが指定可能な長さの最大値を超えた(HTTPステータスコード=400)，
-3124:認証エラー(HTTPステータスコード=401)，
-3125:権限エラー(HTTPステータスコード=403)。
+<tr><td>Code</td><td>Integer</td><td>Result code
+                                     0:success(HTTP status code=200),
+                                     4206:Authorization error(HTTP status code=401),
+                                     4204:Access Right error(HTTP status code=403),
+                                     4020:Specified command ID does not exist(HTTP status code=400)
 </td></tr>
-<tr><td>MsgEng</td><td>String</td><td>英文メッセージ。結果コードが0のときは空文字が返る。</td></tr>
-<tr><td>MsgJpn</td><td>String</td><td>和文メッセージ。結果コードが0のときは空文字が返る。</td></tr>
-<tr><td>Data</td><td>Element</td><td>結果コードが0でないとき，この要素は返却されない。</td></tr>
-<tr><td>OdbcInfo</td><td>Element</td><td></td></tr>
-<tr><td>Status</td><td>String</td><td>DBMSへの接続可否。connectable:接続可能, unconnectable:接続不可能。</td></tr>
+<tr><td>MsgEng</td><td>String</td><td>English message. Empty string is returned when result code is 0.</td></tr>
+<tr><td>MsgJpn</td><td>String</td><td>Japanese message. Empty string is returned when result code is 0.</td></tr>
 </table><br/>
 </li>
 </ul>

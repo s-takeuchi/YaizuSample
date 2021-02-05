@@ -29,8 +29,10 @@ color: #800000
 }
 
 #container{
-	width:500px;
-	margin:0 auto;
+	margin-top: 20px;
+	margin-bottom: 20px;
+	margin-left: 20px;
+	margin-right: 20px;
 	text-align:left;
 }
 
