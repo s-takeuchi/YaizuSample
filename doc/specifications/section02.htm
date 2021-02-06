@@ -23,8 +23,8 @@ CmdFreakのREST APIは，以下の一覧に示すAPIをクライアント提供�
 <tr><td>DELETE /api/command/n/</td><td>Delete command information</td></tr>
 <tr><td>GET /api/statuscommand/x/</td><td>Get command information for status acquisition</td></tr>
 <tr><td>GET /api/opcommand/x/</td><td>Get command information for operation</td></tr>
-<tr><td>GET /api/filterinfo/</td><td>フィルタ情報を取得する。</td></tr>
-<tr><td>POST /api/filterinfo/</td><td>フィルタ情報を設定する。</td></tr>
+<tr><td>GET /api/agent/</td><td>Get agent information</td></tr>
+<tr><td>POST /api/agent/</td><td>Register/update agent information</td></tr>
 <tr><td>GET /api/user/</td><td>ユーザー情報を取得する。</td></tr>
 <tr><td>POST /api/user/</td><td>ユーザー情報を設定する。</td></tr>
 <tr><td>DELETE /api/user/</td><td>ユーザー情報を削除する。</td></tr>
@@ -376,105 +376,78 @@ Get command information for operation<br/>
 </div><p>
 
 
-<H2 ID="2.10">2.10 Get /api/filterinfo/</H2>
+<H2 ID="2.10">2.10 GET /api/agent/</H2>
 <div class="topic">
-フィルタ情報を取得します。<br/>
+Get agent information. All of agents are acquired.<br/>
 <ul>
-<li>リクエスト
-<p>なし</p>
+<li>Request
+<p>nothing</p>
 </li>
-<li>レスポンス
+<li>Response
 <pre>
 {
   "Code" : 1234,
   "MsgEng" : "abc",
   "MsgJpn" : "あいう",
   "Data" : {
-    "FilterInfo" : {
-      "Function" : "enable",
-      "Criteria" : [
-        {
-          "index" : 1,
-          "columnname" : "aaa",
-          "opetype" : 0,
-          "value" : "xxx"
-        },
-        {
-          "index" : 2,
-          "columnname" : "bbb",
-          "opetype" : 0,
-          "value" : "yyy"
-        }
-      ]
-    }
+    "AgentInfo" : [
+      {
+        "Name" : "Agent name",
+        "Status" : 0,
+        "StatusCmd" :0,
+        "OpStatus" : 0,
+        "OpCmd" : 0,
+        "TimeUtc" : "2021-02-06T12:55:00+00:00",
+        "TimeLocal" : "2021-02-06T12:55:00+09:00",
+        "UdTimeUtc" : "2021-02-06T12:55:00+00:00",
+        "UdTimeLocal" : "2021-02-06T12:55:00+09:00"
+      }
+    ]
   }
 }
 </pre>
 <table class="tblstyle">
-<tr><td>Code</td><td>Integer</td><td>結果コード。0:成功(HTTPステータスコード=200)，3124:認証エラー(HTTPステータスコード=401)。</td></tr>
-<tr><td>MsgEng</td><td>String</td><td>英文メッセージ。結果コードが0のときは空文字が返る。</td></tr>
-<tr><td>MsgJpn</td><td>String</td><td>和文メッセージ。結果コードが0のときは空文字が返る。</td></tr>
-<tr><td>Data</td><td>Element</td><td>結果コードが0でないとき，この要素は返却されない。</td></tr>
-<tr><td>FilterInfo</td><td>Element</td><td></td></tr>
-<tr><td>Function</td><td>String</td><td>フィルタリングの状態(有効／無効)を示す。<br/>enable:有効<br/>disable:無効</td></tr>
-<tr><td>Criteria</td><td>Element</td><td>フィルタリング条件。5つの要素が存在する。</td></tr>
-<tr><td>index</td><td>Integer</td><td>n(n=1,2,3,4,5)。全5個存在するフィルタリング条件のインデックス。</td></tr>
-<tr><td>columnname</td><td>String</td><td>フィルタリング対象のカラム名。*が返るときは未定義のフィルタリング条件。</td></tr>
-<tr><td>opetype</td><td>Integer</td><td>フィルタリングの比較演算子。<br/>
-0:   未指定<br/>
-1:   = <br/>
-2:   &lt;&gt; <br/>
-3:   &lt;= <br/>
-4:   &lt; <br/>
-5:   &gt;= <br/>
-6:   &gt; <br/>
-10:  like <br/>
-11:  not like <br/>
-20:  is null <br/>
-21:  is not null <br/>
+<tr><td>Code</td><td>Integer</td><td>Result code
+                                     0:success(HTTP status code=200),
+                                     4060:Target agent does not exist(HTTP status code=400)
 </td></tr>
-<tr><td>value</td><td>String</td><td>比較対象文字列</td></tr>
+<tr><td>MsgEng</td><td>String</td><td>English message. Empty string is returned when result code is 0.</td></tr>
+<tr><td>MsgJpn</td><td>String</td><td>Japanese message. Empty string is returned when result code is 0.</td></tr>
+<tr><td>Data</td><td>Element</td><td>Not returned when result code is not zero.</td></tr>
+<tr><td>AgentInfo</td><td>Element</td><td></td></tr>
+<tr><td>Name</td><td>String</td><td>Agent name</td></tr>
+<tr><td>Status</td><td>Integer</td><td>A status of command execution</td></tr>
+<tr><td>StatusCmd</td><td>Integer</td><td>ID of status acquisition command</td></tr>
+<tr><td>OpStatus</td><td>Integer</td><td>A status of command execution for operation</td></tr>
+<tr><td>OpCmd</td><td>Integer</td><td>ID of status operation command</td></tr>
+<tr><td>TimeUtc</td><td>String</td><td>Acquired time in UTC</td></tr>
+<tr><td>TimeLocal</td><td>String</td><td>Acquired time in local</td></tr>
+<tr><td>UdTimeUtc</td><td>String</td><td>Updated time in UTC</td></tr>
+<tr><td>UdTimeLocal</td><td>String</td><td>Updated time in local</td></tr>
 </table><br/>
 </li>
 </ul>
 </div><p>
 
 
-<H2 ID="2.11">2.11 Post /api/filterinfo/</H2>
+<H2 ID="2.11">2.11 POST /api/agent/</H2>
 <div class="topic">
-フィルタ情報を設定します。<br/>
+Register/update agent information.<br/>
 <ul>
-<li>リクエスト
+<li>Request
 <pre>
 {
-  "Function" : "enable",
-  "Criteria" : {
-    "index" : 2,
-    "columnname" : "bbb",
-    "opetype" : 0,
-    "value" : "yyy"
-  }
+  "Name" : "enable",
+  "Status" : 0,
+  "StatusTimeUtc" : "2021-02-06T12:55:00+00:00",
+  "StatusTimeLocal" : "2021-02-06T12:55:00+09:00",
 }
 </pre>
 <table class="tblstyle">
-<tr><td>Function</td><td>String</td><td>フィルタリングの状態(有効／無効)を示す。<br/>enable:有効<br/>disable:無効</td></tr>
-<tr><td>Criteria</td><td>Element</td><td>フィルタリング条件。1～5個の要素を指定可能。index, columnname, opetype, valueのいづれかまたはすべてが指定されていない場合，そのCriteriaの指定は無視される。</td></tr>
-<tr><td>index</td><td>Integer</td><td>n(n=1,2,3,4,5)。変更したいフィルタリング条件のインデックス。n=1,2,3,4,5のいづれでもない場合，そのCriteriaの指定は無視される。</td></tr>
-<tr><td>columnname</td><td>String</td><td>フィルタリング対象のカラム名。*を指定したときは未定義。</td></tr>
-<tr><td>opetype</td><td>Integer</td><td>フィルタリングの比較演算子。<br/>
-0:   未指定<br/>
-1:   = <br/>
-2:   &lt;&gt; <br/>
-3:   &lt;= <br/>
-4:   &lt; <br/>
-5:   &gt;= <br/>
-6:   &gt; <br/>
-10:  like <br/>
-11:  not like <br/>
-20:  is null <br/>
-21:  is not null <br/>
-</td></tr>
-<tr><td>value</td><td>String</td><td>比較対象文字列</td></tr>
+<tr><td>Name</td><td>String</td><td>Agent name</td></tr>
+<tr><td>Status</td><td>Integer</td><td>A status of command execution</td></tr>
+<tr><td>StatusTimeUtc</td><td>String</td><td>Acquired time in UTC</td></tr>
+<tr><td>StatusTimeLocal</td><td>String</td><td>Acquired time in local</td></tr>
 </table><br/>
 </li>
 <li>レスポンス
