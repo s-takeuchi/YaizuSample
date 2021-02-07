@@ -89,6 +89,7 @@ void TestNewAgentInfoNotificationNormal(StkWebAppSend* StkWebAppSendObj)
 			StkPlExit(1);
 		}
 		delete ResObj;
+		delete NewObj;
 	}
 	int ErrCode = 0;
 	StkObject* ReqObj = StkObject::CreateObjectFromJson(L"{ \"Data\" : {\"AgentInfo\" : {\"Name\":\"testagent\", \"Status\":-980}}}", &ErrCode);
@@ -208,16 +209,63 @@ void TestGetCommand(StkWebAppSend* StkWebAppSendObj)
 		StkPlPrintf("[NG]\n");
 		StkPlExit(1);
 	}
+	StkPlPrintf("[OK]\n");
 
+	StkPlPrintf("Get Status/Operation Command (Result checking) ... ");
 	if (!ResObj1->Equals(ResObj2)) {
 		delete ResObj1;
 		delete ResObj2;
 		StkPlPrintf("[NG]\n");
 		StkPlExit(1);
 	}
+	int ErrCode = 0;
+	StkObject *CodeObj = StkObject::CreateObjectFromJson(L"{\"Code\" : 4060}", &ErrCode);
+	if (!ResObj1->Contains(CodeObj) || !ResObj2->Contains(CodeObj)) {
+		StkPlPrintf("[NG]\n");
+		StkPlExit(1);
+	}
+	delete CodeObj;
 
 	delete ResObj1;
 	delete ResObj2;
+	StkPlPrintf("[OK]\n");
+}
+
+void TestNewCommand(StkWebAppSend* StkWebAppSendObj)
+{
+	StkPlPrintf("Add new Command ... ");
+	{
+		int ResultCode = 0;
+		int ErrCode = 0;
+		StkObject* ReqObj = StkObject::CreateObjectFromJson(L"{\"Name\" : \"hello\", \"Type\" : 0, \"Script\" : \"echo hello, world!!\", \"ServerFileName\" : \"\", \"AgentFileName\" : \"\"}", &ErrCode);
+		StkObject* ResObj = StkWebAppSendObj->SendRequestRecvResponse(StkWebAppSend::STKWEBAPP_METHOD_POST, "/api/command/", ReqObj, &ResultCode);
+		if (ResultCode != 200) {
+			StkPlPrintf("[NG]\n");
+			StkPlExit(1);
+		}
+		if (ResObj == NULL) {
+			StkPlPrintf("[NG]\n");
+			StkPlExit(1);
+		}
+		delete ReqObj;
+		delete ResObj;
+	}
+	{
+		int ResultCode = 0;
+		StkObject* ResObj = StkWebAppSendObj->SendRequestRecvResponse(StkWebAppSend::STKWEBAPP_METHOD_GET, "/api/command/", NULL, &ResultCode);
+		if (ResultCode != 200) {
+			StkPlPrintf("[NG]\n");
+			StkPlExit(1);
+		}
+		int ErrCode = 0;
+		StkObject* CompObj = StkObject::CreateObjectFromJson(L"\"Command\" : {\"Name\" : \"hello\"}", &ErrCode);
+		if (!ResObj->Contains(CompObj)) {
+			StkPlPrintf("[NG]\n");
+			StkPlExit(1);
+		}
+		delete CompObj;
+		delete ResObj;
+	}
 	StkPlPrintf("[OK]\n");
 }
 
@@ -233,6 +281,8 @@ int main(int Argc, char* Argv[])
 	TestNewAgentInfoNotificationForbiddenChar(StkWebAppSendObj);
 
 	TestGetCommand(StkWebAppSendObj);
+	TestNewCommand(StkWebAppSendObj);
+
 	TestPostOperationStop(StkWebAppSendObj);
 	delete StkWebAppSendObj;
 	return 0;
