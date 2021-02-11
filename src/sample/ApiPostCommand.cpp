@@ -138,7 +138,7 @@ StkObject* ApiPostCommand::ExecuteImpl(StkObject* ReqObj, int Method, wchar_t Ur
 		StkPlSwPrintf(LogMsg, 256, L"%ls [%ls]", MessageProc::GetMsgEng(MSG_COMMODIFY), Name);
 		StkPlSwPrintf(LogMsgJa, 256, L"%ls [%ls]", MessageProc::GetMsgJpn(MSG_COMMODIFY), Name);
 	}
-	AddLogMsg(LogMsg, LogMsgJa);
+	StkWebAppUm_AddLogMsg(LogMsg, LogMsgJa);
 
 	AddCodeAndMsg(ResObj, 0, L"", L"");
 	*ResultCode = 200;

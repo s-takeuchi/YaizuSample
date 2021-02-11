@@ -316,7 +316,7 @@ int main(int Argc, char* Argv[])
 	DataAccess::GetInstance()->CreateTables(L"sample.dat");
 	StkWebAppUm_Init();
 	StkWebAppUm_CreateTable();
-	AddLogMsg(MessageProc::GetMsgEng(MSG_SERVICESTARTED), MessageProc::GetMsgJpn(MSG_SERVICESTARTED));
+	StkWebAppUm_AddLogMsg(MessageProc::GetMsgEng(MSG_SERVICESTARTED), MessageProc::GetMsgJpn(MSG_SERVICESTARTED));
 	wchar_t* IpAddr = StkPlCreateWideCharFromUtf8(IpAddrTmp);
 	wchar_t* WorkDirWc = StkPlCreateWideCharFromUtf8(WorkDir);
 	StkPlWcsCpy(Global::Global_WorkDirPath, FILENAME_MAX, WorkDirWc);
@@ -327,7 +327,7 @@ int main(int Argc, char* Argv[])
 
 	delete IpAddr;
 	delete WorkDirWc;
-	AddLogMsg(MessageProc::GetMsgEng(MSG_SERVICESTOPPED), MessageProc::GetMsgJpn(MSG_SERVICESTOPPED));
+	StkWebAppUm_AddLogMsg(MessageProc::GetMsgEng(MSG_SERVICESTOPPED), MessageProc::GetMsgJpn(MSG_SERVICESTOPPED));
 	DataAccess::GetInstance()->StopAutoSave(L"sample.dat");
 
 	return 0;

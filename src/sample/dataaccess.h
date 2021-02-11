@@ -17,9 +17,6 @@
 #define DA_MAXLEN_OF_TARGETURL 256
 #define DA_MAXNUM_OF_USERRECORDS 64
 #define DA_MAXNUM_OF_THREADS 305
-#define DA_MAXLEN_OF_PROPERTY_NAME 256
-#define DA_MAXLEN_OF_PROPERTY_VALUEWSTR 256
-#define DA_MAXNUM_OF_PROPERTY_RECORDS 1024
 
 class DataAccess
 {
@@ -67,9 +64,4 @@ public:
 	int DeleteCommand(int);
 
 	int IncreaseId(const wchar_t*);
-
-	void SetPropertyValueInt(const wchar_t*, const int);
-	void SetPropertyValueWStr(const wchar_t*, const wchar_t[DA_MAXLEN_OF_PROPERTY_VALUEWSTR]);
-	int GetPropertyValueInt(const wchar_t*);
-	void GetPropertyValueWStr(const wchar_t*, wchar_t[DA_MAXLEN_OF_PROPERTY_VALUEWSTR]);
 };

@@ -103,7 +103,7 @@ StkObject* ApiPostAgentInfo::ExecuteImpl(StkObject* ReqObj, int Method, wchar_t 
 			wchar_t LogMsgJa[512] = L"";
 			StkPlSwPrintf(LogMsg, 256, L"%ls [%ls, %ls]", MessageProc::GetMsgEng(MSG_CMDSTATUSACQCHGD), Name, CmdName);
 			StkPlSwPrintf(LogMsgJa, 256, L"%ls [%ls, %ls]", MessageProc::GetMsgJpn(MSG_CMDSTATUSACQCHGD), Name, CmdName);
-			AddLogMsg(LogMsg, LogMsgJa);
+			StkWebAppUm_AddLogMsg(LogMsg, LogMsgJa);
 		}
 		if (OpStatusFlag) {
 			DataAccess::GetInstance()->SetAgentInfoForOpStatus(Name, OpStatus);
@@ -116,13 +116,13 @@ StkObject* ApiPostAgentInfo::ExecuteImpl(StkObject* ReqObj, int Method, wchar_t 
 				wchar_t LogMsgJa[512] = L"";
 				StkPlSwPrintf(LogMsg, 256, L"%ls [%ls, %ls]", MessageProc::GetMsgEng(MSG_CMDOPSTARTED), Name, CmdName);
 				StkPlSwPrintf(LogMsgJa, 256, L"%ls [%ls, %ls]", MessageProc::GetMsgJpn(MSG_CMDOPSTARTED), Name, CmdName);
-				AddLogMsg(LogMsg, LogMsgJa);
+				StkWebAppUm_AddLogMsg(LogMsg, LogMsgJa);
 			} else {
 				wchar_t LogMsg[512] = L"";
 				wchar_t LogMsgJa[512] = L"";
 				StkPlSwPrintf(LogMsg, 256, L"%ls [%ls, %d]", MessageProc::GetMsgEng(MSG_CMDOPENDED), Name, OpStatus);
 				StkPlSwPrintf(LogMsgJa, 256, L"%ls [%ls, %d]", MessageProc::GetMsgJpn(MSG_CMDOPENDED), Name, OpStatus);
-				AddLogMsg(LogMsg, LogMsgJa);
+				StkWebAppUm_AddLogMsg(LogMsg, LogMsgJa);
 			}
 		}
 		if (OpCmdFlag) {
@@ -137,7 +137,7 @@ StkObject* ApiPostAgentInfo::ExecuteImpl(StkObject* ReqObj, int Method, wchar_t 
 				wchar_t LogMsgJa[512] = L"";
 				StkPlSwPrintf(LogMsg, 256, L"%ls [%ls]", MessageProc::GetMsgEng(MSG_NEWAGTNOTIFIED), Name);
 				StkPlSwPrintf(LogMsgJa, 256, L"%ls [%ls]", MessageProc::GetMsgJpn(MSG_NEWAGTNOTIFIED), Name);
-				AddLogMsg(LogMsg, LogMsgJa);
+				StkWebAppUm_AddLogMsg(LogMsg, LogMsgJa);
 			} else if (RetSetAgtInfo == 1) {
 				// Update
 			}

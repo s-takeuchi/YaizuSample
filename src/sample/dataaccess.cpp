@@ -125,20 +125,6 @@ int DataAccess::CreateTables(const wchar_t* DataFileName)
 				return -1;
 			}
 		}
-		// Property table
-		{
-			ColumnDefWStr ColDefPropertyName(L"Name", DA_MAXLEN_OF_PROPERTY_NAME);
-			ColumnDefInt ColDefPropertyValueInt(L"ValueInt");
-			ColumnDefWStr ColDefPropertyValueWStr(L"ValueWStr", DA_MAXLEN_OF_PROPERTY_VALUEWSTR);
-			TableDef TabDefProperty(L"Property", DA_MAXNUM_OF_PROPERTY_RECORDS);
-			TabDefProperty.AddColumnDef(&ColDefPropertyName);
-			TabDefProperty.AddColumnDef(&ColDefPropertyValueInt);
-			TabDefProperty.AddColumnDef(&ColDefPropertyValueWStr);
-			if (CreateTable(&TabDefProperty) != 0) {
-				UnlockAllTable();
-				return -1;
-			}
-		}
 		UnlockAllTable();
 
 		// For server info table
@@ -154,10 +140,6 @@ int DataAccess::CreateTables(const wchar_t* DataFileName)
 			int Ret = InsertRecord(RecSvrInfo);
 			UnlockTable(L"ServerInfo");
 			delete RecSvrInfo;
-		}
-		// For property table
-		{
-			SetPropertyValueInt(L"MaxUserId", 2);
 		}
 
 	} else {
@@ -716,94 +698,3 @@ int DataAccess::IncreaseId(const wchar_t* Name)
 	return TargetId;
 }
 
-void DataAccess::SetPropertyValueInt(const wchar_t* Name, const int Value)
-{
-	LockTable(L"Property", LOCK_EXCLUSIVE);
-	ColumnData* ColDatSearch[1];
-	ColDatSearch[0] = new ColumnDataWStr(L"Name", Name);
-	RecordData* RecDatSearch = new RecordData(L"Property", ColDatSearch, 1);
-	RecordData* RecDatFound = GetRecord(RecDatSearch);
-
-	if (RecDatFound != NULL) {
-		// Update
-		ColumnData* ColDatUpd[1];
-		ColDatUpd[0] = new ColumnDataInt(L"ValueInt", Value);
-		RecordData* RecDatUpd = new RecordData(L"Property", ColDatUpd, 1);
-		UpdateRecord(RecDatSearch, RecDatUpd);
-		delete RecDatUpd;
-	} else {
-		// Insert
-		ColumnData* ColDatInsert[3];
-		ColDatInsert[0] = new ColumnDataWStr(L"Name", Name);
-		ColDatInsert[1] = new ColumnDataInt(L"ValueInt", Value);
-		ColDatInsert[2] = new ColumnDataWStr(L"ValueWStr", L"");
-		RecordData* RecDatInsert = new RecordData(L"Property", ColDatInsert, 3);
-		InsertRecord(RecDatInsert);
-		delete RecDatInsert;
-	}
-	UnlockTable(L"Property");
-	delete RecDatSearch;
-	delete RecDatFound;
-}
-
-void DataAccess::SetPropertyValueWStr(const wchar_t* Name, const wchar_t Value[DA_MAXLEN_OF_PROPERTY_VALUEWSTR])
-{
-	LockTable(L"Property", LOCK_EXCLUSIVE);
-	ColumnData* ColDatSearch[1];
-	ColDatSearch[0] = new ColumnDataWStr(L"Name", Name);
-	RecordData* RecDatSearch = new RecordData(L"Property", ColDatSearch, 1);
-	RecordData* RecDatFound = GetRecord(RecDatSearch);
-
-	if (RecDatFound != NULL) {
-		// Update
-		ColumnData* ColDatUpd[1];
-		ColDatUpd[0] = new ColumnDataWStr(L"ValueWStr", Value);
-		RecordData* RecDatUpd = new RecordData(L"Property", ColDatUpd, 1);
-		UpdateRecord(RecDatSearch, RecDatUpd);
-		delete RecDatUpd;
-	} else {
-		// Insert
-		ColumnData* ColDatInsert[3];
-		ColDatInsert[0] = new ColumnDataWStr(L"Name", ((ColumnDataWStr*)RecDatFound->GetColumn(0))->GetValue());
-		ColDatInsert[1] = new ColumnDataInt(L"ValueInt", 0);
-		ColDatInsert[2] = new ColumnDataWStr(L"ValueWStr", Value);
-		RecordData* RecDatInsert = new RecordData(L"Property", ColDatInsert, 3);
-		InsertRecord(RecDatInsert);
-		delete RecDatInsert;
-	}
-	UnlockTable(L"Property");
-	delete RecDatSearch;
-	delete RecDatFound;
-}
-
-int DataAccess::GetPropertyValueInt(const wchar_t* Name)
-{
-	int Ret = -1;
-	LockTable(L"Property", LOCK_SHARE);
-	ColumnData* ColDatSearch[1];
-	ColDatSearch[0] = new ColumnDataWStr(L"Name", Name);
-	RecordData* RecDatSearch = new RecordData(L"Property", ColDatSearch, 1);
-	RecordData* RecDatFound = GetRecord(RecDatSearch);
-	if (RecDatFound) {
-		Ret = ((ColumnDataInt*)RecDatFound->GetColumn(1))->GetValue();
-	}
-	UnlockTable(L"Property");
-	delete RecDatSearch;
-	delete RecDatFound;
-	return Ret;
-}
-
-void DataAccess::GetPropertyValueWStr(const wchar_t* Name, wchar_t Value[DA_MAXLEN_OF_PROPERTY_VALUEWSTR])
-{
-	LockTable(L"Property", LOCK_SHARE);
-	ColumnData* ColDatSearch[1];
-	ColDatSearch[0] = new ColumnDataWStr(L"Name", Name);
-	RecordData* RecDatSearch = new RecordData(L"Property", ColDatSearch, 1);
-	RecordData* RecDatFound = GetRecord(RecDatSearch);
-	if (RecDatFound) {
-		StkPlWcsCpy(Value, DA_MAXLEN_OF_PROPERTY_VALUEWSTR, ((ColumnDataWStr*)RecDatFound->GetColumn(2))->GetValue());
-	}
-	UnlockTable(L"Property");
-	delete RecDatSearch;
-	delete RecDatFound;
-}

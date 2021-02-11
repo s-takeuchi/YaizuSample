@@ -67,7 +67,7 @@ StkObject* ApiPostServerInfo::ExecuteImpl(StkObject* ReqObj, int Method, wchar_t
 		wchar_t LogMsgJa[256] = L"";
 		StkPlSwPrintf(LogMsg, 256, L"%ls [Polling Interval=%d sec, Status Acquisition Interval=%d sec]", MessageProc::GetMsgEng(MSG_SVRINFOUPDATED), PInterval, SaInterval);
 		StkPlSwPrintf(LogMsgJa, 256, L"%ls [Polling Interval=%d sec, Status Acquisition Interval=%d sec]", MessageProc::GetMsgJpn(MSG_SVRINFOUPDATED), PInterval, SaInterval);
-		AddLogMsg(LogMsg, LogMsgJa);
+		StkWebAppUm_AddLogMsg(LogMsg, LogMsgJa);
 	} else {
 		AddCodeAndMsg(TmpObj, MSG_NOREQUEST, MessageProc::GetMsgEng(MSG_NOREQUEST), MessageProc::GetMsgJpn(MSG_NOREQUEST));
 		*ResultCode = 400;
