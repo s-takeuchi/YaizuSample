@@ -316,6 +316,8 @@ int main(int Argc, char* Argv[])
 	DataAccess::GetInstance()->CreateTables(L"sample.dat");
 	StkWebAppUm_Init();
 	StkWebAppUm_CreateTable();
+	StkWebAppUm_SetPropertyValueInt(L"DbVersion", 1);
+
 	StkWebAppUm_AddLogMsg(MessageProc::GetMsgEng(MSG_SERVICESTARTED), MessageProc::GetMsgJpn(MSG_SERVICESTARTED));
 	wchar_t* IpAddr = StkPlCreateWideCharFromUtf8(IpAddrTmp);
 	wchar_t* WorkDirWc = StkPlCreateWideCharFromUtf8(WorkDir);
@@ -328,6 +330,7 @@ int main(int Argc, char* Argv[])
 	delete IpAddr;
 	delete WorkDirWc;
 	StkWebAppUm_AddLogMsg(MessageProc::GetMsgEng(MSG_SERVICESTOPPED), MessageProc::GetMsgJpn(MSG_SERVICESTOPPED));
+
 	DataAccess::GetInstance()->StopAutoSave(L"sample.dat");
 
 	return 0;
