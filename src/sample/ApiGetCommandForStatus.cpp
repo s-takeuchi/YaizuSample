@@ -87,7 +87,6 @@ StkObject* ApiGetCommandForStatus::ExecuteImpl(StkObject* ReqObj, int Method, wc
 			StkObject* DatObj = new StkObject(L"Data");
 			if (ReAgtCount >= 1 && TargetAgtIndex != -1) {
 				DatObj->AppendChildElement(new StkObject(L"Status", L"Execution"));
-				TmpObj->AppendChildElement(DatObj);
 			}
 
 			if (ResCmdCount >= 1 && ReAgtCount >= 1 && TargetAgtIndex != -1) {
@@ -130,9 +129,9 @@ StkObject* ApiGetCommandForStatus::ExecuteImpl(StkObject* ReqObj, int Method, wc
 					CommandObj->AppendChildElement(new StkObject(L"ServerFileSize", (int)FileSize));
 					CommandObj->AppendChildElement(new StkObject(L"AgentFileName", AgentFileName[FoundIndex]));
 					DatObj->AppendChildElement(CommandObj);
-					TmpObj->AppendChildElement(DatObj);
 				}
 			}
+			TmpObj->AppendChildElement(DatObj);
 			break;
 		}
 
