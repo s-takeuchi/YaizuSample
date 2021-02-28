@@ -224,12 +224,18 @@ function displayAgentInfo() {
                 break;
             }
         }
+        let acqTimeInt = parseInt(AgentInfo[Loop].AcqTime, 16);
+        let updTimeInt = parseInt(AgentInfo[Loop].UpdTime, 16);
+        let dateAcqTime = new Date(acqTimeInt * 1000);
+        let dateUpdTime = new Date(updTimeInt * 1000);
+        let acqTimeStr = dateAcqTime.toString()
+        let updTimeStr = dateUpdTime.toString()
         tBody.append('<tr>' +
                      '<td><div class="checkbox"><label><input type="checkbox" id="agtInfoId' + Loop + '" value="" onclick="switchAgentInfoButton()"/>' + AgentInfo[Loop].Name + '</label></div></td>' +
                      '<td><div align="center" id="statusTd' + Loop + '" data-toggle="tooltip" title="' + getTooltipStr() + '">' + AgentInfo[Loop].Status + '</div></td>' +
                      '<td class="d-none d-sm-table-cell">' + cmdNameStatus + '</td>' +
-                     '<td>' + AgentInfo[Loop].TimeUtc + '<br/>' + AgentInfo[Loop].TimeLocal + '</td>' +
-                     '<td class="d-none d-md-table-cell">' + AgentInfo[Loop].UdTimeUtc + '<br/>' + AgentInfo[Loop].UdTimeLocal + '</td>' +
+                     '<td>' + acqTimeStr + '</td>' +
+                     '<td class="d-none d-md-table-cell">' + updTimeStr + '</td>' +
                      '<td class="d-none d-lg-table-cell"><div align="center" id="opStatusTd' + Loop + '" data-toggle="tooltip" title="' + getTooltipStr() + '">' + AgentInfo[Loop].OpStatus + '</div></td>' +
                      '<td class="d-none d-lg-table-cell">' + cmdNameOp + '</td>' +
                      '</tr>');
