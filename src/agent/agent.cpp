@@ -47,10 +47,14 @@ StkObject* GetAgentInfo(int Status)
 	StkObject* NewObj = new StkObject(L"");
 	StkPlGetWTimeInIso8601(StatusTimeUtc, false);
 	StkPlGetWTimeInIso8601(StatusTimeLocal, true);
+	long long TmpTime = StkPlGetTime();
+	wchar_t TmpTimeStr[17] = L"";
+	StkPlSwPrintf(TmpTimeStr, 17, L"%016x", TmpTime);
 	NewObj->AppendChildElement(new StkObject(L"Name", HostName));
 	NewObj->AppendChildElement(new StkObject(L"Status", Status));
 	NewObj->AppendChildElement(new StkObject(L"StatusTimeUtc", StatusTimeUtc));
 	NewObj->AppendChildElement(new StkObject(L"StatusTimeLocal", StatusTimeLocal));
+	NewObj->AppendChildElement(new StkObject(L"StatusTime", TmpTimeStr));
 	return NewObj;
 }
 

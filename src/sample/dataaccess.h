@@ -1,7 +1,7 @@
 ﻿#pragma once
 
 #define DA_MAXLEN_OF_TIME 32
-#define DA_MAXLEN_OF_REQTIME 16
+#define DA_MAXLEN_OF_UNIXTIME 8
 #define DA_MAXLEN_OF_LOGMSG 256
 #define DA_MAXNUM_OF_LOGRECORDS 210
 #define DA_MAXLEN_OF_AGTNAME 256
@@ -33,7 +33,7 @@ public:
 	int CreateTables(const wchar_t*);
 
 	bool CheckExistenceOfTargetAgent(wchar_t[DA_MAXLEN_OF_AGTNAME]);
-	int SetAgentInfo(wchar_t[DA_MAXLEN_OF_AGTNAME], int, wchar_t[DA_MAXLEN_OF_TIME], wchar_t[DA_MAXLEN_OF_TIME]);
+	int SetAgentInfo(wchar_t[DA_MAXLEN_OF_AGTNAME], int, wchar_t[DA_MAXLEN_OF_TIME], wchar_t[DA_MAXLEN_OF_TIME], long long);
 	void SetAgentInfoForStatusCmd(wchar_t[DA_MAXLEN_OF_AGTNAME], int);
 	void SetAgentInfoForStatus(wchar_t[DA_MAXLEN_OF_AGTNAME], int);
 	void SetAgentInfoForOpCmd(wchar_t[DA_MAXLEN_OF_AGTNAME], int);
@@ -46,8 +46,10 @@ public:
 		int[DA_MAXNUM_OF_AGTRECORDS],
 		wchar_t[DA_MAXNUM_OF_AGTRECORDS][DA_MAXLEN_OF_TIME],
 		wchar_t[DA_MAXNUM_OF_AGTRECORDS][DA_MAXLEN_OF_TIME],
+		long long[DA_MAXNUM_OF_AGTRECORDS],
 		wchar_t[DA_MAXNUM_OF_AGTRECORDS][DA_MAXLEN_OF_TIME],
-		wchar_t[DA_MAXNUM_OF_AGTRECORDS][DA_MAXLEN_OF_TIME]);
+		wchar_t[DA_MAXNUM_OF_AGTRECORDS][DA_MAXLEN_OF_TIME],
+		long long[DA_MAXNUM_OF_AGTRECORDS]);
 	int GetAgentInfoForOpCmd(wchar_t[DA_MAXLEN_OF_AGTNAME]);
 	int GetAgentInfoForOpStatus(wchar_t[DA_MAXLEN_OF_AGTNAME]);
 	long long GetAgentInfoForReqTime(wchar_t[DA_MAXLEN_OF_AGTNAME]);
