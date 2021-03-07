@@ -60,6 +60,7 @@ bool TestForGetApi(StkWebAppSend* StkWebAppSendObj, const char* Url, const char*
 		}
 		return false;
 	}
+
 	if (ResObj->Contains(CompObj) == NULL) {
 		delete ResObj;
 		return false;
@@ -73,15 +74,10 @@ void TestNewAgentInfoNotificationNormal(StkWebAppSend* StkWebAppSendObj)
 	int ResultCode = 0;
 
 	{
-		wchar_t StatusTimeUtc[64];
-		wchar_t StatusTimeLocal[64];
 		StkObject* NewObj = new StkObject(L"");
-		StkPlGetWTimeInIso8601(StatusTimeUtc, false);
-		StkPlGetWTimeInIso8601(StatusTimeLocal, true);
 		NewObj->AppendChildElement(new StkObject(L"Name", L"testagent"));
 		NewObj->AppendChildElement(new StkObject(L"Status", -980));
-		NewObj->AppendChildElement(new StkObject(L"StatusTimeUtc", StatusTimeUtc));
-		NewObj->AppendChildElement(new StkObject(L"StatusTimeLocal", StatusTimeLocal));
+		NewObj->AppendChildElement(new StkObject(L"StatusTime", L"00000000FFFFFFFF"));
 
 		StkObject* ResObj = StkWebAppSendObj->SendRequestRecvResponse(StkWebAppSend::STKWEBAPP_METHOD_POST, "/api/agent/", NewObj, &ResultCode);
 		if (ResultCode != 200) {
@@ -92,7 +88,7 @@ void TestNewAgentInfoNotificationNormal(StkWebAppSend* StkWebAppSendObj)
 		delete NewObj;
 	}
 	int ErrCode = 0;
-	StkObject* ReqObj = StkObject::CreateObjectFromJson(L"{ \"Data\" : {\"AgentInfo\" : {\"Name\":\"testagent\", \"Status\":-980}}}", &ErrCode);
+	StkObject* ReqObj = StkObject::CreateObjectFromJson(L"{ \"Data\" : {\"AgentInfo\" : {\"Name\":\"testagent\", \"Status\":-980, \"AcqTime\" : \"00000000ffffffff\"}}}", &ErrCode);
 	bool Result = TestForGetApi(StkWebAppSendObj, "/api/agent/", "Bearer admin manager", ReqObj);
 	if (Result != true) {
 		StkPlPrintf("[NG]\n");

@@ -44,8 +44,6 @@ StkObject* ApiPostAgentInfo::ExecuteImpl(StkObject* ReqObj, int Method, wchar_t 
 	bool StatusCmdFlag = false;
 	bool OpStatusFlag = false;
 	bool OpCmdFlag = false;
-	wchar_t StatusTimeUtc[DA_MAXLEN_OF_TIME] = L"";
-	wchar_t StatusTimeLocal[DA_MAXLEN_OF_TIME] = L"";
 	long long StatusTime = 0;
 	if (ReqObj != NULL) {
 		StkObject* CurrAgentInfo = ReqObj->GetFirstChildElement();
@@ -81,13 +79,7 @@ StkObject* ApiPostAgentInfo::ExecuteImpl(StkObject* ReqObj, int Method, wchar_t 
 				OpCmd = CurrAgentInfo->GetIntValue();
 				OpCmdFlag = true;
 			}
-			if (StkPlWcsCmp(CurrAgentInfo->GetName(), L"StatusTimeUtc") == 0) {
-				StkPlWcsCpy(StatusTimeUtc, DA_MAXLEN_OF_TIME, CurrAgentInfo->GetStringValue());
-			}
-			if (StkPlWcsCmp(CurrAgentInfo->GetName(), L"StatusTimeLocal") == 0) {
-				StkPlWcsCpy(StatusTimeLocal, DA_MAXLEN_OF_TIME, CurrAgentInfo->GetStringValue());
-			}
-			if (StkPlWcsCmp(CurrAgentInfo->GetName(), L"StatusTime") == 0) {
+			if (StkPlWcsCmp(CurrAgentInfo->GetName(), L"AcqTime") == 0) {
 				wchar_t StatusTimeStr[DA_MAXLEN_OF_UNIXTIME * 2 + 1];
 				StkPlWcsCpy(StatusTimeStr, DA_MAXLEN_OF_UNIXTIME * 2 + 1, CurrAgentInfo->GetStringValue());
 				StkPlSwScanf(StatusTimeStr, L"%016x", &StatusTime);
@@ -135,7 +127,7 @@ StkObject* ApiPostAgentInfo::ExecuteImpl(StkObject* ReqObj, int Method, wchar_t 
 			DataAccess::GetInstance()->SetAgentInfoForOpCmd(Name, OpCmd);
 		}
 		if (!StatusCmdFlag && !OpCmdFlag && !OpStatusFlag) {
-			int RetSetAgtInfo = DataAccess::GetInstance()->SetAgentInfo(Name, Status, StatusTimeUtc, StatusTimeLocal, StatusTime);
+			int RetSetAgtInfo = DataAccess::GetInstance()->SetAgentInfo(Name, Status, StatusTime);
 			if (RetSetAgtInfo == 0) {
 				// Addition
 				DataAccess::GetInstance()->SetAgentInfoForOpStatus(Name, -984);

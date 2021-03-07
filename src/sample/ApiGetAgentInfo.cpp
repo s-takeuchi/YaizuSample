@@ -21,13 +21,9 @@ StkObject* ApiGetAgentInfo::ExecuteImpl(StkObject* ReqObj, int Method, wchar_t U
 	int StatusCmd[DA_MAXNUM_OF_AGTRECORDS];
 	int OpStatus[DA_MAXNUM_OF_AGTRECORDS];
 	int OpCmd[DA_MAXNUM_OF_AGTRECORDS];
-	wchar_t TimeUtc[DA_MAXNUM_OF_AGTRECORDS][DA_MAXLEN_OF_TIME];
-	wchar_t TimeLocal[DA_MAXNUM_OF_AGTRECORDS][DA_MAXLEN_OF_TIME];
 	long long AcqTime[DA_MAXNUM_OF_AGTRECORDS];
-	wchar_t UdTimeUtc[DA_MAXNUM_OF_AGTRECORDS][DA_MAXLEN_OF_TIME];
-	wchar_t UdTimeLocal[DA_MAXNUM_OF_AGTRECORDS][DA_MAXLEN_OF_TIME];
 	long long UpdTime[DA_MAXNUM_OF_AGTRECORDS];
-	int Count = DataAccess::GetInstance()->GetAgentInfo(Name, Status, StatusCmd, OpStatus, OpCmd, TimeUtc, TimeLocal, AcqTime, UdTimeUtc, UdTimeLocal, UpdTime);
+	int Count = DataAccess::GetInstance()->GetAgentInfo(Name, Status, StatusCmd, OpStatus, OpCmd, AcqTime, UpdTime);
 
 	StkObject* TmpObjD = new StkObject(L"Data");
 	for (int Loop = 0; Loop < Count; Loop++) {
@@ -41,10 +37,6 @@ StkObject* ApiGetAgentInfo::ExecuteImpl(StkObject* ReqObj, int Method, wchar_t U
 		TmpObjC->AppendChildElement(new StkObject(L"StatusCmd", StatusCmd[Loop]));
 		TmpObjC->AppendChildElement(new StkObject(L"OpStatus", OpStatus[Loop]));
 		TmpObjC->AppendChildElement(new StkObject(L"OpCmd", OpCmd[Loop]));
-		TmpObjC->AppendChildElement(new StkObject(L"TimeUtc", TimeUtc[Loop]));
-		TmpObjC->AppendChildElement(new StkObject(L"TimeLocal", TimeLocal[Loop]));
-		TmpObjC->AppendChildElement(new StkObject(L"UdTimeUtc", UdTimeUtc[Loop]));
-		TmpObjC->AppendChildElement(new StkObject(L"UdTimeLocal", UdTimeLocal[Loop]));
 		TmpObjC->AppendChildElement(new StkObject(L"AcqTime", AcqTimeStr));
 		TmpObjC->AppendChildElement(new StkObject(L"UpdTime", UpdTimeStr));
 		TmpObjD->AppendChildElement(TmpObjC);
