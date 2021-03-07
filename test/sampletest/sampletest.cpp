@@ -77,7 +77,7 @@ void TestNewAgentInfoNotificationNormal(StkWebAppSend* StkWebAppSendObj)
 		StkObject* NewObj = new StkObject(L"");
 		NewObj->AppendChildElement(new StkObject(L"Name", L"testagent"));
 		NewObj->AppendChildElement(new StkObject(L"Status", -980));
-		NewObj->AppendChildElement(new StkObject(L"StatusTime", L"00000000FFFFFFFF"));
+		NewObj->AppendChildElement(new StkObject(L"AcqTime", L"00000000FFFFFFFF"));
 
 		StkObject* ResObj = StkWebAppSendObj->SendRequestRecvResponse(StkWebAppSend::STKWEBAPP_METHOD_POST, "/api/agent/", NewObj, &ResultCode);
 		if (ResultCode != 200) {
