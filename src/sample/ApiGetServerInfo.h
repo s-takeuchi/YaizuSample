@@ -5,8 +5,7 @@
 class ApiGetServerInfo : ApiBase
 {
 private:
-	wchar_t StartTimeUtc[DA_MAXLEN_OF_TIME];
-	wchar_t StartTimeLocal[DA_MAXLEN_OF_TIME];
+	long long StartTime;
 
 public:
 	ApiGetServerInfo();

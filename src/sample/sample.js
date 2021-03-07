@@ -61,8 +61,7 @@ function initClientMessage() {
     addClientMessage('RESCODE-993', {'en':'-993 : No request from agent.\r\n', 'ja':'-993 : エージェントからの要求がない\r\n'});
     addClientMessage('RESCODE-994', {'en':'-994 : Invalid agent directory.\r\n', 'ja':'-994 : エージェントディレクトリが不正\r\n'});
 
-    addClientMessage('SISTARTTIMEUTC', {'en':'Service Start Time (UTC)', 'ja':'サービス開始時刻 (UTC)'});
-    addClientMessage('SISTARTTIMELOC', {'en':'Service Start Time (Local)', 'ja':'サービス開始時刻 (Local)'});
+    addClientMessage('SISTARTTIME', {'en':'Service Start Time : ', 'ja':'サービス開始時刻 : '});
     addClientMessage('SISVRVERSION', {'en':'Server Version : ', 'ja':'サーバーバージョン : '});
     addClientMessage('SIPOLLINTVL', {'en':'Polling Interval : ', 'ja':'ポーリング間隔 : '});
     addClientMessage('SISTACQINTVL', {'en':'Status Acquisition Interval : ', 'ja':'状態取得間隔 : '});
@@ -474,19 +473,15 @@ function displayServerInfo() {
         displayAlertSuccess('#svrinfo', svrinfo_msg);
         svrinfo_msg = '';
     }
-    var StartTimeTbl = $('<table>');
-    StartTimeTbl.addClass('table table-striped');
 
-    var tHead = $('<thead>');
-    tHead.append('<tr><th>' + getClientMessage('SISTARTTIMEUTC') + '</th><th>' + getClientMessage('SISTARTTIMELOC') + '</th></tr>');
-    StartTimeTbl.append(tHead);
+    $('#svrinfo').append(getClientMessage('SISVRVERSION') + responseData['API_GET_SVRINFO'].Data.ServerInfo.Version);
 
-    var tBody = $('<tbody>');
-    tBody.append('<tr><td>' + responseData['API_GET_SVRINFO'].Data.ServerInfo.StartTimeUtc + '</td><td>' + responseData['API_GET_SVRINFO'].Data.ServerInfo.StartTimeLocal + '</td></tr>');
-    StartTimeTbl.append(tBody);
-
-    $('#svrinfo').append('<h4>' + getClientMessage('SISVRVERSION') + responseData['API_GET_SVRINFO'].Data.ServerInfo.Version + '</h4>');
-    $('#svrinfo').append(StartTimeTbl);
+    let startTimeInt = parseInt(responseData['API_GET_SVRINFO'].Data.ServerInfo.StartTime, 16);
+    let dateStartTime = new Date(startTimeInt * 1000);
+    let StartTimeStr = dateStartTime.toString()
+    $('#svrinfo').append('<p>');
+    $('#svrinfo').append(getClientMessage('SISTARTTIME') + StartTimeStr);
+    $('#svrinfo').append('</p>');
 
     // Polling Interval
     if (responseData['API_GET_SVRINFO'].Data.ServerInfo.PollingInterval == 30) {

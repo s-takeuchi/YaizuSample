@@ -7,8 +7,7 @@
 
 ApiGetServerInfo::ApiGetServerInfo()
 {
-	StkPlGetWTimeInIso8601(StartTimeUtc, false);
-	StkPlGetWTimeInIso8601(StartTimeLocal, true);
+	StartTime = StkPlGetTime();
 }
 
 StkObject* ApiGetServerInfo::ExecuteImpl(StkObject* ReqObj, int Method, wchar_t UrlPath[StkWebAppExec::URL_PATH_LENGTH], int* ResultCode, wchar_t Locale[3], wchar_t* Token)
@@ -24,11 +23,13 @@ StkObject* ApiGetServerInfo::ExecuteImpl(StkObject* ReqObj, int Method, wchar_t 
 
 	int PInterval = 0;
 	int SaInterval = 0;
+	wchar_t StartTimeStr[DA_MAXLEN_OF_UNIXTIME * 2 + 1] = L"";
+	StkPlSwPrintf(StartTimeStr, DA_MAXLEN_OF_UNIXTIME * 2 + 1, L"%016x", StartTime);
+
 	DataAccess::GetInstance()->GetServerInfo(&PInterval, &SaInterval);
 	StkObject* TmpObjD = new StkObject(L"Data");
 	StkObject* TmpObjC = new StkObject(L"ServerInfo");
-	TmpObjC->AppendChildElement(new StkObject(L"StartTimeUtc", StartTimeUtc));
-	TmpObjC->AppendChildElement(new StkObject(L"StartTimeLocal", StartTimeLocal));
+	TmpObjC->AppendChildElement(new StkObject(L"StartTime", StartTimeStr));
 	TmpObjC->AppendChildElement(new StkObject(L"Version", L"1.0.0"));
 	TmpObjC->AppendChildElement(new StkObject(L"PollingInterval", PInterval));
 	TmpObjC->AppendChildElement(new StkObject(L"StatusAcquisitionInterval", SaInterval));
