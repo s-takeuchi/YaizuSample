@@ -522,7 +522,7 @@ int main(int argc, char* argv[])
 		}
 		while (true) { StkPlSleepMs(1000); }
 	} else {
-		StkPlPrintf("Usage: %s  destination_host_name_or_IP_addres  port_number  path_to_bucket  host_name  [trusted_certificate]", argv[0]);
+		StkPlPrintf("Usage: %s  destination_host_name_or_IP_addres  port_number  path_to_bucket  host_name  [trusted_certificate]\r\n", argv[0]);
 #ifdef WIN32
 		StartServiceCtrlDispatcher(ServiceTable);
 #else
