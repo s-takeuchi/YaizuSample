@@ -27,13 +27,12 @@ var usermgt_msg = '';
 function initClientMessage() {
     addClientMessage('USER_MGMT', {'en':'User Management', 'ja':'ユーザー管理'});
     addClientMessage('USER_CHG_PW', {'en':'Change Password', 'ja':'パスワードの変更'});
+    addClientMessage('OPE_LOG', {'en':'Operation log', 'ja':'操作ログ'});
 
     addClientMessage('AGENTINFO', {'en':' Agent Info', 'ja':' Agent Info'});
     addClientMessage('SERVERINFO', {'en':' Server Info', 'ja':' Server Info'});
     addClientMessage('COMMAND', {'en':' Command', 'ja':' Command'});
-    addClientMessage('AUDITLOG', {'en':' Audit Log', 'ja':' Audit Log'});
 
-    addClientMessage('NOLOGINFO', {'en':'<p>No log information</p>', 'ja':'<p>ログはありません</p>'});
     addClientMessage('NOAGTINFO', {'en':'<p>No agent information</p>', 'ja':'<p>エージェント情報はありません</p>'});
     addClientMessage('NOCMDEXIST', {'en':'<p>No command exists</p>', 'ja':'<p>コマンドはありません</p>'});
 
@@ -83,9 +82,6 @@ function initClientMessage() {
     addClientMessage('COMDELETED', {'en':'The specified command has been deleted', 'ja':'指定したコマンドが削除されました。'});
     addClientMessage('COMMANDLABEL', {'en':'Command : ', 'ja':'コマンド : '});
 
-    addClientMessage('LOGEVENTTIME', {'en':'Event Occurrence Time', 'ja':'イベント発生時刻'});
-    addClientMessage('LOGEVENT', {'en':'Event', 'ja':'イベント'});
-
     addClientMessage('CONNERR', {
         'en':'Connection with REST API service failed. This may be caused by one of the following issues:<br>(1) REST API service cannot be started.<br>(2) REST API service is not registered as a firewall exception.<br>(3) The definition file [nginx.conf and/or sample.conf] for the host name and port number in the network connectivity settings is invalid.<br>(4) A timeout has occurred when waiting for data from REST API server.<br>',
         'ja':'REST APIサービスとの通信が失敗しました。次の要因が考えられます。<br>(1) REST APIサービスが開始されていない。<br>(2) REST APIサービスがファイアウォールに例外登録されていない。<br>(3) 接続先ホスト名およびポート番号の定義ファイル [nginx.conf , sample.conf] が不正。<br>(4) REST APIサーバからのデータ取得中にタイムアウトが発生した。<br>'
@@ -103,54 +99,6 @@ function getArray(targetObject) {
         targetArray.push(targetObject);
         return targetArray;
     }
-}
-
-////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////
-
-function transDisplayLogInfo() {
-    apiCall('GET', '/api/logs/', null, 'API_GET_LOGS', displayLogInfo);
-}
-
-function displayLogInfo() {
-    drowContainer($('<div id="loginfo" class="row col-xs-12" style="display:block"></div>'));
-    clearRsCommand();
-
-    $('#loginfo').append('<h2>' + getClientMessage('AUDITLOG') + '</h2>');
-    if (statusCode['API_GET_LOGS'] == -1 || statusCode['API_GET_LOGS'] == 0) {
-        displayAlertDanger('#loginfo', getClientMessage('CONNERR'));
-        return;
-    } else if (statusCode['API_GET_LOGS'] != 200) {
-        displayAlertDanger('#loginfo', getSvrMsg(responseData['API_GET_LOGS']));
-        return;
-    }
-
-    var Log = getArray(responseData['API_GET_LOGS'].Data.Log);
-    if (Log == null) {
-        $('#loginfo').append(getClientMessage('NOLOGINFO'));
-        return;
-    }
-
-    var logData = $('<table>');
-    logData.addClass('table table-striped');
-
-    var tHead = $('<thead>');
-    tHead.append('<tr><th>' + getClientMessage('LOGEVENTTIME') + '</th><th>' + getClientMessage('LOGEVENT') + '</th></tr>');
-    logData.append(tHead);
-
-    var tBody = $('<tbody>');
-    for (var Loop = 0; Loop < Log.length; Loop++) {
-        if (getClientLanguage() == 1) {
-            tBody.append('<tr><td>' + Log[Loop].Time + '</td><td>' + Log[Loop].MsgJa + '</td></tr>');
-        } else {
-            tBody.append('<tr><td>' + Log[Loop].Time + '</td><td>' + Log[Loop].MsgEn + '</td></tr>');
-        }
-    }
-    logData.append(tBody);
-    $('#loginfo').append(logData);
-    $('td').css('vertical-align', 'middle');
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -784,8 +732,7 @@ function checkLoginAfterApiCall() {
         var contents = [
             { actApiName : "transDisplayAgentInfo()", title : 'Agent Info' },
             { actApiName : "transDisplayServerInfo()", title : 'Server Info' },
-            { actApiName : "transDisplayCommand()", title : 'Command' },
-            { actApiName : "transDisplayLogInfo()", title : 'Audit Log' }
+            { actApiName : "transDisplayCommand()", title : 'Command' }
         ];
         initMainPage('SERVAL', 'squirrel.svg', contents);
 
@@ -793,10 +740,12 @@ function checkLoginAfterApiCall() {
         var usermenuContents = [];
         if (userRole == 1) {
             usermenuContents = [
+                { actApiName: 'transDisplayLogInfo()', title: getClientMessage('OPE_LOG') },
                 { actApiName: 'transDisplayChgPassword()', title: getClientMessage('USER_CHG_PW') }
             ];
         } else {
             usermenuContents = [
+                { actApiName: 'transDisplayLogInfo()', title: getClientMessage('OPE_LOG') },
                 { actApiName: 'transDisplayUser()', title: getClientMessage('USER_MGMT') },
                 { actApiName: 'transDisplayChgPassword()', title: getClientMessage('USER_CHG_PW') }
             ];
