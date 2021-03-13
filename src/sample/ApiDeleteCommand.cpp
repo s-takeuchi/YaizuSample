@@ -12,7 +12,8 @@ StkObject* ApiDeleteCommand::ExecuteImpl(StkObject* ReqObj, int Method, wchar_t 
 	StkObject* TmpObj = new StkObject(L"");
 
 	wchar_t UserName[ApiBase::MAXLEN_OF_USERNAME];
-	if (!CheckCredentials(Token, UserName)) {
+	int UserId = -1;
+	if (!CheckCredentials(Token, UserName, &UserId)) {
 		AddCodeAndMsg(TmpObj, MSG_COMMON_AUTH_ERROR, MessageProc::GetMsgEng(MSG_COMMON_AUTH_ERROR), MessageProc::GetMsgJpn(MSG_COMMON_AUTH_ERROR));
 		*ResultCode = 401;
 		return TmpObj;
@@ -38,7 +39,7 @@ StkObject* ApiDeleteCommand::ExecuteImpl(StkObject* ReqObj, int Method, wchar_t 
 		wchar_t LogMsgJa[256] = L"";
 		StkPlSwPrintf(LogMsg, 256, L"%ls [%ls]", MessageProc::GetMsgEng(MSG_COMDELETE), CmdName);
 		StkPlSwPrintf(LogMsgJa, 256, L"%ls [%ls]", MessageProc::GetMsgJpn(MSG_COMDELETE), CmdName);
-		StkWebAppUm_AddLogMsg(LogMsg, LogMsgJa);
+		StkWebAppUm_AddLogMsg(LogMsg, LogMsgJa, UserId);
 	} else {
 		AddCodeAndMsg(TmpObj, MSG_COMMANDNOTEXIST, MessageProc::GetMsgEng(MSG_COMMANDNOTEXIST), MessageProc::GetMsgJpn(MSG_COMMANDNOTEXIST));
 		*ResultCode = 400;

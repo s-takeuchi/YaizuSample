@@ -22,7 +22,8 @@ StkObject* ApiPostCommand::ExecuteImpl(StkObject* ReqObj, int Method, wchar_t Ur
 	StkObject* ResObj = new StkObject(L"");
 
 	wchar_t UserName[ApiBase::MAXLEN_OF_USERNAME];
-	if (!CheckCredentials(Token, UserName)) {
+	int UserId = -1;
+	if (!CheckCredentials(Token, UserName, &UserId)) {
 		AddCodeAndMsg(ResObj, MSG_COMMON_AUTH_ERROR, MessageProc::GetMsgEng(MSG_COMMON_AUTH_ERROR), MessageProc::GetMsgJpn(MSG_COMMON_AUTH_ERROR));
 		*ResultCode = 401;
 		return ResObj;
@@ -138,7 +139,7 @@ StkObject* ApiPostCommand::ExecuteImpl(StkObject* ReqObj, int Method, wchar_t Ur
 		StkPlSwPrintf(LogMsg, 256, L"%ls [%ls]", MessageProc::GetMsgEng(MSG_COMMODIFY), Name);
 		StkPlSwPrintf(LogMsgJa, 256, L"%ls [%ls]", MessageProc::GetMsgJpn(MSG_COMMODIFY), Name);
 	}
-	StkWebAppUm_AddLogMsg(LogMsg, LogMsgJa);
+	StkWebAppUm_AddLogMsg(LogMsg, LogMsgJa, UserId);
 
 	AddCodeAndMsg(ResObj, 0, L"", L"");
 	*ResultCode = 200;

@@ -11,7 +11,8 @@ StkObject* ApiPostServerInfo::ExecuteImpl(StkObject* ReqObj, int Method, wchar_t
 	StkObject* TmpObj = new StkObject(L"");
 
 	wchar_t UserName[ApiBase::MAXLEN_OF_USERNAME];
-	if (!CheckCredentials(Token, UserName)) {
+	int UserId = -1;
+	if (!CheckCredentials(Token, UserName, &UserId)) {
 		AddCodeAndMsg(TmpObj, MSG_COMMON_AUTH_ERROR, MessageProc::GetMsgEng(MSG_COMMON_AUTH_ERROR), MessageProc::GetMsgJpn(MSG_COMMON_AUTH_ERROR));
 		*ResultCode = 401;
 		return TmpObj;
@@ -67,7 +68,7 @@ StkObject* ApiPostServerInfo::ExecuteImpl(StkObject* ReqObj, int Method, wchar_t
 		wchar_t LogMsgJa[256] = L"";
 		StkPlSwPrintf(LogMsg, 256, L"%ls [Polling Interval=%d sec, Status Acquisition Interval=%d sec]", MessageProc::GetMsgEng(MSG_SVRINFOUPDATED), PInterval, SaInterval);
 		StkPlSwPrintf(LogMsgJa, 256, L"%ls [Polling Interval=%d sec, Status Acquisition Interval=%d sec]", MessageProc::GetMsgJpn(MSG_SVRINFOUPDATED), PInterval, SaInterval);
-		StkWebAppUm_AddLogMsg(LogMsg, LogMsgJa);
+		StkWebAppUm_AddLogMsg(LogMsg, LogMsgJa, UserId);
 	} else {
 		AddCodeAndMsg(TmpObj, MSG_NOREQUEST, MessageProc::GetMsgEng(MSG_NOREQUEST), MessageProc::GetMsgJpn(MSG_NOREQUEST));
 		*ResultCode = 400;

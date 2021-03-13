@@ -10,7 +10,8 @@ StkObject* ApiGetCommand::ExecuteImpl(StkObject* ReqObj, int Method, wchar_t Url
 	StkObject* TmpObj = new StkObject(L"");
 
 	wchar_t UserName[ApiBase::MAXLEN_OF_USERNAME];
-	if (!CheckCredentials(Token, UserName)) {
+	int UserId = -1;
+	if (!CheckCredentials(Token, UserName, &UserId)) {
 		AddCodeAndMsg(TmpObj, MSG_COMMON_AUTH_ERROR, MessageProc::GetMsgEng(MSG_COMMON_AUTH_ERROR), MessageProc::GetMsgJpn(MSG_COMMON_AUTH_ERROR));
 		*ResultCode = 401;
 		return TmpObj;
