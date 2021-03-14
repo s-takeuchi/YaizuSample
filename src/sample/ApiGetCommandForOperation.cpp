@@ -100,7 +100,18 @@ StkObject* ApiGetCommandForOperation::ExecuteImpl(StkObject* ReqObj, int Method,
 			}
 			break;
 		}
-	}
 
+		if ((PInterval == 30 && Sec % 30 < 5) ||
+			(PInterval == 60 && Sec < 5) ||
+			(PInterval == 300 && Min % 5 == 0 && Sec < 5) ||
+			(PInterval == 900 && Min % 15 == 0 && Sec < 5)) {
+			AddCodeAndMsg(TmpObj, 0, L"", L"");
+			StkObject* DatObj = new StkObject(L"Data");
+			DatObj->AppendChildElement(new StkObject(L"Status", L"Timeout"));
+			TmpObj->AppendChildElement(DatObj);
+			*ResultCode = 200;
+			break;
+		}
+	}
 	return TmpObj;
 }
