@@ -427,10 +427,11 @@ Get agent information. All of agents are acquired.<br/>
 Register/update agent information.<br/>
 <ul>
 <li>Request<br/>
-<u>In case of status update</u>
+<u>In case of status update</u><br/>
+This request is sent from agent.<br/>
 <pre>
 {
-  "Name" : "enable",
+  "Name" : "Agent name",
   "Status" : 0,
   "AcqTime" : "00000000ffffffff"
 }
@@ -440,10 +441,11 @@ Register/update agent information.<br/>
 <tr><td>Status</td><td>Integer</td><td>A status of command execution</td></tr>
 <tr><td>AcqTime</td><td>String</td><td>Hexadecimal explession in 16 characters of status acquisition time (unix epoch time)</td></tr>
 </table><br/>
-<u>In case of operation status update</u>
+<u>In case of operation status update</u><br/>
+This request is sent from agent.<br/>
 <pre>
 {
-  "Name" : "enable",
+  "Name" : "Agent name",
   "OpStatus" : 0,
 }
 </pre>
@@ -451,7 +453,32 @@ Register/update agent information.<br/>
 <tr><td>Name</td><td>String</td><td>Agent name</td></tr>
 <tr><td>OpStatus</td><td>Integer</td><td>A status of command execution</td></tr>
 </table><br/>
+<u>In case of status command update</u><br/>
+This request is sent from user.<br/>
+<pre>
+{
+  "Name" : "Agent name",
+  "StatusCmd" : 0,
+}
+</pre>
+<table class="tblstyle">
+<tr><td>Name</td><td>String</td><td>Agent name</td></tr>
+<tr><td>StatusCmd</td><td>Integer</td><td>Command ID for status acquisition</td></tr>
+</table><br/>
+<u>In case of operation command update</u><br/>
+This request is sent from user.<br/>
+<pre>
+{
+  "Name" : "Agent name",
+  "OpCmd" : 0,
+}
+</pre>
+<table class="tblstyle">
+<tr><td>Name</td><td>String</td><td>Agent name</td></tr>
+<tr><td>OpCmd</td><td>Integer</td><td>Command ID for operation</td></tr>
+</table><br/>
 </li>
+
 <li>Response
 <pre>
 {
@@ -463,6 +490,8 @@ Register/update agent information.<br/>
 <table class="tblstyle">
 <tr><td>Code</td><td>Integer</td><td>Result code
                                      0:success(HTTP status code=200),
+                                     4206:Authorization error(HTTP status code=401),
+                                     4204:Access Right error(HTTP status code=403),
                                      4203:No request specified(HTTP status code=400),
                                      4205:Fobidden character is specified in host name(HTTP status code=400),
                                      4201:Name element does not exist(HTTP status code=400)
