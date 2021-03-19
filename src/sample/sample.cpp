@@ -84,6 +84,8 @@ void InitMessageResource()
 	MessageProc::AddJpn(MSG_COMADD, L"コマンドを追加しました。");
 	MessageProc::AddEng(MSG_COMMODIFY, L"A command has been modified.");
 	MessageProc::AddJpn(MSG_COMMODIFY, L"コマンドを変更しました。");
+	MessageProc::AddEng(MSG_CMDOPERATIONCHGD, L"Command for operation has been changed.");
+	MessageProc::AddJpn(MSG_CMDOPERATIONCHGD, L"操作コマンドが変更されました。");
 	MessageProc::AddEng(MSG_CMDSTATUSACQCHGD, L"Command for status acquisition has been changed.");
 	MessageProc::AddJpn(MSG_CMDSTATUSACQCHGD, L"状態取得コマンドが変更されました。");
 	MessageProc::AddEng(MSG_CMDOPSTARTED, L"Command for operation has started.");

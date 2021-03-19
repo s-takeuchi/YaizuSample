@@ -92,6 +92,23 @@ StkObject* ApiPostAgentInfo::ExecuteImpl(StkObject* ReqObj, int Method, wchar_t 
 			CommonError_NoElemInRequest(ResObj, L"Name");
 			return ResObj;
 		}
+		// Check user credential and permission for command change request
+		int UserId = -1;
+		if (StatusCmdFlag || OpCmdFlag) {
+			wchar_t UserName[ApiBase::MAXLEN_OF_USERNAME];
+			if (!CheckCredentials(Token, UserName, &UserId)) {
+				StkObject* ResObj = new StkObject(L"");
+				AddCodeAndMsg(ResObj, MSG_COMMON_AUTH_ERROR, MessageProc::GetMsgEng(MSG_COMMON_AUTH_ERROR), MessageProc::GetMsgJpn(MSG_COMMON_AUTH_ERROR));
+				*ResultCode = 401;
+				return ResObj;
+			}
+			if (!IsAdminUser(Token)) {
+				StkObject* ResObj = new StkObject(L"");
+				AddCodeAndMsg(ResObj, MSG_NO_EXEC_RIGHT, MessageProc::GetMsgEng(MSG_NO_EXEC_RIGHT), MessageProc::GetMsgJpn(MSG_NO_EXEC_RIGHT));
+				*ResultCode = 403;
+				return ResObj;
+			}
+		}
 		if (StatusCmdFlag) {
 			DataAccess::GetInstance()->SetAgentInfoForStatusCmd(Name, StatusCmd);
 
@@ -101,7 +118,18 @@ StkObject* ApiPostAgentInfo::ExecuteImpl(StkObject* ReqObj, int Method, wchar_t 
 			wchar_t LogMsgJa[512] = L"";
 			StkPlSwPrintf(LogMsg, 256, L"%ls [%ls, %ls]", MessageProc::GetMsgEng(MSG_CMDSTATUSACQCHGD), Name, CmdName);
 			StkPlSwPrintf(LogMsgJa, 256, L"%ls [%ls, %ls]", MessageProc::GetMsgJpn(MSG_CMDSTATUSACQCHGD), Name, CmdName);
-			StkWebAppUm_AddLogMsg(LogMsg, LogMsgJa, -1);
+			StkWebAppUm_AddLogMsg(LogMsg, LogMsgJa, UserId);
+		}
+		if (OpCmdFlag) {
+			DataAccess::GetInstance()->SetAgentInfoForOpCmd(Name, OpCmd);
+
+			wchar_t CmdName[DA_MAXLEN_OF_CMDNAME] = L"";
+			DataAccess::GetInstance()->GetCommandNameById(OpCmd, CmdName);
+			wchar_t LogMsg[512] = L"";
+			wchar_t LogMsgJa[512] = L"";
+			StkPlSwPrintf(LogMsg, 256, L"%ls [%ls, %ls]", MessageProc::GetMsgEng(MSG_CMDOPERATIONCHGD), Name, CmdName);
+			StkPlSwPrintf(LogMsgJa, 256, L"%ls [%ls, %ls]", MessageProc::GetMsgJpn(MSG_CMDOPERATIONCHGD), Name, CmdName);
+			StkWebAppUm_AddLogMsg(LogMsg, LogMsgJa, UserId);
 		}
 		if (OpStatusFlag) {
 			DataAccess::GetInstance()->SetAgentInfoForOpStatus(Name, OpStatus);
@@ -123,13 +151,10 @@ StkObject* ApiPostAgentInfo::ExecuteImpl(StkObject* ReqObj, int Method, wchar_t 
 				StkWebAppUm_AddLogMsg(LogMsg, LogMsgJa, -1);
 			}
 		}
-		if (OpCmdFlag) {
-			DataAccess::GetInstance()->SetAgentInfoForOpCmd(Name, OpCmd);
-		}
 		if (!StatusCmdFlag && !OpCmdFlag && !OpStatusFlag) {
 			int RetSetAgtInfo = DataAccess::GetInstance()->SetAgentInfo(Name, Status, StatusTime);
 			if (RetSetAgtInfo == 0) {
-				// Addition
+				// Add new agent
 				DataAccess::GetInstance()->SetAgentInfoForOpStatus(Name, -984);
 				wchar_t LogMsg[512] = L"";
 				wchar_t LogMsgJa[512] = L"";
