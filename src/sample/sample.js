@@ -177,8 +177,14 @@ function displayAgentInfo() {
         let dateUpdTime = new Date(updTimeInt * 1000);
         let acqTimeStr = dateAcqTime.toString()
         let updTimeStr = dateUpdTime.toString()
+        let tmpChkBoxStr = '';
+        if (userRole == 1) {
+            tmpChkBoxStr = '<td><label>' + AgentInfo[Loop].Name + '</label></td>';
+        } else {
+            tmpChkBoxStr = '<td><div class="checkbox"><label><input type="checkbox" id="agtInfoId' + Loop + '" value="" onclick="switchAgentInfoButton()"/>&nbsp;' + AgentInfo[Loop].Name + '</label></div></td>';
+        }
         tBody.append('<tr>' +
-                     '<td><div class="checkbox"><label><input type="checkbox" id="agtInfoId' + Loop + '" value="" onclick="switchAgentInfoButton()"/>' + AgentInfo[Loop].Name + '</label></div></td>' +
+                     tmpChkBoxStr + 
                      '<td><div align="center" id="statusTd' + Loop + '" data-toggle="tooltip" title="' + getTooltipStr() + '">' + AgentInfo[Loop].Status + '</div></td>' +
                      '<td class="d-none d-sm-table-cell">' + cmdNameStatus + '</td>' +
                      '<td>' + acqTimeStr + '</td>' +
