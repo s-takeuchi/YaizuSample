@@ -114,10 +114,10 @@ function transDisplayAgentInfo() {
 }
 
 function displayAgentInfo() {
-    drowContainer($('<div id="agtinfo" class="row col-xs-12" style="display:block"></div>'));
+    drowContainerFluid($('<div id="agtinfo" class="col-xs-12" style="display:block"></div>'));
     clearRsCommand();
 
-    $('#agtinfo').append('<h2>' + getClientMessage('AGENTINFO') + '</h2>');
+    //$('#agtinfo').append('<h2>' + getClientMessage('AGENTINFO') + '</h2>');
     if (statusCode['API_GET_AGTINFO'] == -1 || statusCode['API_GET_AGTINFO'] == 0) {
         displayAlertDanger('#agtinfo', getClientMessage('CONNERR'));
         return;
@@ -139,9 +139,9 @@ function displayAgentInfo() {
     selectedOperationCommand = -1;
 
     var agentInfoData = $('<table>');
-    agentInfoData.addClass('table table-striped');
+    agentInfoData.addClass('table stktable table-striped');
 
-    var tHead = $('<thead>');
+    var tHead = $('<thead class="thead-light">');
     tHead.append('<tr>' +
                  '<th>' + getClientMessage('AINAME') + '</th>' +
                  '<th>' + getClientMessage('AISTATUS') + '</th>' +
@@ -155,7 +155,9 @@ function displayAgentInfo() {
 
     var tBody = $('<tbody>');
     agentInfoData.append(tBody);
-    $('#agtinfo').append(agentInfoData);
+    var agentInfoDataDiv = $('<div id="agentinfotable" class="table-responsive">')
+    agentInfoDataDiv.append(agentInfoData);
+    $('#agtinfo').append(agentInfoDataDiv);
     for (var Loop = 0; Loop < AgentInfo.length; Loop++) {
         var cmdNameStatus = '';
         for (var loopcmd = 0; commandList != null && loopcmd < commandList.length; loopcmd++) {
@@ -213,6 +215,7 @@ function displayAgentInfo() {
     $('#agtinfo').append('<button type="button" id="execOpeCommand" class="btn btn-primary disabled" onclick="displayExecCommandDlg()">' + getClientMessage('AIEXECCMD') + '</button> ');
     $('#agtinfo').append('<p></p>');
     $('td').css('vertical-align', 'middle');
+    resizeComponent();
 }
 
 function getTooltipStr() {
@@ -761,6 +764,19 @@ function checkLoginAfterApiCall() {
         return;
     }
 }
+function resizeComponent() {
+    var wsize = $(window).width();
+    var hsize = $(window).height() - 110;
+    $("#agentinfotable").css("height", hsize + "px");
+}
+
+$(document).ready(function () {
+    resizeComponent();
+});
+
+$(window).resize(function () {
+    resizeComponent();
+});
 
 window.onload = function() {
     initClientMessage();
