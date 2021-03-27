@@ -211,7 +211,7 @@ function displayAgentInfo() {
             $('#opStatusTd' + Loop).css('background-color', 'LightCoral');
         }
     }
-    let agentInfoButtonDiv = $('<div id="agentinfobutton" style="padding: 8px 8px 10px 10px; background-color: #e9ecef">')
+    let agentInfoButtonDiv = $('<div id="agentinfobutton" style="padding: 6px 6px 10px 10px; background-color: #e9ecef">')
     agentInfoButtonDiv.append('<button type="button" id="setAgentStatusCommand" class="btn btn-dark disabled" onclick="displayAgentStatusCommandDlg()">' + getClientMessage('AISETSTATUSCMD') + '</button> ');
     agentInfoButtonDiv.append('<button type="button" id="execOpeCommand" class="btn btn-dark disabled" onclick="displayExecCommandDlg()">' + getClientMessage('AIEXECCMD') + '</button> ');
     $('#agtinfo').append(agentInfoButtonDiv);
