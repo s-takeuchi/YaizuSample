@@ -554,6 +554,15 @@ function refreshAfterUpdateServerInfo() {
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 
+function transDisplayFile() {
+
+}
+
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+
 function transDisplayCommand() {
     apiCall('GET', '/api/command/', null, 'API_GET_COMMAND', displayCommand);
 }
@@ -738,15 +747,26 @@ function checkLoginAfterApiCall() {
         setLoginResult(1);
         return;
     } else {
-        var contents = [
-            { actApiName : "transDisplayAgentInfo()", title : 'Agent Info' },
-            { actApiName : "transDisplayServerInfo()", title : 'Server Info' },
-            { actApiName : "transDisplayCommand()", title : 'Command' }
-        ];
+        userRole = responseData['API_GET_USER'].Data.User.Role;
+
+        let contents = [];
+        if (userRole == 1) {
+            contents = [
+                { actApiName : "transDisplayAgentInfo()", title : 'Agent Info' },
+                { actApiName : "transDisplayFile()", title : "File" },
+                { actApiName : "transDisplayCommand()", title : 'Command' }
+            ];
+        } else {
+            contents = [
+                { actApiName : "transDisplayAgentInfo()", title : 'Agent Info' },
+                { actApiName : "transDisplayServerInfo()", title : 'Server Info' },
+                { actApiName : "transDisplayFile()", title : "File" },
+                { actApiName : "transDisplayCommand()", title : 'Command' }
+            ];
+        }
         initMainPage('SERVAL', 'squirrel.svg', contents);
 
-        userRole = responseData['API_GET_USER'].Data.User.Role;
-        var usermenuContents = [];
+        let usermenuContents = [];
         if (userRole == 1) {
             usermenuContents = [
                 { actApiName: 'transDisplayLogInfo()', title: getClientMessage('OPE_LOG') },
