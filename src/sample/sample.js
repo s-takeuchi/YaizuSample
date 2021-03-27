@@ -128,20 +128,20 @@ function displayAgentInfo() {
     }
     switchAgentInfoButton();
 
-    var AgentInfo = getArray(responseData['API_GET_AGTINFO'].Data.AgentInfo);
+    let AgentInfo = getArray(responseData['API_GET_AGTINFO'].Data.AgentInfo);
     if (AgentInfo == null) {
         $('#agtinfo').append(getClientMessage('NOAGTINFO'));
         return;
     }
-    var commandList = getArray(responseData['API_GET_COMMAND'].Data.Command);
+    let commandList = getArray(responseData['API_GET_COMMAND'].Data.Command);
 
     selectedAgentStatusCommand = -1;
     selectedOperationCommand = -1;
 
-    var agentInfoData = $('<table>');
+    let agentInfoData = $('<table>');
     agentInfoData.addClass('table stktable table-striped');
 
-    var tHead = $('<thead class="thead-light">');
+    let tHead = $('<thead class="thead-light">');
     tHead.append('<tr>' +
                  '<th>' + getClientMessage('AINAME') + '</th>' +
                  '<th>' + getClientMessage('AISTATUS') + '</th>' +
@@ -153,21 +153,21 @@ function displayAgentInfo() {
                  '</tr>');
     agentInfoData.append(tHead);
 
-    var tBody = $('<tbody>');
+    let tBody = $('<tbody>');
     agentInfoData.append(tBody);
-    var agentInfoDataDiv = $('<div id="agentinfotable" class="table-responsive">')
+    let agentInfoDataDiv = $('<div id="agentinfotable" class="table-responsive">')
     agentInfoDataDiv.append(agentInfoData);
     $('#agtinfo').append(agentInfoDataDiv);
-    for (var Loop = 0; Loop < AgentInfo.length; Loop++) {
-        var cmdNameStatus = '';
-        for (var loopcmd = 0; commandList != null && loopcmd < commandList.length; loopcmd++) {
+    for (let Loop = 0; Loop < AgentInfo.length; Loop++) {
+        let cmdNameStatus = '';
+        for (let loopcmd = 0; commandList != null && loopcmd < commandList.length; loopcmd++) {
             if (AgentInfo[Loop].StatusCmd == commandList[loopcmd].Id) {
                 cmdNameStatus = commandList[loopcmd].Name;
                 break;
             }
         }
-        var cmdNameOp = '';
-        for (var loopcmd = 0; commandList != null && loopcmd < commandList.length; loopcmd++) {
+        let cmdNameOp = '';
+        for (let loopcmd = 0; commandList != null && loopcmd < commandList.length; loopcmd++) {
             if (AgentInfo[Loop].OpCmd == commandList[loopcmd].Id) {
                 cmdNameOp = commandList[loopcmd].Name;
                 break;
@@ -211,10 +211,10 @@ function displayAgentInfo() {
             $('#opStatusTd' + Loop).css('background-color', 'LightCoral');
         }
     }
-    $('#agtinfo').append('<button type="button" id="setAgentStatusCommand" class="btn btn-primary disabled" onclick="displayAgentStatusCommandDlg()">' + getClientMessage('AISETSTATUSCMD') + '</button> ');
-    $('#agtinfo').append('<button type="button" id="execOpeCommand" class="btn btn-primary disabled" onclick="displayExecCommandDlg()">' + getClientMessage('AIEXECCMD') + '</button> ');
-    $('#agtinfo').append('<p></p>');
-    $('td').css('vertical-align', 'middle');
+    let agentInfoButtonDiv = $('<div id="agentinfobutton" style="padding: 8px 8px 10px 10px; background-color: #e9ecef">')
+    agentInfoButtonDiv.append('<button type="button" id="setAgentStatusCommand" class="btn btn-dark disabled" onclick="displayAgentStatusCommandDlg()">' + getClientMessage('AISETSTATUSCMD') + '</button> ');
+    agentInfoButtonDiv.append('<button type="button" id="execOpeCommand" class="btn btn-dark disabled" onclick="displayExecCommandDlg()">' + getClientMessage('AIEXECCMD') + '</button> ');
+    $('#agtinfo').append(agentInfoButtonDiv);
     resizeComponent();
 }
 
