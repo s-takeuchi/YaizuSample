@@ -560,12 +560,31 @@ function transDisplayFileMgmt() {
 function displayFileMgmt() {
     drowContainerFluid($('<div id="filemgmt" class="col-xs-12" style="display:block"></div>'));
     let fileMgmtDataDiv = $('<div id="filemgmttable" class="table-responsive">')
-    fileMgmtDataDiv.append('hello, world!!');
+    fileMgmtDataDiv.append('hello, world!!<br/>');
     let fileMgmtButtonDiv = $('<div id="filemgmtbutton" style="padding: 6px 6px 10px 10px; background-color: #e9ecef">')
-    fileMgmtButtonDiv.append('<form method="post" action="/api/filea/" enctype="multipart/form-data"><input type="file" name="avatar"/><button type="submit" class="btn btn-dark">Send</button></form>');
+    fileMgmtButtonDiv.append('<form method="post" action="/api/filea/" enctype="multipart/form-data"><input type="file" id="fileupload" multiple/><button type="submit" class="btn btn-dark">Send</button></form>');
     $('#filemgmt').append(fileMgmtDataDiv);
     $('#filemgmt').append(fileMgmtButtonDiv);
     resizeComponent();
+
+    let fileUpload = document.getElementById('fileupload');
+    fileUpload.addEventListener('change', function () {
+        for (let loop = 0; loop < this.files.length; loop++) {
+            if (this.files[loop] === undefined) {
+                return;
+            }
+            let fr = new FileReader();
+            fr.readAsBinaryString(this.files[loop]);
+            fr.onload = (function(targetFile) {
+                
+                return function(evt) {
+                    fileMgmtDataDiv.append('<br/>upload!! ' + targetFile.name + '<br/>');
+                    fileMgmtDataDiv.append(evt.target.result);
+                    fileMgmtDataDiv.append('<br/>load completed<br/>');
+                }
+            })(this.files[loop]);
+        }
+    });
 }
 
 ////////////////////////////////////////////////////////////////////////////////
