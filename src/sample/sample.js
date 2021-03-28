@@ -117,7 +117,6 @@ function displayAgentInfo() {
     drowContainerFluid($('<div id="agtinfo" class="col-xs-12" style="display:block"></div>'));
     clearRsCommand();
 
-    //$('#agtinfo').append('<h2>' + getClientMessage('AGENTINFO') + '</h2>');
     if (statusCode['API_GET_AGTINFO'] == -1 || statusCode['API_GET_AGTINFO'] == 0) {
         displayAlertDanger('#agtinfo', getClientMessage('CONNERR'));
         return;
@@ -554,8 +553,19 @@ function refreshAfterUpdateServerInfo() {
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 
-function transDisplayFile() {
+function transDisplayFileMgmt() {
+    displayFileMgmt();
+}
 
+function displayFileMgmt() {
+    drowContainerFluid($('<div id="filemgmt" class="col-xs-12" style="display:block"></div>'));
+    let fileMgmtDataDiv = $('<div id="filemgmttable" class="table-responsive">')
+    fileMgmtDataDiv.append('hello, world!!');
+    let fileMgmtButtonDiv = $('<div id="filemgmtbutton" style="padding: 6px 6px 10px 10px; background-color: #e9ecef">')
+    fileMgmtButtonDiv.append('<form method="post" action="/api/filea/" enctype="multipart/form-data"><input type="file" name="avatar"/><button type="submit" class="btn btn-dark">Send</button></form>');
+    $('#filemgmt').append(fileMgmtDataDiv);
+    $('#filemgmt').append(fileMgmtButtonDiv);
+    resizeComponent();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -623,7 +633,7 @@ function displayCommand() {
     $('#command').append('<button type="button" id="commandBtnUpdate" class="btn btn-primary disabled" onclick="updateCommand(true)">' + getClientMessage('COMUPDATE') + '</button> ');
     $('#command').append('<button type="button" id="commandBtnDelete" class="btn btn-primary disabled" onclick="deleteCommand()">' + getClientMessage('COMDELETE') + '</button> ');
     $('#command').append('<p></p>');
-    $('td').css('vertical-align', 'middle');
+    //$('td').css('vertical-align', 'middle');
 }
 
 function updateCommand(updateFlag) {
@@ -753,14 +763,14 @@ function checkLoginAfterApiCall() {
         if (userRole == 1) {
             contents = [
                 { actApiName : "transDisplayAgentInfo()", title : 'Agent Info' },
-                { actApiName : "transDisplayFile()", title : "File" },
+                { actApiName : "transDisplayFileMgmt()", title : "File" },
                 { actApiName : "transDisplayCommand()", title : 'Command' }
             ];
         } else {
             contents = [
                 { actApiName : "transDisplayAgentInfo()", title : 'Agent Info' },
                 { actApiName : "transDisplayServerInfo()", title : 'Server Info' },
-                { actApiName : "transDisplayFile()", title : "File" },
+                { actApiName : "transDisplayFileMgmt()", title : "File" },
                 { actApiName : "transDisplayCommand()", title : 'Command' }
             ];
         }
@@ -788,6 +798,7 @@ function resizeComponent() {
     var wsize = $(window).width();
     var hsize = $(window).height() - 110;
     $("#agentinfotable").css("height", hsize + "px");
+    $("#filemgmttable").css("height", hsize + "px");
 }
 
 $(document).ready(function () {
