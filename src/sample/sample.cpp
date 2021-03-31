@@ -20,6 +20,7 @@
 #include "ApiGetCommandForOperation.h"
 #include "ApiGetFile.h"
 #include "ApiPostFile.h"
+#include "ApiGetFileList.h"
 #include "dataaccess.h"
 
 wchar_t Global::Global_WorkDirPath[FILENAME_MAX];
@@ -202,6 +203,8 @@ void Server(wchar_t* IpAddr, int Port, int NumOfWorkerThreads, int ThreadInterva
 	int Add11 = Soc->AddReqHandler(StkWebAppExec::STKWEBAPP_METHOD_GET, L"/api/file/$/$/", (StkWebAppExec*)ApiGetFileObj);
 	ApiPostFile* ApiPostFileObj = new ApiPostFile();
 	int Add12 = Soc->AddReqHandler(StkWebAppExec::STKWEBAPP_METHOD_POST, L"/api/file/", (StkWebAppExec*)ApiPostFileObj);
+	ApiGetFileList* ApiGetFileListObj = new ApiGetFileList();
+	int Add13 = Soc->AddReqHandler(StkWebAppExec::STKWEBAPP_METHOD_GET, L"/api/filelist/", (StkWebAppExec*)ApiGetFileListObj);
 	StkWebAppUm_RegisterApi(Soc);
 
 	////////// Main logic starts
@@ -219,6 +222,7 @@ void Server(wchar_t* IpAddr, int Port, int NumOfWorkerThreads, int ThreadInterva
 	int Del10 = Soc->DeleteReqHandler(StkWebAppExec::STKWEBAPP_METHOD_GET, L"/api/opcommand/$/");
 	int Del11 = Soc->DeleteReqHandler(StkWebAppExec::STKWEBAPP_METHOD_GET, L"/api/file/$/$/");
 	int Del12 = Soc->DeleteReqHandler(StkWebAppExec::STKWEBAPP_METHOD_POST, L"/api/file/");
+	int Del13 = Soc->DeleteReqHandler(StkWebAppExec::STKWEBAPP_METHOD_GET, L"/api/filelist/");
 	StkWebAppUm_UnregisterApi(Soc);
 
 	ApiGetCommandForStatus::StopFlag = true;

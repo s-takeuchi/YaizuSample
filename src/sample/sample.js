@@ -554,13 +554,32 @@ function refreshAfterUpdateServerInfo() {
 ////////////////////////////////////////////////////////////////////////////////
 
 function transDisplayFileMgmt() {
-    displayFileMgmt();
+    apiCall('GET', '/api/filelist/', null, 'API_GET_FILELIST', displayFileMgmt);
 }
 
 function displayFileMgmt() {
     drowContainerFluid($('<div id="filemgmt" class="col-xs-12" style="display:block"></div>'));
     let fileMgmtDataDiv = $('<div id="filemgmttable" class="table-responsive">')
-    fileMgmtDataDiv.append('hello, world!!<br/>');
+    let fileList = getArray(responseData['API_GET_FILELIST'].Data.FileInfo);
+
+    let tableListData = $('<table>');
+    tableListData.addClass('table stktable table-striped');
+
+    let tHead = $('<thead class="thead-light">');
+    tHead.append('<tr>' +
+                 '<th>File name</th>' +
+                 '</tr>');
+    tableListData.append(tHead);
+
+    let tBody = $('<tbody>');
+    for (let Loop = 0; Loop < fileList.length; Loop++) {
+        tBody.append('<tr><td>' + fileList[Loop].Name + '</td></tr>');
+    }
+
+    tableListData.append(tBody);
+    fileMgmtDataDiv.append(tableListData);
+
+
     let fileMgmtButtonDiv = $('<div id="filemgmtbutton" style="padding: 6px 6px 10px 10px; background-color: #e9ecef">')
     fileMgmtButtonDiv.append('<form method="post" action="/api/filea/" enctype="multipart/form-data"><input type="file" id="fileupload" multiple/><button type="submit" class="btn btn-dark">Send</button></form>');
     $('#filemgmt').append(fileMgmtDataDiv);

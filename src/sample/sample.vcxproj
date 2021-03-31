@@ -109,6 +109,7 @@
     <ClCompile Include="ApiGetCommandForOperation.cpp" />
     <ClCompile Include="ApiGetCommandForStatus.cpp" />
     <ClCompile Include="ApiGetFile.cpp" />
+    <ClCompile Include="ApiGetFileList.cpp" />
     <ClCompile Include="ApiGetServerInfo.cpp" />
     <ClCompile Include="ApiPostAgentInfo.cpp" />
     <ClCompile Include="ApiPostCommand.cpp" />
@@ -124,6 +125,7 @@
     <ClInclude Include="ApiGetCommandForOperation.h" />
     <ClInclude Include="ApiGetCommandForStatus.h" />
     <ClInclude Include="ApiGetFile.h" />
+    <ClInclude Include="ApiGetFileList.h" />
     <ClInclude Include="ApiGetServerInfo.h" />
     <ClInclude Include="ApiPostAgentInfo.h" />
     <ClInclude Include="ApiPostCommand.h" />
