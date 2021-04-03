@@ -10,7 +10,6 @@ StkObject* ApiGetFileList::ExecuteImpl(StkObject* ReqObj, int Method, wchar_t Ur
 {
 	wchar_t TmpWorkDir[FILENAME_MAX] = L"";
 	StkPlWcsCpy(TmpWorkDir, FILENAME_MAX, Global::Global_WorkDirPath);
-	StkPlWcsCat(TmpWorkDir, FILENAME_MAX, L"\\*");
 	FileNameChain* FileNameChainObj = StkPlCreateFileNameList(TmpWorkDir);
 	FileNameChain* TopFileNameChainObj = FileNameChainObj;
 	if (FileNameChainObj == NULL) {
