@@ -35,6 +35,7 @@ function initClientMessage() {
 
     addClientMessage('NOAGTINFO', {'en':'<p>No agent information</p>', 'ja':'<p>エージェント情報はありません</p>'});
     addClientMessage('NOCMDEXIST', {'en':'<p>No command exists</p>', 'ja':'<p>コマンドはありません</p>'});
+    addClientMessage('NOFILEEXIST', {'en':'<p>No file exists</p>', 'ja':'<p>ファイルはありません</p>'});
 
     addClientMessage('AINAME', {'en':'Name', 'ja':'名称'});
     addClientMessage('AISTATUS', {'en':'Status', 'ja':'状態'});
@@ -559,7 +560,11 @@ function transDisplayFileMgmt() {
 
 function displayFileMgmt() {
     drowContainerFluid($('<div id="filemgmt" class="col-xs-12" style="display:block"></div>'));
-    let fileMgmtDataDiv = $('<div id="filemgmttable" class="table-responsive">')
+    let fileMgmtDataDiv = $('<div id="filemgmttable" class="table-responsive">');
+    if (responseData['API_GET_FILELIST'].Data === undefined) {
+        $('#filemgmt').append(getClientMessage('NOFILEEXIST'));
+        return;
+    }
     let fileList = getArray(responseData['API_GET_FILELIST'].Data.FileInfo);
 
     let tableListData = $('<table>');
