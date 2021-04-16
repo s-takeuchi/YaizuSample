@@ -10,9 +10,9 @@ StkObject* ApiGetFileList::ExecuteImpl(StkObject* ReqObj, int Method, wchar_t Ur
 {
 	wchar_t TmpWorkDir[FILENAME_MAX] = L"";
 	StkPlWcsCpy(TmpWorkDir, FILENAME_MAX, Global::Global_WorkDirPath);
-	FileNameChain* FileNameChainObj = StkPlCreateFileNameList(TmpWorkDir);
-	FileNameChain* TopFileNameChainObj = FileNameChainObj;
-	if (FileNameChainObj == NULL) {
+	FileInfoList* FileInfoListObj = StkPlCreateFileInfoList(TmpWorkDir);
+	FileInfoList* TopFileInfoListObj = FileInfoListObj;
+	if (FileInfoListObj == NULL) {
 		StkObject* TmpObj = new StkObject(L"");
 		AddCodeAndMsg(TmpObj, 0, L"", L"");
 		*ResultCode = 200;
@@ -20,16 +20,17 @@ StkObject* ApiGetFileList::ExecuteImpl(StkObject* ReqObj, int Method, wchar_t Ur
 	} else {
 		StkObject* TmpObj = new StkObject(L"");
 		StkObject* TmpObjD = new StkObject(L"Data");
-		while (FileNameChainObj) {
+		while (FileInfoListObj) {
 			StkObject* FileNameObj = new StkObject(L"FileInfo");
-			FileNameObj->AppendChildElement(new StkObject(L"Name", FileNameChainObj->FileName));
+			FileNameObj->AppendChildElement(new StkObject(L"Name", FileInfoListObj->FileName));
+			FileNameObj->AppendChildElement(new StkObject(L"Size", (int)FileInfoListObj->Size));
 			TmpObjD->AppendChildElement(FileNameObj);
-			FileNameChainObj = FileNameChainObj->Next;
+			FileInfoListObj = FileInfoListObj->Next;
 		}
 		AddCodeAndMsg(TmpObj, 0, L"", L"");
 		TmpObj->AppendChildElement(TmpObjD);
 		*ResultCode = 200;
-		StkPlDeleteFileNameChain(TopFileNameChainObj);
+		StkPlDeleteFileInfoList(TopFileInfoListObj);
 		return TmpObj;
 	}
 }

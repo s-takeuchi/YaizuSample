@@ -572,13 +572,13 @@ function displayFileMgmt() {
 
     let tHead = $('<thead class="thead-light">');
     tHead.append('<tr>' +
-                 '<th>File name</th>' +
+                 '<th>File name</th>' + '<th>File size</th>' +
                  '</tr>');
     tableListData.append(tHead);
 
     let tBody = $('<tbody>');
     for (let Loop = 0; Loop < fileList.length; Loop++) {
-        tBody.append('<tr><td>' + fileList[Loop].Name + '</td></tr>');
+        tBody.append('<tr><td>' + fileList[Loop].Name + '</td><td>' + fileList[Loop].Size + '</td></tr>');
     }
 
     tableListData.append(tBody);
