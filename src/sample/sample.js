@@ -572,13 +572,16 @@ function displayFileMgmt() {
 
     let tHead = $('<thead class="thead-light">');
     tHead.append('<tr>' +
-                 '<th>File name</th>' + '<th>File size</th>' +
+                 '<th>File name</th>' + '<th>File size</th>' + '<th>Update time</th>' +
                  '</tr>');
     tableListData.append(tHead);
 
     let tBody = $('<tbody>');
     for (let Loop = 0; Loop < fileList.length; Loop++) {
-        tBody.append('<tr><td>' + fileList[Loop].Name + '</td><td>' + fileList[Loop].Size + '</td></tr>');
+        let updTimeInt = parseInt(fileList[Loop].UpdTime, 16);
+        let dateUpdTime = new Date(updTimeInt * 1000);
+
+        tBody.append('<tr><td>' + fileList[Loop].Name + '</td><td>' + fileList[Loop].Size + '</td><td>' + dateUpdTime + '</td></tr>');
     }
 
     tableListData.append(tBody);

@@ -21,10 +21,15 @@ StkObject* ApiGetFileList::ExecuteImpl(StkObject* ReqObj, int Method, wchar_t Ur
 		StkObject* TmpObj = new StkObject(L"");
 		StkObject* TmpObjD = new StkObject(L"Data");
 		while (FileInfoListObj) {
-			StkObject* FileNameObj = new StkObject(L"FileInfo");
-			FileNameObj->AppendChildElement(new StkObject(L"Name", FileInfoListObj->FileName));
-			FileNameObj->AppendChildElement(new StkObject(L"Size", (int)FileInfoListObj->Size));
-			TmpObjD->AppendChildElement(FileNameObj);
+			if (FileInfoListObj->IsDir == false) {
+				StkObject* FileNameObj = new StkObject(L"FileInfo");
+				FileNameObj->AppendChildElement(new StkObject(L"Name", FileInfoListObj->FileName));
+				FileNameObj->AppendChildElement(new StkObject(L"Size", (int)FileInfoListObj->Size));
+				wchar_t UpdTimeStr[DA_MAXLEN_OF_UNIXTIME * 2 + 1] = L"";
+				StkPlSwPrintf(UpdTimeStr, DA_MAXLEN_OF_UNIXTIME * 2 + 1, L"%016x", FileInfoListObj->UpdateTime);
+				FileNameObj->AppendChildElement(new StkObject(L"UpdTime", UpdTimeStr));
+				TmpObjD->AppendChildElement(FileNameObj);
+			}
 			FileInfoListObj = FileInfoListObj->Next;
 		}
 		AddCodeAndMsg(TmpObj, 0, L"", L"");
