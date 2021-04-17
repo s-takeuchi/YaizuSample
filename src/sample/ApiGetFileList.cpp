@@ -12,7 +12,16 @@ StkObject* ApiGetFileList::ExecuteImpl(StkObject* ReqObj, int Method, wchar_t Ur
 	StkPlWcsCpy(TmpWorkDir, FILENAME_MAX, Global::Global_WorkDirPath);
 	FileInfoList* FileInfoListObj = StkPlCreateFileInfoList(TmpWorkDir);
 	FileInfoList* TopFileInfoListObj = FileInfoListObj;
-	if (FileInfoListObj == NULL) {
+	bool AllDir = true;
+	while (FileInfoListObj) {
+		if (FileInfoListObj->IsDir == false) {
+			AllDir = false;
+		}
+		FileInfoListObj = FileInfoListObj->Next;
+	}
+	FileInfoListObj = TopFileInfoListObj;
+
+	if (FileInfoListObj == NULL || AllDir) {
 		StkObject* TmpObj = new StkObject(L"");
 		AddCodeAndMsg(TmpObj, 0, L"", L"");
 		*ResultCode = 200;
