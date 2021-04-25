@@ -607,7 +607,15 @@ function displayFileMgmt() {
                     let encData = "";
                     let contents = [];
                     for (let loop = 0; loop < orgData.byteLength; loop++) {
-                        encData = encData + orgData[loop].toString(16).toUpperCase().padStart(2, '0');
+                        // Do NOT use padStart for IE11
+                        if (orgData[loop] == 0) {
+                            encData = encData + '00';
+                        } else if (orgData[loop] < 16) {
+                            encData = encData + '0';
+                            encData = encData + orgData[loop].toString(16).toUpperCase();
+                        } else {
+                            encData = encData + orgData[loop].toString(16).toUpperCase();
+                        }
                         if (loop % 1000000 == 999999 || loop == orgData.byteLength - 1) {
                             let offset = 0;
                             if (loop < 1000000) {
