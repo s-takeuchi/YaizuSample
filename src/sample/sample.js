@@ -587,9 +587,8 @@ function displayFileMgmt() {
     tableListData.append(tBody);
     fileMgmtDataDiv.append(tableListData);
 
-
-    let fileMgmtButtonDiv = $('<div id="filemgmtbutton" style="padding: 6px 6px 10px 10px; background-color: #e9ecef">')
-    fileMgmtButtonDiv.append('<form method="post" action="/api/filea/" enctype="multipart/form-data"><input type="file" id="fileupload" multiple/><button type="submit" class="btn btn-dark">Send</button></form>');
+    let fileMgmtButtonDiv = $('<div id="filemgmtbutton" style="padding: 6px 6px 10px 10px; background-color: #e9ecef; height:46px">')
+    fileMgmtButtonDiv.append('<form id="fileuploadform" method="post" action="/api/filea/" enctype="multipart/form-data"><input type="file" id="fileupload" multiple/></form>');
     $('#filemgmt').append(fileMgmtDataDiv);
     $('#filemgmt').append(fileMgmtButtonDiv);
     resizeComponent();
@@ -601,13 +600,33 @@ function displayFileMgmt() {
                 return;
             }
             let fr = new FileReader();
-            fr.readAsBinaryString(this.files[loop]);
+            fr.readAsArrayBuffer(this.files[loop]);
             fr.onload = (function(targetFile) {
-                
                 return function(evt) {
+                    let orgData = new Uint8Array(evt.target.result);
+                    let encData = "";
+                    let contents = [];
+                    for (let loop = 0; loop < orgData.byteLength; loop++) {
+                        encData = encData + orgData[loop].toString(16).toUpperCase().padStart(2, '0');
+                        if (loop % 1000000 == 999999 || loop == orgData.byteLength - 1) {
+                            let offset = 0;
+                            if (loop < 1000000) {
+                                offset = 0;
+                            } else {
+                                offset = parseInt(loop / 1000000) * 1000000;
+                            }
+                            let sendData = {
+                                FileName : targetFile.name,
+                                FileOffset : offset,
+                                FileData : encData
+                            };
+                            contents.push({ method: 'POST', url: '/api/file/', request: sendData, keystring: 'API_POST_FILE' })
+                            encData = "";
+                        }
+                    }
                     fileMgmtDataDiv.append('<br/>upload!! ' + targetFile.name + '<br/>');
-                    fileMgmtDataDiv.append(evt.target.result);
-                    fileMgmtDataDiv.append('<br/>load completed<br/>');
+                    sequentialApiCall(contents, transDisplayFileMgmt);
+                    fileMgmtDataDiv.append('<br/>upload completed!!<br/>');
                 }
             })(this.files[loop]);
         }
@@ -842,9 +861,10 @@ function checkLoginAfterApiCall() {
 }
 function resizeComponent() {
     var wsize = $(window).width();
-    var hsize = $(window).height() - 110;
-    $("#agentinfotable").css("height", hsize + "px");
-    $("#filemgmttable").css("height", hsize + "px");
+    var hsize_agentinfotable = $(window).height() - 110;
+    var hsize_filemgmttable = $(window).height() - 102;
+    $("#agentinfotable").css("height", hsize_agentinfotable + "px");
+    $("#filemgmttable").css("height", hsize_filemgmttable + "px");
 }
 
 $(document).ready(function () {
