@@ -583,7 +583,7 @@ function displayFileMgmt() {
     for (let Loop = 0; Loop < fileList.length; Loop++) {
         let updTimeInt = parseInt(fileList[Loop].UpdTime, 16);
         let dateUpdTime = new Date(updTimeInt * 1000);
-        tBody.append('<tr><td><a id="id_' + fileList[Loop].Name + '" href="javascript:fileDownload(\'' + fileList[Loop].Name  + '\',' + fileList[Loop].Size + ', 0);">' + fileList[Loop].Name + '</a></td><td>' + fileList[Loop].Size + '</td><td>' + dateUpdTime + '</td></tr>');
+        tBody.append('<tr><td><a href="javascript:fileDownload(\'' + fileList[Loop].Name  + '\',' + fileList[Loop].Size + ', 0);">' + fileList[Loop].Name + '</a></td><td>' + fileList[Loop].Size + '</td><td>' + dateUpdTime + '</td></tr>');
     }
 
     tableListData.append(tBody);
@@ -649,21 +649,27 @@ function displayFileMgmt() {
 }
 
 function fileDownload(fileName, filesize, offset) {
-    if (filesize > offset) {
-        let tmpUrl = '/api/file/' + fileName + '/' + offset + '/';
-        apiCall('GET', tmpUrl, null, 'API_GET_FILE', fileDownloadImpl);
+    let chunks = parseInt(filesize / 1000000 + 1);
+    let contents = [];
+    for (let loop = 0; loop < chunks; loop++) {
+        let tmpUrl = '/api/file/' + fileName + '/' + loop * 1000000 + '/';
+        contents.push({ method: 'GET', url: tmpUrl, request: null, keystring: 'API_GET_FILE_' + loop });
     }
+    sequentialApiCall(contents, fileDownloadImpl);
 }
 
 function fileDownloadImpl() {
-    let fileName = responseData['API_GET_FILE'].Data.FileName;
-    let tmpId = 'id_' + fileName;
-    let fileOffset = responseData['API_GET_FILE'].Data.FileOffset;
-    let fileSize = responseData['API_GET_FILE'].Data.FileSize;
-    let typedArray = new Uint8Array(responseData['API_GET_FILE'].Data.FileData.match(/[\da-f]{2}/gi).map(function (h) {
-        return parseInt(h, 16)
-    }))
-    let blob = new Blob([ typedArray ], { "type" : "application/octet-stream" });
+    let fileName = responseData['API_GET_FILE_0'].Data.FileName;
+    let fileOffset = responseData['API_GET_FILE_0'].Data.FileOffset;
+    let fileSize = responseData['API_GET_FILE_0'].Data.FileSize;
+    let chunks = parseInt(fileSize / 1000000 + 1);
+    let typedArrays = [chunks];
+    for (let loop = 0; loop < chunks; loop++) {
+        typedArrays[loop] = new Uint8Array(responseData['API_GET_FILE_' + loop].Data.FileData.match(/[\da-f]{2}/gi).map(function (h) {
+            return parseInt(h, 16)
+        }))
+    }
+    let blob = new Blob(typedArrays, { "type" : "application/octet-stream" });
     let newLink = document.createElement('a');
     newLink.href = window.URL.createObjectURL(blob);
     newLink.download = fileName;
