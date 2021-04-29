@@ -44,8 +44,8 @@ function initClientMessage() {
     addClientMessage('AISTATUSUPTIME', {'en':'Status Update Time', 'ja':'状態更新時刻'});
     addClientMessage('AIOPSTATUS', {'en':'OpStatus', 'ja':'操作状態'});
     addClientMessage('AIOPSTATUSCMD', {'en':'Command for Op', 'ja':'操作コマンド'});
-    addClientMessage('AISETSTATUSCMD', {'en':'Set Status Command', 'ja':'状態取得コマンドの設定'});
-    addClientMessage('AIEXECCMD', {'en':'Execute Op Command', 'ja':'操作コマンドの実行'});
+    addClientMessage('AISETSTATUSCMD', {'en':'Select command', 'ja':'コマンド設定'});
+    addClientMessage('AIEXECCMD', {'en':'Execute command', 'ja':'コマンド実行'});
     addClientMessage('SELOPCMD', {'en':'Select operation command', 'ja':'操作コマンドを選択してください'});
     addClientMessage('SELSTATUSCMD', {'en':'Select status acquisition command', 'ja':'状態取得コマンドを選択してください'});
     addClientMessage('SELCMD', {'en':'Select Command ', 'ja':'コマンドを選択してください'});
@@ -69,7 +69,7 @@ function initClientMessage() {
     addClientMessage('SIUPDATED', {'en':'The server information has been updated.', 'ja':'サーバー情報が更新されました。'});
 
     addClientMessage('FILE_UPLOAD', {'en':'Upload', 'ja':'アップロード'});
-    addClientMessage('FILE_DOWNLOAD', {'en':'Download', 'ja':'ダウンロード'});
+    addClientMessage('FILE_DELETE', {'en':'Delete', 'ja':'削除'});
 
     addClientMessage('COMNAME', {'en':'Command Name', 'ja':'コマンド名'});
     addClientMessage('COMCOPYTOAGT', {'en':'File To Be Copied To Agent (Only file name. Do not specify directory path.)', 'ja':'エージェントにコピーされるファイル (ファイル名のみ)'});
@@ -119,7 +119,6 @@ function transDisplayAgentInfo() {
 
 function displayAgentInfo() {
     drowContainerFluid($('<div id="agtinfo" class="col-xs-12" style="display:block"></div>'));
-    clearRsCommand();
 
     if (statusCode['API_GET_AGTINFO'] == -1 || statusCode['API_GET_AGTINFO'] == 0) {
         displayAlertDanger('#agtinfo', getClientMessage('CONNERR'));
@@ -129,7 +128,6 @@ function displayAgentInfo() {
         displayAlertDanger('#agtinfo', getSvrMsg(responseData['API_GET_AGTINFO']));
         return;
     }
-    switchAgentInfoButton();
 
     let AgentInfo = getArray(responseData['API_GET_AGTINFO'].Data.AgentInfo);
     if (AgentInfo == null) {
@@ -186,7 +184,7 @@ function displayAgentInfo() {
         if (userRole == 1) {
             tmpChkBoxStr = '<td><label>' + AgentInfo[Loop].Name + '</label></td>';
         } else {
-            tmpChkBoxStr = '<td><div class="checkbox"><label><input type="checkbox" id="agtInfoId' + Loop + '" value="" onclick="switchAgentInfoButton()"/>&nbsp;' + AgentInfo[Loop].Name + '</label></div></td>';
+            tmpChkBoxStr = '<td><div class="checkbox"><label><input type="checkbox" id="agtInfoId' + Loop + '" value="" />&nbsp;' + AgentInfo[Loop].Name + '</label></div></td>';
         }
         tBody.append('<tr>' +
                      tmpChkBoxStr + 
@@ -234,37 +232,6 @@ function getTooltipStr() {
                      getClientMessage('RESCODE-993') +
                      getClientMessage('RESCODE-994');
     return tooltipStr;
-}
-
-function switchAgentInfoButton() {
-    var AgentInfo = getArray(responseData['API_GET_AGTINFO'].Data.AgentInfo);
-    var foundFlag = false;
-    for (var loop = 0; AgentInfo != null && loop < AgentInfo.length; loop++) {
-        if ($('#agtInfoId' + loop).prop('checked') == true) {
-            foundFlag = true;
-        }
-    }
-    if (foundFlag == true) {
-        clearRsCommand();
-        addRsCommand('', 'icon-checkbox-checked', true);
-        addRsCommand('displayAgentStatusCommandDlg()', 'icon-stats-bars', true);
-        addRsCommand('displayExecCommandDlg()', 'icon-play', true);
-        addRsCommand('', 'icon-bin', true);
-        $('#setAgentStatusCommand').removeClass('disabled');
-        $('#execOpeCommand').removeClass('disabled');
-    } else {
-        clearRsCommand();
-        if (AgentInfo != null && AgentInfo.length != 0) {
-            addRsCommand('', 'icon-checkbox-checked', true);
-        } else {
-            addRsCommand('', 'icon-checkbox-checked', false);
-        }
-        addRsCommand('', 'icon-stats-bars', false);
-        addRsCommand('', 'icon-play', false);
-        addRsCommand('', 'icon-bin', false);
-        $('#setAgentStatusCommand').addClass('disabled');
-        $('#execOpeCommand').addClass('disabled');
-    }
 }
 
 function displayExecCommandDlg() {
@@ -417,7 +384,6 @@ function transDisplayServerInfo() {
 
 function displayServerInfo() {
     drowContainer($('<div id="svrinfo" class="row col-xs-12" style="display:block"></div>'));
-    clearRsCommand();
 
     $('#svrinfo').append('<h2>' + getClientMessage('SERVERINFO') + '</h2>');
     if (statusCode['API_GET_SVRINFO'] == -1 || statusCode['API_GET_SVRINFO'] == 0) {
@@ -597,7 +563,7 @@ function displayFileMgmt() {
     });
     fileMgmtButtonDiv.append(tmpJq);
     fileMgmtButtonDiv.append('&nbsp;');
-    fileMgmtButtonDiv.append('<button class="btn btn-dark" type="button">' + getClientMessage('FILE_DOWNLOAD') + '</button>');
+    fileMgmtButtonDiv.append('<button class="btn btn-dark" type="button">' + getClientMessage('FILE_DELETE') + '</button>');
     $('#filemgmt').append(fileMgmtDataDiv);
     $('#filemgmt').append(fileMgmtButtonDiv);
     resizeComponent();
@@ -689,7 +655,6 @@ function transDisplayCommand() {
 
 function displayCommand() {
     drowContainer($('<div id="command" class="row col-xs-12" style="display:block"></div>'));
-    clearRsCommand();
 
     $('#command').append('<h2>' + getClientMessage('COMMAND') + '</h2>');
     if (statusCode['API_GET_COMMAND'] == -1 || statusCode['API_GET_COMMAND'] == 0) {
@@ -883,7 +848,9 @@ function checkLoginAfterApiCall() {
                 { actApiName : "transDisplayCommand()", title : 'Command' }
             ];
         }
+        iconAlwaysVisible();
         initMainPage('SERVAL', 'squirrel.svg', contents);
+        clearRsCommand();
 
         let usermenuContents = [];
         if (userRole == 1) {
