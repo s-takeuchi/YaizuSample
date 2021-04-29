@@ -47,6 +47,9 @@ StkObject* ApiGetFile::ExecuteImpl(StkObject* ReqObj, int Method, wchar_t UrlPat
 	StkObject* TmpObj = new StkObject(L"");
 	StkObject* TmpObjD = new StkObject(L"Data");
 	AddCodeAndMsg(TmpObj, 0, L"", L"");
+	TmpObjD->AppendChildElement(new StkObject(L"FileName", TargetFileName));
+	TmpObjD->AppendChildElement(new StkObject(L"FileSize", (int)FileSize));
+	TmpObjD->AppendChildElement(new StkObject(L"FileOffset", (int)Offset));
 	TmpObjD->AppendChildElement(new StkObject(L"FileData", HexBuf));
 	TmpObj->AppendChildElement(TmpObjD);
 	delete HexBuf;

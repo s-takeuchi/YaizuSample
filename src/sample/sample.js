@@ -579,12 +579,11 @@ function displayFileMgmt() {
                  '</tr>');
     tableListData.append(tHead);
 
-    let tBody = $('<tbody>');
+    let tBody = $('<tbody class="plane-link">');
     for (let Loop = 0; Loop < fileList.length; Loop++) {
         let updTimeInt = parseInt(fileList[Loop].UpdTime, 16);
         let dateUpdTime = new Date(updTimeInt * 1000);
-
-        tBody.append('<tr><td>' + fileList[Loop].Name + '</td><td>' + fileList[Loop].Size + '</td><td>' + dateUpdTime + '</td></tr>');
+        tBody.append('<tr><td><a id="id_' + fileList[Loop].Name + '" href="javascript:fileDownload(\'' + fileList[Loop].Name  + '\',' + fileList[Loop].Size + ', 0);">' + fileList[Loop].Name + '</a></td><td>' + fileList[Loop].Size + '</td><td>' + dateUpdTime + '</td></tr>');
     }
 
     tableListData.append(tBody);
@@ -647,6 +646,27 @@ function displayFileMgmt() {
             })(this.files[loop]);
         }
     });
+}
+
+function fileDownload(fileName, filesize, offset) {
+    if (filesize > offset) {
+        let tmpUrl = '/api/file/' + fileName + '/' + offset + '/';
+        apiCall('GET', tmpUrl, null, 'API_GET_FILE', fileDownloadImpl);
+    }
+}
+
+function fileDownloadImpl() {
+    let fileName = responseData['API_GET_FILE'].Data.FileName;
+    let tmpId = 'id_' + fileName;
+    let fileOffset = responseData['API_GET_FILE'].Data.FileOffset;
+    let fileSize = responseData['API_GET_FILE'].Data.FileSize;
+    let typedArray = new Uint8Array(responseData['API_GET_FILE'].Data.FileData.match(/[\da-f]{2}/gi).map(function (h) {
+        return parseInt(h, 16)
+    }))
+    let blob = new Blob([ typedArray ], { "type" : "text/plain" });
+    document.getElementById(tmpId).innerText = fileName + '[DOWNLOAD]';
+    document.getElementById(tmpId).href = window.URL.createObjectURL(blob);
+    document.getElementById(tmpId).download = fileName;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
