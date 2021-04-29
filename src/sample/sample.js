@@ -128,6 +128,7 @@ function displayAgentInfo() {
         displayAlertDanger('#agtinfo', getSvrMsg(responseData['API_GET_AGTINFO']));
         return;
     }
+    switchAgentInfoButton();
 
     let AgentInfo = getArray(responseData['API_GET_AGTINFO'].Data.AgentInfo);
     if (AgentInfo == null) {
@@ -184,7 +185,7 @@ function displayAgentInfo() {
         if (userRole == 1) {
             tmpChkBoxStr = '<td><label>' + AgentInfo[Loop].Name + '</label></td>';
         } else {
-            tmpChkBoxStr = '<td><div class="checkbox"><label><input type="checkbox" id="agtInfoId' + Loop + '" value="" />&nbsp;' + AgentInfo[Loop].Name + '</label></div></td>';
+            tmpChkBoxStr = '<td><div class="checkbox"><label><input type="checkbox" id="agtInfoId' + Loop + '" value="" onclick="switchAgentInfoButton()"/>&nbsp;' + AgentInfo[Loop].Name + '</label></div></td>';
         }
         tBody.append('<tr>' +
                      tmpChkBoxStr + 
@@ -232,6 +233,23 @@ function getTooltipStr() {
                      getClientMessage('RESCODE-993') +
                      getClientMessage('RESCODE-994');
     return tooltipStr;
+}
+
+function switchAgentInfoButton() {
+    var AgentInfo = getArray(responseData['API_GET_AGTINFO'].Data.AgentInfo);
+    var foundFlag = false;
+    for (var loop = 0; AgentInfo != null && loop < AgentInfo.length; loop++) {
+        if ($('#agtInfoId' + loop).prop('checked') == true) {
+            foundFlag = true;
+        }
+    }
+    if (foundFlag == true) {
+        $('#setAgentStatusCommand').removeClass('disabled');
+        $('#execOpeCommand').removeClass('disabled');
+    } else {
+        $('#setAgentStatusCommand').addClass('disabled');
+        $('#execOpeCommand').addClass('disabled');
+    }
 }
 
 function displayExecCommandDlg() {
