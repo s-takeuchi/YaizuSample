@@ -70,6 +70,9 @@ function initClientMessage() {
 
     addClientMessage('FILE_UPLOAD', {'en':'Upload', 'ja':'アップロード'});
     addClientMessage('FILE_DELETE', {'en':'Delete', 'ja':'削除'});
+    addClientMessage('FILE_NAME', {'en':'File name', 'ja':'ファイル名'});
+    addClientMessage('FILE_SIZE', {'en':'File size', 'ja':'ファイルサイズ'});
+    addClientMessage('FILE_UPDATE_TIME', {'en':'Update time', 'ja':'更新時刻'});
 
     addClientMessage('COMNAME', {'en':'Command Name', 'ja':'コマンド名'});
     addClientMessage('COMCOPYTOAGT', {'en':'File To Be Copied To Agent (Only file name. Do not specify directory path.)', 'ja':'エージェントにコピーされるファイル (ファイル名のみ)'});
@@ -547,6 +550,16 @@ function transDisplayFileMgmt() {
 
 function displayFileMgmt() {
     drowContainerFluid($('<div id="filemgmt" class="col-xs-12" style="display:block"></div>'));
+
+    if (statusCode['API_GET_FILELIST'] == -1 || statusCode['API_GET_FILELIST'] == 0) {
+        displayAlertDanger('#filemgmt', getClientMessage('CONNERR'));
+        return;
+    }
+    if (statusCode['API_GET_FILELIST'] != 200) {
+        displayAlertDanger('#svrinfo', getSvrMsg(responseData['API_GET_FILELIST']));
+        return;
+    }
+
     let fileMgmtDataDiv = $('<div id="filemgmttable" class="table-responsive">');
     if (responseData['API_GET_FILELIST'].Data === undefined) {
         $('#filemgmt').append(getClientMessage('NOFILEEXIST'));
@@ -559,7 +572,7 @@ function displayFileMgmt() {
 
     let tHead = $('<thead class="thead-light">');
     tHead.append('<tr>' +
-                 '<th>File name</th>' + '<th>File size</th>' + '<th>Update time</th>' +
+                 '<th>' + getClientMessage('FILE_NAME') + '</th>' + '<th>' + getClientMessage('FILE_SIZE') + '</th>' + '<th>' + getClientMessage('FILE_UPDATE_TIME') + '</th>' +
                  '</tr>');
     tableListData.append(tHead);
 
@@ -660,6 +673,10 @@ function fileDownloadImpl() {
     document.body.appendChild(newLink);
     newLink.click();
     document.body.removeChild(newLink);
+    // Clear unnecessary data
+    for (let loop = 0; loop < chunks; loop++) {
+        delete responseData['API_GET_FILE_' + loop];
+    }
 }
 
 ////////////////////////////////////////////////////////////////////////////////
