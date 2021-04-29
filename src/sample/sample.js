@@ -663,10 +663,13 @@ function fileDownloadImpl() {
     let typedArray = new Uint8Array(responseData['API_GET_FILE'].Data.FileData.match(/[\da-f]{2}/gi).map(function (h) {
         return parseInt(h, 16)
     }))
-    let blob = new Blob([ typedArray ], { "type" : "text/plain" });
-    document.getElementById(tmpId).innerText = fileName + '[DOWNLOAD]';
-    document.getElementById(tmpId).href = window.URL.createObjectURL(blob);
-    document.getElementById(tmpId).download = fileName;
+    let blob = new Blob([ typedArray ], { "type" : "application/octet-stream" });
+    let newLink = document.createElement('a');
+    newLink.href = window.URL.createObjectURL(blob);
+    newLink.download = fileName;
+    document.body.appendChild(newLink);
+    newLink.click();
+    document.body.removeChild(newLink);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
