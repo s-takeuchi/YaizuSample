@@ -68,6 +68,9 @@ function initClientMessage() {
     addClientMessage('SIUPDATEBTN', {'en':'Update', 'ja':'更新'});
     addClientMessage('SIUPDATED', {'en':'The server information has been updated.', 'ja':'サーバー情報が更新されました。'});
 
+    addClientMessage('FILE_UPLOAD', {'en':'Upload', 'ja':'アップロード'});
+    addClientMessage('FILE_DOWNLOAD', {'en':'Download', 'ja':'ダウンロード'});
+
     addClientMessage('COMNAME', {'en':'Command Name', 'ja':'コマンド名'});
     addClientMessage('COMCOPYTOAGT', {'en':'File To Be Copied To Agent (Only file name. Do not specify directory path.)', 'ja':'エージェントにコピーされるファイル (ファイル名のみ)'});
     addClientMessage('COMTYPE', {'en':'Command Type', 'ja':'コマンド種別'});
@@ -586,9 +589,16 @@ function displayFileMgmt() {
 
     tableListData.append(tBody);
     fileMgmtDataDiv.append(tableListData);
-
-    let fileMgmtButtonDiv = $('<div id="filemgmtbutton" style="padding: 6px 6px 10px 10px; background-color: #e9ecef; height:46px">')
-    fileMgmtButtonDiv.append('<form id="fileuploadform" method="post" action="/api/filea/" enctype="multipart/form-data"><input type="file" id="fileupload" multiple/></form>');
+    
+    let fileMgmtButtonDiv = $('<div id="filemgmtbutton" style="padding: 6px 6px 10px 10px; background-color: #e9ecef;">')
+    fileMgmtButtonDiv.append('<form id="fileuploadform" method="post" action="/api/filea/" enctype="multipart/form-data"><input type="file" id="fileupload" style="display:none" multiple/></form>');
+    let tmpJq = $('<button class="btn btn-dark" type="button">' + getClientMessage('FILE_UPLOAD') + '</button>');
+    tmpJq.click(function() {
+        $("#fileupload").trigger("click");
+    });
+    fileMgmtButtonDiv.append(tmpJq);
+    fileMgmtButtonDiv.append('&nbsp;');
+    fileMgmtButtonDiv.append('<button class="btn btn-dark" type="button">' + getClientMessage('FILE_DOWNLOAD') + '</button>');
     $('#filemgmt').append(fileMgmtDataDiv);
     $('#filemgmt').append(fileMgmtButtonDiv);
     resizeComponent();
@@ -632,9 +642,7 @@ function displayFileMgmt() {
                             encData = "";
                         }
                     }
-                    fileMgmtDataDiv.append('<br/>upload!! ' + targetFile.name + '<br/>');
                     sequentialApiCall(contents, transDisplayFileMgmt);
-                    fileMgmtDataDiv.append('<br/>upload completed!!<br/>');
                 }
             })(this.files[loop]);
         }
@@ -706,7 +714,6 @@ function displayCommand() {
     $('#command').append('<button type="button" id="commandBtnUpdate" class="btn btn-primary disabled" onclick="updateCommand(true)">' + getClientMessage('COMUPDATE') + '</button> ');
     $('#command').append('<button type="button" id="commandBtnDelete" class="btn btn-primary disabled" onclick="deleteCommand()">' + getClientMessage('COMDELETE') + '</button> ');
     $('#command').append('<p></p>');
-    //$('td').css('vertical-align', 'middle');
 }
 
 function updateCommand(updateFlag) {
@@ -870,7 +877,7 @@ function checkLoginAfterApiCall() {
 function resizeComponent() {
     var wsize = $(window).width();
     var hsize_agentinfotable = $(window).height() - 110;
-    var hsize_filemgmttable = $(window).height() - 102;
+    var hsize_filemgmttable = $(window).height() - 110;
     $("#agentinfotable").css("height", hsize_agentinfotable + "px");
     $("#filemgmttable").css("height", hsize_filemgmttable + "px");
 }
