@@ -27,8 +27,9 @@ CmdFreakのREST APIは，以下の一覧に示すAPIをクライアント提供�
 <tr><td>POST /api/agent/</td><td>Register/update agent information</td></tr>
 <tr><td>GET /api/file/x/n/</td><td>Get file</td></tr>
 <tr><td>POST /api/file/</td><td>Store file</td></tr>
+<tr><td>GET /api/filelist/</td><td>Get file information list in the target directory.</td></tr>
 </table>
-</div><p>
+</div>
 
 
 <H2 ID="2.2">2.2 共通エラー</H2>
@@ -58,7 +59,7 @@ CmdFreakのREST APIは，以下の一覧に示すAPIをクライアント提供�
 </table><br/>
 </li>
 </ul>
-</div><p>
+</div>
 
 
 <H2 ID="2.3">2.3 GET /api/server/</H2>
@@ -97,7 +98,7 @@ Acquires server information of YaizuSample.<br/>
 </table><br/>
 </li>
 </ul>
-</div><p>
+</div>
 
 
 <H2 ID="2.4">2.4 POST /api/server/</H2>
@@ -140,7 +141,7 @@ Configure server information.<br/>
 </table><br/>
 </li>
 </ul>
-</div><p>
+</div>
 
 
 <H2 ID="2.5">2.5 GET /api/command/</H2>
@@ -185,7 +186,7 @@ Get command information. All of commands are acquired.<br/>
 </table><br/>
 </li>
 </ul>
-</div><p>
+</div>
 
 
 <H2 ID="2.6">2.6 POST /api/command/</H2>
@@ -239,7 +240,7 @@ Configure command information.<br/>
 </table><br/>
 </li>
 </ul>
-</div><p>
+</div>
 
 
 <H2 ID="2.7">2.7 DELETE /api/command/n/</H2>
@@ -269,7 +270,7 @@ Delete command information.<br/>
 </table><br/>
 </li>
 </ul>
-</div><p>
+</div>
 
 
 <H2 ID="2.8">2.8 GET /api/statuscommand/x/</H2>
@@ -319,7 +320,7 @@ Get command information for status acquisition<br/>
 </table><br/>
 </li>
 </ul>
-</div><p>
+</div>
 
 
 <H2 ID="2.9">2.9 GET /api/opcommand/x/</H2>
@@ -369,7 +370,7 @@ Get command information for operation<br/>
 </table><br/>
 </li>
 </ul>
-</div><p>
+</div>
 
 
 <H2 ID="2.10">2.10 GET /api/agent/</H2>
@@ -419,7 +420,7 @@ Get agent information. All of agents are acquired.<br/>
 </table><br/>
 </li>
 </ul>
-</div><p>
+</div>
 
 
 <H2 ID="2.11">2.11 POST /api/agent/</H2>
@@ -501,7 +502,7 @@ This request is sent from user.<br/>
 </table><br/>
 </li>
 </ul>
-</div><p>
+</div>
 
 
 <H2 ID="2.12">2.12 GET /api/file/x/n/</H2>
@@ -544,7 +545,7 @@ n in URL means offset of file to be read.<br/>
 </table><br/>
 </li>
 </ul>
-</div><p>
+</div>
 
 
 <H2 ID="2.13">2.13 POST /api/file/</H2>
@@ -580,10 +581,52 @@ Store file.<br/>
 </table><br/>
 </li>
 </ul>
-</div><p>
-
-
 </div>
+
+
+<H2 ID="2.14">2.14 GET /api/filelist/</H2>
+<div class="topic">
+Get file information list in the target directory.<br/>
+<ul>
+<li>Request
+    <p>nothing</p>
+</li>
+<li>Response
+<pre>
+{
+  "Code" : 1234,
+  "MsgEng" : "abc",
+  "MsgJpn" : "あいう",
+  "Data" : {
+    "FileList" : [
+      {
+        "Name" : "xxx",
+        "Size" : 100,
+        "UpdTime" : "00000000ffffffff"
+      }
+    ]
+  }
+}
+</pre>
+<table class="tblstyle">
+<tr><td>Code</td><td>Integer</td><td>Result code
+                                     0:success(HTTP status code=200),
+                                     4206:Authorization error(HTTP status code=401)
+</td></tr>
+<tr><td>MsgEng</td><td>String</td><td>English message. Empty string is returned when result code is 0.</td></tr>
+<tr><td>MsgJpn</td><td>String</td><td>Japanese message. Empty string is returned when result code is 0.</td></tr>
+<tr><td>Data</td><td>Element</td><td>Not returned when result code is not zero.</td></tr>
+<tr><td>FileList</td><td>Element</td><td></td></tr>
+<tr><td>Name</td><td>String</td><td>File name</td></tr>
+<tr><td>Size</td><td>Integer</td><td>Size of file</td></tr>
+<tr><td>UpdTime</td><td>String</td><td>Hexadecimal explession in 16 characters of file update time (unix epoch time)</td></tr>
+</table><br/>
+</li>
+</ul>
+</div><p>
+  
+  
+  </div>
 </BODY>
 
 </html>
