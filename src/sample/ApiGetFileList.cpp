@@ -8,6 +8,15 @@
 
 StkObject* ApiGetFileList::ExecuteImpl(StkObject* ReqObj, int Method, wchar_t UrlPath[StkWebAppExec::URL_PATH_LENGTH], int* ResultCode, wchar_t Locale[3], wchar_t* Token)
 {
+	wchar_t UserName[ApiBase::MAXLEN_OF_USERNAME];
+	int UserId = -1;
+	if (!CheckCredentials(Token, UserName, &UserId)) {
+		StkObject* TmpObj = new StkObject(L"");
+		AddCodeAndMsg(TmpObj, MSG_COMMON_AUTH_ERROR, MessageProc::GetMsgEng(MSG_COMMON_AUTH_ERROR), MessageProc::GetMsgJpn(MSG_COMMON_AUTH_ERROR));
+		*ResultCode = 401;
+		return TmpObj;
+	}
+
 	wchar_t TmpWorkDir[FILENAME_MAX] = L"";
 	StkPlWcsCpy(TmpWorkDir, FILENAME_MAX, Global::Global_WorkDirPath);
 	FileInfoList* FileInfoListObj = StkPlCreateFileInfoList(TmpWorkDir);
