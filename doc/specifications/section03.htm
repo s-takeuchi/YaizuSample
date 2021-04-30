@@ -32,21 +32,34 @@ Deployment procedures for AWS (CloudFront + S3 + EC2) are described below.<br/>
 <div class="topic">
 Deployment procedures for AWS (Lightsail) are described below.<br/>
 <ol>
-<li>Install YaizuSample server</li>
-<li>Allow port number 8080 for Lightsail network.</li>
-<li>Configure Route53 for static files and REST API.</li>
-<li>Install and configure Let's Encrypt</li>
-<li>Configure nginx.conf</li>
-<li>Restart Serval server</li>
-</ol>
+    <li>Install nginx</li>
+    <li>Install SERVAL server</li>
+    <li>Allow port number 8080 for Lightsail network (SERVAL server).</li>
+    <li>Allow port number 80 for Lightsail network for (certbot).</li>
+    <li>Configure Route53 for static files and REST API.</li>
+    <li>Install and configure Let's Encrypt</li>
+    <li>Configure nginx.conf</li>
+    <li>Restart SERVAL server</li>
+    <li>Install and configure SERVAL agent</li>
+  </ol>
+<h3>Install and configure Let's Encrypt</h3>
 <pre><code>
 $ sudo wget -r --no-parent -A 'epel-release-*.rpm' http://dl.fedoraproject.org/pub/epel/7/x86_64/Packages/e/
 $ sudo rpm -Uvh dl.fedoraproject.org/pub/epel/7/x86_64/Packages/e/epel-release-*.rpm
 $ sudo yum-config-manager --enable epel*
 $ sudo yum install certbot python2-certbot-nginx
 $ sudo certbot --nginx
-  Reply for queries
+  Reply to queries
 
+ $ sudo crontab -u root -e
+ Edit as follows.
+ 0 0,12 * * * root certbot renew --no-self-upgrade
+  
+ $ sudo crontab -u root -l
+</code></pre>
+  
+<h3>Configure nginx.conf</h3>
+<pre><code>
 Modify server block. (/etc/nginx/conf.d/sample_nginx.conf)
 server {
     ....
@@ -66,12 +79,19 @@ server {
 $ sudo systemctl reload nginx.service
 
 Add exception port=80 to AWS firewall. Port=80 will be used by certbot during certificate update.
+</code></pre>
 
-$ sudo crontab -u root -e
-Edit as follows.
-0 0,12 * * * root certbot renew --no-self-upgrade
+<h3>Install and configure SERVAL agent</h3>
+Configure /etc/agent.conf as follows.
+<pre><code>
+targethost=serval.red-squirrels.net
+targetport=8080
+hostname=
+workdir=/usr/share/servalagt
+trustedcert=/home/ec2-user/serval.cer
+securemode=true
+</code></pre>
 
-$ sudo crontab -u root -l</code></pre>
 </div><p>
 
 

@@ -504,7 +504,7 @@ This request is sent from user.<br/>
 </div><p>
 
 
-<H2 ID="2.12">2.12 GET /api/file/x/n</H2>
+<H2 ID="2.12">2.12 GET /api/file/x/n/</H2>
 <div class="topic">
 Get file.<br/>
 <ul>
@@ -521,7 +521,10 @@ n in URL means offset of file to be read.<br/>
   "MsgEng" : "abc",
   "MsgJpn" : "あいう",
   "Data" : {
-    "FileData" : "00FF00FF00FF00FF"
+    "FileName" : "xxx",
+    "FileSize" : 3000000,
+    "FileData" : "00FF00FF00FF00FF",
+    "FileOffset" : 1000000
   }
 }
 </pre>
@@ -534,7 +537,10 @@ n in URL means offset of file to be read.<br/>
 <tr><td>MsgEng</td><td>String</td><td>English message. Empty string is returned when result code is 0.</td></tr>
 <tr><td>MsgJpn</td><td>String</td><td>Japanese message. Empty string is returned when result code is 0.</td></tr>
 <tr><td>Data</td><td>Element</td><td>Not returned when result code is not zero.</td></tr>
-<tr><td>FileData</td><td>String</td><td>File data</td></tr>
+<tr><td>FileName</td><td>String</td><td>File name</td></tr>
+<tr><td>FileSize</td><td>Integer</td><td>Total size of original file</td></tr>
+<tr><td>FileData</td><td>String</td><td>File data in hexadecimal number (represents uppercase letter)</td></tr>
+<tr><td>FileOffset</td><td>Integer</td><td>Offset of file to be read</td></tr>
 </table><br/>
 </li>
 </ul>
@@ -549,13 +555,13 @@ Store file.<br/>
 <pre>
 {
   "FileOffset" : 0,
-  "FileData" : "aaa",
+  "FileData" : "00FF00FF00FF00FF",
   "FileName" : "xxx"
 }
 </pre>
 <table class="tblstyle">
 <tr><td>FileOffset</td><td>Integer</td><td>offset of file to be read.</td></tr>
-<tr><td>FileData</td><td>String</td><td>File data</td></tr>
+<tr><td>FileData</td><td>String</td><td>File data in hexadecimal number (represents uppercase letter)</td></tr>
 <tr><td>FileName</td><td>String</td><td>File name</td></tr>
 </table><br/>
 </li>
