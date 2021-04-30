@@ -667,12 +667,17 @@ function fileDownloadImpl() {
         }))
     }
     let blob = new Blob(typedArrays, { "type" : "application/octet-stream" });
-    let newLink = document.createElement('a');
-    newLink.href = window.URL.createObjectURL(blob);
-    newLink.download = fileName;
-    document.body.appendChild(newLink);
-    newLink.click();
-    document.body.removeChild(newLink);
+    if (window.navigator.msSaveBlob) {
+        // For IE11
+        window.navigator.msSaveBlob(blob, fileName);
+    } else {
+        let newLink = document.createElement('a');
+        newLink.href = window.URL.createObjectURL(blob);
+        newLink.download = fileName;
+        document.body.appendChild(newLink);
+        newLink.click();
+        document.body.removeChild(newLink);
+    }
     // Clear unnecessary data
     for (let loop = 0; loop < chunks; loop++) {
         delete responseData['API_GET_FILE_' + loop];
