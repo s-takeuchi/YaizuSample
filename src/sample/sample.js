@@ -583,7 +583,7 @@ function displayFileMgmt() {
 
     let tHead = $('<thead class="thead-light">');
     tHead.append('<tr>' +
-                tmpChkBoxClm +
+                 tmpChkBoxClm +
                  '<th>' + getClientMessage('FILE_NAME') + '</th>' + '<th>' + getClientMessage('FILE_SIZE') + '</th>' + '<th>' + getClientMessage('FILE_UPDATE_TIME') + '</th>' +
                  '</tr>');
     tableListData.append(tHead);
@@ -592,7 +592,7 @@ function displayFileMgmt() {
     for (let Loop = 0; Loop < fileList.length; Loop++) {
         let tmpChkBoxStr = '';
         if (userRole != 1) {
-            tmpChkBoxStr = '<td><div class="checkbox"><input type="checkbox" id="fileInfoId' + Loop + '" value="" onclick=""/></div></td>';
+            tmpChkBoxStr = '<td><div class="checkbox"><input type="checkbox" id="fileInfoId' + Loop + '" value="" onclick="switchFileInfoButton()"/></div></td>';
         }
     
         let updTimeInt = parseInt(fileList[Loop].UpdTime, 16);
@@ -611,10 +611,11 @@ function displayFileMgmt() {
     });
     fileMgmtButtonDiv.append(tmpJq);
     fileMgmtButtonDiv.append('&nbsp;');
-    fileMgmtButtonDiv.append('<button class="btn btn-dark" type="button">' + getClientMessage('FILE_DELETE') + '</button>');
+    fileMgmtButtonDiv.append('<button id="fileInfoDelete" class="btn btn-dark" type="button">' + getClientMessage('FILE_DELETE') + '</button>');
     $('#filemgmt').append(fileMgmtDataDiv);
     $('#filemgmt').append(fileMgmtButtonDiv);
     resizeComponent();
+    switchFileInfoButton();
 
     let fileUpload = document.getElementById('fileupload');
     fileUpload.addEventListener('change', function () {
@@ -698,6 +699,21 @@ function fileDownloadImpl() {
     // Clear unnecessary data
     for (let loop = 0; loop < chunks; loop++) {
         delete responseData['API_GET_FILE_' + loop];
+    }
+}
+
+function switchFileInfoButton() {
+    var fileList = getArray(responseData['API_GET_FILELIST'].Data.FileInfo);
+    var foundFlag = false;
+    for (var loop = 0; fileList != null && loop < fileList.length; loop++) {
+        if ($('#fileInfoId' + loop).prop('checked') == true) {
+            foundFlag = true;
+        }
+    }
+    if (foundFlag == true) {
+        $('#fileInfoDelete').removeClass('disabled');
+    } else {
+        $('#fileInfoDelete').addClass('disabled');
     }
 }
 
