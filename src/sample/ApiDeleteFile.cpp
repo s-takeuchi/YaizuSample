@@ -27,6 +27,7 @@ StkObject* ApiDeleteFile::ExecuteImpl(StkObject* ReqObj, int Method, wchar_t Url
 
 	wchar_t TargetFullPath[FILENAME_MAX];
 	GetFullPathFromFileName(TargetFullPath, FileNameStr);
+	StkPlDeleteFile(TargetFullPath);
 	AddCodeAndMsg(TmpObj, 0, L"", L"");
 
 	return TmpObj;

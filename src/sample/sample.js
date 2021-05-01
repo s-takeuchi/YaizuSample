@@ -611,7 +611,7 @@ function displayFileMgmt() {
     });
     fileMgmtButtonDiv.append(tmpJq);
     fileMgmtButtonDiv.append('&nbsp;');
-    fileMgmtButtonDiv.append('<button id="fileInfoDelete" class="btn btn-dark" type="button">' + getClientMessage('FILE_DELETE') + '</button>');
+    fileMgmtButtonDiv.append('<button id="fileInfoDelete" class="btn btn-dark" type="button" onclick="deleteFile()">' + getClientMessage('FILE_DELETE') + '</button>');
     $('#filemgmt').append(fileMgmtDataDiv);
     $('#filemgmt').append(fileMgmtButtonDiv);
     resizeComponent();
@@ -715,6 +715,18 @@ function switchFileInfoButton() {
     } else {
         $('#fileInfoDelete').addClass('disabled');
     }
+}
+
+function deleteFile() {
+    var fileList = getArray(responseData['API_GET_FILELIST'].Data.FileInfo);
+    let contents = [];
+    for (var loop = 0; loop < fileList.length; loop++) {
+        if ($('#fileInfoId' + loop).prop('checked') == true) {
+            let tmpUrl = '/api/file/' + fileList[loop].Name + '/';
+            contents.push({ method: 'DELETE', url: tmpUrl, request: null, keystring: 'API_DELETE_FILE' });
+        }
+    }
+    sequentialApiCall(contents, transDisplayFileMgmt);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
