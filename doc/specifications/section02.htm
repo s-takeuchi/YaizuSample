@@ -16,7 +16,7 @@
 <div class="topic">
 CmdFreakのREST APIは，以下の一覧に示すAPIをクライアント提供します。
 <table class="tblstyle">
-<tr><td>GET /api/server/</td><td>Acquires server information of YaizuSample.</td></tr>
+<tr><td>GET /api/server/</td><td>Acquires server information of YaizuSample</td></tr>
 <tr><td>POST /api/server/</td><td>Configure server information.</td></tr>
 <tr><td>GET /api/command/</td><td>Get command information</td></tr>
 <tr><td>POST /api/command/</td><td>Configure command information</td></tr>
@@ -27,7 +27,8 @@ CmdFreakのREST APIは，以下の一覧に示すAPIをクライアント提供�
 <tr><td>POST /api/agent/</td><td>Register/update agent information</td></tr>
 <tr><td>GET /api/file/x/n/</td><td>Get file</td></tr>
 <tr><td>POST /api/file/</td><td>Store file</td></tr>
-<tr><td>GET /api/filelist/</td><td>Get file information list in the target directory.</td></tr>
+<tr><td>GET /api/filelist/</td><td>Get file information list in the target directory</td></tr>
+<tr><td>DELETE /api/file/x/</td><td>Delete file</td></tr>
 </table>
 </div>
 
@@ -589,7 +590,7 @@ Store file.<br/>
 Get file information list in the target directory.<br/>
 <ul>
 <li>Request
-    <p>nothing</p>
+  <p>nothing</p>
 </li>
 <li>Response
 <pre>
@@ -623,10 +624,41 @@ Get file information list in the target directory.<br/>
 </table><br/>
 </li>
 </ul>
+</div>
+  
+  
+<H2 ID="2.15">2.15 DELETE /api/file/x/</H2>
+<div class="topic">
+Delete the specified file.<br/>
+<ul>
+<li>Request
+  <p>
+    x in URL means file name which you want to get.<br/>
+  </p>
+</li>
+<li>Response
+<pre>
+{
+  "Code" : 1234,
+  "MsgEng" : "abc",
+  "MsgJpn" : "あいう",
+}
+</pre>
+<table class="tblstyle">
+<tr><td>Code</td><td>Integer</td><td>Result code
+                                     0:success(HTTP status code=200)
+                                     4206:Authorization error(HTTP status code=401),
+                                     4204:Access Right error(HTTP status code=403),
+</td></tr>
+<tr><td>MsgEng</td><td>String</td><td>English message. Empty string is returned when result code is 0.</td></tr>
+<tr><td>MsgJpn</td><td>String</td><td>Japanese message. Empty string is returned when result code is 0.</td></tr>
+</table><br/>
+</li>
+</ul>
+</div>
+
+
 </div><p>
-  
-  
-  </div>
 </BODY>
 
 </html>
