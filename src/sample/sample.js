@@ -562,50 +562,50 @@ function displayFileMgmt() {
         return;
     }
     if (statusCode['API_GET_FILELIST'] != 200) {
-        displayAlertDanger('#svrinfo', getSvrMsg(responseData['API_GET_FILELIST']));
+        displayAlertDanger('#filemgmt', getSvrMsg(responseData['API_GET_FILELIST']));
         return;
     }
 
     let fileMgmtDataDiv = $('<div id="filemgmttable" class="table-responsive">');
     if (responseData['API_GET_FILELIST'].Data === undefined) {
-        $('#filemgmt').append(getClientMessage('NOFILEEXIST'));
-        return;
-    }
-    let fileList = getArray(responseData['API_GET_FILELIST'].Data.FileInfo);
+        fileMgmtDataDiv.append(getClientMessage('NOFILEEXIST'));
+    } else {
+        let fileList = getArray(responseData['API_GET_FILELIST'].Data.FileInfo);
 
-    let tableListData = $('<table>');
-    tableListData.addClass('table stktable table-striped');
-
-    let tmpChkBoxClm = '';
-    if (userRole != 1) {
-        tmpChkBoxClm = '<th></th>';
-    }
-
-    let tHead = $('<thead class="thead-light">');
-    tHead.append('<tr>' +
-                 tmpChkBoxClm +
-                 '<th>' + getClientMessage('FILE_NAME') + '</th>' + '<th>' + getClientMessage('FILE_SIZE') + '</th>' + '<th>' + getClientMessage('FILE_UPDATE_TIME') + '</th>' +
-                 '</tr>');
-    tableListData.append(tHead);
-
-    let tBody = $('<tbody class="plane-link">');
-    for (let Loop = 0; Loop < fileList.length; Loop++) {
-        let tmpChkBoxStr = '';
+        let tableListData = $('<table>');
+        tableListData.addClass('table stktable table-striped');
+    
+        let tmpChkBoxClm = '';
         if (userRole != 1) {
-            tmpChkBoxStr = '<td><div class="checkbox"><input type="checkbox" id="fileInfoId' + Loop + '" value="" onclick="switchFileInfoButton()"/></div></td>';
+            tmpChkBoxClm = '<th></th>';
         }
-    
-        let updTimeInt = parseInt(fileList[Loop].UpdTime, 16);
-        let dateUpdTime = new Date(updTimeInt * 1000);
-        tBody.append('<tr>' + tmpChkBoxStr + '<td><a href="javascript:fileDownload(\'' + fileList[Loop].Name  + '\',' + fileList[Loop].Size + ', 0);">' + fileList[Loop].Name + '</a></td><td>' + fileList[Loop].Size + '</td><td>' + dateUpdTime + '</td></tr>');
+
+        let tHead = $('<thead class="thead-light">');
+        tHead.append('<tr>' +
+                     tmpChkBoxClm +
+                     '<th>' + getClientMessage('FILE_NAME') + '</th>' + '<th>' + getClientMessage('FILE_SIZE') + '</th>' + '<th>' + getClientMessage('FILE_UPDATE_TIME') + '</th>' +
+                     '</tr>');
+        tableListData.append(tHead);
+
+        let tBody = $('<tbody class="plane-link">');
+        for (let Loop = 0; Loop < fileList.length; Loop++) {
+            let tmpChkBoxStr = '';
+            if (userRole != 1) {
+                tmpChkBoxStr = '<td><div class="checkbox"><input type="checkbox" id="fileInfoId' + Loop + '" value="" onclick="switchFileInfoButton()"/></div></td>';
+            }
+
+            let updTimeInt = parseInt(fileList[Loop].UpdTime, 16);
+            let dateUpdTime = new Date(updTimeInt * 1000);
+            tBody.append('<tr>' + tmpChkBoxStr + '<td><a href="javascript:fileDownload(\'' + fileList[Loop].Name  + '\',' + fileList[Loop].Size + ', 0);">' + fileList[Loop].Name + '</a></td><td>' + fileList[Loop].Size + '</td><td>' + dateUpdTime + '</td></tr>');
+        }
+
+        tableListData.append(tBody);
+        fileMgmtDataDiv.append(tableListData);
     }
 
-    tableListData.append(tBody);
-    fileMgmtDataDiv.append(tableListData);
-    
     let fileMgmtButtonDiv = $('<div id="filemgmtbutton" style="padding: 6px 6px 10px 10px; background-color: #e9ecef;">')
     fileMgmtButtonDiv.append('<form id="fileuploadform" method="post" action="/api/filea/" enctype="multipart/form-data"><input type="file" id="fileupload" style="display:none" multiple/></form>');
-    let tmpJq = $('<button class="btn btn-dark" type="button">' + getClientMessage('FILE_UPLOAD') + '</button>');
+    let tmpJq = $('<button id="fileInfoUpload" class="btn btn-dark" type="button">' + getClientMessage('FILE_UPLOAD') + '</button>');
     tmpJq.click(function() {
         $("#fileupload").trigger("click");
     });
@@ -703,17 +703,24 @@ function fileDownloadImpl() {
 }
 
 function switchFileInfoButton() {
-    var fileList = getArray(responseData['API_GET_FILELIST'].Data.FileInfo);
     var foundFlag = false;
-    for (var loop = 0; fileList != null && loop < fileList.length; loop++) {
-        if ($('#fileInfoId' + loop).prop('checked') == true) {
-            foundFlag = true;
+    if (responseData['API_GET_FILELIST'].Data !== undefined && responseData['API_GET_FILELIST'].Data.FileInfo !== undefined) {
+        var fileList = getArray(responseData['API_GET_FILELIST'].Data.FileInfo);
+        for (var loop = 0; fileList != null && loop < fileList.length; loop++) {
+            if ($('#fileInfoId' + loop).prop('checked') == true) {
+                foundFlag = true;
+            }
         }
     }
     if (foundFlag == true) {
         $('#fileInfoDelete').removeClass('disabled');
     } else {
         $('#fileInfoDelete').addClass('disabled');
+    }
+    if  (userRole != 1) {
+        $('#fileInfoUpload').removeClass('disabled');
+    } else {
+        $('#fileInfoUpload').addClass('disabled');
     }
 }
 
