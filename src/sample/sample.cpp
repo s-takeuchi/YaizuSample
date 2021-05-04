@@ -272,9 +272,9 @@ int main(int Argc, char* Argv[])
 		// workerthreads
 		if (Prop->GetPropertyInt("workerthreads", &NumOfWorkerThreads) != 0) {
 			// How many threads this program needs to be covered.
-			// 2 (status acquisition and operation) * 3 (agent / customer) * 40 (customer / server) + 10 (browser access)
+			// 2 (status acquisition and operation) * 3 (agent / customer) * 30 (customer / server) + 10 (browser access)
 			// Considering the limitation of StkSocket
-			NumOfWorkerThreads = 250;
+			NumOfWorkerThreads = 190;
 		}
 		if (NumOfWorkerThreads <= 2 || NumOfWorkerThreads > 250) { // Max number of threads is 250
 			StkPlPrintf("An invalid number of threads is specified.\r\n");
