@@ -68,8 +68,8 @@ function initClientMessage() {
     addClientMessage('SIUPDATEBTN', {'en':'Update', 'ja':'更新'});
     addClientMessage('SIUPDATED', {'en':'The server information has been updated.', 'ja':'サーバー情報が更新されました。'});
     addClientMessage('SIBUILDTIME', {'en':'Service build time : ', 'ja':'サービスビルド時刻 : '});
-    addClientMessage('SIPHYMEM', {'en':'Used physical memory size : ', 'ja':'使用物理メモリサイズ : '});
-    addClientMessage('SIVIRMEM', {'en':'Used virtual memory size : ', 'ja':'使用仮想メモリサイズ : '});
+    addClientMessage('SIPHYMEM', {'en':'Used physical memory size in KB : ', 'ja':'使用物理メモリサイズ(KB) : '});
+    addClientMessage('SIVIRMEM', {'en':'Used virtual memory size in KB : ', 'ja':'使用仮想メモリサイズ(KB) : '});
 
     addClientMessage('FILE_UPLOAD', {'en':'Upload', 'ja':'アップロード'});
     addClientMessage('FILE_DELETE', {'en':'Delete', 'ja':'削除'});
