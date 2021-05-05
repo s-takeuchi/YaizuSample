@@ -22,16 +22,33 @@ StkObject* ApiGetServerInfo::ExecuteImpl(StkObject* ReqObj, int Method, wchar_t 
 		return TmpObj;
 	}
 
-	int PInterval = 0;
-	int SaInterval = 0;
+	// Build time
+	wchar_t BuildDate[32] = L"";
+	char BuildDateCh[32] = "";
+	StkPlSPrintf(BuildDateCh, 32, "%s  %s", __DATE__, __TIME__);
+	StkPlConvUtf8ToWideChar(BuildDate, 32, BuildDateCh);
+
+	// Server start time
 	wchar_t StartTimeStr[DA_MAXLEN_OF_UNIXTIME * 2 + 1] = L"";
 	StkPlSwPrintf(StartTimeStr, DA_MAXLEN_OF_UNIXTIME * 2 + 1, L"%016x", StartTime);
 
+	// Polling and acquisition interval
+	int PInterval = 0;
+	int SaInterval = 0;
 	DataAccess::GetInstance()->GetServerInfo(&PInterval, &SaInterval);
+
+	// Getting used memory of this process
+	int PhyMem = StkPlGetUsedMemorySizeOfCurrentProcess();
+	int VirMem = StkPlGetUsedVmSizeOfCurrentProcess();
+
+	// Create object to be returned
 	StkObject* TmpObjD = new StkObject(L"Data");
 	StkObject* TmpObjC = new StkObject(L"ServerInfo");
-	TmpObjC->AppendChildElement(new StkObject(L"StartTime", StartTimeStr));
 	TmpObjC->AppendChildElement(new StkObject(L"Version", L"1.0.0"));
+	TmpObjC->AppendChildElement(new StkObject(L"BuildTime", BuildDate));
+	TmpObjC->AppendChildElement(new StkObject(L"StartTime", StartTimeStr));
+	TmpObjC->AppendChildElement(new StkObject(L"UsedPhysicalMemory", PhyMem));
+	TmpObjC->AppendChildElement(new StkObject(L"UsedVirtualMemory", VirMem));
 	TmpObjC->AppendChildElement(new StkObject(L"PollingInterval", PInterval));
 	TmpObjC->AppendChildElement(new StkObject(L"StatusAcquisitionInterval", SaInterval));
 	TmpObjD->AppendChildElement(TmpObjC);

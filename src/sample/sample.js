@@ -61,12 +61,15 @@ function initClientMessage() {
     addClientMessage('RESCODE-993', {'en':'-993 : No request from agent.\r\n', 'ja':'-993 : エージェントからの要求がない\r\n'});
     addClientMessage('RESCODE-994', {'en':'-994 : Invalid agent directory.\r\n', 'ja':'-994 : エージェントディレクトリが不正\r\n'});
 
-    addClientMessage('SISTARTTIME', {'en':'Service Start Time : ', 'ja':'サービス開始時刻 : '});
-    addClientMessage('SISVRVERSION', {'en':'Server Version : ', 'ja':'サーバーバージョン : '});
-    addClientMessage('SIPOLLINTVL', {'en':'Polling Interval : ', 'ja':'ポーリング間隔 : '});
-    addClientMessage('SISTACQINTVL', {'en':'Status Acquisition Interval : ', 'ja':'状態取得間隔 : '});
+    addClientMessage('SISTARTTIME', {'en':'Service start time : ', 'ja':'サービス開始時刻 : '});
+    addClientMessage('SISVRVERSION', {'en':'Server version : ', 'ja':'サーバーバージョン : '});
+    addClientMessage('SIPOLLINTVL', {'en':'Polling interval : ', 'ja':'ポーリング間隔 : '});
+    addClientMessage('SISTACQINTVL', {'en':'Status acquisition interval : ', 'ja':'状態取得間隔 : '});
     addClientMessage('SIUPDATEBTN', {'en':'Update', 'ja':'更新'});
     addClientMessage('SIUPDATED', {'en':'The server information has been updated.', 'ja':'サーバー情報が更新されました。'});
+    addClientMessage('SIBUILDTIME', {'en':'Service build time : ', 'ja':'サービスビルド時刻 : '});
+    addClientMessage('SIPHYMEM', {'en':'Used physical memory size : ', 'ja':'使用物理メモリサイズ : '});
+    addClientMessage('SIVIRMEM', {'en':'Used virtual memory size : ', 'ja':'使用仮想メモリサイズ : '});
 
     addClientMessage('FILE_UPLOAD', {'en':'Upload', 'ja':'アップロード'});
     addClientMessage('FILE_DELETE', {'en':'Delete', 'ja':'削除'});
@@ -427,14 +430,21 @@ function displayServerInfo() {
         svrinfo_msg = '';
     }
 
-    $('#svrinfo').append(getClientMessage('SISVRVERSION') + responseData['API_GET_SVRINFO'].Data.ServerInfo.Version);
+    $('#svrinfo').append('<p>' + getClientMessage('SISVRVERSION') + responseData['API_GET_SVRINFO'].Data.ServerInfo.Version + '</p>');
+
+    let buildTimeStr = responseData['API_GET_SVRINFO'].Data.ServerInfo.BuildTime;
+    $('#svrinfo').append('<p>' + getClientMessage('SIBUILDTIME') + buildTimeStr + '</p>');
 
     let startTimeInt = parseInt(responseData['API_GET_SVRINFO'].Data.ServerInfo.StartTime, 16);
     let dateStartTime = new Date(startTimeInt * 1000);
     let StartTimeStr = dateStartTime.toString()
-    $('#svrinfo').append('<p>');
-    $('#svrinfo').append(getClientMessage('SISTARTTIME') + StartTimeStr);
-    $('#svrinfo').append('</p>');
+    $('#svrinfo').append('<p>' + getClientMessage('SISTARTTIME') + StartTimeStr + '</p>');
+
+    let PhyMem = responseData['API_GET_SVRINFO'].Data.ServerInfo.UsedPhysicalMemory;
+    let VirMem = responseData['API_GET_SVRINFO'].Data.ServerInfo.UsedVirtualMemory;
+    $('#svrinfo').append('<p>' + getClientMessage('SIPHYMEM') + PhyMem + '</p>');
+    $('#svrinfo').append('<p>' + getClientMessage('SIVIRMEM') + VirMem + '</p>');
+
 
     // Polling Interval
     if (responseData['API_GET_SVRINFO'].Data.ServerInfo.PollingInterval == 30) {
