@@ -629,6 +629,7 @@ function displayFileMgmt() {
 
     let fileUpload = document.getElementById('fileupload');
     fileUpload.addEventListener('change', function () {
+        InitializeNumOfApiCall();
         for (let loop = 0; loop < this.files.length; loop++) {
             if (this.files[loop] === undefined) {
                 return;
@@ -666,11 +667,31 @@ function displayFileMgmt() {
                             encData = "";
                         }
                     }
-                    sequentialApiCall(contents, transDisplayFileMgmt);
+                    IncreaseNumOfFileMgmtApiCall();
+                    sequentialApiCall(contents, FinalizationOfFileMgmtApiCall);
                 }
             })(this.files[loop]);
         }
     });
+}
+
+{
+    let NumOfApiCall = 0;
+
+    function InitializeNumOfApiCall() {
+        NumOfApiCall = 0;
+    }
+
+    function IncreaseNumOfFileMgmtApiCall() {
+        NumOfApiCall++;
+    }
+
+    function FinalizationOfFileMgmtApiCall() {
+        NumOfApiCall--;
+        if (NumOfApiCall == 0) {
+            transDisplayFileMgmt();
+        }
+    }
 }
 
 function fileDownload(fileName, filesize, offset) {
