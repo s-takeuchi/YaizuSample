@@ -579,6 +579,7 @@ function displayFileMgmt() {
     let fileMgmtDataDiv = $('<div id="filemgmttable" class="table-responsive">');
     if (responseData['API_GET_FILELIST'].Data === undefined) {
         fileMgmtDataDiv.append(getClientMessage('NOFILEEXIST'));
+        $('#filemgmt').append(fileMgmtDataDiv);
     } else {
         let fileList = getArray(responseData['API_GET_FILELIST'].Data.FileInfo);
 
