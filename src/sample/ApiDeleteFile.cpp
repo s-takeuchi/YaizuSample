@@ -22,11 +22,13 @@ StkObject* ApiDeleteFile::ExecuteImpl(StkObject* ReqObj, int Method, wchar_t Url
 		return TmpObj;
 	}
 
-	wchar_t FileNameStr[FILENAME_MAX] = L"";
+	wchar_t FileNameStr[FILENAME_MAX * 4] = L"";
 	StkStringParser::ParseInto1Param(UrlPath, L"/api/file/$/", L'$', FileNameStr, FILENAME_MAX);
+	wchar_t FileNameTransStr[FILENAME_MAX] = L"";
+	DecodeURL(FileNameStr, FILENAME_MAX * 4, FileNameTransStr, FILENAME_MAX);
 
 	wchar_t TargetFullPath[FILENAME_MAX];
-	GetFullPathFromFileName(TargetFullPath, FileNameStr);
+	GetFullPathFromFileName(TargetFullPath, FileNameTransStr);
 	StkPlDeleteFile(TargetFullPath);
 	AddCodeAndMsg(TmpObj, 0, L"", L"");
 

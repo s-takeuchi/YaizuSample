@@ -606,11 +606,18 @@ function displayFileMgmt() {
 
             let updTimeInt = parseInt(fileList[Loop].UpdTime, 16);
             let dateUpdTime = new Date(updTimeInt * 1000);
-            tBody.append('<tr>' + tmpChkBoxStr + '<td><a href="javascript:fileDownload(\'' + fileList[Loop].Name  + '\',' + fileList[Loop].Size + ', 0);">' + fileList[Loop].Name + '</a></td><td>' + fileList[Loop].Size + '</td><td>' + dateUpdTime + '</td></tr>');
+            tBody.append('<tr>' + tmpChkBoxStr + '<td><a id="fileInfoAncId' + Loop + '">' + fileList[Loop].Name + '</a></td><td>' + fileList[Loop].Size + '</td><td>' + dateUpdTime + '</td></tr>');
         }
 
         tableListData.append(tBody);
         fileMgmtDataDiv.append(tableListData);
+        $('#filemgmt').append(fileMgmtDataDiv);
+
+        for (let loop = 0; loop < fileList.length; loop++) {
+            $('#fileInfoAncId' + loop).on('click', function() {
+                fileDownload(fileList[loop].Name, fileList[loop].Size, 0);
+            });
+        }
     }
 
     let fileMgmtButtonDiv = $('<div id="filemgmtbutton" style="padding: 6px 6px 10px 10px; background-color: #e9ecef;">')
@@ -622,7 +629,6 @@ function displayFileMgmt() {
     fileMgmtButtonDiv.append(tmpJq);
     fileMgmtButtonDiv.append('&nbsp;');
     fileMgmtButtonDiv.append('<button id="fileInfoDelete" class="btn btn-dark" type="button" onclick="deleteFile()">' + getClientMessage('FILE_DELETE') + '</button>');
-    $('#filemgmt').append(fileMgmtDataDiv);
     $('#filemgmt').append(fileMgmtButtonDiv);
     resizeComponent();
     switchFileInfoButton();
@@ -698,7 +704,8 @@ function fileDownload(fileName, filesize, offset) {
     let chunks = parseInt(filesize / 1000000 + 1);
     let contents = [];
     for (let loop = 0; loop < chunks; loop++) {
-        let tmpUrl = '/api/file/' + fileName + '/' + loop * 1000000 + '/';
+        let encFileName = encodeURI(fileName);
+        let tmpUrl = '/api/file/' + encFileName + '/' + loop * 1000000 + '/';
         contents.push({ method: 'GET', url: tmpUrl, request: null, keystring: 'API_GET_FILE_' + loop });
     }
     sequentialApiCall(contents, fileDownloadImpl);
@@ -710,10 +717,14 @@ function fileDownloadImpl() {
     let fileSize = responseData['API_GET_FILE_0'].Data.FileSize;
     let chunks = parseInt(fileSize / 1000000 + 1);
     let typedArrays = [chunks];
-    for (let loop = 0; loop < chunks; loop++) {
-        typedArrays[loop] = new Uint8Array(responseData['API_GET_FILE_' + loop].Data.FileData.match(/[\da-f]{2}/gi).map(function (h) {
-            return parseInt(h, 16)
-        }))
+    if (fileSize == 0) {
+        typedArrays[0] = new Uint8Array(0);
+    } else {
+        for (let loop = 0; loop < chunks; loop++) {
+            typedArrays[loop] = new Uint8Array(responseData['API_GET_FILE_' + loop].Data.FileData.match(/[\da-f]{2}/gi).map(function (h) {
+                return parseInt(h, 16)
+            }))
+        }
     }
     let blob = new Blob(typedArrays, { "type" : "application/octet-stream" });
     if (window.navigator.msSaveBlob) {
@@ -760,7 +771,8 @@ function deleteFile() {
     let contents = [];
     for (var loop = 0; loop < fileList.length; loop++) {
         if ($('#fileInfoId' + loop).prop('checked') == true) {
-            let tmpUrl = '/api/file/' + fileList[loop].Name + '/';
+            let encFileName = encodeURI(fileList[loop].Name);
+            let tmpUrl = '/api/file/' + encFileName + '/';
             contents.push({ method: 'DELETE', url: tmpUrl, request: null, keystring: 'API_DELETE_FILE' });
         }
     }

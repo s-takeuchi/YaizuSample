@@ -8,12 +8,15 @@
 
 StkObject* ApiGetFile::ExecuteImpl(StkObject* ReqObj, int Method, wchar_t UrlPath[StkWebAppExec::URL_PATH_LENGTH], int* ResultCode, wchar_t Locale[3], wchar_t* Token)
 {
-	wchar_t TargetFileName[FILENAME_MAX];
+	wchar_t TargetFileName[FILENAME_MAX * 4];
 	wchar_t OffsetStr[16];
 	StkStringParser::ParseInto2Params(UrlPath, L"/api/file/$/$/", L'$', TargetFileName, FILENAME_MAX, OffsetStr, 16);
+	wchar_t TargetFileNameAct[FILENAME_MAX] = L"";
+	DecodeURL(TargetFileName, FILENAME_MAX * 4, TargetFileNameAct, FILENAME_MAX);
 	size_t Offset = StkPlWcsToL(OffsetStr);
 	wchar_t TargetFullPath[FILENAME_MAX];
-	GetFullPathFromFileName(TargetFullPath, TargetFileName);
+	GetFullPathFromFileName(TargetFullPath, TargetFileNameAct);
+
 	size_t FileSize = StkPlGetFileSize(TargetFullPath);
 	if (FileSize < 0) {
 		StkObject* TmpObj = new StkObject(L"");
@@ -47,7 +50,7 @@ StkObject* ApiGetFile::ExecuteImpl(StkObject* ReqObj, int Method, wchar_t UrlPat
 	StkObject* TmpObj = new StkObject(L"");
 	StkObject* TmpObjD = new StkObject(L"Data");
 	AddCodeAndMsg(TmpObj, 0, L"", L"");
-	TmpObjD->AppendChildElement(new StkObject(L"FileName", TargetFileName));
+	TmpObjD->AppendChildElement(new StkObject(L"FileName", TargetFileNameAct));
 	TmpObjD->AppendChildElement(new StkObject(L"FileSize", (int)FileSize));
 	TmpObjD->AppendChildElement(new StkObject(L"FileOffset", (int)Offset));
 	TmpObjD->AppendChildElement(new StkObject(L"FileData", HexBuf));
