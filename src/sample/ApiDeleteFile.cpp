@@ -29,8 +29,13 @@ StkObject* ApiDeleteFile::ExecuteImpl(StkObject* ReqObj, int Method, wchar_t Url
 
 	wchar_t TargetFullPath[FILENAME_MAX];
 	GetFullPathFromFileName(TargetFullPath, FileNameTransStr);
-	StkPlDeleteFile(TargetFullPath);
+	if (StkPlDeleteFile(TargetFullPath) == false) {
+		AddCodeAndMsg(TmpObj, MSG_FILE_ACCESS_ERROR, MessageProc::GetMsgEng(MSG_FILE_ACCESS_ERROR), MessageProc::GetMsgJpn(MSG_FILE_ACCESS_ERROR));
+		*ResultCode = 400;
+		return TmpObj;
+	}
 	AddCodeAndMsg(TmpObj, 0, L"", L"");
+	*ResultCode = 200;
 
 	return TmpObj;
 }

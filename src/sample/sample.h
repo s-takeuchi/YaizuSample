@@ -34,7 +34,7 @@
 #define MSG_AGENTINFO_NOT_FOUND  4060
 
 // File
-#define MSG_FILE_NOTEXIST        4080
+#define MSG_FILE_ACCESS_ERROR    4080
 #define MSG_FILE_EXCEED_SIZE     4081
 
 // Common error message

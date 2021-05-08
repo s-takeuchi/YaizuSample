@@ -713,8 +713,18 @@ function fileDownload(fileName, filesize, offset) {
 }
 
 function fileDownloadImpl() {
+    if (statusCode['API_GET_FILE_0'] == -1 || statusCode['API_GET_FILE_0'] == 0) {
+        $('#filemgmttable').empty();
+        displayAlertDanger('#filemgmttable', getClientMessage('CONNERR'));
+        return;
+    }
+    if (statusCode['API_GET_FILE_0'] != 200) {
+        $('#filemgmttable').empty();
+        displayAlertDanger('#filemgmttable', getSvrMsg(responseData['API_GET_FILE_0']));
+        return;
+    }
+
     let fileName = responseData['API_GET_FILE_0'].Data.FileName;
-    let fileOffset = responseData['API_GET_FILE_0'].Data.FileOffset;
     let fileSize = responseData['API_GET_FILE_0'].Data.FileSize;
     let chunks = parseInt(fileSize / 1000000 + 1);
     let typedArrays = [chunks];
@@ -777,7 +787,21 @@ function deleteFile() {
             contents.push({ method: 'DELETE', url: tmpUrl, request: null, keystring: 'API_DELETE_FILE' });
         }
     }
-    sequentialApiCall(contents, transDisplayFileMgmt);
+    sequentialApiCall(contents, checkAfterDeleteFile);
+}
+
+function checkAfterDeleteFile() {
+    if (statusCode['API_DELETE_FILE'] == -1 || statusCode['API_DELETE_FILE'] == 0) {
+        $('#filemgmttable').empty();
+        displayAlertDanger('#filemgmttable', getClientMessage('CONNERR'));
+        return;
+    }
+    if (statusCode['API_DELETE_FILE'] != 200) {
+        $('#filemgmttable').empty();
+        displayAlertDanger('#filemgmttable', getSvrMsg(responseData['API_DELETE_FILE']));
+        return;
+    }
+    transDisplayFileMgmt();
 }
 
 ////////////////////////////////////////////////////////////////////////////////

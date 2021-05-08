@@ -20,7 +20,7 @@ StkObject* ApiGetFile::ExecuteImpl(StkObject* ReqObj, int Method, wchar_t UrlPat
 	size_t FileSize = StkPlGetFileSize(TargetFullPath);
 	if (FileSize < 0) {
 		StkObject* TmpObj = new StkObject(L"");
-		AddCodeAndMsg(TmpObj, MSG_FILE_NOTEXIST, MessageProc::GetMsgEng(MSG_FILE_NOTEXIST), MessageProc::GetMsgJpn(MSG_FILE_NOTEXIST));
+		AddCodeAndMsg(TmpObj, MSG_FILE_ACCESS_ERROR, MessageProc::GetMsgEng(MSG_FILE_ACCESS_ERROR), MessageProc::GetMsgJpn(MSG_FILE_ACCESS_ERROR));
 		*ResultCode = 400;
 		return TmpObj;
 	}
@@ -35,6 +35,12 @@ StkObject* ApiGetFile::ExecuteImpl(StkObject* ReqObj, int Method, wchar_t UrlPat
 	wchar_t* HexBuf = new wchar_t[2000001];
 	size_t ActSize;
 	void* FilePtr = StkPlOpenFileForRead(TargetFullPath);
+	if (FilePtr == NULL) {
+		StkObject* TmpObj = new StkObject(L"");
+		AddCodeAndMsg(TmpObj, MSG_FILE_ACCESS_ERROR, MessageProc::GetMsgEng(MSG_FILE_ACCESS_ERROR), MessageProc::GetMsgJpn(MSG_FILE_ACCESS_ERROR));
+		*ResultCode = 400;
+		return TmpObj;
+	}
 	StkPlSeekFromBegin(FilePtr, Offset);
 	StkPlRead(FilePtr, Buffer, 1000000, &ActSize);
 	StkPlCloseFile(FilePtr);
