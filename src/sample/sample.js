@@ -712,15 +712,26 @@ function fileDownload(fileName, filesize, offset) {
     sequentialApiCall(contents, fileDownloadImpl);
 }
 
+function fileDownloadObjClear(chunks) {
+    for (let loop = 0; loop < chunks; loop++) {
+        delete responseData['API_GET_FILE_' + loop];
+        delete statusCode['API_GET_FILE_' + loop];
+    }
+}
+
 function fileDownloadImpl() {
     if (statusCode['API_GET_FILE_0'] == -1 || statusCode['API_GET_FILE_0'] == 0) {
         $('#filemgmttable').empty();
         displayAlertDanger('#filemgmttable', getClientMessage('CONNERR'));
+        delete responseData['API_GET_FILE_0'];
+        delete statusCode['API_GET_FILE_0'];
         return;
     }
     if (statusCode['API_GET_FILE_0'] != 200) {
         $('#filemgmttable').empty();
         displayAlertDanger('#filemgmttable', getSvrMsg(responseData['API_GET_FILE_0']));
+        delete responseData['API_GET_FILE_0'];
+        delete statusCode['API_GET_FILE_0'];
         return;
     }
 
@@ -732,6 +743,18 @@ function fileDownloadImpl() {
         typedArrays[0] = new Uint8Array(0);
     } else {
         for (let loop = 0; loop < chunks; loop++) {
+            if (statusCode['API_GET_FILE_' + loop] == -1 || statusCode['API_GET_FILE_' + loop] == 0) {
+                $('#filemgmttable').empty();
+                displayAlertDanger('#filemgmttable', getClientMessage('CONNERR'));
+                fileDownloadObjClear(chunks);
+                return;
+            }
+            if (statusCode['API_GET_FILE_' + loop] != 200) {
+                $('#filemgmttable').empty();
+                displayAlertDanger('#filemgmttable', getSvrMsg(responseData['API_GET_FILE_' + loop]));
+                fileDownloadObjClear(chunks);
+                return;
+            }
             typedArrays[loop] = new Uint8Array(responseData['API_GET_FILE_' + loop].Data.FileData.match(/[\da-f]{2}/gi).map(function (h) {
                 return parseInt(h, 16)
             }))
@@ -750,9 +773,7 @@ function fileDownloadImpl() {
         document.body.removeChild(newLink);
     }
     // Clear unnecessary data
-    for (let loop = 0; loop < chunks; loop++) {
-        delete responseData['API_GET_FILE_' + loop];
-    }
+    fileDownloadObjClear(chunks);
 }
 
 function switchFileInfoButton() {
