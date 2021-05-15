@@ -98,6 +98,7 @@ int LoadAndPostFile(char* FileName, StkWebAppSend* SndObj)
 		StkObject* TmpObj = new StkObject(L"");
 		TmpObj->AppendChildElement(new StkObject(L"FileName", FileNameWc));
 		TmpObj->AppendChildElement(new StkObject(L"FileOffset", Offset));
+		TmpObj->AppendChildElement(new StkObject(L"FileSize", FileSize));
 		TmpObj->AppendChildElement(new StkObject(L"FileData", HexBuf));
 		delete HexBuf;
 		StkObject* ResObj = SndObj->SendRequestRecvResponse(StkWebAppSend::STKWEBAPP_METHOD_POST, "/api/file/", TmpObj, &Result);

@@ -1,14 +1,23 @@
 #include "../../../YaizuComLib/src/stkpl/StkPl.h"
+#include "../../../YaizuComLib/src/stkwebapp_um/stkwebapp_um.h"
 #include "../../../YaizuComLib/src/stkwebapp_um/ApiBase.h"
+#include "../../../YaizuComLib/src/commonfunc/msgproc.h"
 #include "sample.h"
 #include "dataaccess.h"
 #include "ApiPostFile.h"
 
 StkObject* ApiPostFile::ExecuteImpl(StkObject* ReqObj, int Method, wchar_t UrlPath[StkWebAppExec::URL_PATH_LENGTH], int* ResultCode, wchar_t Locale[3], wchar_t* Token)
 {
+	wchar_t UserName[ApiBase::MAXLEN_OF_USERNAME];
+	int UserId = -1;
+	if (!CheckCredentials(Token, UserName, &UserId)) {
+		UserId = -1;
+	}
+		
 	if (ReqObj != NULL) {
 		*ResultCode = 200;
 		int Offset = -1;
+		int Size = -1;
 		wchar_t* FileData = NULL;
 		wchar_t* FileName = NULL;
 
@@ -22,6 +31,9 @@ StkObject* ApiPostFile::ExecuteImpl(StkObject* ReqObj, int Method, wchar_t UrlPa
 			}
 			if (StkPlWcsCmp(CurObj->GetName(), L"FileName") == 0) {
 				FileName = CurObj->GetStringValue();
+			}
+			if (StkPlWcsCmp(CurObj->GetName(), L"FileSize") == 0) {
+				Size = CurObj->GetIntValue();
 			}
 			CurObj = CurObj->GetNext();
 		}
@@ -71,6 +83,13 @@ StkObject* ApiPostFile::ExecuteImpl(StkObject* ReqObj, int Method, wchar_t UrlPa
 		StkPlWrite(FilePtr, (char*)DataChar, DataCharIndex, &ActSize);
 		StkPlCloseFile(FilePtr);
 		delete DataChar;
+		if (UserId != -1 && Size == Offset + DataCharIndex) {
+			wchar_t LogMsg[512] = L"";
+			wchar_t LogMsgJa[512] = L"";
+			StkPlSwPrintf(LogMsg, 256, L"%ls [%ls]", MessageProc::GetMsgEng(MSG_FILEUPLOADED), FileName);
+			StkPlSwPrintf(LogMsgJa, 256, L"%ls [%ls]", MessageProc::GetMsgJpn(MSG_FILEUPLOADED), FileName);
+			StkWebAppUm_AddLogMsg(LogMsg, LogMsgJa, UserId);
+		}
 	}
 	StkObject* TmpObj = new StkObject(L"");
 	AddCodeAndMsg(TmpObj, 0, L"", L"");

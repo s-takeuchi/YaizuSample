@@ -652,6 +652,7 @@ function displayFileMgmt() {
                         let sendData = {
                             FileName : targetFile.name,
                             FileOffset : 0,
+                            FileSize : 0,
                             FileData : ""
                         };
                         contents.push({ method: 'POST', url: '/api/file/', request: sendData, keystring: 'API_POST_FILE' })
@@ -676,6 +677,7 @@ function displayFileMgmt() {
                             let sendData = {
                                 FileName : targetFile.name,
                                 FileOffset : offset,
+                                FileSize : orgData.byteLength,
                                 FileData : encData
                             };
                             contents.push({ method: 'POST', url: '/api/file/', request: sendData, keystring: 'API_POST_FILE' })
@@ -1077,8 +1079,8 @@ function checkLoginAfterApiCall() {
 }
 function resizeComponent() {
     var wsize = $(window).width();
-    var hsize_agentinfotable = $(window).height() - 110;
-    var hsize_filemgmttable = $(window).height() - 110;
+    var hsize_agentinfotable = $(window).height() - 111;
+    var hsize_filemgmttable = $(window).height() - 111;
     $("#agentinfotable").css("height", hsize_agentinfotable + "px");
     $("#filemgmttable").css("height", hsize_filemgmttable + "px");
 }

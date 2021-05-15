@@ -2,6 +2,7 @@
 #include "../../../YaizuComLib/src/commonfunc/StkStringParser.h"
 #include "../../../YaizuComLib/src/commonfunc/msgproc.h"
 #include "../../../YaizuComLib/src/stkwebapp_um/ApiBase.h"
+#include "../../../YaizuComLib/src/stkwebapp_um/stkwebapp_um.h"
 #include "sample.h"
 #include "ApiDeleteFile.h"
 
@@ -33,6 +34,13 @@ StkObject* ApiDeleteFile::ExecuteImpl(StkObject* ReqObj, int Method, wchar_t Url
 		AddCodeAndMsg(TmpObj, MSG_FILE_ACCESS_ERROR, MessageProc::GetMsgEng(MSG_FILE_ACCESS_ERROR), MessageProc::GetMsgJpn(MSG_FILE_ACCESS_ERROR));
 		*ResultCode = 400;
 		return TmpObj;
+	}
+	if (UserId != -1) {
+		wchar_t LogMsg[512] = L"";
+		wchar_t LogMsgJa[512] = L"";
+		StkPlSwPrintf(LogMsg, 256, L"%ls [%ls]", MessageProc::GetMsgEng(MSG_FILEDELETED), FileNameTransStr);
+		StkPlSwPrintf(LogMsgJa, 256, L"%ls [%ls]", MessageProc::GetMsgJpn(MSG_FILEDELETED), FileNameTransStr);
+		StkWebAppUm_AddLogMsg(LogMsg, LogMsgJa, UserId);
 	}
 	AddCodeAndMsg(TmpObj, 0, L"", L"");
 	*ResultCode = 200;

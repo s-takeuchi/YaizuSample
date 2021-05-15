@@ -14,6 +14,8 @@
 #define MSG_SERVICESTOPPED       4011
 #define MSG_NEWAGTNOTIFIED       4015
 #define MSG_SVRINFOUPDATED       4016
+#define MSG_FILEUPLOADED         4017
+#define MSG_FILEDELETED          4018
 
 // Command
 #define MSG_COMMANDNOTEXIST      4020
