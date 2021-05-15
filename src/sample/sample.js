@@ -694,6 +694,7 @@ function displayFileMgmt() {
     let NumOfApiCall = 0;
 
     function InitializeNumOfApiCall() {
+        initSequentialApiCall();
         NumOfApiCall = 0;
     }
 
@@ -704,6 +705,7 @@ function displayFileMgmt() {
     function FinalizationOfFileMgmtApiCall() {
         NumOfApiCall--;
         if (NumOfApiCall == 0) {
+            finalSequentialApiCall();
             transDisplayFileMgmt();
         }
     }
@@ -807,30 +809,44 @@ function switchFileInfoButton() {
 }
 
 function deleteFile() {
-    var fileList = getArray(responseData['API_GET_FILELIST'].Data.FileInfo);
+    let fileList = getArray(responseData['API_GET_FILELIST'].Data.FileInfo);
     let contents = [];
     for (var loop = 0; loop < fileList.length; loop++) {
         if ($('#fileInfoId' + loop).prop('checked') == true) {
             let encFileName = encodeURI(fileList[loop].Name);
             let tmpUrl = '/api/file/' + encFileName + '/';
-            contents.push({ method: 'DELETE', url: tmpUrl, request: null, keystring: 'API_DELETE_FILE' });
+            contents.push({ method: 'DELETE', url: tmpUrl, request: null, keystring: 'API_DELETE_FILE' + loop });
         }
     }
+    initSequentialApiCall();
     sequentialApiCall(contents, checkAfterDeleteFile);
 }
 
 function checkAfterDeleteFile() {
-    if (statusCode['API_DELETE_FILE'] == -1 || statusCode['API_DELETE_FILE'] == 0) {
-        $('#filemgmttable').empty();
-        displayAlertDanger('#filemgmttable', getClientMessage('CONNERR'));
-        return;
+    finalSequentialApiCall();
+    let errorFlag = false;
+    let fileList = getArray(responseData['API_GET_FILELIST'].Data.FileInfo);
+    for (var loop = 0; loop < fileList.length; loop++) {
+        if (statusCode['API_DELETE_FILE' + loop] == -1 || statusCode['API_DELETE_FILE' + loop] == 0) {
+            $('#filemgmttable').empty();
+            displayAlertDanger('#filemgmttable', getClientMessage('CONNERR'));
+            errorFlag = true;
+            break;
+        }
+        if (statusCode['API_DELETE_FILE' + loop] != 200) {
+            $('#filemgmttable').empty();
+            displayAlertDanger('#filemgmttable', getSvrMsg(responseData['API_DELETE_FILE' + loop]));
+            errorFlag = true;
+            break;
+        }
     }
-    if (statusCode['API_DELETE_FILE'] != 200) {
-        $('#filemgmttable').empty();
-        displayAlertDanger('#filemgmttable', getSvrMsg(responseData['API_DELETE_FILE']));
-        return;
+    for (var loop = 0; loop < fileList.length; loop++) {
+        delete responseData['API_DELETE_FILE' + loop];
+        delete statusCode['API_DELETE_FILE' + loop];
     }
-    transDisplayFileMgmt();
+    if (errorFlag == false) {
+        transDisplayFileMgmt();
+    }
 }
 
 ////////////////////////////////////////////////////////////////////////////////
