@@ -648,6 +648,14 @@ function displayFileMgmt() {
                     let orgData = new Uint8Array(evt.target.result);
                     let encData = "";
                     let contents = [];
+                    if (orgData.byteLength == 0) {
+                        let sendData = {
+                            FileName : targetFile.name,
+                            FileOffset : 0,
+                            FileData : ""
+                        };
+                        contents.push({ method: 'POST', url: '/api/file/', request: sendData, keystring: 'API_POST_FILE' })
+                    }
                     for (let loop = 0; loop < orgData.byteLength; loop++) {
                         // Do NOT use padStart for IE11
                         if (orgData[loop] == 0) {
