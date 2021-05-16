@@ -755,6 +755,9 @@ function fileDownloadImpl() {
         typedArrays[0] = new Uint8Array(0);
     } else {
         for (let loop = 0; loop < chunks; loop++) {
+            if (statusCode['API_GET_FILE_' + loop] === undefined || responseData['API_GET_FILE_' + loop] === undefined) {
+                continue;
+            }
             if (statusCode['API_GET_FILE_' + loop] == -1 || statusCode['API_GET_FILE_' + loop] == 0) {
                 $('#filemgmttable').empty();
                 displayAlertDanger('#filemgmttable', getClientMessage('CONNERR'));
@@ -829,6 +832,9 @@ function checkAfterDeleteFile() {
     let errorFlag = false;
     let fileList = getArray(responseData['API_GET_FILELIST'].Data.FileInfo);
     for (var loop = 0; loop < fileList.length; loop++) {
+        if (statusCode['API_DELETE_FILE' + loop] === undefined || responseData['API_DELETE_FILE' + loop] === undefined) {
+            continue;
+        }
         if (statusCode['API_DELETE_FILE' + loop] == -1 || statusCode['API_DELETE_FILE' + loop] == 0) {
             $('#filemgmttable').empty();
             displayAlertDanger('#filemgmttable', getClientMessage('CONNERR'));
