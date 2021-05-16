@@ -721,6 +721,7 @@ function fileDownload(fileName, filesize, offset) {
         let tmpUrl = '/api/file/' + encFileName + '/' + loop * 1000000 + '/';
         contents.push({ method: 'GET', url: tmpUrl, request: null, keystring: 'API_GET_FILE_' + loop });
     }
+    initSequentialApiCall();
     sequentialApiCall(contents, fileDownloadImpl);
 }
 
@@ -737,6 +738,7 @@ function fileDownloadImpl() {
         displayAlertDanger('#filemgmttable', getClientMessage('CONNERR'));
         delete responseData['API_GET_FILE_0'];
         delete statusCode['API_GET_FILE_0'];
+        finalSequentialApiCall();
         return;
     }
     if (statusCode['API_GET_FILE_0'] != 200) {
@@ -744,6 +746,7 @@ function fileDownloadImpl() {
         displayAlertDanger('#filemgmttable', getSvrMsg(responseData['API_GET_FILE_0']));
         delete responseData['API_GET_FILE_0'];
         delete statusCode['API_GET_FILE_0'];
+        finalSequentialApiCall();
         return;
     }
 
@@ -762,12 +765,14 @@ function fileDownloadImpl() {
                 $('#filemgmttable').empty();
                 displayAlertDanger('#filemgmttable', getClientMessage('CONNERR'));
                 fileDownloadObjClear(chunks);
+                finalSequentialApiCall();
                 return;
             }
             if (statusCode['API_GET_FILE_' + loop] != 200) {
                 $('#filemgmttable').empty();
                 displayAlertDanger('#filemgmttable', getSvrMsg(responseData['API_GET_FILE_' + loop]));
                 fileDownloadObjClear(chunks);
+                finalSequentialApiCall();
                 return;
             }
             typedArrays[loop] = new Uint8Array(responseData['API_GET_FILE_' + loop].Data.FileData.match(/[\da-f]{2}/gi).map(function (h) {
@@ -789,6 +794,8 @@ function fileDownloadImpl() {
     }
     // Clear unnecessary data
     fileDownloadObjClear(chunks);
+
+    finalSequentialApiCall();
 }
 
 function switchFileInfoButton() {
