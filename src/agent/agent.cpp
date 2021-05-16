@@ -272,15 +272,15 @@ int CommonProcess(StkObject* CommandSearch, char TmpTime[64], StkWebAppSend* Snd
 
 				if (TmpType == 0) {
 					if (OperationFlag) {
-						ReturnCode = StkPlSystem("/usr/bin/bash aaa-operation.sh");
+						ReturnCode = StkPlSystem("/usr/bin/bash aaa-operation.sh > aaa-operation.sh.out");
 					} else {
-						ReturnCode = StkPlSystem("/usr/bin/bash aaa-status.sh");
+						ReturnCode = StkPlSystem("/usr/bin/bash aaa-status.sh > aaa-status.sh.out");
 					}
 				} else if (TmpType == 1) {
 					if (OperationFlag) {
-						ReturnCode = StkPlSystem("cmd /c aaa-operation.bat");
+						ReturnCode = StkPlSystem("cmd /c aaa-operation.bat > aaa-operation.bat.out");
 					} else {
-						ReturnCode = StkPlSystem("cmd /c aaa-status.bat");
+						ReturnCode = StkPlSystem("cmd /c aaa-status.bat > aaa-status.bat.out");
 					}
 				}
 			} else {

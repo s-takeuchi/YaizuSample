@@ -28,6 +28,7 @@ function initClientMessage() {
     addClientMessage('USER_MGMT', {'en':'User Management', 'ja':'ユーザー管理'});
     addClientMessage('USER_CHG_PW', {'en':'Change Password', 'ja':'パスワードの変更'});
     addClientMessage('OPE_LOG', {'en':'Operation log', 'ja':'操作ログ'});
+    addClientMessage('SERVER_INFO', {'en':'Server info', 'ja':'サーバ情報'});
 
     addClientMessage('AGENTINFO', {'en':' Agent Info', 'ja':' Agent Info'});
     addClientMessage('SERVERINFO', {'en':' Server Info', 'ja':' Server Info'});
@@ -624,9 +625,11 @@ function displayFileMgmt() {
     let fileMgmtButtonDiv = $('<div id="filemgmtbutton" style="padding: 6px 6px 10px 10px; background-color: #e9ecef;">')
     fileMgmtButtonDiv.append('<form id="fileuploadform" method="post" action="/api/filea/" enctype="multipart/form-data"><input type="file" id="fileupload" style="display:none" multiple/></form>');
     let tmpJq = $('<button id="fileInfoUpload" class="btn btn-dark" type="button">' + getClientMessage('FILE_UPLOAD') + '</button>');
-    tmpJq.click(function() {
-        $("#fileupload").trigger("click");
-    });
+    if (userRole != 1) {
+        tmpJq.click(function() {
+            $("#fileupload").trigger("click");
+        });
+    }
     fileMgmtButtonDiv.append(tmpJq);
     fileMgmtButtonDiv.append('&nbsp;');
     fileMgmtButtonDiv.append('<button id="fileInfoDelete" class="btn btn-dark" type="button" onclick="deleteFile()">' + getClientMessage('FILE_DELETE') + '</button>');
@@ -821,6 +824,9 @@ function switchFileInfoButton() {
 }
 
 function deleteFile() {
+    if (userRole == 1) {
+        return;
+    }
     let fileList = getArray(responseData['API_GET_FILELIST'].Data.FileInfo);
     let contents = [];
     for (var loop = 0; loop < fileList.length; loop++) {
@@ -1054,20 +1060,12 @@ function checkLoginAfterApiCall() {
         userRole = responseData['API_GET_USER'].Data.User.Role;
 
         let contents = [];
-        if (userRole == 1) {
-            contents = [
-                { actApiName : "transDisplayAgentInfo()", title : 'Agent Info' },
-                { actApiName : "transDisplayFileMgmt()", title : "File" },
-                { actApiName : "transDisplayCommand()", title : 'Command' }
-            ];
-        } else {
-            contents = [
-                { actApiName : "transDisplayAgentInfo()", title : 'Agent Info' },
-                { actApiName : "transDisplayServerInfo()", title : 'Server Info' },
-                { actApiName : "transDisplayFileMgmt()", title : "File" },
-                { actApiName : "transDisplayCommand()", title : 'Command' }
-            ];
-        }
+        contents = [
+            { actApiName : "transDisplayAgentInfo()", title : 'Agent' },
+            { actApiName : "transDisplayFileMgmt()", title : "File" },
+            { actApiName : "transDisplayCommand()", title : 'Command' },
+            { actApiName : "", title : 'Result' }
+        ];
         iconAlwaysVisible();
         initMainPage('SERVAL', 'squirrel.svg', contents);
         clearRsCommand();
@@ -1082,7 +1080,8 @@ function checkLoginAfterApiCall() {
             usermenuContents = [
                 { actApiName: 'transDisplayLogInfo()', title: getClientMessage('OPE_LOG') },
                 { actApiName: 'transDisplayUser()', title: getClientMessage('USER_MGMT') },
-                { actApiName: 'transDisplayChgPassword()', title: getClientMessage('USER_CHG_PW') }
+                { actApiName: 'transDisplayChgPassword()', title: getClientMessage('USER_CHG_PW') },
+                { actApiName: 'transDisplayServerInfo()', title : getClientMessage('SERVER_INFO') }
             ];
         }
         addRsUserMenu(usermenuContents);
