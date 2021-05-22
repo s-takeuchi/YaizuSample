@@ -69,8 +69,8 @@ int DataAccess::CreateTables(const wchar_t* DataFileName)
 			ColumnDefInt  ColDefAgtOpStatus(L"OpStatus");
 			ColumnDefInt  ColDefAgtOpCmd(L"OpCmd");
 			ColumnDefBin  ColDefAgtReqTime(L"ReqTime", DA_MAXLEN_OF_UNIXTIME);
-			ColumnDefBin  COlDefAgtAcqTime(L"AcqTime", DA_MAXLEN_OF_UNIXTIME);
-			ColumnDefBin  COlDefAgtUpdTime(L"UpdTime", DA_MAXLEN_OF_UNIXTIME);
+			ColumnDefBin  ColDefAgtAcqTime(L"AcqTime", DA_MAXLEN_OF_UNIXTIME);
+			ColumnDefBin  ColDefAgtUpdTime(L"UpdTime", DA_MAXLEN_OF_UNIXTIME);
 			TableDef TabDefAgtInfo(L"AgentInfo", DA_MAXNUM_OF_AGTRECORDS);
 			TabDefAgtInfo.AddColumnDef(&ColDefAgtName);
 			TabDefAgtInfo.AddColumnDef(&ColDefAgtStatus);
@@ -78,8 +78,8 @@ int DataAccess::CreateTables(const wchar_t* DataFileName)
 			TabDefAgtInfo.AddColumnDef(&ColDefAgtOpStatus);
 			TabDefAgtInfo.AddColumnDef(&ColDefAgtOpCmd);
 			TabDefAgtInfo.AddColumnDef(&ColDefAgtReqTime);
-			TabDefAgtInfo.AddColumnDef(&COlDefAgtAcqTime);
-			TabDefAgtInfo.AddColumnDef(&COlDefAgtUpdTime);
+			TabDefAgtInfo.AddColumnDef(&ColDefAgtAcqTime);
+			TabDefAgtInfo.AddColumnDef(&ColDefAgtUpdTime);
 			if (CreateTable(&TabDefAgtInfo) != 0) {
 				UnlockAllTable();
 				return -1;
@@ -121,9 +121,29 @@ int DataAccess::CreateTables(const wchar_t* DataFileName)
 				return -1;
 			}
 		}
+		// Result table
+		{
+			ColumnDefBin ColDefUpdTime(L"UpdTime", DA_MAXLEN_OF_UNIXTIME);
+			ColumnDefInt ColDefType(L"Type");
+			ColumnDefWStr ColDefComName(L"CmdName", DA_MAXLEN_OF_CMDNAME);
+			ColumnDefWStr ColDefAgtName(L"AgtName", DA_MAXLEN_OF_AGTNAME);
+			ColumnDefInt ColDefStatus(L"Status");
+			ColumnDefBin ColDefOutput(L"Output", DA_MAXLEN_OF_CMDOUTPUT);
+			TableDef TabDefResult(L"Result", DA_MAXNUM_OF_RESULT);
+			TabDefResult.AddColumnDef(&ColDefUpdTime);
+			TabDefResult.AddColumnDef(&ColDefType);
+			TabDefResult.AddColumnDef(&ColDefComName);
+			TabDefResult.AddColumnDef(&ColDefAgtName);
+			TabDefResult.AddColumnDef(&ColDefStatus);
+			TabDefResult.AddColumnDef(&ColDefOutput);
+			if (CreateTable(&TabDefResult) != 0) {
+				UnlockAllTable();
+				return -1;
+			}
+		}
 		UnlockAllTable();
 
-		// For server info table
+		// Record for server info table
 		{
 			ColumnData *ColDatSvr[4];
 			ColDatSvr[0] = new ColumnDataInt(L"Id", 0);
