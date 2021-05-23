@@ -265,6 +265,74 @@ void TestNewCommand(StkWebAppSend* StkWebAppSendObj)
 	StkPlPrintf("[OK]\n");
 }
 
+void TestPostFile(StkWebAppSend* StkWebAppSendObj)
+{
+	{
+		StkPlPrintf("Post file (normal scenarios) ... ");
+		int ResultCode = 0;
+		int ErrCode = 0;
+		StkObject* ReqObj = StkObject::CreateObjectFromJson(L"{\"FileName\" : \"testpostfile.dat\", \"FileOffset\" : 0, \"FileData\" : \"20202020\", \"FileSize\" : 4}", &ErrCode);
+		StkWebAppSendObj->SetAutholization("Bearer admin manager");
+		StkObject* ResObj = StkWebAppSendObj->SendRequestRecvResponse(StkWebAppSend::STKWEBAPP_METHOD_POST, "/api/file/", ReqObj, &ResultCode);
+
+		if (ResultCode != 200) {
+			wchar_t TmpBuf[1024] = L"";
+			ResObj->ToJson(TmpBuf, 1024);
+			StkPlWPrintf(L"[NG] Res=%d;\n%ls\n", ResultCode, TmpBuf);
+			StkPlExit(1);
+		}
+		delete ReqObj;
+		delete ResObj;
+		StkPlPrintf("[OK]\n");
+	}
+	{
+		StkPlPrintf("Post file (abnormal scenarios (no FileName)) ... ");
+		int ResultCode = 0;
+		int ErrCode = 0;
+		StkObject* ReqObj = StkObject::CreateObjectFromJson(L"{\"FileOffset\" : 0, \"FileData\" : \"20202020\", \"FileSize\" : 4}", &ErrCode);
+		StkWebAppSendObj->SetAutholization("Bearer admin manager");
+		StkObject* ResObj = StkWebAppSendObj->SendRequestRecvResponse(StkWebAppSend::STKWEBAPP_METHOD_POST, "/api/file/", ReqObj, &ResultCode);
+
+		if (ResultCode != 400) {
+			StkPlWPrintf(L"[NG] Res=%d;\n", ResultCode);
+			StkPlExit(1);
+		}
+		StkObject* ChkObj = new StkObject(L"Code", 4201);
+		StkObject* FndObj = ResObj->Contains(ChkObj);
+		if (FndObj == NULL) {
+			StkPlPrintf("[NG]\n");
+			StkPlExit(1);
+		}
+		delete ChkObj;
+		delete ReqObj;
+		delete ResObj;
+		StkPlPrintf("[OK]\n");
+	}
+	{
+		StkPlPrintf("Post file (abnormal scenarios (non-continuous data reception)) ... ");
+		int ResultCode = 0;
+		int ErrCode = 0;
+		StkObject* ReqObj = StkObject::CreateObjectFromJson(L"{\"FileName\" : \"testpostfile.dat\", \"FileOffset\" : 1000000, \"FileData\" : \"20202020\", \"FileSize\" : 4}", &ErrCode);
+		StkWebAppSendObj->SetAutholization("Bearer admin manager");
+		StkObject* ResObj = StkWebAppSendObj->SendRequestRecvResponse(StkWebAppSend::STKWEBAPP_METHOD_POST, "/api/file/", ReqObj, &ResultCode);
+
+		if (ResultCode != 400) {
+			StkPlWPrintf(L"[NG] Res=%d;\n", ResultCode);
+			StkPlExit(1);
+		}
+		StkObject* ChkObj = new StkObject(L"Code", 4082);
+		StkObject* FndObj = ResObj->Contains(ChkObj);
+		if (FndObj == NULL) {
+			StkPlPrintf("[NG]\n");
+			StkPlExit(1);
+		}
+		delete ChkObj;
+		delete ReqObj;
+		delete ResObj;
+		StkPlPrintf("[OK]\n");
+	}
+}
+
 int main(int Argc, char* Argv[])
 {
 	StkPlSleepMs(3000);
@@ -278,6 +346,8 @@ int main(int Argc, char* Argv[])
 
 	TestGetCommand(StkWebAppSendObj);
 	TestNewCommand(StkWebAppSendObj);
+
+	TestPostFile(StkWebAppSendObj);
 
 	TestPostOperationStop(StkWebAppSendObj);
 	delete StkWebAppSendObj;
