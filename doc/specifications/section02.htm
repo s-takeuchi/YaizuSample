@@ -564,13 +564,15 @@ Store file.<br/>
 {
   "FileOffset" : 0,
   "FileData" : "00FF00FF00FF00FF",
-  "FileName" : "xxx"
+  "FileName" : "xxx",
+  "FileSize" : 8
 }
 </pre>
 <table class="tblstyle">
 <tr><td>FileOffset</td><td>Integer</td><td>offset of file to be read.</td></tr>
 <tr><td>FileData</td><td>String</td><td>File data in hexadecimal number (represents uppercase letter)</td></tr>
 <tr><td>FileName</td><td>String</td><td>File name</td></tr>
+<tr><td>FileSize</td><td>Integer</td><td>Total size of the target file</td></tr>
 </table><br/>
 </li>
 <li>Response
@@ -582,7 +584,7 @@ Store file.<br/>
 }
 </pre>
 <table class="tblstyle">
-<tr><td>Code</td><td>Integer</td><td>Result code 0:success(HTTP status code=200)</td></tr>
+<tr><td>Code</td><td>Integer</td><td>Result code 0:success(HTTP status code=200), 4201:Name element does not exist(HTTP status code=400), 4082:Non-continuous data received(HTTP status code=400)</td></tr>
 <tr><td>MsgEng</td><td>String</td><td>English message. Empty string is returned when result code is 0.</td></tr>
 <tr><td>MsgJpn</td><td>String</td><td>Japanese message. Empty string is returned when result code is 0.</td></tr>
 </table><br/>
