@@ -352,7 +352,9 @@ int main(int Argc, char* Argv[])
 
 		// workdir
 		if (Prop->GetPropertyStr("workdir", WorkDir) != 0) {
-			//
+			wchar_t TmpBuf[FILENAME_MAX] = L"";
+			StkPlGetFullPathFromFileName(L".", TmpBuf);
+			StkPlConvWideCharToUtf8(WorkDir, 256, TmpBuf);
 		}
 		StkPlPrintf("workdir property = %s\r\n", WorkDir);
 	} else {
