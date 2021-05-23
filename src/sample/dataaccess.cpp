@@ -668,6 +668,24 @@ int DataAccess::SetMaxCommandId(int Id)
 	return Id;
 }
 
+int DataAccess::SetCommandResult(char* Data, size_t DataLength)
+{
+	ColumnData *ColDatCmdResult[6] = {
+		new ColumnDataBin(L"UpdTime", (unsigned char*)"\0\0\0\0\0\0\0\0", DA_MAXLEN_OF_UNIXTIME),
+		new ColumnDataInt(L"Type", 0),
+		new ColumnDataWStr(L"CmdName", L"Dummy"),
+		new ColumnDataWStr(L"AgtName", L"Dummy"),
+		new ColumnDataInt(L"Status", 0),
+		new ColumnDataBin(L"Output", (unsigned char*)Data, (int)DataLength)
+	};
+	RecordData* RecDatCmdResult = new RecordData(L"Result", ColDatCmdResult, 6);
+	LockTable(L"Result", LOCK_EXCLUSIVE);
+	int Ret = InsertRecord(RecDatCmdResult);
+	UnlockTable(L"Result");
+	delete RecDatCmdResult;
+	return Ret;
+}
+
 int DataAccess::IncreaseId(const wchar_t* Name)
 {
 	int TargetId = -1;

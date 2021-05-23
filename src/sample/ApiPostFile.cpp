@@ -22,6 +22,7 @@ StkObject* ApiPostFile::ExecuteImpl(StkObject* ReqObj, int Method, wchar_t UrlPa
 		int Size = -1;
 		wchar_t* FileData = NULL;
 		wchar_t* FileName = NULL;
+		int Type = -1;
 
 		StkObject* CurObj = ReqObj->GetFirstChildElement();
 		while (CurObj) {
@@ -36,6 +37,9 @@ StkObject* ApiPostFile::ExecuteImpl(StkObject* ReqObj, int Method, wchar_t UrlPa
 			}
 			if (StkPlWcsCmp(CurObj->GetName(), L"FileSize") == 0) {
 				Size = CurObj->GetIntValue();
+			}
+			if (StkPlWcsCmp(CurObj->GetName(), L"Type") == 0) {
+				Type = CurObj->GetIntValue();
 			}
 			CurObj = CurObj->GetNext();
 		}
@@ -89,32 +93,42 @@ StkObject* ApiPostFile::ExecuteImpl(StkObject* ReqObj, int Method, wchar_t UrlPa
 			FileDataPtr += 2;
 		}
 		DataChar[DataCharIndex] = '\0';
-		void* FilePtr = NULL;
-		wchar_t TargetFullPath[FILENAME_MAX];
-		GetFullPathFromFileName(TargetFullPath, FileName);
-		if (Offset == 0) {
-			FilePtr = StkPlOpenFileForWrite(TargetFullPath);
+
+		if (Type == POSTFILE_TYPE_COMMANDRESULT) {
+			// Write data to database
+			DataAccess::GetInstance()->SetCommandResult((char*)DataChar, DataCharIndex + 1);
 		} else {
-			size_t TargetFileSize = StkPlGetFileSize(TargetFullPath);
-			if (TargetFileSize != Offset) {
-				AddCodeAndMsg(TmpObj, MSG_FILE_INVALID_ORDER, MessageProc::GetMsgEng(MSG_FILE_INVALID_ORDER), MessageProc::GetMsgJpn(MSG_FILE_INVALID_ORDER));
-				*ResultCode = 400;
-				return TmpObj;
+			// Writing data to file
+			void* FilePtr = NULL;
+			wchar_t TargetFullPath[FILENAME_MAX];
+			GetFullPathFromFileName(TargetFullPath, FileName);
+			if (Offset == 0) {
+				FilePtr = StkPlOpenFileForWrite(TargetFullPath);
+			} else {
+				size_t TargetFileSize = StkPlGetFileSize(TargetFullPath);
+				if (TargetFileSize != Offset) {
+					AddCodeAndMsg(TmpObj, MSG_FILE_INVALID_ORDER, MessageProc::GetMsgEng(MSG_FILE_INVALID_ORDER), MessageProc::GetMsgJpn(MSG_FILE_INVALID_ORDER));
+					*ResultCode = 400;
+					return TmpObj;
+				}
+				FilePtr = StkPlOpenFileForWrite(TargetFullPath, true);
 			}
-			FilePtr = StkPlOpenFileForWrite(TargetFullPath, true);
+			StkPlSeekFromEnd(FilePtr, 0);
+			size_t ActSize = 0;
+			StkPlWrite(FilePtr, (char*)DataChar, DataCharIndex, &ActSize);
+			StkPlCloseFile(FilePtr);
+
+			// Logging
+			if (UserId != -1 && Size == Offset + DataCharIndex) {
+				wchar_t LogMsg[512] = L"";
+				wchar_t LogMsgJa[512] = L"";
+				StkPlSwPrintf(LogMsg, 256, L"%ls [%ls]", MessageProc::GetMsgEng(MSG_FILEUPLOADED), FileName);
+				StkPlSwPrintf(LogMsgJa, 256, L"%ls [%ls]", MessageProc::GetMsgJpn(MSG_FILEUPLOADED), FileName);
+				StkWebAppUm_AddLogMsg(LogMsg, LogMsgJa, UserId);
+			}
 		}
-		StkPlSeekFromEnd(FilePtr, 0);
-		size_t ActSize = 0;
-		StkPlWrite(FilePtr, (char*)DataChar, DataCharIndex, &ActSize);
-		StkPlCloseFile(FilePtr);
+
 		delete DataChar;
-		if (UserId != -1 && Size == Offset + DataCharIndex) {
-			wchar_t LogMsg[512] = L"";
-			wchar_t LogMsgJa[512] = L"";
-			StkPlSwPrintf(LogMsg, 256, L"%ls [%ls]", MessageProc::GetMsgEng(MSG_FILEUPLOADED), FileName);
-			StkPlSwPrintf(LogMsgJa, 256, L"%ls [%ls]", MessageProc::GetMsgJpn(MSG_FILEUPLOADED), FileName);
-			StkWebAppUm_AddLogMsg(LogMsg, LogMsgJa, UserId);
-		}
 	}
 	AddCodeAndMsg(TmpObj, 0, L"", L"");
 	*ResultCode = 200;

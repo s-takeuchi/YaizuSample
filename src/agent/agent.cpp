@@ -34,6 +34,7 @@ SERVICE_TABLE_ENTRY ServiceTable[] = {
 #define RESULTCODE_ERROR_AGENTFILE       -991
 #define RESULTCODE_ERROR_PLATFORM        -992
 #define RESULTCODE_ERROR_INVALIDAGTDIR   -994
+#define RESULTCODE_ERROR_CMDRESULT       -995
 
 StkWebAppSend* SoForTh1 = NULL;
 StkWebAppSend* SoForTh2 = NULL;
@@ -60,7 +61,7 @@ StkObject* GetAgentInfoForOpStatus(int Status)
 	return NewObj;
 }
 
-int LoadAndPostFile(char* FileName, StkWebAppSend* SndObj)
+int LoadAndPostFile(char* FileName, int Type, StkWebAppSend* SndObj)
 {
 	wchar_t* FileNameWc = StkPlCreateWideCharFromUtf8(FileName);
 	int FileSize = (int)StkPlGetFileSize(FileNameWc);
@@ -100,6 +101,7 @@ int LoadAndPostFile(char* FileName, StkWebAppSend* SndObj)
 		TmpObj->AppendChildElement(new StkObject(L"FileOffset", Offset));
 		TmpObj->AppendChildElement(new StkObject(L"FileSize", FileSize));
 		TmpObj->AppendChildElement(new StkObject(L"FileData", HexBuf));
+		TmpObj->AppendChildElement(new StkObject(L"Type", Type));
 		delete HexBuf;
 		StkObject* ResObj = SndObj->SendRequestRecvResponse(StkWebAppSend::STKWEBAPP_METHOD_POST, "/api/file/", TmpObj, &Result);
 		delete TmpObj;
@@ -272,15 +274,15 @@ int CommonProcess(StkObject* CommandSearch, char TmpTime[64], StkWebAppSend* Snd
 
 				if (TmpType == 0) {
 					if (OperationFlag) {
-						ReturnCode = StkPlSystem("/usr/bin/bash aaa-operation.sh > aaa-operation.sh.out");
+						ReturnCode = StkPlSystem("/usr/bin/bash aaa-operation.sh > aaa-operation.out");
 					} else {
-						ReturnCode = StkPlSystem("/usr/bin/bash aaa-status.sh > aaa-status.sh.out");
+						ReturnCode = StkPlSystem("/usr/bin/bash aaa-status.sh > aaa-status.out");
 					}
 				} else if (TmpType == 1) {
 					if (OperationFlag) {
-						ReturnCode = StkPlSystem("cmd /c aaa-operation.bat > aaa-operation.bat.out");
+						ReturnCode = StkPlSystem("cmd /c aaa-operation.bat > aaa-operation.out");
 					} else {
-						ReturnCode = StkPlSystem("cmd /c aaa-status.bat > aaa-status.bat.out");
+						ReturnCode = StkPlSystem("cmd /c aaa-status.bat > aaa-status.out");
 					}
 				}
 			} else {
@@ -290,9 +292,20 @@ int CommonProcess(StkObject* CommandSearch, char TmpTime[64], StkWebAppSend* Snd
 			// Load and post file
 			StkPlPrintf("AgentFileName=%s\r\n", TmpAgentFileName != NULL ? TmpAgentFileName : "null");
 			if (TmpAgentFileName != NULL && StkPlStrCmp(TmpAgentFileName, "") != 0) {
-				if (LoadAndPostFile(TmpAgentFileName, SndObj) != 200) {
+				if (LoadAndPostFile(TmpAgentFileName, 0, SndObj) != 200) {
 					return RESULTCODE_ERROR_AGENTFILE;
 				}
+			}
+
+			// Load and post command result
+			char CmdResultFile[FILENAME_MAX] = "";
+			if (OperationFlag) {
+				StkPlStrCpy(CmdResultFile, FILENAME_MAX, "aaa-operation.out");
+			} else {
+				StkPlStrCpy(CmdResultFile, FILENAME_MAX, "aaa-status.out");
+			}
+			if (LoadAndPostFile(CmdResultFile, 1, SndObj) != 200) {
+				return RESULTCODE_ERROR_CMDRESULT;
 			}
 		}
 		CommandSearch = CommandSearch->GetNext();
