@@ -14,6 +14,8 @@ StkObject* ApiPostFile::ExecuteImpl(StkObject* ReqObj, int Method, wchar_t UrlPa
 		UserId = -1;
 	}
 		
+	StkObject* TmpObj = new StkObject(L"");
+
 	if (ReqObj != NULL) {
 		*ResultCode = 200;
 		int Offset = -1;
@@ -37,8 +39,21 @@ StkObject* ApiPostFile::ExecuteImpl(StkObject* ReqObj, int Method, wchar_t UrlPa
 			}
 			CurObj = CurObj->GetNext();
 		}
-		if (Offset == -1 || FileData == NULL || FileName == NULL) {
-			return NULL;
+		if (Offset == -1) {
+			CommonError_NoElemInRequest(TmpObj, L"FileOffset");
+			return TmpObj;
+		}
+		if (FileData == NULL) {
+			CommonError_NoElemInRequest(TmpObj, L"FileData");
+			return TmpObj;
+		}
+		if (FileName == NULL) {
+			CommonError_NoElemInRequest(TmpObj, L"FileName");
+			return TmpObj;
+		}
+		if (Size == -1) {
+			CommonError_NoElemInRequest(TmpObj, L"FileSize");
+			return TmpObj;
 		}
 		wchar_t* FileDataPtr = FileData;
 		int FileDataLen = (int)StkPlWcsLen(FileData);
@@ -76,6 +91,11 @@ StkObject* ApiPostFile::ExecuteImpl(StkObject* ReqObj, int Method, wchar_t UrlPa
 		if (Offset == 0) {
 			FilePtr = StkPlOpenFileForWrite(TargetFullPath);
 		} else {
+			size_t TargetFileSize = StkPlGetFileSize(TargetFullPath);
+			if (TargetFileSize != Offset) {
+				AddCodeAndMsg(TmpObj, MSG_FILE_INVALID_ORDER, MessageProc::GetMsgEng(MSG_FILE_INVALID_ORDER), MessageProc::GetMsgJpn(MSG_FILE_INVALID_ORDER));
+				return TmpObj;
+			}
 			FilePtr = StkPlOpenFileForWrite(TargetFullPath, true);
 		}
 		StkPlSeekFromEnd(FilePtr, 0);
@@ -91,7 +111,6 @@ StkObject* ApiPostFile::ExecuteImpl(StkObject* ReqObj, int Method, wchar_t UrlPa
 			StkWebAppUm_AddLogMsg(LogMsg, LogMsgJa, UserId);
 		}
 	}
-	StkObject* TmpObj = new StkObject(L"");
 	AddCodeAndMsg(TmpObj, 0, L"", L"");
 	*ResultCode = 200;
 	return TmpObj;

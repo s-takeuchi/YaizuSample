@@ -142,6 +142,8 @@ void InitMessageResource()
 	MessageProc::AddJpn(MSG_FILE_ACCESS_ERROR, L"指定したファイルへのアクセス時にエラーが発生しました。");
 	MessageProc::AddEng(MSG_FILE_EXCEED_SIZE, L"The specified offset exceeds the file size.");
 	MessageProc::AddJpn(MSG_FILE_EXCEED_SIZE, L"指定したオフセットがファイルサイズを超過しました。");
+	MessageProc::AddEng(MSG_FILE_INVALID_ORDER, L"Non-continuous data has been received.");
+	MessageProc::AddJpn(MSG_FILE_INVALID_ORDER, L"連続していないファイルデータを取得しました。");
 
 	// Common error message
 	MessageProc::AddEng(MSG_NO_ELEM_IN_REQUEST, L"No \"%ls\" element has been presented in the request.");
@@ -158,6 +160,39 @@ void InitMessageResource()
 	MessageProc::AddJpn(MSG_COMMON_AUTH_ERROR, L"認証エラーが発生しました。");
 
 	MessageProc::SetLocaleMode(MessageProc::LOCALE_MODE_ENGLISH);
+}
+
+void CommonError_NoElemInRequest(StkObject* TmpObj, const wchar_t* ElemName)
+{
+	wchar_t MsgEng[1024] = L"";
+	wchar_t MsgJpn[1024] = L"";
+	StkPlSwPrintf(MsgEng, 1024, MessageProc::GetMsgEng(MSG_NO_ELEM_IN_REQUEST), ElemName);
+	StkPlSwPrintf(MsgJpn, 1024, MessageProc::GetMsgJpn(MSG_NO_ELEM_IN_REQUEST), ElemName);
+	TmpObj->AppendChildElement(new StkObject(L"Code", MSG_NO_ELEM_IN_REQUEST));
+	TmpObj->AppendChildElement(new StkObject(L"MsgEng", MsgEng));
+	TmpObj->AppendChildElement(new StkObject(L"MsgJpn", MsgJpn));
+}
+
+void CommonError_StringLenError(StkObject* TmpObj, const wchar_t* Name, int MaxLen)
+{
+	wchar_t MsgEng[1024] = L"";
+	wchar_t MsgJpn[1024] = L"";
+	StkPlSwPrintf(MsgEng, 1024, MessageProc::GetMsgEng(MSG_STRING_LEN_ERROR), Name, MaxLen);
+	StkPlSwPrintf(MsgJpn, 1024, MessageProc::GetMsgJpn(MSG_STRING_LEN_ERROR), Name, MaxLen);
+	TmpObj->AppendChildElement(new StkObject(L"Code", MSG_STRING_LEN_ERROR));
+	TmpObj->AppendChildElement(new StkObject(L"MsgEng", MsgEng));
+	TmpObj->AppendChildElement(new StkObject(L"MsgJpn", MsgJpn));
+}
+
+void CommonError_ForbiddenChar(StkObject* TmpObj, const wchar_t* Name)
+{
+	wchar_t MsgEng[1024] = L"";
+	wchar_t MsgJpn[1024] = L"";
+	StkPlSwPrintf(MsgEng, 1024, MessageProc::GetMsgEng(MSG_FORBIDDEN_CHAR), Name);
+	StkPlSwPrintf(MsgJpn, 1024, MessageProc::GetMsgJpn(MSG_FORBIDDEN_CHAR), Name);
+	TmpObj->AppendChildElement(new StkObject(L"Code", MSG_FORBIDDEN_CHAR));
+	TmpObj->AppendChildElement(new StkObject(L"MsgEng", MsgEng));
+	TmpObj->AppendChildElement(new StkObject(L"MsgJpn", MsgJpn));
 }
 
 void Server(wchar_t* IpAddr, int Port, int NumOfWorkerThreads, int ThreadInterval, bool SecureMode, const char* PrivateKey, const char* Certificate)

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "../../../YaizuComLib/src/stkpl/StkPl.h"
+#include "../../../YaizuComLib/src/commonfunc/StkObject.h"
 
 // Audit log
 #define MSG_COMDELETE            4000
@@ -38,6 +39,7 @@
 // File
 #define MSG_FILE_ACCESS_ERROR    4080
 #define MSG_FILE_EXCEED_SIZE     4081
+#define MSG_FILE_INVALID_ORDER   4082
 
 // Common error message
 #define MSG_NO_ELEM_IN_REQUEST   4201
@@ -54,3 +56,6 @@ public:
 };
 
 void GetFullPathFromFileName(wchar_t[FILENAME_MAX], const wchar_t[FILENAME_MAX]);
+void CommonError_NoElemInRequest(StkObject*, const wchar_t*);
+void CommonError_StringLenError(StkObject*, const wchar_t*, int);
+void CommonError_ForbiddenChar(StkObject*, const wchar_t*);

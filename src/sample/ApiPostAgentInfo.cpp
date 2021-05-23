@@ -6,33 +6,6 @@
 #include "sample.h"
 #include "ApiPostAgentInfo.h"
 
-void ApiPostAgentInfo::CommonError_NoElemInRequest(StkObject* TmpObj, const wchar_t* ElemName)
-{
-	wchar_t MsgEng[1024] = L"";
-	wchar_t MsgJpn[1024] = L"";
-	StkPlSwPrintf(MsgEng, 1024, MessageProc::GetMsgEng(MSG_NO_ELEM_IN_REQUEST), ElemName);
-	StkPlSwPrintf(MsgJpn, 1024, MessageProc::GetMsgJpn(MSG_NO_ELEM_IN_REQUEST), ElemName);
-	AddCodeAndMsg(TmpObj, MSG_NO_ELEM_IN_REQUEST, MsgEng, MsgJpn);
-}
-
-void ApiPostAgentInfo::CommonError_StringLenError(StkObject* TmpObj, const wchar_t* Name, int MaxLen)
-{
-	wchar_t MsgEng[1024] = L"";
-	wchar_t MsgJpn[1024] = L"";
-	StkPlSwPrintf(MsgEng, 1024, MessageProc::GetMsgEng(MSG_STRING_LEN_ERROR), Name, MaxLen);
-	StkPlSwPrintf(MsgJpn, 1024, MessageProc::GetMsgJpn(MSG_STRING_LEN_ERROR), Name, MaxLen);
-	AddCodeAndMsg(TmpObj, MSG_STRING_LEN_ERROR, MsgEng, MsgJpn);
-}
-
-void ApiPostAgentInfo::CommonError_ForbiddenChar(StkObject* TmpObj, const wchar_t* Name)
-{
-	wchar_t MsgEng[1024] = L"";
-	wchar_t MsgJpn[1024] = L"";
-	StkPlSwPrintf(MsgEng, 1024, MessageProc::GetMsgEng(MSG_FORBIDDEN_CHAR), Name);
-	StkPlSwPrintf(MsgJpn, 1024, MessageProc::GetMsgJpn(MSG_FORBIDDEN_CHAR), Name);
-	AddCodeAndMsg(TmpObj, MSG_FORBIDDEN_CHAR, MsgEng, MsgJpn);
-}
-
 StkObject* ApiPostAgentInfo::ExecuteImpl(StkObject* ReqObj, int Method, wchar_t UrlPath[StkWebAppExec::URL_PATH_LENGTH], int* ResultCode, wchar_t Locale[3], wchar_t* Token)
 {
 	wchar_t Name[DA_MAXLEN_OF_AGTNAME] = L"";
