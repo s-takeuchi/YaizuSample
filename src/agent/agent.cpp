@@ -4,6 +4,9 @@
 #include "../../../YaizuComLib/src/stkwebapp/StkWebAppSend.h"
 #include "../../../YaizuComLib/src/stkthread/stkthread.h"
 
+#define TYPE_FILE 0
+#define TYPE_COMMANDRESULT 1
+
 #ifdef WIN32
 #include <Windows.h>
 #define SERVICE_NAME (TEXT("YaizuSampleAgent"))
@@ -61,7 +64,7 @@ StkObject* GetAgentInfoForOpStatus(int Status)
 	return NewObj;
 }
 
-int LoadAndPostFile(char* FileName, int Type, StkWebAppSend* SndObj)
+int LoadAndPostFile(char* FileName, int Type, wchar_t* CommandName, StkWebAppSend* SndObj)
 {
 	wchar_t* FileNameWc = StkPlCreateWideCharFromUtf8(FileName);
 	int FileSize = (int)StkPlGetFileSize(FileNameWc);
@@ -102,6 +105,10 @@ int LoadAndPostFile(char* FileName, int Type, StkWebAppSend* SndObj)
 		TmpObj->AppendChildElement(new StkObject(L"FileSize", FileSize));
 		TmpObj->AppendChildElement(new StkObject(L"FileData", HexBuf));
 		TmpObj->AppendChildElement(new StkObject(L"Type", Type));
+		if (Type == TYPE_COMMANDRESULT) {
+			TmpObj->AppendChildElement(new StkObject(L"AgentName", HostName));
+			TmpObj->AppendChildElement(new StkObject(L"CommandName", CommandName));
+		}
 		delete HexBuf;
 		StkObject* ResObj = SndObj->SendRequestRecvResponse(StkWebAppSend::STKWEBAPP_METHOD_POST, "/api/file/", TmpObj, &Result);
 		delete TmpObj;
@@ -212,6 +219,7 @@ int CommonProcess(StkObject* CommandSearch, char TmpTime[64], StkWebAppSend* Snd
 
 		if (StkPlWcsCmp(CommandSearch->GetName(), L"Command") == 0) {
 			char* TmpName = NULL;
+			wchar_t CmdName[FILENAME_MAX] = L"";
 			char* TmpScript = NULL;
 			int TmpType = -1;
 			char TmpServerFileName[FILENAME_MAX] = "";
@@ -229,6 +237,7 @@ int CommonProcess(StkObject* CommandSearch, char TmpTime[64], StkWebAppSend* Snd
 					TmpServerFileSize = ScriptSearch->GetIntValue();
 				} else if (StkPlWcsCmp(ScriptSearch->GetName(), L"Name") == 0) {
 					TmpName = StkPlCreateUtf8FromWideChar(ScriptSearch->GetStringValue());
+					StkPlWcsCpy(CmdName, FILENAME_MAX, ScriptSearch->GetStringValue());
 				} else if (StkPlWcsCmp(ScriptSearch->GetName(), L"AgentFileName") == 0) {
 					StkPlConvWideCharToUtf8(TmpAgentFileName, FILENAME_MAX, ScriptSearch->GetStringValue());
 				}
@@ -292,7 +301,7 @@ int CommonProcess(StkObject* CommandSearch, char TmpTime[64], StkWebAppSend* Snd
 			// Load and post file
 			StkPlPrintf("AgentFileName=%s\r\n", TmpAgentFileName != NULL ? TmpAgentFileName : "null");
 			if (TmpAgentFileName != NULL && StkPlStrCmp(TmpAgentFileName, "") != 0) {
-				if (LoadAndPostFile(TmpAgentFileName, 0, SndObj) != 200) {
+				if (LoadAndPostFile(TmpAgentFileName, TYPE_FILE, CmdName, SndObj) != 200) {
 					return RESULTCODE_ERROR_AGENTFILE;
 				}
 			}
@@ -304,7 +313,7 @@ int CommonProcess(StkObject* CommandSearch, char TmpTime[64], StkWebAppSend* Snd
 			} else {
 				StkPlStrCpy(CmdResultFile, FILENAME_MAX, "aaa-status.out");
 			}
-			if (LoadAndPostFile(CmdResultFile, 1, SndObj) != 200) {
+			if (LoadAndPostFile(CmdResultFile, TYPE_COMMANDRESULT, CmdName, SndObj) != 200) {
 				return RESULTCODE_ERROR_CMDRESULT;
 			}
 		}

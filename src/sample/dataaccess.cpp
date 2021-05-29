@@ -668,13 +668,13 @@ int DataAccess::SetMaxCommandId(int Id)
 	return Id;
 }
 
-int DataAccess::SetCommandResult(char* Data, size_t DataLength)
+int DataAccess::SetCommandResult(wchar_t* AgentName, wchar_t* CommandName, char* Data, size_t DataLength)
 {
 	ColumnData *ColDatCmdResult[6] = {
 		new ColumnDataBin(L"UpdTime", (unsigned char*)"\0\0\0\0\0\0\0\0", DA_MAXLEN_OF_UNIXTIME),
 		new ColumnDataInt(L"Type", 0),
-		new ColumnDataWStr(L"CmdName", L"Dummy"),
-		new ColumnDataWStr(L"AgtName", L"Dummy"),
+		new ColumnDataWStr(L"CmdName", CommandName),
+		new ColumnDataWStr(L"AgtName", AgentName),
 		new ColumnDataInt(L"Status", 0),
 		new ColumnDataBin(L"Output", (unsigned char*)Data, (int)DataLength)
 	};
