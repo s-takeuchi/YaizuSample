@@ -1032,6 +1032,20 @@ function refreshAfterDeleteCommand() {
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 
+function transDisplayCommandResult() {
+    apiCall('GET', '/api/commandresult/', null, 'API_GET_COMMANDRESULT', displayCommandResult);
+}
+
+function displayCommandResult() {
+    drowContainer($('<div id="commandresult" class="row col-xs-12" style="display:block"></div>'));
+    var commandresultList = getArray(responseData['API_GET_COMMANDRESULT'].Data.Result);
+}
+
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+
 function initServal() {
     if (statusCode['API_GET_LANG'] == -1 || statusCode['API_GET_LANG'] == 0) {
         return;
@@ -1064,7 +1078,7 @@ function checkLoginAfterApiCall() {
             { actApiName : "transDisplayAgentInfo()", title : 'Agent' },
             { actApiName : "transDisplayFileMgmt()", title : "File" },
             { actApiName : "transDisplayCommand()", title : 'Command' },
-            { actApiName : "", title : 'Result' }
+            { actApiName : "transDisplayCommandResult()", title : 'Result' }
         ];
         iconAlwaysVisible();
         initMainPage('SERVAL', 'squirrel.svg', contents);

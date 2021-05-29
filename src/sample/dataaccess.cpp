@@ -670,8 +670,12 @@ int DataAccess::SetMaxCommandId(int Id)
 
 int DataAccess::SetCommandResult(wchar_t* AgentName, wchar_t* CommandName, char* Data, size_t DataLength)
 {
+	char UpdTimeBin[DA_MAXLEN_OF_UNIXTIME];
+	long long UpdTime = StkPlGetTime();
+	char* PtrUpdTime = (char*)&UpdTime;
+	StkPlMemCpy(UpdTimeBin, PtrUpdTime, DA_MAXLEN_OF_UNIXTIME);
 	ColumnData *ColDatCmdResult[6] = {
-		new ColumnDataBin(L"UpdTime", (unsigned char*)"\0\0\0\0\0\0\0\0", DA_MAXLEN_OF_UNIXTIME),
+		new ColumnDataBin(L"UpdTime", (unsigned char*)UpdTimeBin, DA_MAXLEN_OF_UNIXTIME),
 		new ColumnDataInt(L"Type", 0),
 		new ColumnDataWStr(L"CmdName", CommandName),
 		new ColumnDataWStr(L"AgtName", AgentName),
@@ -684,6 +688,43 @@ int DataAccess::SetCommandResult(wchar_t* AgentName, wchar_t* CommandName, char*
 	UnlockTable(L"Result");
 	delete RecDatCmdResult;
 	return Ret;
+}
+
+int DataAccess::GetCommandResult(wchar_t AgentName[DA_MAXNUM_OF_RESULT][DA_MAXLEN_OF_AGTNAME],
+	                             wchar_t CommandName[DA_MAXNUM_OF_RESULT][DA_MAXLEN_OF_CMDNAME],
+	                             long long UpdTime[DA_MAXNUM_OF_RESULT])
+{
+	LockTable(L"Result", LOCK_SHARE);
+	RecordData* CmdResult = GetRecord(L"Result");
+	UnlockTable(L"Result");
+	RecordData* CurRec = CmdResult;
+	int Index = 0;
+	while (CurRec) {
+		ColumnDataWStr* ColAgtName = (ColumnDataWStr*)CurRec->GetColumn(L"AgtName");
+		if (!ColAgtName) {
+			delete CmdResult;
+			return -1;
+		}
+		StkPlWcsCpy(AgentName[Index], DA_MAXLEN_OF_AGTNAME, ColAgtName->GetValue());
+		ColumnDataWStr* ColCmdName = (ColumnDataWStr*)CurRec->GetColumn(L"CmdName");
+		if (!ColCmdName) {
+			delete CmdResult;
+			return -1;
+		}
+		StkPlWcsCpy(CommandName[Index], DA_MAXLEN_OF_AGTNAME, ColCmdName->GetValue());
+		ColumnDataBin*  ColUpdTime = (ColumnDataBin*)CurRec->GetColumn(L"UpdTime");
+		if (!ColUpdTime) {
+			delete CmdResult;
+			return -1;
+		}
+		unsigned char* UpdTimeBin = ColUpdTime->GetValue();
+		UpdTime[Index] = (long long)*UpdTimeBin;
+
+		Index++;
+		CurRec = CurRec->GetNextRecord();
+	}
+	delete CmdResult;
+	return Index;
 }
 
 int DataAccess::IncreaseId(const wchar_t* Name)
