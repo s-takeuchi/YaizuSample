@@ -37,6 +37,7 @@ function initClientMessage() {
     addClientMessage('NOAGTINFO', {'en':'<p>No agent information</p>', 'ja':'<p>エージェント情報はありません</p>'});
     addClientMessage('NOCMDEXIST', {'en':'<p>No command exists</p>', 'ja':'<p>コマンドはありません</p>'});
     addClientMessage('NOFILEEXIST', {'en':'<p>No file exists</p>', 'ja':'<p>ファイルはありません</p>'});
+    addClientMessage('NORESULTEXIST', {'en':'<p>No command result exists</p>', 'ja':'<p>コマンド実行結果はありません</p>'});
 
     addClientMessage('AINAME', {'en':'Name', 'ja':'名称'});
     addClientMessage('AISTATUS', {'en':'Status', 'ja':'状態'});
@@ -92,6 +93,10 @@ function initClientMessage() {
     addClientMessage('COMUPDATED', {'en':'The specified command has been updated.', 'ja':'指定したコマンドが更新されました。'});
     addClientMessage('COMDELETED', {'en':'The specified command has been deleted', 'ja':'指定したコマンドが削除されました。'});
     addClientMessage('COMMANDLABEL', {'en':'Command : ', 'ja':'コマンド : '});
+
+    addClientMessage('RESULT_UPDTIME', {'en':'Execution date and time', 'ja':'実行日時'});
+    addClientMessage('RESULT_AGTNAME', {'en':'Agent Name', 'ja':'エージェント名'});
+    addClientMessage('RESULT_CMDNAME', {'en':'Command Name', 'ja':'コマンド名'});
 
     addClientMessage('CONNERR', {
         'en':'Connection with REST API service failed. This may be caused by one of the following issues:<br>(1) REST API service cannot be started.<br>(2) REST API service is not registered as a firewall exception.<br>(3) The definition file [nginx.conf and/or sample.conf] for the host name and port number in the network connectivity settings is invalid.<br>(4) A timeout has occurred when waiting for data from REST API server.<br>',
@@ -1037,8 +1042,43 @@ function transDisplayCommandResult() {
 }
 
 function displayCommandResult() {
-    drowContainer($('<div id="commandresult" class="row col-xs-12" style="display:block"></div>'));
-    var commandresultList = getArray(responseData['API_GET_COMMANDRESULT'].Data.Result);
+    drowContainerFluid($('<div id="commandresult" class="row col-xs-12" style="display:block"></div>'));
+    if (statusCode['API_GET_COMMANDRESULT'] == -1 || statusCode['API_GET_COMMANDRESULT'] == 0) {
+        displayAlertDanger('#commandresult', getClientMessage('CONNERR'));
+        return;
+    }
+    if (statusCode['API_GET_COMMANDRESULT'] != 200) {
+        displayAlertDanger('#commandresult', getSvrMsg(responseData['API_GET_COMMANDRESULT']));
+        return;
+    }
+
+    let resultTableDiv = $('<div id="resulttable" class="table-responsive">');
+    if (responseData['API_GET_COMMANDRESULT'].Data === undefined) {
+        fileMgmtDataDiv.append(getClientMessage('NORESULTEXIST'));
+        $('#commandresult').append(fileMgmtDataDiv);
+    } else {
+        let commandresultList = getArray(responseData['API_GET_COMMANDRESULT'].Data.Result);
+
+        let tableListData = $('<table>');
+        tableListData.addClass('table stktable table-striped');
+    
+        let tHead = $('<thead class="thead-light">');
+        tHead.append('<tr>' +
+                     '<th>' + getClientMessage('RESULT_UPDTIME') + '</th>' + '<th>' + getClientMessage('RESULT_AGTNAME') + '</th>' + '<th>' + getClientMessage('RESULT_CMDNAME') + '</th>' +
+                     '</tr>');
+        tableListData.append(tHead);
+
+        let tBody = $('<tbody class="plane-link">');
+        for (let Loop = 0; Loop < commandresultList.length; Loop++) {
+            let updTimeInt = parseInt(commandresultList[Loop].UpdTime, 16);
+            let dateUpdTime = new Date(updTimeInt * 1000);
+            tBody.append('<tr><td>' + dateUpdTime + '</td><td>' + commandresultList[Loop].AgentName + '</td><td>' + commandresultList[Loop].CommandName + '</td></tr>');
+        }
+
+        tableListData.append(tBody);
+        resultTableDiv.append(tableListData);
+        $('#commandresult').append(resultTableDiv);
+    }
 }
 
 ////////////////////////////////////////////////////////////////////////////////

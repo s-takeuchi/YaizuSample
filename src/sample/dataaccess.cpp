@@ -674,14 +674,13 @@ int DataAccess::SetCommandResult(wchar_t* AgentName, wchar_t* CommandName, char*
 	long long UpdTime = StkPlGetTime();
 	char* PtrUpdTime = (char*)&UpdTime;
 	StkPlMemCpy(UpdTimeBin, PtrUpdTime, DA_MAXLEN_OF_UNIXTIME);
-	ColumnData *ColDatCmdResult[6] = {
-		new ColumnDataBin(L"UpdTime", (unsigned char*)UpdTimeBin, DA_MAXLEN_OF_UNIXTIME),
-		new ColumnDataInt(L"Type", 0),
-		new ColumnDataWStr(L"CmdName", CommandName),
-		new ColumnDataWStr(L"AgtName", AgentName),
-		new ColumnDataInt(L"Status", 0),
-		new ColumnDataBin(L"Output", (unsigned char*)Data, (int)DataLength)
-	};
+	ColumnData *ColDatCmdResult[6];
+	ColDatCmdResult[0] = new ColumnDataBin(L"UpdTime", (unsigned char*)UpdTimeBin, DA_MAXLEN_OF_UNIXTIME);
+	ColDatCmdResult[1] = new ColumnDataInt(L"Type", 0);
+	ColDatCmdResult[2] = new ColumnDataWStr(L"CmdName", CommandName);
+	ColDatCmdResult[3] = new ColumnDataWStr(L"AgtName", AgentName);
+	ColDatCmdResult[4] = new ColumnDataInt(L"Status", 0);
+	ColDatCmdResult[5] = new ColumnDataBin(L"Output", (unsigned char*)Data, (int)DataLength);
 	RecordData* RecDatCmdResult = new RecordData(L"Result", ColDatCmdResult, 6);
 	LockTable(L"Result", LOCK_EXCLUSIVE);
 	int Ret = InsertRecord(RecDatCmdResult);
