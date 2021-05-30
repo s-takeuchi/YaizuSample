@@ -297,6 +297,13 @@ int main(int Argc, char* Argv[])
 	char Certificate[256] = "";
 	char WorkDir[256] = "";
 
+	// Logging starts
+	wchar_t LoggingPath[FILENAME_MAX] = L"";
+	StkPlGetFullPathFromFileName(L"trace.log", LoggingPath);
+	MessageProc::StartLogging(LoggingPath);
+	MessageProc::AddLog("----------------------------------------", MessageProc::LOG_TYPE_INFO);
+	MessageProc::AddLog("Service starts", MessageProc::LOG_TYPE_INFO);
+
 	StkProperties *Prop = new StkProperties();
 	
 	if (Prop->GetProperties(L"sample.conf") == 0) {
@@ -387,6 +394,10 @@ int main(int Argc, char* Argv[])
 	StkWebAppUm_AddLogMsg(MessageProc::GetMsgEng(MSG_SERVICESTOPPED), MessageProc::GetMsgJpn(MSG_SERVICESTOPPED), -1);
 
 	DataAccess::GetInstance()->StopAutoSave(L"sample.dat");
+
+	// Logging ends
+	MessageProc::AddLog("Service ends", MessageProc::LOG_TYPE_INFO);
+	MessageProc::StopLogging();
 
 	return 0;
 }
