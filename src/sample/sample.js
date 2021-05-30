@@ -604,7 +604,7 @@ function displayFileMgmt() {
                      '</tr>');
         tableListData.append(tHead);
 
-        let tBody = $('<tbody class="plane-link">');
+        let tBody = $('<tbody>');
         for (let Loop = 0; Loop < fileList.length; Loop++) {
             let tmpChkBoxStr = '';
             if (userRole != 1) {
@@ -1042,7 +1042,7 @@ function transDisplayCommandResult() {
 }
 
 function displayCommandResult() {
-    drowContainerFluid($('<div id="commandresult" class="row col-xs-12" style="display:block"></div>'));
+    drowContainerFluid($('<div id="commandresult" class="col-xs-12" style="display:block"></div>'));
     if (statusCode['API_GET_COMMANDRESULT'] == -1 || statusCode['API_GET_COMMANDRESULT'] == 0) {
         displayAlertDanger('#commandresult', getClientMessage('CONNERR'));
         return;
@@ -1068,17 +1068,18 @@ function displayCommandResult() {
                      '</tr>');
         tableListData.append(tHead);
 
-        let tBody = $('<tbody class="plane-link">');
+        let tBody = $('<tbody>');
         for (let Loop = 0; Loop < commandresultList.length; Loop++) {
             let updTimeInt = parseInt(commandresultList[Loop].UpdTime, 16);
             let dateUpdTime = new Date(updTimeInt * 1000);
             tBody.append('<tr><td>' + dateUpdTime + '</td><td>' + commandresultList[Loop].AgentName + '</td><td>' + commandresultList[Loop].CommandName + '</td></tr>');
         }
-
         tableListData.append(tBody);
+
         resultTableDiv.append(tableListData);
         $('#commandresult').append(resultTableDiv);
     }
+    resizeComponent();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -1144,9 +1145,9 @@ function checkLoginAfterApiCall() {
     }
 }
 function resizeComponent() {
-    var wsize = $(window).width();
-    var hsize_agentinfotable = $(window).height() - 111;
-    var hsize_filemgmttable = $(window).height() - 111;
+    let wsize = $(window).width();
+    let hsize_agentinfotable = $(window).height() - 111;
+    let hsize_filemgmttable = $(window).height() - 111;
     $("#agentinfotable").css("height", hsize_agentinfotable + "px");
     $("#filemgmttable").css("height", hsize_filemgmttable + "px");
 }
