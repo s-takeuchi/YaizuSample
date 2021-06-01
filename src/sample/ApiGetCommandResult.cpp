@@ -12,19 +12,21 @@ StkObject* ApiGetCommandResult::ExecuteImpl(StkObject* ReqObj, int Method, wchar
 	int Cnt = DataAccess::GetInstance()->GetCommandResult(AgentName, CommandName, UpdTime);
 
 	StkObject* TmpObj = new StkObject(L"");
-	StkObject* TmpObjD = new StkObject(L"Data");
-	for (int Loop = 0; Loop < Cnt; Loop++) {
-		StkObject* TmpObjC = new StkObject(L"Result");
-		wchar_t UpdTimeStr[DA_MAXLEN_OF_UNIXTIME * 2 + 1] = L"";
-		StkPlSwPrintf(UpdTimeStr, DA_MAXLEN_OF_UNIXTIME * 2 + 1, L"%016x", UpdTime[Loop]);
-
-		TmpObjC->AppendChildElement(new StkObject(L"AgentName", AgentName[Loop]));
-		TmpObjC->AppendChildElement(new StkObject(L"CommandName", CommandName[Loop]));
-		TmpObjC->AppendChildElement(new StkObject(L"UpdTime", UpdTimeStr));
-		TmpObjD->AppendChildElement(TmpObjC);
-	}
 	AddCodeAndMsg(TmpObj, 0, L"", L"");
-	TmpObj->AppendChildElement(TmpObjD);
+	if (Cnt != 0) {
+		StkObject* TmpObjD = new StkObject(L"Data");
+		for (int Loop = 0; Loop < Cnt; Loop++) {
+			StkObject* TmpObjC = new StkObject(L"Result");
+			wchar_t UpdTimeStr[DA_MAXLEN_OF_UNIXTIME * 2 + 1] = L"";
+			StkPlSwPrintf(UpdTimeStr, DA_MAXLEN_OF_UNIXTIME * 2 + 1, L"%016x", UpdTime[Loop]);
+
+			TmpObjC->AppendChildElement(new StkObject(L"AgentName", AgentName[Loop]));
+			TmpObjC->AppendChildElement(new StkObject(L"CommandName", CommandName[Loop]));
+			TmpObjC->AppendChildElement(new StkObject(L"UpdTime", UpdTimeStr));
+			TmpObjD->AppendChildElement(TmpObjC);
+		}
+		TmpObj->AppendChildElement(TmpObjD);
+	}
 	*ResultCode = 200;
 	return TmpObj;
 }

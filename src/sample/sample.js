@@ -1054,8 +1054,8 @@ function displayCommandResult() {
 
     let resultTableDiv = $('<div id="resulttable" class="table-responsive">');
     if (responseData['API_GET_COMMANDRESULT'].Data === undefined) {
-        fileMgmtDataDiv.append(getClientMessage('NORESULTEXIST'));
-        $('#commandresult').append(fileMgmtDataDiv);
+        resultTableDiv.append(getClientMessage('NORESULTEXIST'));
+        $('#commandresult').append(resultTableDiv);
     } else {
         let commandresultList = getArray(responseData['API_GET_COMMANDRESULT'].Data.Result);
 
@@ -1148,8 +1148,10 @@ function resizeComponent() {
     let wsize = $(window).width();
     let hsize_agentinfotable = $(window).height() - 111;
     let hsize_filemgmttable = $(window).height() - 111;
+    let hsize_resulttable = $(window).height() - 57;
     $("#agentinfotable").css("height", hsize_agentinfotable + "px");
     $("#filemgmttable").css("height", hsize_filemgmttable + "px");
+    $("#resulttable").css("height", hsize_resulttable + "px");
 }
 
 $(document).ready(function () {

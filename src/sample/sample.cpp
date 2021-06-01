@@ -7,7 +7,6 @@
 #include "../../../YaizuComLib/src/stkwebapp/StkWebApp.h"
 #include "../../../YaizuComLib/src/stkwebapp/StkWebAppExec.h"
 #include "../../../YaizuComLib/src/stkwebapp_um/stkwebapp_um.h"
-#include "../../../YaizuComLib/src/stkwebapp_um/stkwebapp_um.h"
 #include "sample.h"
 #include "ApiGetServerInfo.h"
 #include "ApiPostServerInfo.h"
@@ -375,10 +374,14 @@ int main(int Argc, char* Argv[])
 		return -1;
 	}
 
-	DataAccess::GetInstance()->CreateTables(L"sample.dat");
 	StkWebAppUm_Init();
-	StkWebAppUm_CreateTable();
-	StkWebAppUm_SetPropertyValueInt(L"DbVersion", 1);
+	DataAccess::GetInstance()->CreateTables(L"sample.dat");
+	int DbVer = StkWebAppUm_GetPropertyValueInt(L"DbVersion");
+	if (DbVer == -1) {
+		StkWebAppUm_CreateTable();
+		StkWebAppUm_SetPropertyValueInt(L"DbVersion", 1);
+		StkWebAppUm_SetPropertyValueInt(L"MaxResultId", 1);
+	}
 
 	StkWebAppUm_AddLogMsg(MessageProc::GetMsgEng(MSG_SERVICESTARTED), MessageProc::GetMsgJpn(MSG_SERVICESTARTED), -1);
 	wchar_t* IpAddr = StkPlCreateWideCharFromUtf8(IpAddrTmp);

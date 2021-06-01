@@ -1,6 +1,7 @@
 ﻿#include "../../../YaizuComLib/src/stkpl/StkPl.h"
 #include "../../../YaizuComLib/src/stkdata/stkdata.h"
 #include "../../../YaizuComLib/src/stkdata/stkdataapi.h"
+#include "../../../YaizuComLib/src/stkwebapp_um/stkwebapp_um.h"
 #include "sample.h"
 #include "dataaccess.h"
 
@@ -123,6 +124,7 @@ int DataAccess::CreateTables(const wchar_t* DataFileName)
 		}
 		// Result table
 		{
+			ColumnDefInt ColDefId(L"Id");
 			ColumnDefBin ColDefUpdTime(L"UpdTime", DA_MAXLEN_OF_UNIXTIME);
 			ColumnDefInt ColDefType(L"Type");
 			ColumnDefWStr ColDefComName(L"CmdName", DA_MAXLEN_OF_CMDNAME);
@@ -130,6 +132,7 @@ int DataAccess::CreateTables(const wchar_t* DataFileName)
 			ColumnDefInt ColDefStatus(L"Status");
 			ColumnDefBin ColDefOutput(L"Output", DA_MAXLEN_OF_CMDOUTPUT);
 			TableDef TabDefResult(L"Result", DA_MAXNUM_OF_RESULT);
+			TabDefResult.AddColumnDef(&ColDefId);
 			TabDefResult.AddColumnDef(&ColDefUpdTime);
 			TabDefResult.AddColumnDef(&ColDefType);
 			TabDefResult.AddColumnDef(&ColDefComName);
@@ -670,20 +673,25 @@ int DataAccess::SetMaxCommandId(int Id)
 
 int DataAccess::SetCommandResult(wchar_t* AgentName, wchar_t* CommandName, char* Data, size_t DataLength)
 {
+	LockTable(L"Result", LOCK_EXCLUSIVE);
+	int MaxId = StkWebAppUm_GetPropertyValueInt(L"MaxResultId");
+
 	char UpdTimeBin[DA_MAXLEN_OF_UNIXTIME];
 	long long UpdTime = StkPlGetTime();
 	char* PtrUpdTime = (char*)&UpdTime;
 	StkPlMemCpy(UpdTimeBin, PtrUpdTime, DA_MAXLEN_OF_UNIXTIME);
-	ColumnData *ColDatCmdResult[6];
-	ColDatCmdResult[0] = new ColumnDataBin(L"UpdTime", (unsigned char*)UpdTimeBin, DA_MAXLEN_OF_UNIXTIME);
-	ColDatCmdResult[1] = new ColumnDataInt(L"Type", 0);
-	ColDatCmdResult[2] = new ColumnDataWStr(L"CmdName", CommandName);
-	ColDatCmdResult[3] = new ColumnDataWStr(L"AgtName", AgentName);
-	ColDatCmdResult[4] = new ColumnDataInt(L"Status", 0);
-	ColDatCmdResult[5] = new ColumnDataBin(L"Output", (unsigned char*)Data, (int)DataLength);
-	RecordData* RecDatCmdResult = new RecordData(L"Result", ColDatCmdResult, 6);
-	LockTable(L"Result", LOCK_EXCLUSIVE);
+	ColumnData *ColDatCmdResult[7];
+	ColDatCmdResult[0] = new ColumnDataInt(L"Id", MaxId);
+	ColDatCmdResult[1] = new ColumnDataBin(L"UpdTime", (unsigned char*)UpdTimeBin, DA_MAXLEN_OF_UNIXTIME);
+	ColDatCmdResult[2] = new ColumnDataInt(L"Type", 0);
+	ColDatCmdResult[3] = new ColumnDataWStr(L"CmdName", CommandName);
+	ColDatCmdResult[4] = new ColumnDataWStr(L"AgtName", AgentName);
+	ColDatCmdResult[5] = new ColumnDataInt(L"Status", 0);
+	ColDatCmdResult[6] = new ColumnDataBin(L"Output", (unsigned char*)Data, (int)DataLength);
+	RecordData* RecDatCmdResult = new RecordData(L"Result", ColDatCmdResult, 7);
 	int Ret = InsertRecord(RecDatCmdResult);
+	StkWebAppUm_SetPropertyValueInt(L"MaxResultId", ++MaxId);
+
 	UnlockTable(L"Result");
 	delete RecDatCmdResult;
 	return Ret;
@@ -724,6 +732,37 @@ int DataAccess::GetCommandResult(wchar_t AgentName[DA_MAXNUM_OF_RESULT][DA_MAXLE
 	}
 	delete CmdResult;
 	return Index;
+}
+
+bool DataAccess::DeleteOldCommandResult()
+{
+	int NumOfRec = GetNumOfRecords(L"Result");
+	if (NumOfRec < DA_MAXNUM_OF_RESULT) {
+		return false;
+	}
+	LockTable(L"Result", LOCK_SHARE);
+	RecordData* CmdResult = GetRecord(L"Result");
+	UnlockTable(L"Result");
+	RecordData* TargetRec = NULL;
+	long long OldestTime = 0;
+	RecordData* CurRec = CmdResult;
+	while (CurRec) {
+		ColumnDataBin*  ColUpdTime = (ColumnDataBin*)CurRec->GetColumn(L"UpdTime");
+		if (!ColUpdTime) {
+			delete CmdResult;
+			return false;
+		}
+		long long* PtrUpdTime = (long long*)ColUpdTime->GetValue();
+		long long CurTime= (long long)*PtrUpdTime;
+		if (OldestTime == 0 || OldestTime > CurTime) {
+			OldestTime = CurTime;
+			TargetRec = CurRec;
+		}
+		CurRec = CurRec->GetNextRecord();
+	}
+
+	delete CmdResult;
+	return true;
 }
 
 int DataAccess::IncreaseId(const wchar_t* Name)

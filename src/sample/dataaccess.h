@@ -64,6 +64,7 @@ public:
 	int DeleteCommand(int);
 	int SetCommandResult(wchar_t*, wchar_t*, char*, size_t);
 	int GetCommandResult(wchar_t[DA_MAXNUM_OF_RESULT][DA_MAXLEN_OF_AGTNAME], wchar_t[DA_MAXNUM_OF_RESULT][DA_MAXLEN_OF_CMDNAME], long long[DA_MAXNUM_OF_RESULT]);
+	bool DeleteOldCommandResult();
 
 	int IncreaseId(const wchar_t*);
 };
