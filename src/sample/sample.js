@@ -1064,7 +1064,7 @@ function displayCommandResult() {
     
         let tHead = $('<thead class="thead-light">');
         tHead.append('<tr>' +
-                     '<th>' + getClientMessage('RESULT_UPDTIME') + '</th>' + '<th>' + getClientMessage('RESULT_AGTNAME') + '</th>' + '<th>' + getClientMessage('RESULT_CMDNAME') + '</th>' +
+                     '<th>' + getClientMessage('RESULT_UPDTIME') + '</th>' + '<th>' + getClientMessage('RESULT_AGTNAME') + '</th>' + '<th>' + getClientMessage('RESULT_CMDNAME') + '</th>' + '<th></th>' +
                      '</tr>');
         tableListData.append(tHead);
 
@@ -1072,12 +1072,21 @@ function displayCommandResult() {
         for (let Loop = 0; Loop < commandresultList.length; Loop++) {
             let updTimeInt = parseInt(commandresultList[Loop].UpdTime, 16);
             let dateUpdTime = new Date(updTimeInt * 1000);
-            tBody.append('<tr><td>' + dateUpdTime + '</td><td>' + commandresultList[Loop].AgentName + '</td><td>' + commandresultList[Loop].CommandName + '</td></tr>');
+            let resultId = commandresultList[Loop].Id;
+            tBody.append('<tr><td>' + dateUpdTime + '</td><td>' + commandresultList[Loop].AgentName + '</td><td>' + commandresultList[Loop].CommandName + '</td><td><a id="resultAncId' + resultId + '">' + '<span class="icon icon-terminal" style="font-size:30px;"></span>' + '</a></td></tr>');
         }
         tableListData.append(tBody);
 
         resultTableDiv.append(tableListData);
         $('#commandresult').append(resultTableDiv);
+
+        for (let loop = 0; loop < commandresultList.length; loop++) {
+            let resultId = commandresultList[loop].Id;
+            $('#resultAncId' + resultId).on('click', function() {
+                alert('hello');
+            });
+        }
+
     }
     resizeComponent();
 }

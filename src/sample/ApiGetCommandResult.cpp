@@ -9,7 +9,8 @@ StkObject* ApiGetCommandResult::ExecuteImpl(StkObject* ReqObj, int Method, wchar
 	wchar_t AgentName[DA_MAXNUM_OF_RESULT][DA_MAXLEN_OF_AGTNAME];
 	wchar_t CommandName[DA_MAXNUM_OF_RESULT][DA_MAXLEN_OF_CMDNAME];
 	long long UpdTime[DA_MAXNUM_OF_RESULT];
-	int Cnt = DataAccess::GetInstance()->GetCommandResult(AgentName, CommandName, UpdTime);
+	int Id[DA_MAXNUM_OF_RESULT];
+	int Cnt = DataAccess::GetInstance()->GetCommandResult(AgentName, CommandName, UpdTime, Id);
 
 	StkObject* TmpObj = new StkObject(L"");
 	AddCodeAndMsg(TmpObj, 0, L"", L"");
@@ -23,6 +24,7 @@ StkObject* ApiGetCommandResult::ExecuteImpl(StkObject* ReqObj, int Method, wchar
 			TmpObjC->AppendChildElement(new StkObject(L"AgentName", AgentName[Loop]));
 			TmpObjC->AppendChildElement(new StkObject(L"CommandName", CommandName[Loop]));
 			TmpObjC->AppendChildElement(new StkObject(L"UpdTime", UpdTimeStr));
+			TmpObjC->AppendChildElement(new StkObject(L"Id", Id[Loop]));
 			TmpObjD->AppendChildElement(TmpObjC);
 		}
 		TmpObj->AppendChildElement(TmpObjD);

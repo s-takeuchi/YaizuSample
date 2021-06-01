@@ -222,33 +222,35 @@ void Server(wchar_t* IpAddr, int Port, int NumOfWorkerThreads, int ThreadInterva
 	ApiGetCommandForOperation::StopFlag = false;
 
 	ApiGetServerInfo* ApiGetServerInfoObj = new ApiGetServerInfo();
-	int Add2 = Soc->AddReqHandler(StkWebAppExec::STKWEBAPP_METHOD_GET, L"/api/server/", (StkWebAppExec*)ApiGetServerInfoObj);
+	Soc->AddReqHandler(StkWebAppExec::STKWEBAPP_METHOD_GET, L"/api/server/", (StkWebAppExec*)ApiGetServerInfoObj);
 	ApiGetAgentInfo* ApiGetAgentInfoObj = new ApiGetAgentInfo();
-	int Add3 = Soc->AddReqHandler(StkWebAppExec::STKWEBAPP_METHOD_GET, L"/api/agent/", (StkWebAppExec*)ApiGetAgentInfoObj);
+	Soc->AddReqHandler(StkWebAppExec::STKWEBAPP_METHOD_GET, L"/api/agent/", (StkWebAppExec*)ApiGetAgentInfoObj);
 	ApiPostAgentInfo* ApiPostAgentInfoObj = new ApiPostAgentInfo();
-	int Add4 = Soc->AddReqHandler(StkWebAppExec::STKWEBAPP_METHOD_POST, L"/api/agent/", (StkWebAppExec*)ApiPostAgentInfoObj);
+	Soc->AddReqHandler(StkWebAppExec::STKWEBAPP_METHOD_POST, L"/api/agent/", (StkWebAppExec*)ApiPostAgentInfoObj);
 	ApiGetCommandForStatus* ApiGetCommandForStatusObj = new ApiGetCommandForStatus();
-	int Add5 = Soc->AddReqHandler(StkWebAppExec::STKWEBAPP_METHOD_GET, L"/api/statuscommand/$/", (StkWebAppExec*)ApiGetCommandForStatusObj);
+	Soc->AddReqHandler(StkWebAppExec::STKWEBAPP_METHOD_GET, L"/api/statuscommand/$/", (StkWebAppExec*)ApiGetCommandForStatusObj);
 	ApiPostServerInfo* ApiPostServerInfoObj = new ApiPostServerInfo();
-	int Add6 = Soc->AddReqHandler(StkWebAppExec::STKWEBAPP_METHOD_POST, L"/api/server/", (StkWebAppExec*)ApiPostServerInfoObj);
+	Soc->AddReqHandler(StkWebAppExec::STKWEBAPP_METHOD_POST, L"/api/server/", (StkWebAppExec*)ApiPostServerInfoObj);
 	ApiGetCommand* ApiGetCommandObj = new ApiGetCommand();
-	int Add7 = Soc->AddReqHandler(StkWebAppExec::STKWEBAPP_METHOD_GET, L"/api/command/", (StkWebAppExec*)ApiGetCommandObj);
+	Soc->AddReqHandler(StkWebAppExec::STKWEBAPP_METHOD_GET, L"/api/command/", (StkWebAppExec*)ApiGetCommandObj);
 	ApiPostCommand* ApiPostCommandObj = new ApiPostCommand();
-	int Add8 = Soc->AddReqHandler(StkWebAppExec::STKWEBAPP_METHOD_POST, L"/api/command/", (StkWebAppExec*)ApiPostCommandObj);
+	Soc->AddReqHandler(StkWebAppExec::STKWEBAPP_METHOD_POST, L"/api/command/", (StkWebAppExec*)ApiPostCommandObj);
 	ApiDeleteCommand* ApiDeleteCommandObj = new ApiDeleteCommand();
-	int Add9 = Soc->AddReqHandler(StkWebAppExec::STKWEBAPP_METHOD_DELETE, L"/api/command/$/", (StkWebAppExec*)ApiDeleteCommandObj);
+	Soc->AddReqHandler(StkWebAppExec::STKWEBAPP_METHOD_DELETE, L"/api/command/$/", (StkWebAppExec*)ApiDeleteCommandObj);
 	ApiGetCommandForOperation* ApiGetCommandForOperationObj = new ApiGetCommandForOperation();
-	int Add10 = Soc->AddReqHandler(StkWebAppExec::STKWEBAPP_METHOD_GET, L"/api/opcommand/$/", (StkWebAppExec*)ApiGetCommandForOperationObj);
+	Soc->AddReqHandler(StkWebAppExec::STKWEBAPP_METHOD_GET, L"/api/opcommand/$/", (StkWebAppExec*)ApiGetCommandForOperationObj);
 	ApiGetFile* ApiGetFileObj = new ApiGetFile();
-	int Add11 = Soc->AddReqHandler(StkWebAppExec::STKWEBAPP_METHOD_GET, L"/api/file/$/$/", (StkWebAppExec*)ApiGetFileObj);
+	Soc->AddReqHandler(StkWebAppExec::STKWEBAPP_METHOD_GET, L"/api/file/$/$/", (StkWebAppExec*)ApiGetFileObj);
 	ApiPostFile* ApiPostFileObj = new ApiPostFile();
-	int Add12 = Soc->AddReqHandler(StkWebAppExec::STKWEBAPP_METHOD_POST, L"/api/file/", (StkWebAppExec*)ApiPostFileObj);
+	Soc->AddReqHandler(StkWebAppExec::STKWEBAPP_METHOD_POST, L"/api/file/", (StkWebAppExec*)ApiPostFileObj);
 	ApiGetFileList* ApiGetFileListObj = new ApiGetFileList();
-	int Add13 = Soc->AddReqHandler(StkWebAppExec::STKWEBAPP_METHOD_GET, L"/api/filelist/", (StkWebAppExec*)ApiGetFileListObj);
+	Soc->AddReqHandler(StkWebAppExec::STKWEBAPP_METHOD_GET, L"/api/filelist/", (StkWebAppExec*)ApiGetFileListObj);
 	ApiDeleteFile* ApiDeleteFileObj = new ApiDeleteFile();
-	int Add14 = Soc->AddReqHandler(StkWebAppExec::STKWEBAPP_METHOD_DELETE, L"/api/file/$/", (StkWebAppExec*)ApiDeleteFileObj);
+	Soc->AddReqHandler(StkWebAppExec::STKWEBAPP_METHOD_DELETE, L"/api/file/$/", (StkWebAppExec*)ApiDeleteFileObj);
 	ApiGetCommandResult* ApiGetCommandResultObj = new ApiGetCommandResult();
-	int Add15 = Soc->AddReqHandler(StkWebAppExec::STKWEBAPP_METHOD_GET, L"/api/commandresult/", (StkWebAppExec*)ApiGetCommandResultObj);
+	Soc->AddReqHandler(StkWebAppExec::STKWEBAPP_METHOD_GET, L"/api/commandresult/", (StkWebAppExec*)ApiGetCommandResultObj);
+	ApiGetCommandResult* ApiGetCommandResultWpObj = new ApiGetCommandResult();
+	Soc->AddReqHandler(StkWebAppExec::STKWEBAPP_METHOD_GET, L"/api/commandresult/$/", (StkWebAppExec*)ApiGetCommandResultWpObj);
 
 	StkWebAppUm_RegisterApi(Soc);
 
@@ -256,20 +258,21 @@ void Server(wchar_t* IpAddr, int Port, int NumOfWorkerThreads, int ThreadInterva
 	Soc->TheLoop();
 	////////// Main logic ends
 
-	int Del2 = Soc->DeleteReqHandler(StkWebAppExec::STKWEBAPP_METHOD_GET, L"/api/server/");
-	int Del3 = Soc->DeleteReqHandler(StkWebAppExec::STKWEBAPP_METHOD_GET, L"/api/agent/");
-	int Del4 = Soc->DeleteReqHandler(StkWebAppExec::STKWEBAPP_METHOD_POST, L"/api/agent/");
-	int Del5 = Soc->DeleteReqHandler(StkWebAppExec::STKWEBAPP_METHOD_GET, L"/api/statuscommand/$/");
-	int Del6 = Soc->DeleteReqHandler(StkWebAppExec::STKWEBAPP_METHOD_POST, L"/api/server/");
-	int Del7 = Soc->DeleteReqHandler(StkWebAppExec::STKWEBAPP_METHOD_GET, L"/api/command/");
-	int Del8 = Soc->DeleteReqHandler(StkWebAppExec::STKWEBAPP_METHOD_POST, L"/api/command/");
-	int Del9 = Soc->DeleteReqHandler(StkWebAppExec::STKWEBAPP_METHOD_DELETE, L"/api/command/$/");
-	int Del10 = Soc->DeleteReqHandler(StkWebAppExec::STKWEBAPP_METHOD_GET, L"/api/opcommand/$/");
-	int Del11 = Soc->DeleteReqHandler(StkWebAppExec::STKWEBAPP_METHOD_GET, L"/api/file/$/$/");
-	int Del12 = Soc->DeleteReqHandler(StkWebAppExec::STKWEBAPP_METHOD_POST, L"/api/file/");
-	int Del13 = Soc->DeleteReqHandler(StkWebAppExec::STKWEBAPP_METHOD_GET, L"/api/filelist/");
-	int Del14 = Soc->DeleteReqHandler(StkWebAppExec::STKWEBAPP_METHOD_DELETE, L"/api/file/$/");
-	int Del15 = Soc->DeleteReqHandler(StkWebAppExec::STKWEBAPP_METHOD_GET, L"/api/commandresult/");
+	Soc->DeleteReqHandler(StkWebAppExec::STKWEBAPP_METHOD_GET, L"/api/server/");
+	Soc->DeleteReqHandler(StkWebAppExec::STKWEBAPP_METHOD_GET, L"/api/agent/");
+	Soc->DeleteReqHandler(StkWebAppExec::STKWEBAPP_METHOD_POST, L"/api/agent/");
+	Soc->DeleteReqHandler(StkWebAppExec::STKWEBAPP_METHOD_GET, L"/api/statuscommand/$/");
+	Soc->DeleteReqHandler(StkWebAppExec::STKWEBAPP_METHOD_POST, L"/api/server/");
+	Soc->DeleteReqHandler(StkWebAppExec::STKWEBAPP_METHOD_GET, L"/api/command/");
+	Soc->DeleteReqHandler(StkWebAppExec::STKWEBAPP_METHOD_POST, L"/api/command/");
+	Soc->DeleteReqHandler(StkWebAppExec::STKWEBAPP_METHOD_DELETE, L"/api/command/$/");
+	Soc->DeleteReqHandler(StkWebAppExec::STKWEBAPP_METHOD_GET, L"/api/opcommand/$/");
+	Soc->DeleteReqHandler(StkWebAppExec::STKWEBAPP_METHOD_GET, L"/api/file/$/$/");
+	Soc->DeleteReqHandler(StkWebAppExec::STKWEBAPP_METHOD_POST, L"/api/file/");
+	Soc->DeleteReqHandler(StkWebAppExec::STKWEBAPP_METHOD_GET, L"/api/filelist/");
+	Soc->DeleteReqHandler(StkWebAppExec::STKWEBAPP_METHOD_DELETE, L"/api/file/$/");
+	Soc->DeleteReqHandler(StkWebAppExec::STKWEBAPP_METHOD_GET, L"/api/commandresult/");
+	Soc->DeleteReqHandler(StkWebAppExec::STKWEBAPP_METHOD_GET, L"/api/commandresult/$/");
 
 	StkWebAppUm_UnregisterApi(Soc);
 

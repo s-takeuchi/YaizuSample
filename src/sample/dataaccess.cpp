@@ -699,7 +699,8 @@ int DataAccess::SetCommandResult(wchar_t* AgentName, wchar_t* CommandName, char*
 
 int DataAccess::GetCommandResult(wchar_t AgentName[DA_MAXNUM_OF_RESULT][DA_MAXLEN_OF_AGTNAME],
 	                             wchar_t CommandName[DA_MAXNUM_OF_RESULT][DA_MAXLEN_OF_CMDNAME],
-	                             long long UpdTime[DA_MAXNUM_OF_RESULT])
+	                             long long UpdTime[DA_MAXNUM_OF_RESULT],
+	                             int Id[DA_MAXNUM_OF_RESULT])
 {
 	LockTable(L"Result", LOCK_SHARE);
 	RecordData* CmdResult = GetRecord(L"Result");
@@ -713,12 +714,14 @@ int DataAccess::GetCommandResult(wchar_t AgentName[DA_MAXNUM_OF_RESULT][DA_MAXLE
 			return -1;
 		}
 		StkPlWcsCpy(AgentName[Index], DA_MAXLEN_OF_AGTNAME, ColAgtName->GetValue());
+
 		ColumnDataWStr* ColCmdName = (ColumnDataWStr*)CurRec->GetColumn(L"CmdName");
 		if (!ColCmdName) {
 			delete CmdResult;
 			return -1;
 		}
 		StkPlWcsCpy(CommandName[Index], DA_MAXLEN_OF_AGTNAME, ColCmdName->GetValue());
+
 		ColumnDataBin*  ColUpdTime = (ColumnDataBin*)CurRec->GetColumn(L"UpdTime");
 		if (!ColUpdTime) {
 			delete CmdResult;
@@ -726,6 +729,13 @@ int DataAccess::GetCommandResult(wchar_t AgentName[DA_MAXNUM_OF_RESULT][DA_MAXLE
 		}
 		long long* PtrUpdTime = (long long*)ColUpdTime->GetValue();
 		UpdTime[Index] = (long long)*PtrUpdTime;
+
+		ColumnDataInt* ColId = (ColumnDataInt*)CurRec->GetColumn(L"Id");
+		if (!ColId) {
+			delete CmdResult;
+			return -1;
+		}
+		Id[Index] = ColId->GetValue();
 
 		Index++;
 		CurRec = CurRec->GetNextRecord();
