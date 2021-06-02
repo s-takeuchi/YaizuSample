@@ -97,6 +97,8 @@ function initClientMessage() {
     addClientMessage('RESULT_UPDTIME', {'en':'Execution date and time', 'ja':'実行日時'});
     addClientMessage('RESULT_AGTNAME', {'en':'Agent Name', 'ja':'エージェント名'});
     addClientMessage('RESULT_CMDNAME', {'en':'Command Name', 'ja':'コマンド名'});
+    addClientMessage('RESULT_CONSOLECLOSE', {'en':'Close', 'ja':'閉じる'});
+    addClientMessage('RESULT_OUTPUT', {'en':'Command output', 'ja':'コマンド出力'});
 
     addClientMessage('CONNERR', {
         'en':'Connection with REST API service failed. This may be caused by one of the following issues:<br>(1) REST API service cannot be started.<br>(2) REST API service is not registered as a firewall exception.<br>(3) The definition file [nginx.conf and/or sample.conf] for the host name and port number in the network connectivity settings is invalid.<br>(4) A timeout has occurred when waiting for data from REST API server.<br>',
@@ -1083,12 +1085,28 @@ function displayCommandResult() {
         for (let loop = 0; loop < commandresultList.length; loop++) {
             let resultId = commandresultList[loop].Id;
             $('#resultAncId' + resultId).on('click', function() {
-                alert('hello');
+                transViewConsole(resultId);
             });
         }
 
     }
     resizeComponent();
+}
+
+function transViewConsole(resultId) {
+    apiCall('GET', '/api/commandresult/' + resultId + '/', null, 'API_GET_OUTPUT', viewConsole);
+}
+
+function viewConsole() {
+    let commandOutput = responseData['API_GET_OUTPUT'].Data.Result;
+    let consoleDlg = $('<div/>');
+    let consoleArea = $('<div style="overflow-wrap: break-word; padding: 6px 6px 10px 10px; color: #ffffff; background-color: #000000; font-family: monospace;"/>');
+    consoleArea.html(commandOutput.Output);
+    consoleDlg.append(consoleArea);
+    consoleDlg.append('<p/>')
+    consoleDlg.append('<button type="button" class="btn btn-dark" onclick="closeInputModal();">' + getClientMessage('RESULT_CONSOLECLOSE') + '</button> ');
+
+    showInputModal('<h5 class="modal-title">' + getClientMessage('RESULT_OUTPUT') + '</h5>', consoleDlg);
 }
 
 ////////////////////////////////////////////////////////////////////////////////

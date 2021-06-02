@@ -1,11 +1,70 @@
 #include "../../../YaizuComLib/src/stkpl/StkPl.h"
 #include "../../../YaizuComLib/src/stkwebapp_um/ApiBase.h"
+#include "../../../YaizuComLib/src/commonfunc/StkStringParser.h"
+#include "../../../YaizuComLib/src/commonfunc/msgproc.h"
 #include "sample.h"
 #include "dataaccess.h"
 #include "ApiGetCommandResult.h"
 
 StkObject* ApiGetCommandResult::ExecuteImpl(StkObject* ReqObj, int Method, wchar_t UrlPath[StkWebAppExec::URL_PATH_LENGTH], int* ResultCode, wchar_t Locale[3], wchar_t* Token)
 {
+	wchar_t TargetCommandResult[16];
+	if (StkStringParser::ParseInto1Param(UrlPath, L"/api/commandresult/$/", L'$', TargetCommandResult, 16) > 0) {
+		MessageProc::AddLog("Output", MessageProc::LOG_TYPE_INFO);
+		int ResultId = StkPlWcsToL(TargetCommandResult);
+		char Output[DA_MAXLEN_OF_CMDOUTPUT];
+		int Length = DataAccess::GetInstance()->GetOutput(ResultId, Output);
+		StkObject* TmpObj = new StkObject(L"");
+		AddCodeAndMsg(TmpObj, 0, L"", L"");
+		StkObject* TmpObjD = new StkObject(L"Data");
+		StkObject* TmpObjC = new StkObject(L"Result");
+		wchar_t* TmpBuf = StkPlCreateWideCharFromUtf8(Output);
+		size_t TmpBufLen = StkPlWcsLen(TmpBuf);
+		wchar_t* TmpOut = new wchar_t[TmpBufLen * 6];
+		int Index = 0;
+		for (int Loop = 0; Loop < TmpBufLen; Loop++) {
+			if (TmpBuf[Loop] == L'\n') {
+				StkPlWcsCpy(&TmpOut[Index], 6, L"<br/>");
+				Index += 5;
+				if (Loop < TmpBufLen - 1 && TmpBuf[Loop + 1] == L'\r') {
+					Loop++;
+				}
+			} else if (TmpBuf[Loop] == L'\r') {
+				StkPlWcsCpy(&TmpOut[Index], 6, L"<br/>");
+				Index += 5;
+				if (Loop < TmpBufLen - 1 && TmpBuf[Loop + 1] == L'\n') {
+					Loop++;
+				}
+			} else if (TmpBuf[Loop] == L'<') {
+				StkPlWcsCpy(&TmpOut[Index], 5, L"&lt;");
+				Index += 4;
+			} else if (TmpBuf[Loop] == L'>') {
+				StkPlWcsCpy(&TmpOut[Index], 5, L"&gt;");
+				Index += 4;
+			} else if (TmpBuf[Loop] == L'&') {
+				StkPlWcsCpy(&TmpOut[Index], 6, L"&amp;");
+				Index += 5;
+			} else if (TmpBuf[Loop] == L' ') {
+				StkPlWcsCpy(&TmpOut[Index], 7, L"&nbsp;");
+				Index += 6;
+			} else if (TmpBuf[Loop] == L'\t') {
+				StkPlWcsCpy(&TmpOut[Index], 4, L"&#9");
+				Index += 3;
+			} else {
+				TmpOut[Index] = TmpBuf[Loop];
+				Index++;
+			}
+		}
+		TmpObjC->AppendChildElement(new StkObject(L"Output", TmpOut));
+		delete TmpOut;
+		delete TmpBuf;
+		TmpObjD->AppendChildElement(TmpObjC);
+		TmpObj->AppendChildElement(TmpObjD);
+		*ResultCode = 200;
+		return TmpObj;
+	}
+
+	MessageProc::AddLog("List", MessageProc::LOG_TYPE_INFO);
 	wchar_t AgentName[DA_MAXNUM_OF_RESULT][DA_MAXLEN_OF_AGTNAME];
 	wchar_t CommandName[DA_MAXNUM_OF_RESULT][DA_MAXLEN_OF_CMDNAME];
 	long long UpdTime[DA_MAXNUM_OF_RESULT];

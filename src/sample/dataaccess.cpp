@@ -744,6 +744,33 @@ int DataAccess::GetCommandResult(wchar_t AgentName[DA_MAXNUM_OF_RESULT][DA_MAXLE
 	return Index;
 }
 
+int DataAccess::GetOutput(int ResultId, char* Output)
+{
+	ColumnData *ColDatCmdResult[1];
+	ColDatCmdResult[0] = new ColumnDataInt(L"Id", ResultId);
+	RecordData* RecDatCmdResult = new RecordData(L"Result", ColDatCmdResult, 1);
+
+	LockTable(L"Result", LOCK_SHARE);
+	RecordData* CmdResult = GetRecord(RecDatCmdResult);
+	UnlockTable(L"Result");
+	delete RecDatCmdResult;
+
+	if (CmdResult) {
+		ColumnDataBin* ColOutput = (ColumnDataBin*)CmdResult->GetColumn(L"Output");
+		if (!ColOutput) {
+			delete CmdResult;
+			return -1;
+		}
+		int Length = ColOutput->GetLength();
+		StkPlMemCpy(Output, ColOutput->GetValue(), Length);
+		delete CmdResult;
+		return Length;
+	} else {
+		delete CmdResult;
+		return -1;
+	}
+}
+
 bool DataAccess::DeleteOldCommandResult()
 {
 	int NumOfRec = GetNumOfRecords(L"Result");
