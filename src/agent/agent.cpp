@@ -283,9 +283,9 @@ int CommonProcess(StkObject* CommandSearch, char TmpTime[64], StkWebAppSend* Snd
 
 				if (TmpType == 0) {
 					if (OperationFlag) {
-						ReturnCode = StkPlSystem("/usr/bin/bash aaa-operation.sh > aaa-operation.out");
+						ReturnCode = StkPlSystem("/usr/bin/bash -v aaa-operation.sh > aaa-operation.out");
 					} else {
-						ReturnCode = StkPlSystem("/usr/bin/bash aaa-status.sh > aaa-status.out");
+						ReturnCode = StkPlSystem("/usr/bin/bash -v aaa-status.sh > aaa-status.out");
 					}
 				} else if (TmpType == 1) {
 					if (OperationFlag) {
