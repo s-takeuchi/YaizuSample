@@ -766,7 +766,6 @@ int DataAccess::GetOutput(int ResultId, char* Output)
 		delete CmdResult;
 		return Length;
 	} else {
-		delete CmdResult;
 		return -1;
 	}
 }
@@ -774,31 +773,38 @@ int DataAccess::GetOutput(int ResultId, char* Output)
 bool DataAccess::DeleteOldCommandResult()
 {
 	int NumOfRec = GetNumOfRecords(L"Result");
-	if (NumOfRec < DA_MAXNUM_OF_RESULT) {
-		return false;
-	}
-	LockTable(L"Result", LOCK_SHARE);
-	RecordData* CmdResult = GetRecord(L"Result");
-	UnlockTable(L"Result");
-	RecordData* TargetRec = NULL;
-	long long OldestTime = 0;
-	RecordData* CurRec = CmdResult;
-	while (CurRec) {
-		ColumnDataBin*  ColUpdTime = (ColumnDataBin*)CurRec->GetColumn(L"UpdTime");
-		if (!ColUpdTime) {
-			delete CmdResult;
-			return false;
+	while (NumOfRec >= DA_MAXNUM_OF_RESULT - 1) {
+		LockTable(L"Result", LOCK_SHARE);
+		RecordData* CmdResult = GetRecord(L"Result");
+		UnlockTable(L"Result");
+		RecordData* TargetRec = NULL;
+		int MinId = 0;
+		RecordData* CurRec = CmdResult;
+		while (CurRec) {
+			ColumnDataInt*  ColId = (ColumnDataInt*)CurRec->GetColumn(L"Id");
+			if (!ColId) {
+				delete CmdResult;
+				return false;
+			}
+			int CurId = ColId->GetValue();
+			if (MinId == 0 || CurId < MinId) {
+				MinId = CurId;
+			}
+			CurRec = CurRec->GetNextRecord();
 		}
-		long long* PtrUpdTime = (long long*)ColUpdTime->GetValue();
-		long long CurTime= (long long)*PtrUpdTime;
-		if (OldestTime == 0 || OldestTime > CurTime) {
-			OldestTime = CurTime;
-			TargetRec = CurRec;
-		}
-		CurRec = CurRec->GetNextRecord();
-	}
+		delete CmdResult;
 
-	delete CmdResult;
+		ColumnData *ColDatId[1];
+		ColDatId[0] = new ColumnDataInt(L"Id", MinId);
+		RecordData* RecDatDelTarget = new RecordData(L"Result", ColDatId, 1);
+		LockTable(L"Result", LOCK_EXCLUSIVE);
+		DeleteRecord(RecDatDelTarget);
+		AzSortRecord(L"Result", L"Id");
+		UnlockTable(L"Result");
+		delete RecDatDelTarget;
+
+		NumOfRec = GetNumOfRecords(L"Result");
+	}
 	return true;
 }
 

@@ -41,6 +41,9 @@
 #define MSG_FILE_EXCEED_SIZE     4081
 #define MSG_FILE_INVALID_ORDER   4082
 
+// Result
+#define MSG_RESULT_NOTEXIST      4100
+
 // Common error message
 #define MSG_NO_ELEM_IN_REQUEST   4201
 #define MSG_STRING_LEN_ERROR     4202

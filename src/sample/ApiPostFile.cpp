@@ -103,6 +103,8 @@ StkObject* ApiPostFile::ExecuteImpl(StkObject* ReqObj, int Method, wchar_t UrlPa
 		DataChar[DataCharIndex] = '\0';
 
 		if (Type == POSTFILE_TYPE_COMMANDRESULT) {
+			// Delete old data
+			DataAccess::GetInstance()->DeleteOldCommandResult();
 			// Write data to database
 			DataAccess::GetInstance()->SetCommandResult(AgentName, CommandName, (char*)DataChar, DataCharIndex + 1);
 		} else {

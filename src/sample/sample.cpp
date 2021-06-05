@@ -145,6 +145,10 @@ void InitMessageResource()
 	MessageProc::AddEng(MSG_FILE_INVALID_ORDER, L"Non-continuous data has been received.");
 	MessageProc::AddJpn(MSG_FILE_INVALID_ORDER, L"連続していないファイルデータを取得しました。");
 
+	// Result
+	MessageProc::AddEng(MSG_RESULT_NOTEXIST, L"The specified command execution result does not exist.");
+	MessageProc::AddJpn(MSG_RESULT_NOTEXIST, L"指定したコマンド実行結果は存在しません。");
+
 	// Common error message
 	MessageProc::AddEng(MSG_NO_ELEM_IN_REQUEST, L"No \"%ls\" element has been presented in the request.");
 	MessageProc::AddJpn(MSG_NO_ELEM_IN_REQUEST, L"リクエストに\"%ls\"要素が存在しません。");
