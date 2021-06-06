@@ -21,7 +21,6 @@ StkObject* ApiGetCommandResult::ExecuteImpl(StkObject* ReqObj, int Method, wchar
 	wchar_t TargetCommandResult[16];
 
 	if (StkStringParser::ParseInto1Param(UrlPath, L"/api/commandresult/$/", L'$', TargetCommandResult, 16) > 0) {
-		MessageProc::AddLog("Output", MessageProc::LOG_TYPE_INFO);
 		int ResultId = StkPlWcsToL(TargetCommandResult);
 		char Output[DA_MAXLEN_OF_CMDOUTPUT];
 		int Length = DataAccess::GetInstance()->GetOutput(ResultId, Output);
@@ -79,7 +78,6 @@ StkObject* ApiGetCommandResult::ExecuteImpl(StkObject* ReqObj, int Method, wchar
 		*ResultCode = 200;
 		return TmpObj;
 	} else {
-		MessageProc::AddLog("List", MessageProc::LOG_TYPE_INFO);
 		wchar_t AgentName[DA_MAXNUM_OF_RESULT][DA_MAXLEN_OF_AGTNAME];
 		wchar_t CommandName[DA_MAXNUM_OF_RESULT][DA_MAXLEN_OF_CMDNAME];
 		long long UpdTime[DA_MAXNUM_OF_RESULT];

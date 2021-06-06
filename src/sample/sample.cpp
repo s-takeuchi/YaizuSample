@@ -387,7 +387,7 @@ int main(int Argc, char* Argv[])
 	if (DbVer == -1) {
 		StkWebAppUm_CreateTable();
 		StkWebAppUm_SetPropertyValueInt(L"DbVersion", 1);
-		StkWebAppUm_SetPropertyValueInt(L"MaxResultId", 1);
+		StkWebAppUm_SetPropertyValueInt(L"MaxResultId", 0);
 	}
 
 	StkWebAppUm_AddLogMsg(MessageProc::GetMsgEng(MSG_SERVICESTARTED), MessageProc::GetMsgJpn(MSG_SERVICESTARTED), -1);

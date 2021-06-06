@@ -130,7 +130,6 @@ int DataAccess::CreateTables(const wchar_t* DataFileName)
 			ColumnDefWStr ColDefComName(L"CmdName", DA_MAXLEN_OF_CMDNAME);
 			ColumnDefWStr ColDefAgtName(L"AgtName", DA_MAXLEN_OF_AGTNAME);
 			ColumnDefInt ColDefStatus(L"Status");
-			ColumnDefBin ColDefOutput(L"Output", DA_MAXLEN_OF_CMDOUTPUT);
 			TableDef TabDefResult(L"Result", DA_MAXNUM_OF_RESULT);
 			TabDefResult.AddColumnDef(&ColDefId);
 			TabDefResult.AddColumnDef(&ColDefUpdTime);
@@ -138,6 +137,17 @@ int DataAccess::CreateTables(const wchar_t* DataFileName)
 			TabDefResult.AddColumnDef(&ColDefComName);
 			TabDefResult.AddColumnDef(&ColDefAgtName);
 			TabDefResult.AddColumnDef(&ColDefStatus);
+			if (CreateTable(&TabDefResult) != 0) {
+				UnlockAllTable();
+				return -1;
+			}
+		}
+		// Console
+		{
+			ColumnDefInt ColDefId(L"Id");
+			ColumnDefBin ColDefOutput(L"Output", DA_MAXLEN_OF_CMDOUTPUT);
+			TableDef TabDefResult(L"Console", DA_MAXNUM_OF_RESULT);
+			TabDefResult.AddColumnDef(&ColDefId);
 			TabDefResult.AddColumnDef(&ColDefOutput);
 			if (CreateTable(&TabDefResult) != 0) {
 				UnlockAllTable();
@@ -674,27 +684,35 @@ int DataAccess::SetMaxCommandId(int Id)
 int DataAccess::SetCommandResult(wchar_t* AgentName, wchar_t* CommandName, char* Data, size_t DataLength)
 {
 	LockTable(L"Result", LOCK_EXCLUSIVE);
+	LockTable(L"Console", LOCK_EXCLUSIVE);
 	int MaxId = StkWebAppUm_GetPropertyValueInt(L"MaxResultId");
+	StkWebAppUm_SetPropertyValueInt(L"MaxResultId", ++MaxId);
 
 	char UpdTimeBin[DA_MAXLEN_OF_UNIXTIME];
 	long long UpdTime = StkPlGetTime();
 	char* PtrUpdTime = (char*)&UpdTime;
 	StkPlMemCpy(UpdTimeBin, PtrUpdTime, DA_MAXLEN_OF_UNIXTIME);
-	ColumnData *ColDatCmdResult[7];
+	ColumnData *ColDatCmdResult[6];
 	ColDatCmdResult[0] = new ColumnDataInt(L"Id", MaxId);
 	ColDatCmdResult[1] = new ColumnDataBin(L"UpdTime", (unsigned char*)UpdTimeBin, DA_MAXLEN_OF_UNIXTIME);
 	ColDatCmdResult[2] = new ColumnDataInt(L"Type", 0);
 	ColDatCmdResult[3] = new ColumnDataWStr(L"CmdName", CommandName);
 	ColDatCmdResult[4] = new ColumnDataWStr(L"AgtName", AgentName);
 	ColDatCmdResult[5] = new ColumnDataInt(L"Status", 0);
-	ColDatCmdResult[6] = new ColumnDataBin(L"Output", (unsigned char*)Data, (int)DataLength);
-	RecordData* RecDatCmdResult = new RecordData(L"Result", ColDatCmdResult, 7);
-	int Ret = InsertRecord(RecDatCmdResult);
-	StkWebAppUm_SetPropertyValueInt(L"MaxResultId", ++MaxId);
-
-	UnlockTable(L"Result");
+	RecordData* RecDatCmdResult = new RecordData(L"Result", ColDatCmdResult, 6);
+	int RetCmdResult = InsertRecord(RecDatCmdResult);
 	delete RecDatCmdResult;
-	return Ret;
+
+	ColumnData *ColDatConsole[2];
+	ColDatConsole[0] = new ColumnDataInt(L"Id", MaxId);
+	ColDatConsole[1] = new ColumnDataBin(L"Output", (unsigned char*)Data, (int)DataLength);
+	RecordData* RecDatConsolet = new RecordData(L"Console", ColDatConsole, 2);
+	int RetConsole = InsertRecord(RecDatConsolet);
+	delete RecDatConsolet;
+
+	UnlockTable(L"Console");
+	UnlockTable(L"Result");
+	return true;
 }
 
 int DataAccess::GetCommandResult(wchar_t AgentName[DA_MAXNUM_OF_RESULT][DA_MAXLEN_OF_AGTNAME],
@@ -748,11 +766,11 @@ int DataAccess::GetOutput(int ResultId, char* Output)
 {
 	ColumnData *ColDatCmdResult[1];
 	ColDatCmdResult[0] = new ColumnDataInt(L"Id", ResultId);
-	RecordData* RecDatCmdResult = new RecordData(L"Result", ColDatCmdResult, 1);
+	RecordData* RecDatCmdResult = new RecordData(L"Console", ColDatCmdResult, 1);
 
-	LockTable(L"Result", LOCK_SHARE);
+	LockTable(L"Console", LOCK_SHARE);
 	RecordData* CmdResult = GetRecord(RecDatCmdResult);
-	UnlockTable(L"Result");
+	UnlockTable(L"Console");
 	delete RecDatCmdResult;
 
 	if (CmdResult) {
@@ -797,11 +815,20 @@ bool DataAccess::DeleteOldCommandResult()
 		ColumnData *ColDatId[1];
 		ColDatId[0] = new ColumnDataInt(L"Id", MinId);
 		RecordData* RecDatDelTarget = new RecordData(L"Result", ColDatId, 1);
+
+		ColumnData* ColDatOutputId[1];
+		ColDatOutputId[0] = new ColumnDataInt(L"Id", MinId);
+		RecordData* RecDatDelOutput = new RecordData(L"Console", ColDatOutputId, 1);
+
 		LockTable(L"Result", LOCK_EXCLUSIVE);
+		LockTable(L"Console", LOCK_EXCLUSIVE);
 		DeleteRecord(RecDatDelTarget);
+		DeleteRecord(RecDatDelOutput);
 		AzSortRecord(L"Result", L"Id");
+		UnlockTable(L"Console");
 		UnlockTable(L"Result");
 		delete RecDatDelTarget;
+		delete RecDatDelOutput;
 
 		NumOfRec = GetNumOfRecords(L"Result");
 	}
