@@ -14,7 +14,7 @@ StkObject* ApiGetCommandResult::ExecuteImpl(StkObject* ReqObj, int Method, wchar
 	int UserId = -1;
 	if (!CheckCredentials(Token, UserName, &UserId)) {
 		AddCodeAndMsg(TmpObj, MSG_COMMON_AUTH_ERROR, MessageProc::GetMsgEng(MSG_COMMON_AUTH_ERROR), MessageProc::GetMsgJpn(MSG_COMMON_AUTH_ERROR));
-		*ResultCode = 403;
+		*ResultCode = 401;
 		return TmpObj;
 	}
 

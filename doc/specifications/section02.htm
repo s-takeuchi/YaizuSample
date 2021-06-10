@@ -29,6 +29,7 @@ CmdFreakのREST APIは，以下の一覧に示すAPIをクライアント提供�
 <tr><td>POST /api/file/</td><td>Store file</td></tr>
 <tr><td>GET /api/filelist/</td><td>Get file information list in the target directory</td></tr>
 <tr><td>DELETE /api/file/x/</td><td>Delete file</td></tr>
+<tr><td>GET /api/commandresult/x/</td><td>Get command execution result</td></tr>
 </table>
 </div>
 
@@ -665,6 +666,66 @@ Delete the specified file.<br/>
 </ul>
 </div>
 
+
+<H2 ID="2.16">2.16 GET /api/commandresult/x/</H2>
+<div class="topic">
+  Get command execution result.<br/>
+  <ul>
+    <li>Request
+      <p>
+        x in URL means command execution result ID which you want to get.<br/>
+        If you don't specify it, list of command execution results are returned.<br/>
+      </p>
+    </li>
+    <li>Response<br/>
+      <u>In case x is not specified.</u>
+      <pre>
+      {
+        "Code" : 1234,
+        "MsgEng" : "abc",
+        "MsgJpn" : "あいう",
+        "Data" : {
+          "Result" : {
+            "AgentName" : "agent name",
+            "CommandName" : "command name",
+            "UpdTime" : "00000000ffffffff",
+            "Id" : 123
+          }
+        }
+      }
+      </pre>
+      <u>In case x is specified.</u>
+      <pre>
+        {
+          "Code" : 1234,
+          "MsgEng" : "abc",
+          "MsgJpn" : "あいう",
+          "Data" : {
+            "Result" : {
+              "Output" : "00FF00FF00FF00FF"
+            }
+          }
+        }
+      </pre>
+      <table class="tblstyle">
+        <tr><td>Code</td><td>Integer</td><td>Result code
+                                             0:success(HTTP status code=200)
+                                             4206:Authorization error(HTTP status code=401),
+                                             4100:The specified result does not exist(HTTP status code=400),
+        </td></tr>
+        <tr><td>MsgEng</td><td>String</td><td>English message. Empty string is returned when result code is 0.</td></tr>
+        <tr><td>MsgJpn</td><td>String</td><td>Japanese message. Empty string is returned when result code is 0.</td></tr>
+        <tr><td>Data</td><td>Element</td><td>Not returned when result code is not zero or there is no data.</td></tr>
+        <tr><td>Result</td><td>Element</td><td></td></tr>
+        <tr><td>Output</td><td>String</td><td>HTML encoded command execution result. It returns only ID is specified.</td></tr>
+        <tr><td>AgentName</td><td>String</td><td>Agent name</td></tr>
+        <tr><td>CommandName</td><td>String</td><td>Command name</td></tr>
+        <tr><td>UpdTime</td><td>String</td><td>Hexadecimal explession in 16 characters of file update time (unix epoch time)</td></tr>
+        <tr><td>Id</td><td>Integer</td><td>Command execution result ID</td></tr>
+      </table><br/>
+    </li>
+  </ul>
+</div>
 
 </div><p>
 </BODY>
