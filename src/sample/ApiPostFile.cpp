@@ -103,6 +103,16 @@ StkObject* ApiPostFile::ExecuteImpl(StkObject* ReqObj, int Method, wchar_t UrlPa
 		DataChar[DataCharIndex] = '\0';
 
 		if (Type == POSTFILE_TYPE_COMMANDRESULT) {
+			if (AgentName == NULL) {
+				CommonError_NoElemInRequest(TmpObj, L"AgentName");
+				*ResultCode = 400;
+				return TmpObj;
+			}
+			if (CommandName == NULL) {
+				CommonError_NoElemInRequest(TmpObj, L"CommandName");
+				*ResultCode = 400;
+				return TmpObj;
+			}
 			// Delete old data
 			DataAccess::GetInstance()->DeleteOldCommandResult();
 			// Write data to database
