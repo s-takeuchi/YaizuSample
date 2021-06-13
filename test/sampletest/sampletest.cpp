@@ -331,6 +331,108 @@ void TestPostFile(StkWebAppSend* StkWebAppSendObj)
 		delete ResObj;
 		StkPlPrintf("[OK]\n");
 	}
+	{
+		StkPlPrintf("Post file (abnormal scenarios (command execution result:Element insufficient)) ... ");
+		int ResultCode = 0;
+		int ErrCode = 0;
+		StkObject* ReqObj = StkObject::CreateObjectFromJson(L"{\"FileName\" : \"testpostfile.dat\", \"FileOffset\" : 1000000, \"FileData\" : \"20202020\", \"FileSize\" : 4, \"Type\" : 1}", &ErrCode);
+		StkWebAppSendObj->SetAutholization("Bearer admin manager");
+		StkObject* ResObj = StkWebAppSendObj->SendRequestRecvResponse(StkWebAppSend::STKWEBAPP_METHOD_POST, "/api/file/", ReqObj, &ResultCode);
+
+		if (ResultCode != 400) {
+			StkPlWPrintf(L"[NG] Res=%d;\n", ResultCode);
+			StkPlExit(1);
+		}
+		StkObject* ChkObj = new StkObject(L"Code", 4201);
+		StkObject* FndObj = ResObj->Contains(ChkObj);
+		if (FndObj == NULL) {
+			StkPlPrintf("[NG]\n");
+			StkPlExit(1);
+		}
+		delete ChkObj;
+		delete ReqObj;
+		delete ResObj;
+		StkPlPrintf("[OK]\n");
+	}
+	{
+		StkPlPrintf("Post file (normal scenarios (command execution result)) ... ");
+		int ResultCode = 0;
+		int ErrCode = 0;
+		StkObject* ReqObj = StkObject::CreateObjectFromJson(L"{\"FileName\" : \"testpostfile.dat\", \"FileOffset\" : 1000000, \"FileData\" : \"20202020\", \"FileSize\" : 4, \"Type\" : 1, \"AgentName\" : \"aaa\", \"CommandName\" : \"ccc\"}", &ErrCode);
+		StkWebAppSendObj->SetAutholization("Bearer admin manager");
+		StkObject* ResObj = StkWebAppSendObj->SendRequestRecvResponse(StkWebAppSend::STKWEBAPP_METHOD_POST, "/api/file/", ReqObj, &ResultCode);
+
+		if (ResultCode != 200) {
+			StkPlWPrintf(L"[NG] Res=%d;\n", ResultCode);
+			StkPlExit(1);
+		}
+		delete ReqObj;
+		delete ResObj;
+		StkPlPrintf("[OK]\n");
+	}
+	{
+		StkPlPrintf("Get commandresult (normal scenarios) ... ");
+		int ResultCode = 0;
+		int ErrCode = 0;
+		StkWebAppSendObj->SetAutholization("Bearer admin manager");
+		StkObject* ResObj = StkWebAppSendObj->SendRequestRecvResponse(StkWebAppSend::STKWEBAPP_METHOD_GET, "/api/commandresult/", NULL, &ResultCode);
+
+		if (ResultCode != 200) {
+			StkPlWPrintf(L"[NG] Res=%d;\n", ResultCode);
+			StkPlExit(1);
+		}
+		bool SuccessFlag = false;
+		StkObject* TopObj = ResObj;
+		while (ResObj) {
+			if (StkPlWcsCmp(ResObj->GetName(), L"") == 0 || StkPlWcsCmp(ResObj->GetName(), L"Data") == 0) {
+				ResObj = ResObj->GetFirstChildElement();
+				continue;
+			}
+			if (StkPlWcsCmp(ResObj->GetName(), L"Result") == 0) {
+				ResObj = ResObj->GetFirstChildElement();
+				while (ResObj) {
+					if (StkPlWcsCmp(ResObj->GetName(), L"AgentName") == 0) {
+						if (StkPlWcsCmp(ResObj->GetStringValue(), L"aaa") == 0) {
+							SuccessFlag = true;
+							break;
+						}
+					}
+					ResObj = ResObj->GetNext();
+				}
+				break;
+			}
+			ResObj = ResObj->GetNext();
+		}
+		delete TopObj;
+		if (!SuccessFlag) {
+			StkPlPrintf("[NG]\n");
+			StkPlExit(1);
+		}
+		StkPlPrintf("[OK]\n");
+	}
+	{
+		StkPlPrintf("Get commandresult (abnormal scenarios:not exist) ... ");
+		int ResultCode = 0;
+		int ErrCode = 0;
+		StkWebAppSendObj->SetAutholization("Bearer admin manager");
+		StkObject* ResObj = StkWebAppSendObj->SendRequestRecvResponse(StkWebAppSend::STKWEBAPP_METHOD_GET, "/api/commandresult/2/", NULL, &ResultCode);
+
+		if (ResultCode != 400) {
+			StkPlWPrintf(L"[NG] Res=%d;\n", ResultCode);
+			StkPlExit(1);
+		}
+		StkObject* ChkObj = new StkObject(L"Code", 4100);
+		StkObject* FndObj = ResObj->Contains(ChkObj);
+		if (FndObj == NULL) {
+			StkPlPrintf("[NG]\n");
+			StkPlExit(1);
+		}
+
+		delete ResObj;
+		delete ChkObj;
+
+		StkPlPrintf("[OK]\n");
+	}
 }
 
 int main(int Argc, char* Argv[])
