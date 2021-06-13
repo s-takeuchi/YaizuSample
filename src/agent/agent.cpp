@@ -306,15 +306,17 @@ int CommonProcess(StkObject* CommandSearch, char TmpTime[64], StkWebAppSend* Snd
 				}
 			}
 
-			// Load and post command result
-			char CmdResultFile[FILENAME_MAX] = "";
-			if (OperationFlag) {
-				StkPlStrCpy(CmdResultFile, FILENAME_MAX, "aaa-operation.out");
-			} else {
-				StkPlStrCpy(CmdResultFile, FILENAME_MAX, "aaa-status.out");
-			}
-			if (LoadAndPostFile(CmdResultFile, TYPE_COMMANDRESULT, CmdName, SndObj) != 200) {
-				return RESULTCODE_ERROR_CMDRESULT;
+			if (TmpScript != NULL && StkPlStrCmp(TmpScript, "") != 0) {
+				// Load and post command result
+				char CmdResultFile[FILENAME_MAX] = "";
+				if (OperationFlag) {
+					StkPlStrCpy(CmdResultFile, FILENAME_MAX, "aaa-operation.out");
+				} else {
+					StkPlStrCpy(CmdResultFile, FILENAME_MAX, "aaa-status.out");
+				}
+				if (LoadAndPostFile(CmdResultFile, TYPE_COMMANDRESULT, CmdName, SndObj) != 200) {
+					return RESULTCODE_ERROR_CMDRESULT;
+				}
 			}
 		}
 		CommandSearch = CommandSearch->GetNext();
