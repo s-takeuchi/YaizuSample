@@ -63,6 +63,7 @@ if [ \$1 = 1 ]; then
     echo "New installation (post)"
     mkdir -p %{_datadir}/servalagt
     echo workdir=%{_datadir}/servalagt >> %{_sysconfdir}/agent.conf
+    echo scriptencode=UTF8 >> %{_sysconfdir}/agent.conf
     setsebool httpd_can_network_connect on -P
     systemctl daemon-reload
     systemctl start agent.service

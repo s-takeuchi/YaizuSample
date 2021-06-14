@@ -44,6 +44,10 @@ StkWebAppSend* SoForTh2 = NULL;
 
 wchar_t HostName[256];
 
+#define SCRIPT_ENCODE_UTF8 0
+#define SCRIPT_ENCODE_SJIS 1
+int ScriptEncode = SCRIPT_ENCODE_UTF8;
+
 StkObject* GetAgentInfo(int Status)
 {
 	StkObject* NewObj = new StkObject(L"");
@@ -85,11 +89,28 @@ int LoadAndPostFile(char* FileName, int Type, wchar_t* CommandName, StkWebAppSen
 			StkPlSeekFromBegin(FilePtr, Offset);
 			StkPlRead(FilePtr, Buffer, 1000000, &ActSize);
 			StkPlCloseFile(FilePtr);
+			Buffer[ActSize] = '\0';
 		} else {
 			delete Buffer;
 			delete FileNameWc;
 			return -1;
 		}
+		if (Type == TYPE_COMMANDRESULT) {
+			wchar_t* TmpEncodeScript = NULL;
+			if (ScriptEncode == SCRIPT_ENCODE_UTF8) {
+				// Nothing to do
+			} else if (ScriptEncode == SCRIPT_ENCODE_SJIS) {
+				TmpEncodeScript = StkPlSjisToWideChar(Buffer);
+				delete Buffer;
+				Buffer = StkPlCreateUtf8FromWideChar(TmpEncodeScript);
+				ActSize = 0;
+				for (char* SizeLoop = Buffer; *SizeLoop != '\0'; SizeLoop++) {
+					ActSize++;
+				}
+				delete TmpEncodeScript;
+			}
+		}
+		
 		wchar_t HexChar[16] = { L'0', L'1', L'2', L'3', L'4', L'5', L'6', L'7', L'8', L'9', L'A', L'B', L'C', L'D', L'E', L'F' };
 		size_t Loop = 0;
 		for (; Loop < ActSize; Loop++) {
@@ -417,6 +438,7 @@ int LoadPropertyFile(wchar_t HostOrIpAddr[256], int* PortNum, wchar_t PathToBuck
 	char TmpPathToBucket[256] = "";
 	char TmpHostName[256] = "";
 	char TmpSecureMode[256] = "";
+	char TmpScriptEncode[256] = "";
 	StkProperties *Prop = new StkProperties();
 	if (Prop->GetProperties(L"agent.conf") == 0) {
 		// For targethost
@@ -468,6 +490,15 @@ int LoadPropertyFile(wchar_t HostOrIpAddr[256], int* PortNum, wchar_t PathToBuck
 			}
 		}
 		StkPlPrintf("securemode property = %s\r\n", SecureMode ? "true" : "false");
+
+		if (Prop->GetPropertyStr("scriptencode", TmpScriptEncode) == 0) {
+			if (StkPlStrCmp(TmpScriptEncode, "UTF8") == 0) {
+				ScriptEncode = SCRIPT_ENCODE_UTF8;
+			}
+			if (StkPlStrCmp(TmpScriptEncode, "SJIS") == 0) {
+				ScriptEncode = SCRIPT_ENCODE_SJIS;
+			}
+		}
 
 	} else {
 		StkPlPrintf("agent.conf is not found.\r\n");
