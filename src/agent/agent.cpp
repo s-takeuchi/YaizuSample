@@ -589,6 +589,11 @@ int main(int argc, char* argv[])
 			InvalidDirectory = ChangeCurrentDirectory(PathToBucket);
 		}
 		StkPlConvUtf8ToWideChar(HostName, 256, argv[4]);
+#ifdef WIN32
+		ScriptEncode = SCRIPT_ENCODE_SJIS;
+#else
+		ScriptEncode = SCRIPT_ENCODE_UTF8;
+#endif
 		if (argc == 6) {
 			StartXxx(HostOrIpAddr, PortNum, InvalidDirectory, argv[5]);
 		} else {
