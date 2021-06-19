@@ -113,8 +113,6 @@ StkObject* ApiPostFile::ExecuteImpl(StkObject* ReqObj, int Method, wchar_t UrlPa
 				*ResultCode = 400;
 				return TmpObj;
 			}
-			// Delete old data
-			DataAccess::GetInstance()->DeleteOldCommandResult();
 			// Write data to database
 			DataAccess::GetInstance()->SetCommandResult(AgentName, CommandName, (char*)DataChar, DataCharIndex + 1);
 		} else {

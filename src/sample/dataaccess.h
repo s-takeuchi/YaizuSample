@@ -18,7 +18,7 @@
 #define DA_MAXNUM_OF_USERRECORDS 64
 #define DA_MAXNUM_OF_THREADS 305
 #define DA_MAXLEN_OF_CMDOUTPUT 262144
-#define DA_MAXNUM_OF_RESULT 128
+#define DA_MAXNUM_OF_RESULT 120
 
 class DataAccess
 {
@@ -65,7 +65,6 @@ public:
 	int SetCommandResult(wchar_t*, wchar_t*, char*, size_t);
 	int GetCommandResult(wchar_t[DA_MAXNUM_OF_RESULT][DA_MAXLEN_OF_AGTNAME], wchar_t[DA_MAXNUM_OF_RESULT][DA_MAXLEN_OF_CMDNAME], long long[DA_MAXNUM_OF_RESULT], int[DA_MAXNUM_OF_RESULT]);
 	int GetOutput(int, char*);
-	bool DeleteOldCommandResult();
 
 	int IncreaseId(const wchar_t*);
 };

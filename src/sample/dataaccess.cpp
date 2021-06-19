@@ -688,11 +688,15 @@ int DataAccess::SetCommandResult(wchar_t* AgentName, wchar_t* CommandName, char*
 	int MaxId = StkWebAppUm_GetPropertyValueInt(L"MaxResultId");
 	StkWebAppUm_SetPropertyValueInt(L"MaxResultId", ++MaxId);
 
+	ColumnData* ColDatCmdResultSearch[1];
+	ColDatCmdResultSearch[0] = new ColumnDataInt(L"Id", MaxId - DA_MAXNUM_OF_RESULT);
+	RecordData* RecDatCmdResultSearch = new RecordData(L"Result", ColDatCmdResultSearch, 1);
+
 	char UpdTimeBin[DA_MAXLEN_OF_UNIXTIME];
 	long long UpdTime = StkPlGetTime();
 	char* PtrUpdTime = (char*)&UpdTime;
 	StkPlMemCpy(UpdTimeBin, PtrUpdTime, DA_MAXLEN_OF_UNIXTIME);
-	ColumnData *ColDatCmdResult[6];
+	ColumnData* ColDatCmdResult[6];
 	ColDatCmdResult[0] = new ColumnDataInt(L"Id", MaxId);
 	ColDatCmdResult[1] = new ColumnDataBin(L"UpdTime", (unsigned char*)UpdTimeBin, DA_MAXLEN_OF_UNIXTIME);
 	ColDatCmdResult[2] = new ColumnDataInt(L"Type", 0);
@@ -700,15 +704,32 @@ int DataAccess::SetCommandResult(wchar_t* AgentName, wchar_t* CommandName, char*
 	ColDatCmdResult[4] = new ColumnDataWStr(L"AgtName", AgentName);
 	ColDatCmdResult[5] = new ColumnDataInt(L"Status", 0);
 	RecordData* RecDatCmdResult = new RecordData(L"Result", ColDatCmdResult, 6);
-	int RetCmdResult = InsertRecord(RecDatCmdResult);
-	delete RecDatCmdResult;
 
-	ColumnData *ColDatConsole[2];
+	if (MaxId > DA_MAXNUM_OF_RESULT) {
+		UpdateRecord(RecDatCmdResultSearch, RecDatCmdResult);
+	} else {
+		InsertRecord(RecDatCmdResult);
+	}
+
+	delete RecDatCmdResult;
+	delete RecDatCmdResultSearch;
+
+	ColumnData* ColDatConsoleSearch[1];
+	ColDatConsoleSearch[0] = new ColumnDataInt(L"Id", MaxId - DA_MAXNUM_OF_RESULT);
+	RecordData* RecDatConsoleSearch = new RecordData(L"Console", ColDatConsoleSearch, 1);
+
+	ColumnData* ColDatConsole[2];
 	ColDatConsole[0] = new ColumnDataInt(L"Id", MaxId);
 	ColDatConsole[1] = new ColumnDataBin(L"Output", (unsigned char*)Data, (int)DataLength);
-	RecordData* RecDatConsolet = new RecordData(L"Console", ColDatConsole, 2);
-	int RetConsole = InsertRecord(RecDatConsolet);
-	delete RecDatConsolet;
+	RecordData* RecDatConsole = new RecordData(L"Console", ColDatConsole, 2);
+
+	if (MaxId > DA_MAXNUM_OF_RESULT) {
+		UpdateRecord(RecDatConsoleSearch, RecDatConsole);
+	} else {
+		InsertRecord(RecDatConsole);
+	}
+	delete RecDatConsole;
+	delete RecDatConsoleSearch;
 
 	UnlockTable(L"Console");
 	UnlockTable(L"Result");
@@ -759,6 +780,40 @@ int DataAccess::GetCommandResult(wchar_t AgentName[DA_MAXNUM_OF_RESULT][DA_MAXLE
 		CurRec = CurRec->GetNextRecord();
 	}
 	delete CmdResult;
+
+	for (int Loop1 = 0; Loop1 < Index; Loop1++) {
+		// Search max time
+		long long MinTime = 0x7fffffffffffffff;
+		int MinTimeIndex = -1;
+		for (int Loop2 = Loop1; Loop2 < Index; Loop2++) {
+			if (MinTime > UpdTime[Loop2]) {
+				MinTime = UpdTime[Loop2];
+				MinTimeIndex = Loop2;
+			}
+		}
+		if (MinTimeIndex != -1) {
+			wchar_t TmpAgentName[DA_MAXLEN_OF_AGTNAME] = L"";
+			wchar_t TmpCommandName[DA_MAXLEN_OF_CMDNAME] = L"";
+			long long TmpUpdTime = 0;
+			int TmpId = 0;
+			//
+			StkPlWcsCpy(TmpAgentName, DA_MAXLEN_OF_AGTNAME, AgentName[Loop1]);
+			StkPlWcsCpy(TmpCommandName, DA_MAXLEN_OF_CMDNAME, CommandName[Loop1]);
+			TmpUpdTime = UpdTime[Loop1];
+			TmpId = Id[Loop1];
+			//
+			StkPlWcsCpy(AgentName[Loop1], DA_MAXLEN_OF_AGTNAME, AgentName[MinTimeIndex]);
+			StkPlWcsCpy(CommandName[Loop1], DA_MAXLEN_OF_CMDNAME, CommandName[MinTimeIndex]);
+			UpdTime[Loop1] = UpdTime[MinTimeIndex];
+			Id[Loop1] = Id[MinTimeIndex];
+			//
+			StkPlWcsCpy(AgentName[MinTimeIndex], DA_MAXLEN_OF_AGTNAME, TmpAgentName);
+			StkPlWcsCpy(CommandName[MinTimeIndex], DA_MAXLEN_OF_CMDNAME, TmpCommandName);
+			UpdTime[MinTimeIndex] = TmpUpdTime;
+			Id[MinTimeIndex] = TmpId;
+		}
+	}
+
 	return Index;
 }
 
@@ -786,53 +841,6 @@ int DataAccess::GetOutput(int ResultId, char* Output)
 	} else {
 		return -1;
 	}
-}
-
-bool DataAccess::DeleteOldCommandResult()
-{
-	int NumOfRec = GetNumOfRecords(L"Result");
-	while (NumOfRec >= DA_MAXNUM_OF_RESULT - 1) {
-		LockTable(L"Result", LOCK_SHARE);
-		RecordData* CmdResult = GetRecord(L"Result");
-		UnlockTable(L"Result");
-		RecordData* TargetRec = NULL;
-		int MinId = 0;
-		RecordData* CurRec = CmdResult;
-		while (CurRec) {
-			ColumnDataInt*  ColId = (ColumnDataInt*)CurRec->GetColumn(L"Id");
-			if (!ColId) {
-				delete CmdResult;
-				return false;
-			}
-			int CurId = ColId->GetValue();
-			if (MinId == 0 || CurId < MinId) {
-				MinId = CurId;
-			}
-			CurRec = CurRec->GetNextRecord();
-		}
-		delete CmdResult;
-
-		ColumnData *ColDatId[1];
-		ColDatId[0] = new ColumnDataInt(L"Id", MinId);
-		RecordData* RecDatDelTarget = new RecordData(L"Result", ColDatId, 1);
-
-		ColumnData* ColDatOutputId[1];
-		ColDatOutputId[0] = new ColumnDataInt(L"Id", MinId);
-		RecordData* RecDatDelOutput = new RecordData(L"Console", ColDatOutputId, 1);
-
-		LockTable(L"Result", LOCK_EXCLUSIVE);
-		LockTable(L"Console", LOCK_EXCLUSIVE);
-		DeleteRecord(RecDatDelTarget);
-		DeleteRecord(RecDatDelOutput);
-		AzSortRecord(L"Result", L"Id");
-		UnlockTable(L"Console");
-		UnlockTable(L"Result");
-		delete RecDatDelTarget;
-		delete RecDatDelOutput;
-
-		NumOfRec = GetNumOfRecords(L"Result");
-	}
-	return true;
 }
 
 int DataAccess::IncreaseId(const wchar_t* Name)
