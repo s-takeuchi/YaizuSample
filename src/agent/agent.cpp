@@ -242,6 +242,7 @@ int CommonProcess(StkObject* CommandSearch, char TmpTime[64], StkWebAppSend* Snd
 			char* TmpName = NULL;
 			wchar_t CmdName[FILENAME_MAX] = L"";
 			char* TmpScript = NULL;
+			wchar_t* TmpScriptWc = NULL;
 			int TmpType = -1;
 			char TmpServerFileName[FILENAME_MAX] = "";
 			char TmpAgentFileName[FILENAME_MAX] = "";
@@ -249,7 +250,7 @@ int CommonProcess(StkObject* CommandSearch, char TmpTime[64], StkWebAppSend* Snd
 			StkObject* ScriptSearch = CommandSearch->GetFirstChildElement();
 			while (ScriptSearch) {
 				if (StkPlWcsCmp(ScriptSearch->GetName(), L"Script") == 0) {
-					TmpScript = StkPlCreateUtf8FromWideChar(ScriptSearch->GetStringValue());
+					TmpScriptWc = ScriptSearch->GetStringValue();
 				} else if (StkPlWcsCmp(ScriptSearch->GetName(), L"Type") == 0) {
 					TmpType = ScriptSearch->GetIntValue();
 				} else if (StkPlWcsCmp(ScriptSearch->GetName(), L"ServerFileName") == 0) {
@@ -264,6 +265,7 @@ int CommonProcess(StkObject* CommandSearch, char TmpTime[64], StkWebAppSend* Snd
 				}
 				ScriptSearch = ScriptSearch->GetNext();
 			}
+
 			// Name
 			StkPlPrintf("Name=%s, ", TmpName != NULL ? TmpName : "null");
 			if (TmpName != NULL) {
@@ -282,9 +284,22 @@ int CommonProcess(StkObject* CommandSearch, char TmpTime[64], StkWebAppSend* Snd
 			}
 
 			// Execute script
+			// Encode script according to encode specification.
+			if (TmpScriptWc != NULL && StkPlWcsCmp(TmpScriptWc, L"") != 0) {
+				if (ScriptEncode == SCRIPT_ENCODE_UTF8) {
+					TmpScript = StkPlCreateUtf8FromWideChar(TmpScriptWc);
+				} else if (ScriptEncode == SCRIPT_ENCODE_SJIS) {
+					TmpScript = StkPlWideCharToSjis(TmpScriptWc);
+				} else {
+					// Default = UTF8
+					TmpScript = StkPlCreateUtf8FromWideChar(TmpScriptWc);
+				}
+			}
+			// Generate script
 			if (TmpScript != NULL && StkPlStrCmp(TmpScript, "") != 0 && (TmpType == 0 || TmpType == 1)) {
 				StkPlPrintf("Execute script:\r\n");
 				if (TmpType != AGT_PLATFORM) {
+					delete TmpScript;
 					return RESULTCODE_ERROR_PLATFORM;
 				}
 				if (TmpType == 0) {
@@ -300,7 +315,6 @@ int CommonProcess(StkObject* CommandSearch, char TmpTime[64], StkWebAppSend* Snd
 						StkPlWriteFile(L"aaa-status.bat", TmpScript, StkPlStrLen(TmpScript));
 					}
 				}
-				delete TmpScript;
 
 				if (TmpType == 0) {
 					if (OperationFlag) {
@@ -323,6 +337,7 @@ int CommonProcess(StkObject* CommandSearch, char TmpTime[64], StkWebAppSend* Snd
 			StkPlPrintf("AgentFileName=%s\r\n", TmpAgentFileName != NULL ? TmpAgentFileName : "null");
 			if (TmpAgentFileName != NULL && StkPlStrCmp(TmpAgentFileName, "") != 0) {
 				if (LoadAndPostFile(TmpAgentFileName, TYPE_FILE, CmdName, SndObj) != 200) {
+					delete TmpScript;
 					return RESULTCODE_ERROR_AGENTFILE;
 				}
 			}
@@ -336,9 +351,11 @@ int CommonProcess(StkObject* CommandSearch, char TmpTime[64], StkWebAppSend* Snd
 					StkPlStrCpy(CmdResultFile, FILENAME_MAX, "aaa-status.out");
 				}
 				if (LoadAndPostFile(CmdResultFile, TYPE_COMMANDRESULT, CmdName, SndObj) != 200) {
+					delete TmpScript;
 					return RESULTCODE_ERROR_CMDRESULT;
 				}
 			}
+			delete TmpScript;
 		}
 		CommandSearch = CommandSearch->GetNext();
 	}
@@ -499,6 +516,7 @@ int LoadPropertyFile(wchar_t HostOrIpAddr[256], int* PortNum, wchar_t PathToBuck
 				ScriptEncode = SCRIPT_ENCODE_SJIS;
 			}
 		}
+		StkPlPrintf("scriptencode property = %s\r\n", ScriptEncode == SCRIPT_ENCODE_SJIS ? "SJIS" : "UTF8");
 
 	} else {
 		StkPlPrintf("agent.conf is not found.\r\n");
