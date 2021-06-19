@@ -57,6 +57,7 @@ agent.conf can handle following properties.
 <tr><td>targetport</td><td>Port number where agent connects tos</td></tr>
 <tr><td>workdir</td><td>Work directory</td></tr>
 <tr><td>hostname</td><td>Host name which server recognizes.</td></tr>
+<tr><td>scriptencode</td><td>Encode type of script. UTF8 or SJIS can be specified.</td></tr>
 <tr><td>securemode</td><td>Enable SSL/TLS connection.<br/>true or false can be specified.<br/>(defauld=false)</td></tr>
 <tr><td>trustedcert</td><td>Path to trusted certificate file for secure connection.<br/></td></tr>
 </table><br/>
@@ -66,6 +67,7 @@ An example of agent.conf is shown below.<br/>
 targetport=8081
 workdir=c:\bucket_agent
 hostname=
+scriptencode=UTF8
 securemode=true
 trustedcert=C:\Program Files\Example\ca.crt</code></pre>
 </td></tr></table>
