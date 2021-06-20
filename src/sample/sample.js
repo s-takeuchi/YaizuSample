@@ -62,6 +62,7 @@ function initClientMessage() {
     addClientMessage('RESCODE-992', {'en':'-992 : Platform error.\r\n', 'ja':'-992 : プラットフォームエラー\r\n'});
     addClientMessage('RESCODE-993', {'en':'-993 : No request from agent.\r\n', 'ja':'-993 : エージェントからの要求がない\r\n'});
     addClientMessage('RESCODE-994', {'en':'-994 : Invalid agent directory.\r\n', 'ja':'-994 : エージェントディレクトリが不正\r\n'});
+    addClientMessage('RESCODE-995', {'en':'-995 : Command execution result handling error.\r\n', 'ja' : '-995 : コマンド実行結果ハンドリングエラー\r\n'});
 
     addClientMessage('SISTARTTIME', {'en':'Service start time : ', 'ja':'サービス開始時刻 : '});
     addClientMessage('SISVRVERSION', {'en':'Server version : ', 'ja':'サーバーバージョン : '});
@@ -251,7 +252,8 @@ function getTooltipStr() {
                      getClientMessage('RESCODE-991') +
                      getClientMessage('RESCODE-992') +
                      getClientMessage('RESCODE-993') +
-                     getClientMessage('RESCODE-994');
+                     getClientMessage('RESCODE-994') +
+                     getClientMessage('RESCODE-995');
     return tooltipStr;
 }
 
