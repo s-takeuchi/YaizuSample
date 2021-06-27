@@ -24,7 +24,7 @@ StkObject* ApiGetCommandResult::ExecuteImpl(StkObject* ReqObj, int Method, wchar
 		int ResultId = StkPlWcsToL(TargetCommandResult);
 		char Output[DA_MAXLEN_OF_CMDOUTPUT];
 		int Length = DataAccess::GetInstance()->GetOutput(ResultId, Output);
-		if (Length == -1) {
+		if (Length == -1 || Length == 0) {
 			AddCodeAndMsg(TmpObj, MSG_RESULT_NOTEXIST, MessageProc::GetMsgEng(MSG_RESULT_NOTEXIST), MessageProc::GetMsgJpn(MSG_RESULT_NOTEXIST));
 			*ResultCode = 400;
 			return TmpObj;

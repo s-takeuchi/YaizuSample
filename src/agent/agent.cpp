@@ -102,12 +102,18 @@ int LoadAndPostFile(char* FileName, int Type, wchar_t* CommandName, StkWebAppSen
 			} else if (ScriptEncode == SCRIPT_ENCODE_SJIS) {
 				TmpEncodeScript = StkPlSjisToWideChar(Buffer);
 				delete Buffer;
-				Buffer = StkPlCreateUtf8FromWideChar(TmpEncodeScript);
-				ActSize = 0;
-				for (char* SizeLoop = Buffer; *SizeLoop != '\0'; SizeLoop++) {
-					ActSize++;
+				if (TmpEncodeScript) {
+					Buffer = StkPlCreateUtf8FromWideChar(TmpEncodeScript);
+					ActSize = 0;
+					for (char* SizeLoop = Buffer; *SizeLoop != '\0'; SizeLoop++) {
+						ActSize++;
+					}
+					delete TmpEncodeScript;
+				} else {
+					Buffer = new char[1];
+					*Buffer = '\0';
+					ActSize = 1;
 				}
-				delete TmpEncodeScript;
 			}
 		}
 		
