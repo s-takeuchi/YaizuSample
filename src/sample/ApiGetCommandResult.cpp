@@ -24,7 +24,7 @@ StkObject* ApiGetCommandResult::ExecuteImpl(StkObject* ReqObj, int Method, wchar
 		int ResultId = StkPlWcsToL(TargetCommandResult);
 		char Output[DA_MAXLEN_OF_CMDOUTPUT];
 		int Length = DataAccess::GetInstance()->GetOutput(ResultId, Output);
-		if (Length == -1 || Length == 0) {
+		if (Length == -1) {
 			AddCodeAndMsg(TmpObj, MSG_RESULT_NOTEXIST, MessageProc::GetMsgEng(MSG_RESULT_NOTEXIST), MessageProc::GetMsgJpn(MSG_RESULT_NOTEXIST));
 			*ResultCode = 400;
 			return TmpObj;
@@ -35,7 +35,8 @@ StkObject* ApiGetCommandResult::ExecuteImpl(StkObject* ReqObj, int Method, wchar
 		StkObject* TmpObjC = new StkObject(L"Result");
 		wchar_t* TmpBuf = StkPlCreateWideCharFromUtf8(Output);
 		size_t TmpBufLen = StkPlWcsLen(TmpBuf);
-		wchar_t* TmpOut = new wchar_t[TmpBufLen * 6];
+		wchar_t* TmpOut = new wchar_t[TmpBufLen * 6 + 1];
+		TmpOut[0] = L'\0';
 		int Index = 0;
 		for (int Loop = 0; Loop < TmpBufLen; Loop++) {
 			if (TmpBuf[Loop] == L'\n') {
