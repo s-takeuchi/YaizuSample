@@ -72,6 +72,7 @@ int DataAccess::CreateTables(const wchar_t* DataFileName)
 			ColumnDefBin  ColDefAgtReqTime(L"ReqTime", DA_MAXLEN_OF_UNIXTIME);
 			ColumnDefBin  ColDefAgtAcqTime(L"AcqTime", DA_MAXLEN_OF_UNIXTIME);
 			ColumnDefBin  ColDefAgtUpdTime(L"UpdTime", DA_MAXLEN_OF_UNIXTIME);
+			ColumnDefBin  ColDefAgtIniTime(L"IniTime", DA_MAXLEN_OF_UNIXTIME);
 			TableDef TabDefAgtInfo(L"AgentInfo", DA_MAXNUM_OF_AGTRECORDS);
 			TabDefAgtInfo.AddColumnDef(&ColDefAgtName);
 			TabDefAgtInfo.AddColumnDef(&ColDefAgtStatus);
@@ -81,6 +82,7 @@ int DataAccess::CreateTables(const wchar_t* DataFileName)
 			TabDefAgtInfo.AddColumnDef(&ColDefAgtReqTime);
 			TabDefAgtInfo.AddColumnDef(&ColDefAgtAcqTime);
 			TabDefAgtInfo.AddColumnDef(&ColDefAgtUpdTime);
+			TabDefAgtInfo.AddColumnDef(&ColDefAgtIniTime);
 			if (CreateTable(&TabDefAgtInfo) != 0) {
 				UnlockAllTable();
 				return -1;
@@ -206,7 +208,7 @@ int DataAccess::SetAgentInfo(wchar_t AgtName[DA_MAXLEN_OF_AGTNAME], int AgtStatu
 {
 	long long UpdTime = StkPlGetTime();
 	// Record information
-	ColumnData *ColDatAgt[8];
+	ColumnData *ColDatAgt[9];
 	int RetMode = 0;
 	if (CheckExistenceOfTargetAgent(AgtName) == false) {
 		// Add record
@@ -218,7 +220,8 @@ int DataAccess::SetAgentInfo(wchar_t AgtName[DA_MAXLEN_OF_AGTNAME], int AgtStatu
 		ColDatAgt[5] = new ColumnDataBin(L"ReqTime", (unsigned char*)"\0\0\0\0\0\0\0\0", DA_MAXLEN_OF_UNIXTIME);
 		ColDatAgt[6] = new ColumnDataBin(L"AcqTime", (unsigned char*)&StatusTime, DA_MAXLEN_OF_UNIXTIME);
 		ColDatAgt[7] = new ColumnDataBin(L"UpdTime", (unsigned char*)&UpdTime, DA_MAXLEN_OF_UNIXTIME);
-		RecordData* RecDatAgt = new RecordData(L"AgentInfo", ColDatAgt, 8);
+		ColDatAgt[8] = new ColumnDataBin(L"IniTime", (unsigned char*)"\0\0\0\0\0\0\0\0", DA_MAXLEN_OF_UNIXTIME);
+		RecordData* RecDatAgt = new RecordData(L"AgentInfo", ColDatAgt, 9);
 
 		LockTable(L"AgentInfo", LOCK_EXCLUSIVE);
 		int Ret = InsertRecord(RecDatAgt);
