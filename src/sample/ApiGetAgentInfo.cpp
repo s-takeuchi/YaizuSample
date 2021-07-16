@@ -22,9 +22,11 @@ StkObject* ApiGetAgentInfo::ExecuteImpl(StkObject* ReqObj, int Method, wchar_t U
 	int StatusCmd[DA_MAXNUM_OF_AGTRECORDS];
 	int OpStatus[DA_MAXNUM_OF_AGTRECORDS];
 	int OpCmd[DA_MAXNUM_OF_AGTRECORDS];
+	long long ReqTime[DA_MAXNUM_OF_AGTRECORDS];
 	long long AcqTime[DA_MAXNUM_OF_AGTRECORDS];
 	long long UpdTime[DA_MAXNUM_OF_AGTRECORDS];
-	int Count = DataAccess::GetInstance()->GetAgentInfo(Name, Status, StatusCmd, OpStatus, OpCmd, AcqTime, UpdTime);
+	long long IniTime[DA_MAXNUM_OF_AGTRECORDS];
+	int Count = DataAccess::GetInstance()->GetAgentInfo(Name, Status, StatusCmd, OpStatus, OpCmd, ReqTime, AcqTime, UpdTime, IniTime);
 
 	StkObject* TmpObjD = new StkObject(L"Data");
 	for (int Loop = 0; Loop < Count; Loop++) {

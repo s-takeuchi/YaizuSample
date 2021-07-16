@@ -20,7 +20,12 @@ StkObject* ApiGetCommandForStatus::ExecuteImpl(StkObject* ReqObj, int Method, wc
 		return TmpObj;
 	}
 
-	DataAccess::GetInstance()->SetAgentInfoForReqTime(TargetAgtName);
+	long long ReqTime = DataAccess::GetInstance()->SetAgentInfoForReqTime(TargetAgtName);
+	long long UpdTime = DataAccess::GetInstance()->GetAgentInfoForUpdTime(TargetAgtName);
+	long long IniTime = DataAccess::GetInstance()->GetAgentInfoForIniTime(TargetAgtName);
+	char LogBuf[256] = "";
+	StkPlSPrintf(LogBuf, 256, "ReqTime=%016x; UpdTime=%016x; IniTime=%016x", ReqTime, UpdTime, IniTime);
+	MessageProc::AddLog(LogBuf, MessageProc::LOG_TYPE_INFO);
 
 	StkPlSleepMs(5000);
 	while (true) {
@@ -39,6 +44,7 @@ StkObject* ApiGetCommandForStatus::ExecuteImpl(StkObject* ReqObj, int Method, wc
 			SaInterval = 300;
 		}
 
+		// Get current time begin
 		int Year = 0;
 		int Mon = 0;
 		int Day = 0;
@@ -46,6 +52,11 @@ StkObject* ApiGetCommandForStatus::ExecuteImpl(StkObject* ReqObj, int Method, wc
 		int Min = 0;
 		int Sec = 0;
 		StkPlGetTime(&Year, &Mon, &Day, &Hour, &Min, &Sec, false);
+		// Get current time end
+
+		// Compare last update time and agent request time. If difference time is about SaInterval...
+		// And
+		// It's time to return a response.
 
 		if ((SaInterval == 300  && Min % 5 == 0  && Sec < 5) ||
 			(SaInterval == 900  && Min % 15 == 0 && Sec < 5) ||
@@ -70,9 +81,11 @@ StkObject* ApiGetCommandForStatus::ExecuteImpl(StkObject* ReqObj, int Method, wc
 			int StatusCmd[DA_MAXNUM_OF_AGTRECORDS];
 			int OpStatus[DA_MAXNUM_OF_AGTRECORDS];
 			int OpCmd[DA_MAXNUM_OF_AGTRECORDS];
+			long long ReqTime[DA_MAXNUM_OF_AGTRECORDS];
 			long long AcqTime[DA_MAXNUM_OF_AGTRECORDS];
 			long long UpdTime[DA_MAXNUM_OF_AGTRECORDS];
-			int ReAgtCount = DataAccess::GetInstance()->GetAgentInfo(AgtName, Status, StatusCmd, OpStatus, OpCmd, AcqTime, UpdTime);
+			long long IniTime[DA_MAXNUM_OF_AGTRECORDS];
+			int ReAgtCount = DataAccess::GetInstance()->GetAgentInfo(AgtName, Status, StatusCmd, OpStatus, OpCmd, ReqTime, AcqTime, UpdTime, IniTime);
 
 			// Check the agent specified in URI is managed by server
 			int TargetAgtIndex = -1;

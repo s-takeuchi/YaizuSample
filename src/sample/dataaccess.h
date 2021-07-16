@@ -27,6 +27,7 @@ private:
 	static DataAccess* ThisInstance;
 	DataAccess();
 	~DataAccess();
+	long long GetAgentInfoForTime(int, wchar_t[DA_MAXLEN_OF_AGTNAME]);
 
 public:
 	// Get this instance
@@ -40,17 +41,21 @@ public:
 	void SetAgentInfoForStatus(wchar_t[DA_MAXLEN_OF_AGTNAME], int);
 	void SetAgentInfoForOpCmd(wchar_t[DA_MAXLEN_OF_AGTNAME], int);
 	void SetAgentInfoForOpStatus(wchar_t[DA_MAXLEN_OF_AGTNAME], int);
-	void SetAgentInfoForReqTime(wchar_t AgtName[DA_MAXLEN_OF_AGTNAME]);
+	long long SetAgentInfoForReqTime(wchar_t AgtName[DA_MAXLEN_OF_AGTNAME]);
 	int GetAgentInfo(wchar_t[DA_MAXNUM_OF_AGTRECORDS][DA_MAXLEN_OF_AGTNAME],
 		int[DA_MAXNUM_OF_AGTRECORDS],
 		int[DA_MAXNUM_OF_AGTRECORDS],
 		int[DA_MAXNUM_OF_AGTRECORDS],
 		int[DA_MAXNUM_OF_AGTRECORDS],
 		long long[DA_MAXNUM_OF_AGTRECORDS],
+		long long[DA_MAXNUM_OF_AGTRECORDS],
+		long long[DA_MAXNUM_OF_AGTRECORDS],
 		long long[DA_MAXNUM_OF_AGTRECORDS]);
 	int GetAgentInfoForOpCmd(wchar_t[DA_MAXLEN_OF_AGTNAME]);
 	int GetAgentInfoForOpStatus(wchar_t[DA_MAXLEN_OF_AGTNAME]);
 	long long GetAgentInfoForReqTime(wchar_t[DA_MAXLEN_OF_AGTNAME]);
+	long long GetAgentInfoForUpdTime(wchar_t[DA_MAXLEN_OF_AGTNAME]);
+	long long GetAgentInfoForIniTime(wchar_t[DA_MAXLEN_OF_AGTNAME]);
 
 	int GetServerInfo(int*, int*);
 	int SetServerInfo(int, int);
