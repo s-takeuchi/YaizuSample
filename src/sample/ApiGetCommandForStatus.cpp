@@ -21,15 +21,9 @@ StkObject* ApiGetCommandForStatus::ExecuteImpl(StkObject* ReqObj, int Method, wc
 	}
 
 	long long ReqTime = DataAccess::GetInstance()->SetAgentInfoForReqTime(TargetAgtName);
-	long long UpdTime = DataAccess::GetInstance()->GetAgentInfoForUpdTime(TargetAgtName);
 	long long IniTime = DataAccess::GetInstance()->GetAgentInfoForIniTime(TargetAgtName);
-	char LogBuf[256] = "";
-	StkPlSPrintf(LogBuf, 256, "ReqTime=%016x; UpdTime=%016x; IniTime=%016x", ReqTime, UpdTime, IniTime);
-	MessageProc::AddLog(LogBuf, MessageProc::LOG_TYPE_INFO);
 
-	StkPlSleepMs(5000);
 	while (true) {
-		StkPlSleepMs(1000);
 		if (StopFlag) {
 			break;
 		}
@@ -37,6 +31,7 @@ StkObject* ApiGetCommandForStatus::ExecuteImpl(StkObject* ReqObj, int Method, wc
 		int PInterval = 0;
 		int SaInterval = 0;
 		DataAccess::GetInstance()->GetServerInfo(&PInterval, &SaInterval);
+
 		if (PInterval <= 0) {
 			PInterval = 30;
 		}
@@ -44,25 +39,30 @@ StkObject* ApiGetCommandForStatus::ExecuteImpl(StkObject* ReqObj, int Method, wc
 			SaInterval = 300;
 		}
 
-		// Get current time begin
-		int Year = 0;
-		int Mon = 0;
-		int Day = 0;
-		int Hour = 0;
-		int Min = 0;
-		int Sec = 0;
-		StkPlGetTime(&Year, &Mon, &Day, &Hour, &Min, &Sec, false);
-		// Get current time end
+		// Check that it is time to return a response.
+		long long CurTime = StkPlGetTime();
+		bool ItIsTimeToSa = false;
+		bool ItIsTimeToPolling = false;
+		for (int Loop = 0; Loop < 5; Loop++) {
+			long long CurTimeOffsetS;
+			long long IniTimeOffsetS;
+			long long CurTimeOffsetP;
+			long long IniTimeOffsetP;
+			CurTimeOffsetS = CurTime % SaInterval;
+			IniTimeOffsetS = (IniTime + Loop) % SaInterval;
+			if (CurTimeOffsetS == IniTimeOffsetS) {
+				ItIsTimeToSa = true;
+				break;
+			}
+			CurTimeOffsetP = CurTime % PInterval;
+			IniTimeOffsetP = (IniTime + Loop) % PInterval;
+			if (CurTimeOffsetP == IniTimeOffsetP) {
+				ItIsTimeToPolling = true;
+				break;
+			}
+		}
 
-		// Compare last update time and agent request time. If difference time is about SaInterval...
-		// And
-		// It's time to return a response.
-
-		if ((SaInterval == 300  && Min % 5 == 0  && Sec < 5) ||
-			(SaInterval == 900  && Min % 15 == 0 && Sec < 5) ||
-			(SaInterval == 1800 && Min % 30 == 0 && Sec < 5) ||
-			(SaInterval == 3600 && Min == 0      && Sec < 5)) {
-
+		if (ItIsTimeToSa) {
 			AddCodeAndMsg(TmpObj, 0, L"", L"");
 			*ResultCode = 200;
 
@@ -143,19 +143,18 @@ StkObject* ApiGetCommandForStatus::ExecuteImpl(StkObject* ReqObj, int Method, wc
 				}
 			}
 			TmpObj->AppendChildElement(DatObj);
+			StkPlSleepMs(5000);
 			break;
-		}
-
-		if ((PInterval == 30 && Sec % 30 < 5) ||
-			(PInterval == 60 && Sec < 5) ||
-			(PInterval == 300 && Min % 5 == 0 && Sec < 5) ||
-			(PInterval == 900 && Min % 15 == 0 && Sec < 5)) {
+		} else if (ItIsTimeToPolling) {
 			AddCodeAndMsg(TmpObj, 0, L"", L"");
 			StkObject* DatObj = new StkObject(L"Data");
 			DatObj->AppendChildElement(new StkObject(L"Status", L"Timeout"));
 			TmpObj->AppendChildElement(DatObj);
 			*ResultCode = 200;
+			StkPlSleepMs(5000);
 			break;
+		} else {
+			StkPlSleepMs(1000);
 		}
 	}
 	return TmpObj;
