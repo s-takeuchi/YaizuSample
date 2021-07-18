@@ -46,7 +46,7 @@ int DataAccess::StopAutoSave(const wchar_t* DataFileName)
 
 // Create tables for CmdFreak
 // DataFileName [in] : data file name which you want to preserve. Do NOT specify path to file.
-// Return : [0:Success, -1:Failed]
+// Return : [0:Necessary tables are created, 1:Existing data file is loaded, -1:Failed, -2:Data file invalid]
 int DataAccess::CreateTables(const wchar_t* DataFileName)
 {
 	// Make full path name and call AutoSave
@@ -54,11 +54,13 @@ int DataAccess::CreateTables(const wchar_t* DataFileName)
 	StkPlGetFullPathFromFileName(DataFileName, Buf);
 	size_t WorkDatLength = StkPlGetFileSize(Buf);
 	if (WorkDatLength == (size_t)-1) {
+#ifdef WIN32
+		return -1;
+#endif
 #ifndef WIN32
 		StkPlSwPrintf(Buf, FILENAME_MAX, L"/etc/%ls", DataFileName);
 #endif
 	}
-	AutoSave(Buf, 30, true);
 
 	if (StkPlGetFileSize(Buf) == 0) {
 		LockAllTable(2);
@@ -172,18 +174,19 @@ int DataAccess::CreateTables(const wchar_t* DataFileName)
 			UnlockTable(L"ServerInfo");
 			delete RecSvrInfo;
 		}
-
+		AutoSave(Buf, 30, true);
+		return 0;
 	} else {
 		LockAllTable(2);
 		int Ret = LoadData(Buf);
 		UnlockAllTable();
 
 		if (Ret != 0) {
-			return -1;
+			return -2;
 		}
+		AutoSave(Buf, 30, true);
+		return 1;
 	}
-
-	return 0;
 }
 
 bool DataAccess::CheckExistenceOfTargetAgent(wchar_t AgtName[DA_MAXLEN_OF_AGTNAME])

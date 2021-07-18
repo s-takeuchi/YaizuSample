@@ -100,6 +100,8 @@ void InitMessageResource()
 	MessageProc::AddJpn(MSG_SERVICESTARTED, L"サービスが開始しました。");
 	MessageProc::AddEng(MSG_SERVICESTOPPED, L"Service has stopped.");
 	MessageProc::AddJpn(MSG_SERVICESTOPPED, L"サービスが停止しました。");
+	MessageProc::AddEng(MSG_SERVICETERMINATED, L"Service has terminated.");
+	MessageProc::AddJpn(MSG_SERVICETERMINATED, L"サービスが異常停止しました。");
 	MessageProc::AddEng(MSG_NEWAGTNOTIFIED, L"New agent information has been notified.");
 	MessageProc::AddJpn(MSG_NEWAGTNOTIFIED, L"新規にエージェント情報が通知されました。");
 	MessageProc::AddEng(MSG_SVRINFOUPDATED, L"Server information has been changed.");
@@ -203,6 +205,10 @@ void CommonError_ForbiddenChar(StkObject* TmpObj, const wchar_t* Name)
 
 void Server(wchar_t* IpAddr, int Port, int NumOfWorkerThreads, int ThreadInterval, bool SecureMode, const char* PrivateKey, const char* Certificate)
 {
+	char LogBuf[1024] = "";
+	StkPlSPrintf(LogBuf, 1024, "Number of threads = %d", NumOfWorkerThreads);
+	MessageProc::AddLog(LogBuf, MessageProc::LOG_TYPE_INFO);
+
 	int Ids[MAX_NUM_OF_STKTHREADS];
 	for (int Loop = 0; Loop < NumOfWorkerThreads; Loop++) {
 		Ids[Loop] = 1000 + Loop;
@@ -223,6 +229,7 @@ void Server(wchar_t* IpAddr, int Port, int NumOfWorkerThreads, int ThreadInterva
 	int TargetId[1] = { 100 };
 	AddStkThread(100, L"StatusChecker", L"", NULL, NULL, StatusChecker, NULL, NULL);
 	StartSpecifiedStkThreads(TargetId, 1);
+	MessageProc::AddLog("Status checker has started.", MessageProc::LOG_TYPE_INFO);
 
 	ApiGetCommandForStatus::StopFlag = false;
 	ApiGetCommandForOperation::StopFlag = false;
@@ -287,12 +294,28 @@ void Server(wchar_t* IpAddr, int Port, int NumOfWorkerThreads, int ThreadInterva
 
 	StopSpecifiedStkThreads(TargetId, 1);
 	DeleteStkThread(100);
+	MessageProc::AddLog("Status checker has ended.", MessageProc::LOG_TYPE_INFO);
 
 	delete Soc;
 }
 
+void TerminateService(bool DbClosure)
+{
+	if (DbClosure) {
+		StkWebAppUm_AddLogMsg(MessageProc::GetMsgEng(MSG_SERVICETERMINATED), MessageProc::GetMsgJpn(MSG_SERVICETERMINATED), -1);
+		DataAccess::GetInstance()->StopAutoSave(L"sample.dat");
+	}
+
+	// Logging ends
+	MessageProc::AddLog("Service terminated", MessageProc::LOG_TYPE_FATAL);
+	MessageProc::StopLogging();
+	StkPlExit(-1);
+}
+
 int main(int Argc, char* Argv[])
 {
+	char LogBuf[1024] = "";
+
 	InitMessageResource();
 
 	char IpAddrTmp[256] = "";
@@ -310,24 +333,28 @@ int main(int Argc, char* Argv[])
 	StkPlGetFullPathFromFileName(L"trace.log", LoggingPath);
 	MessageProc::StartLogging(LoggingPath);
 	MessageProc::AddLog("----------------------------------------", MessageProc::LOG_TYPE_INFO);
-	MessageProc::AddLog("Service starts", MessageProc::LOG_TYPE_INFO);
+	StkPlSPrintf(LogBuf, 1024, "Service started  [Ver=%s, Build=%s %s]", SERVICE_VERSION, __DATE__, __TIME__);
+	MessageProc::AddLog(LogBuf, MessageProc::LOG_TYPE_INFO);
 
 	StkProperties *Prop = new StkProperties();
 	
 	if (Prop->GetProperties(L"sample.conf") == 0) {
+
 		// servicehost
 		if (Prop->GetPropertyStr("servicehost", IpAddrTmp) != 0) {
-			StkPlPrintf("servicehost property is not found.\r\n");
-			return -1;
+			MessageProc::AddLog("servicehost property is not found.", MessageProc::LOG_TYPE_FATAL);
+			TerminateService(false);
 		}
-		StkPlPrintf("servicehost property = %s\r\n", IpAddrTmp);
+		StkPlSPrintf(LogBuf, 1024, "servicehost property = %s", IpAddrTmp);
+		MessageProc::AddLog(LogBuf, MessageProc::LOG_TYPE_INFO);
 
 		// serviceport
 		if (Prop->GetPropertyInt("serviceport", &Port) != 0) {
-			StkPlPrintf("serviceport property is not found.\r\n");
-			return -1;
+			MessageProc::AddLog("serviceport property is not found.", MessageProc::LOG_TYPE_FATAL);
+			TerminateService(false);
 		}
-		StkPlPrintf("serviceport property = %d\r\n", Port);
+		StkPlSPrintf(LogBuf, 1024, "serviceport property = %d", Port);
+		MessageProc::AddLog(LogBuf, MessageProc::LOG_TYPE_INFO);
 
 		// workerthreads
 		if (Prop->GetPropertyInt("workerthreads", &NumOfWorkerThreads) != 0) {
@@ -335,61 +362,87 @@ int main(int Argc, char* Argv[])
 			// 2 (status acquisition and operation) * 3 (agent / customer) * 30 (customer / server) + 10 (browser access)
 			// Considering the limitation of StkSocket
 			NumOfWorkerThreads = 190;
+		} else {
+			StkPlSPrintf(LogBuf, 1024, "workerthreads property = %d", NumOfWorkerThreads);
+			MessageProc::AddLog(LogBuf, MessageProc::LOG_TYPE_INFO);
 		}
 		if (NumOfWorkerThreads <= 2 || NumOfWorkerThreads > 250) { // Max number of threads is 250
-			StkPlPrintf("An invalid number of threads is specified.\r\n");
-			return -1;
+			MessageProc::AddLog("An invalid number of threads is specified.", MessageProc::LOG_TYPE_FATAL);
+			TerminateService(false);
 		}
-		StkPlPrintf("workerthreads property = %d\r\n", NumOfWorkerThreads);
 
 		// threadinterval
 		if (Prop->GetPropertyInt("threadinterval", &ThreadInterval) != 0) {
 			ThreadInterval = 200;
+		} else {
+			StkPlSPrintf(LogBuf, 1024, "threadinterval property = %d", ThreadInterval);
+			MessageProc::AddLog(LogBuf, MessageProc::LOG_TYPE_INFO);
 		}
-		StkPlPrintf("threadinterval property = %d\r\n", ThreadInterval);
 
 		// securemode
 		if (Prop->GetPropertyStr("securemode", SecureModeStr) == 0) {
 			if (StkPlStrCmp(SecureModeStr, "true") == 0) {
 				SecureMode = true;
-			}
-			if (StkPlStrCmp(SecureModeStr, "false") == 0) {
+			} else if (StkPlStrCmp(SecureModeStr, "false") == 0) {
 				SecureMode = false;
+			} else {
+				MessageProc::AddLog("An invalid value is specified for 'securemode'.", MessageProc::LOG_TYPE_FATAL);
+				TerminateService(false);
 			}
+			StkPlSPrintf(LogBuf, 1024, "securemode property = %s", SecureMode ? "true" : "false");
+			MessageProc::AddLog(LogBuf, MessageProc::LOG_TYPE_INFO);
 		}
-		StkPlPrintf("securemode property = %s\r\n", SecureMode? "true" : "false");
 
 		// privatekey
-		if (Prop->GetPropertyStr("privatekey", PrivateKey) != 0) {
-			//
+		if (Prop->GetPropertyStr("privatekey", PrivateKey) == 0) {
+			StkPlSPrintf(LogBuf, 1024, "privatekey property = %s", PrivateKey);
+			MessageProc::AddLog(LogBuf, MessageProc::LOG_TYPE_INFO);
 		}
-		StkPlPrintf("privatekey property = %s\r\n", PrivateKey);
 
 		// certificate
-		if (Prop->GetPropertyStr("certificate", Certificate) != 0) {
-			//
+		if (Prop->GetPropertyStr("certificate", Certificate) == 0) {
+			StkPlSPrintf(LogBuf, 1024, "certificate property = %s", Certificate);
+			MessageProc::AddLog(LogBuf, MessageProc::LOG_TYPE_INFO);
 		}
-		StkPlPrintf("certificate property = %s\r\n", Certificate);
 
 		// workdir
 		if (Prop->GetPropertyStr("workdir", WorkDir) != 0) {
 			wchar_t TmpBuf[FILENAME_MAX] = L"";
 			StkPlGetFullPathFromFileName(L".", TmpBuf);
 			StkPlConvWideCharToUtf8(WorkDir, 256, TmpBuf);
+		} else {
+			StkPlSPrintf(LogBuf, 1024, "workdir property = %s", WorkDir);
+			MessageProc::AddLog(LogBuf, MessageProc::LOG_TYPE_INFO);
 		}
-		StkPlPrintf("workdir property = %s\r\n", WorkDir);
 	} else {
-		StkPlPrintf("sample.conf is not found.\r\n");
-		return -1;
+		MessageProc::AddLog("sample.conf is not found.", MessageProc::LOG_TYPE_FATAL);
+		TerminateService(false);
 	}
 
 	StkWebAppUm_Init();
-	DataAccess::GetInstance()->CreateTables(L"sample.dat");
+	int DbStatus = DataAccess::GetInstance()->CreateTables(L"sample.dat");
+	if (DbStatus == -1) {
+		MessageProc::AddLog("An error occurred during data file access.", MessageProc::LOG_TYPE_FATAL);
+		TerminateService(false);
+	} else if (DbStatus == -2) {
+		MessageProc::AddLog("Data file is broken.", MessageProc::LOG_TYPE_FATAL);
+		TerminateService(false);
+	}  else if (DbStatus == 0) {
+		MessageProc::AddLog("Necessary tables have been newly created.", MessageProc::LOG_TYPE_INFO);
+	} else if (DbStatus == 1) {
+		MessageProc::AddLog("Existing data file has successfully been loaded.", MessageProc::LOG_TYPE_INFO);
+	}
 	int DbVer = StkWebAppUm_GetPropertyValueInt(L"DbVersion");
+	{
+		char LogBuf[1024] = "";
+		StkPlSPrintf(LogBuf, 1024, "DB version = %d", DbVer);
+		MessageProc::AddLog(LogBuf, MessageProc::LOG_TYPE_INFO);
+	}
 	if (DbVer == -1) {
 		StkWebAppUm_CreateTable();
 		StkWebAppUm_SetPropertyValueInt(L"DbVersion", 1);
 		StkWebAppUm_SetPropertyValueInt(L"MaxResultId", 0);
+		DbVer = 1;
 	}
 
 	StkWebAppUm_AddLogMsg(MessageProc::GetMsgEng(MSG_SERVICESTARTED), MessageProc::GetMsgJpn(MSG_SERVICESTARTED), -1);
@@ -408,7 +461,7 @@ int main(int Argc, char* Argv[])
 	DataAccess::GetInstance()->StopAutoSave(L"sample.dat");
 
 	// Logging ends
-	MessageProc::AddLog("Service ends", MessageProc::LOG_TYPE_INFO);
+	MessageProc::AddLog("Service ended", MessageProc::LOG_TYPE_INFO);
 	MessageProc::StopLogging();
 
 	return 0;

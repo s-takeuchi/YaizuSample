@@ -44,7 +44,7 @@ StkObject* ApiGetServerInfo::ExecuteImpl(StkObject* ReqObj, int Method, wchar_t 
 	// Create object to be returned
 	StkObject* TmpObjD = new StkObject(L"Data");
 	StkObject* TmpObjC = new StkObject(L"ServerInfo");
-	TmpObjC->AppendChildElement(new StkObject(L"Version", L"1.0.0"));
+	TmpObjC->AppendChildElement(new StkObject(L"Version", SERVICE_VERSION_L));
 	TmpObjC->AppendChildElement(new StkObject(L"BuildTime", BuildDate));
 	TmpObjC->AppendChildElement(new StkObject(L"StartTime", StartTimeStr));
 	TmpObjC->AppendChildElement(new StkObject(L"UsedPhysicalMemory", PhyMem));

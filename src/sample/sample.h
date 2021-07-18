@@ -13,6 +13,7 @@
 #define MSG_CMDOPENDED           4007
 #define MSG_SERVICESTARTED       4010
 #define MSG_SERVICESTOPPED       4011
+#define MSG_SERVICETERMINATED    4012
 #define MSG_NEWAGTNOTIFIED       4015
 #define MSG_SVRINFOUPDATED       4016
 #define MSG_FILEUPLOADED         4017
@@ -51,6 +52,9 @@
 #define MSG_NO_EXEC_RIGHT        4204
 #define MSG_FORBIDDEN_CHAR       4205
 #define MSG_COMMON_AUTH_ERROR    4206
+
+#define SERVICE_VERSION "1.0.0"
+#define SERVICE_VERSION_L L"1.0.0"
 
 // Global variables
 class Global {
