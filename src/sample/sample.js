@@ -209,7 +209,7 @@ function displayAgentInfo() {
         }
         tBody.append('<tr>' +
                      tmpChkBoxStr +
-                     '<td><label>' + AgentInfo[Loop].Name + '</label></td>' +
+                     '<td><a id="agentprop' + Loop + '" style="cursor: pointer;">' + AgentInfo[Loop].Name + '</a></td>' +
                      '<td><div align="center" id="statusTd' + Loop + '" data-toggle="tooltip" title="' + getTooltipStr() + '">' + AgentInfo[Loop].Status + '</div></td>' +
                      '<td class="d-none d-sm-table-cell">' + cmdNameStatus + '</td>' +
                      '<td>' + acqTimeStr + '</td>' +
@@ -233,6 +233,11 @@ function displayAgentInfo() {
         } else {
             $('#opStatusTd' + Loop).css('background-color', 'LightCoral');
         }
+    }
+    for (let loop = 0; loop < AgentInfo.length; loop++) {
+        $('#agentprop' + loop).on('click', function() {
+            showAgentPropertiesDialog(AgentInfo[loop].Name);
+        });
     }
     let agentInfoButtonDiv = $('<div id="agentinfobutton" style="padding: 6px 6px 10px 10px; background-color: #e9ecef">')
     agentInfoButtonDiv.append('<button type="button" id="setAgentStatusCommand" class="btn btn-dark disabled" onclick="displayAgentStatusCommandDlg()">' + getClientMessage('AISETSTATUSCMD') + '</button> ');
@@ -411,6 +416,11 @@ function selectAgentStatusCommand(agentStatusCommand) {
     var commandList = getArray(responseData['API_GET_COMMAND'].Data.Command);
     $('#selectedAgentStatus').text(commandList[agentStatusCommand].Name);
     selectedAgentStatusCommand = agentStatusCommand;
+}
+
+function showAgentPropertiesDialog(targetName) {
+    let agentInfo = getArray(responseData['API_GET_AGTINFO'].Data.AgentInfo);
+    showInputModal('<h5 class="modal-title">' + targetName + '</h5>', '');
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -617,7 +627,7 @@ function displayFileMgmt() {
 
             let updTimeInt = parseInt(fileList[Loop].UpdTime, 16);
             let dateUpdTime = new Date(updTimeInt * 1000);
-            tBody.append('<tr>' + tmpChkBoxStr + '<td><a id="fileInfoAncId' + Loop + '">' + fileList[Loop].Name + '</a></td><td>' + fileList[Loop].Size + '</td><td>' + dateUpdTime + '</td></tr>');
+            tBody.append('<tr>' + tmpChkBoxStr + '<td><a id="fileInfoAncId' + Loop + '" style="cursor: pointer;">' + fileList[Loop].Name + '</a></td><td>' + fileList[Loop].Size + '</td><td>' + dateUpdTime + '</td></tr>');
         }
 
         tableListData.append(tBody);
