@@ -33,9 +33,11 @@ StkObject* ApiGetAgentInfo::ExecuteImpl(StkObject* ReqObj, int Method, wchar_t U
 		wchar_t AcqTimeStr[DA_MAXLEN_OF_UNIXTIME * 2 + 1] = L"";
 		wchar_t UpdTimeStr[DA_MAXLEN_OF_UNIXTIME * 2 + 1] = L"";
 		wchar_t IniTimeStr[DA_MAXLEN_OF_UNIXTIME * 2 + 1] = L"";
+		wchar_t ReqTimeStr[DA_MAXLEN_OF_UNIXTIME * 2 + 1] = L"";
 		StkPlSwPrintf(AcqTimeStr, DA_MAXLEN_OF_UNIXTIME * 2 + 1, L"%016x", AcqTime[Loop]);
 		StkPlSwPrintf(UpdTimeStr, DA_MAXLEN_OF_UNIXTIME * 2 + 1, L"%016x", UpdTime[Loop]);
 		StkPlSwPrintf(IniTimeStr, DA_MAXLEN_OF_UNIXTIME * 2 + 1, L"%016x", IniTime[Loop]);
+		StkPlSwPrintf(ReqTimeStr, DA_MAXLEN_OF_UNIXTIME * 2 + 1, L"%016x", ReqTime[Loop]);
 		StkObject* TmpObjC = new StkObject(L"AgentInfo");
 		TmpObjC->AppendChildElement(new StkObject(L"Name", Name[Loop]));
 		TmpObjC->AppendChildElement(new StkObject(L"Status", Status[Loop]));
@@ -45,6 +47,7 @@ StkObject* ApiGetAgentInfo::ExecuteImpl(StkObject* ReqObj, int Method, wchar_t U
 		TmpObjC->AppendChildElement(new StkObject(L"AcqTime", AcqTimeStr));
 		TmpObjC->AppendChildElement(new StkObject(L"UpdTime", UpdTimeStr));
 		TmpObjC->AppendChildElement(new StkObject(L"IniTime", IniTimeStr));
+		TmpObjC->AppendChildElement(new StkObject(L"ReqTime", ReqTimeStr));
 		TmpObjD->AppendChildElement(TmpObjC);
 	}
 	AddCodeAndMsg(TmpObj, 0, L"", L"");

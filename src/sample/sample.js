@@ -42,7 +42,8 @@ function initClientMessage() {
     addClientMessage('AINAME', {'en':'Name', 'ja':'名称'});
     addClientMessage('AISTATUS', {'en':'Status', 'ja':'状態'});
     addClientMessage('AISTATUSCMD', {'en':'Command for Status', 'ja':'状態取得コマンド'});
-    addClientMessage('AISTATUSINITIME', {'en':'Initial Notification time', 'ja':'初回通知時刻'});
+    addClientMessage('AISTATUSINITIME', {'en':'Initial Notification Time', 'ja':'初回通知時刻'});
+    addClientMessage('AILASTPOLLINGTIME', {'en':'Last Polling Time', 'ja':'最終ポーリング時刻'});
     addClientMessage('AISTATUSTIME', {'en':'Status Acquisition Time', 'ja':'状態取得時刻'});
     addClientMessage('AISTATUSUPTIME', {'en':'Status Update Time', 'ja':'状態更新時刻'});
     addClientMessage('AIOPSTATUS', {'en':'OpStatus', 'ja':'操作状態'});
@@ -438,15 +439,21 @@ function showAgentPropertiesDialog(targetName) {
             let acqTimeInt = parseInt(agentInfo[loop].AcqTime, 16);
             let updTimeInt = parseInt(agentInfo[loop].UpdTime, 16);
             let iniTimeInt = parseInt(agentInfo[loop].IniTime, 16);
+            let reqTimeInt = parseInt(agentInfo[loop].ReqTime, 16);
             let dateAcqTime = new Date(acqTimeInt * 1000);
             let dateUpdTime = new Date(updTimeInt * 1000);
             let dateIniTime = new Date(iniTimeInt * 1000);
+            let dateReqTime = new Date(reqTimeInt * 1000);
             let acqTimeStr = dateAcqTime.toString();
             let updTimeStr = dateUpdTime.toString();
             let iniTimeStr = dateIniTime.toString();
+            let reqTimeStr = dateReqTime.toString();
             agentPropDlg.append(getClientMessage('AISTATUSINITIME') + ' : ' + iniTimeStr + '<br/>');
+            agentPropDlg.append(getClientMessage('AILASTPOLLINGTIME') + ' : ' + reqTimeStr + '<br/>');
             agentPropDlg.append(getClientMessage('AISTATUSTIME') + ' : ' + acqTimeStr + '<br/>');
             agentPropDlg.append(getClientMessage('AISTATUSUPTIME') + ' : ' + acqTimeStr + '<br/>');
+            agentPropDlg.append('<p></p>');
+            agentPropDlg.append('<button type="button" id="OK" class="btn btn-dark" onclick="closeInputModal()">OK</button> ');
         }
     }
 
