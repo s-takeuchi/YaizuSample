@@ -235,7 +235,8 @@ int DataAccess::SetAgentInfo(wchar_t AgtName[DA_MAXLEN_OF_AGTNAME], int AgtStatu
 	int RetMode = 0;
 	if (CheckExistenceOfTargetAgent(AgtName) == false) {
 		// Add record
-		ColDatAgt[0] = new ColumnDataInt(L"Id", -1);
+		int MaxId = StkWebAppUm_GetPropertyValueInt(L"MaxAgentId");
+		ColDatAgt[0] = new ColumnDataInt(L"Id", MaxId);
 		ColDatAgt[1] = new ColumnDataWStr(L"Name", AgtName);
 		ColDatAgt[2] = new ColumnDataInt(L"Status", AgtStatus);
 		ColDatAgt[3] = new ColumnDataInt(L"StatusCmd", -1);
@@ -251,6 +252,7 @@ int DataAccess::SetAgentInfo(wchar_t AgtName[DA_MAXLEN_OF_AGTNAME], int AgtStatu
 		int Ret = InsertRecord(RecDatAgt);
 		UnlockTable(L"AgentInfo");
 		delete RecDatAgt;
+		StkWebAppUm_SetPropertyValueInt(L"MaxAgentId", ++MaxId);
 		RetMode = 0;
 	} else {
 		// Update record
