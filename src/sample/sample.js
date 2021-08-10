@@ -1164,12 +1164,36 @@ function viewConsole() {
 ////////////////////////////////////////////////////////////////////////////////
 
 function transDisplayDashboard() {
-    apiCall('GET', '/api/commandresult/', null, 'API_GET_COMMANDRESULT', displayDashboard);
+    apiCall('GET', '/api/agent/', null, 'API_GET_AGTINFO', displayDashboard);
 }
 
 function displayDashboard() {
+    if (statusCode['API_GET_AGTINFO'] == -1 || statusCode['API_GET_AGTINFO'] == 0) {
+        displayAlertDanger('#dashboard', getClientMessage('CONNERR'));
+        return;
+    }
+    if (statusCode['API_GET_AGTINFO'] != 200) {
+        displayAlertDanger('#dashboard', getSvrMsg(responseData['API_GET_AGTINFO']));
+        return;
+    }
+    let agentInfos = getArray(responseData['API_GET_AGTINFO'].Data.AgentInfo);
+    if (agentInfos == null) {
+        $('#dashboard').append(getClientMessage('NOAGTINFO'));
+        return;
+    }
+
+    let wsize = $(window).width();
+    let hsize = 30;
     drowContainerFluid($('<div id="dashboard" class="col-xs-12" style="display:block"></div>'));
-    $('#dashboard').append('hello, world!!');
+
+    for (let loop = 0; loop < agentInfos.length; loop++) {
+        $('#dashboard').append(agentInfos[loop].Name + '<br/>');
+        $('#dashboard').append(
+            '<svg xmlns="http://www.w3.org/2000/svg" width="' + (wsize - 10) + 'px" height="' + hsize + 'px" viewBox="0 0 ' + (wsize - 10) + ' ' + hsize + '">' +
+            '<rect x="50" y="0" width="' + (wsize - 60) + '" height="30" fill="lightgreen"><title>hello</title></rect>' +
+            '</svg>'
+        );
+    }
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -1243,6 +1267,9 @@ function resizeComponent() {
     $("#agentinfotable").css("height", hsize_agentinfotable + "px");
     $("#filemgmttable").css("height", hsize_filemgmttable + "px");
     $("#resulttable").css("height", hsize_resulttable + "px");
+    if ($('#dashboard').length) {
+        displayDashboard();
+    }
 }
 
 $(document).ready(function () {
