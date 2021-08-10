@@ -73,4 +73,6 @@ public:
 	int GetOutput(int, char*);
 
 	int IncreaseId(const wchar_t*);
+
+	int AddTimeSeriesData(const wchar_t*, int);
 };

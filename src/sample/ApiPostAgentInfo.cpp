@@ -125,6 +125,7 @@ StkObject* ApiPostAgentInfo::ExecuteImpl(StkObject* ReqObj, int Method, wchar_t 
 		}
 		if (!StatusCmdFlag && !OpCmdFlag && !OpStatusFlag) {
 			int RetSetAgtInfo = DataAccess::GetInstance()->SetAgentInfo(Name, Status, StatusTime);
+			DataAccess::GetInstance()->AddTimeSeriesData(Name, Status);
 			if (RetSetAgtInfo == 0) {
 				// Add new agent
 				DataAccess::GetInstance()->SetAgentInfoForOpStatus(Name, -984);

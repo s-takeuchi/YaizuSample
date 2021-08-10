@@ -920,3 +920,39 @@ int DataAccess::IncreaseId(const wchar_t* Name)
 	return TargetId;
 }
 
+int DataAccess::AddTimeSeriesData(const wchar_t* AgtName, int Status)
+{
+	// Retrieve agent ID
+	ColumnData *ColDatAgtFind[1];
+	ColDatAgtFind[0] = new ColumnDataWStr(L"Name", AgtName);
+	RecordData* RecDatAgtFind = new RecordData(L"AgentInfo", ColDatAgtFind, 1);
+	LockTable(L"AgentInfo", LOCK_SHARE);
+	RecordData* ResDat = GetRecord(RecDatAgtFind);
+	UnlockTable(L"AgentInfo");
+	int AgtId = -1;
+	if (ResDat) {
+		ColumnDataInt* AgtIdColDat = (ColumnDataInt*)ResDat->GetColumn(0);
+		if (AgtIdColDat) {
+			AgtId = AgtIdColDat->GetValue();
+		}
+	}
+	delete ResDat;
+	delete RecDatAgtFind;
+	if (AgtId == -1) {
+		return -1;
+	}
+	long long UpdTime = StkPlGetTime();
+	wchar_t TblName[32] = L"";
+	StkPlSwPrintf(TblName, 32, L"TimeSeries%d", AgtId % 5);
+	ColumnData *ColDatAgtUpd[3];
+	ColDatAgtUpd[0] = new ColumnDataInt(L"AgentId", AgtId);
+	ColDatAgtUpd[1] = new ColumnDataBin(L"UpdTime", (unsigned char*)&UpdTime, DA_MAXLEN_OF_UNIXTIME);
+	ColDatAgtUpd[2] = new ColumnDataInt(L"Status", Status);
+	RecordData* RecDatAgtUpd = new RecordData(TblName, ColDatAgtUpd, 3);
+	LockTable(TblName, LOCK_EXCLUSIVE);
+	InsertRecord(RecDatAgtUpd);
+	UnlockTable(TblName);
+	delete RecDatAgtUpd;
+
+	return 0;
+}
