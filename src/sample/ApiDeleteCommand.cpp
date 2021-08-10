@@ -1,7 +1,6 @@
 #include "../../../YaizuComLib/src/stkpl/StkPl.h"
 #include "../../../YaizuComLib/src/commonfunc/StkStringParser.h"
 #include "../../../YaizuComLib/src/commonfunc/msgproc.h"
-#include "../../../YaizuComLib/src/stkwebapp_um/stkwebapp_um.h"
 #include "../../../YaizuComLib/src/stkwebapp_um/ApiBase.h"
 #include "dataaccess.h"
 #include "sample.h"
@@ -39,7 +38,7 @@ StkObject* ApiDeleteCommand::ExecuteImpl(StkObject* ReqObj, int Method, wchar_t 
 		wchar_t LogMsgJa[256] = L"";
 		StkPlSwPrintf(LogMsg, 256, L"%ls [%ls]", MessageProc::GetMsgEng(MSG_COMDELETE), CmdName);
 		StkPlSwPrintf(LogMsgJa, 256, L"%ls [%ls]", MessageProc::GetMsgJpn(MSG_COMDELETE), CmdName);
-		StkWebAppUm_AddLogMsg(LogMsg, LogMsgJa, UserId);
+		EventLogging(LogMsg, LogMsgJa, UserId);
 	} else {
 		AddCodeAndMsg(TmpObj, MSG_COMMANDNOTEXIST, MessageProc::GetMsgEng(MSG_COMMANDNOTEXIST), MessageProc::GetMsgJpn(MSG_COMMANDNOTEXIST));
 		*ResultCode = 400;

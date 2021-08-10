@@ -66,3 +66,4 @@ void GetFullPathFromFileName(wchar_t[FILENAME_MAX], const wchar_t[FILENAME_MAX])
 void CommonError_NoElemInRequest(StkObject*, const wchar_t*);
 void CommonError_StringLenError(StkObject*, const wchar_t*, int);
 void CommonError_ForbiddenChar(StkObject*, const wchar_t*);
+void EventLogging(wchar_t*, wchar_t*, int);

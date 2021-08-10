@@ -203,6 +203,17 @@ void CommonError_ForbiddenChar(StkObject* TmpObj, const wchar_t* Name)
 	TmpObj->AppendChildElement(new StkObject(L"MsgJpn", MsgJpn));
 }
 
+void EventLogging(wchar_t* MsgEn, wchar_t* MsgJa, int UserId)
+{
+	StkWebAppUm_AddLogMsg(MsgEn, MsgJa, UserId);
+	// Trace logging
+	char TraceLogBuf[2048] = "";
+	char* TraceLogTmp = StkPlCreateUtf8FromWideChar(MsgEn);
+	StkPlSPrintf(TraceLogBuf, 1024, "Event : %s (UserId=%d)", TraceLogTmp, UserId);
+	delete TraceLogTmp;
+	MessageProc::AddLog(TraceLogBuf, MessageProc::LOG_TYPE_INFO);
+}
+
 void Server(wchar_t* IpAddr, int Port, int NumOfWorkerThreads, int ThreadInterval, bool SecureMode, const char* PrivateKey, const char* Certificate)
 {
 	char LogBuf[1024] = "";
@@ -302,7 +313,7 @@ void Server(wchar_t* IpAddr, int Port, int NumOfWorkerThreads, int ThreadInterva
 void TerminateService(bool DbClosure)
 {
 	if (DbClosure) {
-		StkWebAppUm_AddLogMsg(MessageProc::GetMsgEng(MSG_SERVICETERMINATED), MessageProc::GetMsgJpn(MSG_SERVICETERMINATED), -1);
+		EventLogging(MessageProc::GetMsgEng(MSG_SERVICETERMINATED), MessageProc::GetMsgJpn(MSG_SERVICETERMINATED), -1);
 		DataAccess::GetInstance()->StopAutoSave(L"sample.dat");
 	}
 
@@ -442,10 +453,11 @@ int main(int Argc, char* Argv[])
 		StkWebAppUm_CreateTable();
 		StkWebAppUm_SetPropertyValueInt(L"DbVersion", 1);
 		StkWebAppUm_SetPropertyValueInt(L"MaxResultId", 0);
+		StkWebAppUm_SetPropertyValueInt(L"MaxAgentId", 0);
 		DbVer = 1;
 	}
 
-	StkWebAppUm_AddLogMsg(MessageProc::GetMsgEng(MSG_SERVICESTARTED), MessageProc::GetMsgJpn(MSG_SERVICESTARTED), -1);
+	EventLogging(MessageProc::GetMsgEng(MSG_SERVICESTARTED), MessageProc::GetMsgJpn(MSG_SERVICESTARTED), -1);
 	wchar_t* IpAddr = StkPlCreateWideCharFromUtf8(IpAddrTmp);
 	wchar_t* WorkDirWc = StkPlCreateWideCharFromUtf8(WorkDir);
 	StkPlWcsCpy(Global::Global_WorkDirPath, FILENAME_MAX, WorkDirWc);
@@ -456,7 +468,7 @@ int main(int Argc, char* Argv[])
 
 	delete IpAddr;
 	delete WorkDirWc;
-	StkWebAppUm_AddLogMsg(MessageProc::GetMsgEng(MSG_SERVICESTOPPED), MessageProc::GetMsgJpn(MSG_SERVICESTOPPED), -1);
+	EventLogging(MessageProc::GetMsgEng(MSG_SERVICESTOPPED), MessageProc::GetMsgJpn(MSG_SERVICESTOPPED), -1);
 
 	DataAccess::GetInstance()->StopAutoSave(L"sample.dat");
 

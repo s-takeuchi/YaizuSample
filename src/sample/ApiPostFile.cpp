@@ -1,5 +1,4 @@
 #include "../../../YaizuComLib/src/stkpl/StkPl.h"
-#include "../../../YaizuComLib/src/stkwebapp_um/stkwebapp_um.h"
 #include "../../../YaizuComLib/src/stkwebapp_um/ApiBase.h"
 #include "../../../YaizuComLib/src/commonfunc/msgproc.h"
 #include "sample.h"
@@ -142,7 +141,7 @@ StkObject* ApiPostFile::ExecuteImpl(StkObject* ReqObj, int Method, wchar_t UrlPa
 				wchar_t LogMsgJa[512] = L"";
 				StkPlSwPrintf(LogMsg, 256, L"%ls [%ls]", MessageProc::GetMsgEng(MSG_FILEUPLOADED), FileName);
 				StkPlSwPrintf(LogMsgJa, 256, L"%ls [%ls]", MessageProc::GetMsgJpn(MSG_FILEUPLOADED), FileName);
-				StkWebAppUm_AddLogMsg(LogMsg, LogMsgJa, UserId);
+				EventLogging(LogMsg, LogMsgJa, UserId);
 			}
 		}
 

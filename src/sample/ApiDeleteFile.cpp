@@ -2,7 +2,6 @@
 #include "../../../YaizuComLib/src/commonfunc/StkStringParser.h"
 #include "../../../YaizuComLib/src/commonfunc/msgproc.h"
 #include "../../../YaizuComLib/src/stkwebapp_um/ApiBase.h"
-#include "../../../YaizuComLib/src/stkwebapp_um/stkwebapp_um.h"
 #include "sample.h"
 #include "ApiDeleteFile.h"
 
@@ -40,7 +39,7 @@ StkObject* ApiDeleteFile::ExecuteImpl(StkObject* ReqObj, int Method, wchar_t Url
 		wchar_t LogMsgJa[512] = L"";
 		StkPlSwPrintf(LogMsg, 256, L"%ls [%ls]", MessageProc::GetMsgEng(MSG_FILEDELETED), FileNameTransStr);
 		StkPlSwPrintf(LogMsgJa, 256, L"%ls [%ls]", MessageProc::GetMsgJpn(MSG_FILEDELETED), FileNameTransStr);
-		StkWebAppUm_AddLogMsg(LogMsg, LogMsgJa, UserId);
+		EventLogging(LogMsg, LogMsgJa, UserId);
 	}
 	AddCodeAndMsg(TmpObj, 0, L"", L"");
 	*ResultCode = 200;

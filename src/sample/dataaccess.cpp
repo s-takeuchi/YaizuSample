@@ -150,12 +150,30 @@ int DataAccess::CreateTables(const wchar_t* DataFileName)
 		{
 			ColumnDefInt ColDefId(L"Id");
 			ColumnDefBin ColDefOutput(L"Output", DA_MAXLEN_OF_CMDOUTPUT);
-			TableDef TabDefResult(L"Console", DA_MAXNUM_OF_RESULT);
-			TabDefResult.AddColumnDef(&ColDefId);
-			TabDefResult.AddColumnDef(&ColDefOutput);
-			if (CreateTable(&TabDefResult) != 0) {
+			TableDef TabDefConsole(L"Console", DA_MAXNUM_OF_RESULT);
+			TabDefConsole.AddColumnDef(&ColDefId);
+			TabDefConsole.AddColumnDef(&ColDefOutput);
+			if (CreateTable(&TabDefConsole) != 0) {
 				UnlockAllTable();
 				return -1;
+			}
+		}
+		// TIMESERIES
+		{
+			for (int Loop = 0; Loop < 5; Loop++) {
+				ColumnDefInt ColDefAgentId(L"AgentId");
+				ColumnDefBin ColDefUpdTime(L"UpdTime", DA_MAXLEN_OF_UNIXTIME);
+				ColumnDefInt ColDefStatus(L"Status");
+				wchar_t TableNameBuf[TABLE_NAME_SIZE];
+				StkPlSwPrintf(TableNameBuf, TABLE_NAME_SIZE, L"TimeSeries%d", Loop);
+				TableDef TabDefTimeSeries(TableNameBuf, DA_MAXNUM_OF_TIMESERIESDATA);
+				TabDefTimeSeries.AddColumnDef(&ColDefAgentId);
+				TabDefTimeSeries.AddColumnDef(&ColDefUpdTime);
+				TabDefTimeSeries.AddColumnDef(&ColDefStatus);
+				if (CreateTable(&TabDefTimeSeries) != 0) {
+					UnlockAllTable();
+					return -1;
+				}
 			}
 		}
 		UnlockAllTable();

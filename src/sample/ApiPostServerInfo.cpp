@@ -1,5 +1,4 @@
 #include "../../../YaizuComLib/src/stkpl/StkPl.h"
-#include "../../../YaizuComLib/src/stkwebapp_um/stkwebapp_um.h"
 #include "../../../YaizuComLib/src/stkwebapp_um/ApiBase.h"
 #include "../../../YaizuComLib/src/commonfunc/msgproc.h"
 #include "dataaccess.h"
@@ -68,7 +67,7 @@ StkObject* ApiPostServerInfo::ExecuteImpl(StkObject* ReqObj, int Method, wchar_t
 		wchar_t LogMsgJa[256] = L"";
 		StkPlSwPrintf(LogMsg, 256, L"%ls [Polling Interval=%d sec, Status Acquisition Interval=%d sec]", MessageProc::GetMsgEng(MSG_SVRINFOUPDATED), PInterval, SaInterval);
 		StkPlSwPrintf(LogMsgJa, 256, L"%ls [Polling Interval=%d sec, Status Acquisition Interval=%d sec]", MessageProc::GetMsgJpn(MSG_SVRINFOUPDATED), PInterval, SaInterval);
-		StkWebAppUm_AddLogMsg(LogMsg, LogMsgJa, UserId);
+		EventLogging(LogMsg, LogMsgJa, UserId);
 	} else {
 		AddCodeAndMsg(TmpObj, MSG_NOREQUEST, MessageProc::GetMsgEng(MSG_NOREQUEST), MessageProc::GetMsgJpn(MSG_NOREQUEST));
 		*ResultCode = 400;
