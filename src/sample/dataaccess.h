@@ -76,5 +76,5 @@ public:
 	int IncreaseId(const wchar_t*);
 
 	int AddTimeSeriesData(const wchar_t*, int);
-	int GetTimeSeriesData(const wchar_t*, long long[DA_MAXNUM_OF_TIMESERIESDATAPERAGENT], int[DA_MAXNUM_OF_TIMESERIESDATAPERAGENT]);
+	int GetTimeSeriesData(const wchar_t*, int[DA_MAXNUM_OF_TIMESERIESDATAPERAGENT], long long[DA_MAXNUM_OF_TIMESERIESDATAPERAGENT], int[DA_MAXNUM_OF_TIMESERIESDATAPERAGENT]);
 };

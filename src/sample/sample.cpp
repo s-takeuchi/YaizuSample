@@ -22,6 +22,7 @@
 #include "ApiGetFileList.h"
 #include "ApiDeleteFile.h"
 #include "ApiGetCommandResult.h"
+#include "ApiGetTimeSeriesData.h"
 #include "dataaccess.h"
 
 wchar_t Global::Global_WorkDirPath[FILENAME_MAX];
@@ -275,6 +276,10 @@ void Server(wchar_t* IpAddr, int Port, int NumOfWorkerThreads, int ThreadInterva
 	Soc->AddReqHandler(StkWebAppExec::STKWEBAPP_METHOD_GET, L"/api/commandresult/", (StkWebAppExec*)ApiGetCommandResultObj);
 	ApiGetCommandResult* ApiGetCommandResultWpObj = new ApiGetCommandResult();
 	Soc->AddReqHandler(StkWebAppExec::STKWEBAPP_METHOD_GET, L"/api/commandresult/$/", (StkWebAppExec*)ApiGetCommandResultWpObj);
+	ApiGetTimeSeriesData* ApiGetTimeSeriesDataObj = new ApiGetTimeSeriesData();
+	Soc->AddReqHandler(StkWebAppExec::STKWEBAPP_METHOD_GET, L"/api/timeseriesdata/", (StkWebAppExec*)ApiGetTimeSeriesDataObj);
+	ApiGetTimeSeriesData* ApiGetTimeSeriesDataWpObj = new ApiGetTimeSeriesData();
+	Soc->AddReqHandler(StkWebAppExec::STKWEBAPP_METHOD_GET, L"/api/timeseriesdata/$/", (StkWebAppExec*)ApiGetTimeSeriesDataWpObj);
 
 	StkWebAppUm_RegisterApi(Soc);
 
@@ -297,6 +302,8 @@ void Server(wchar_t* IpAddr, int Port, int NumOfWorkerThreads, int ThreadInterva
 	Soc->DeleteReqHandler(StkWebAppExec::STKWEBAPP_METHOD_DELETE, L"/api/file/$/");
 	Soc->DeleteReqHandler(StkWebAppExec::STKWEBAPP_METHOD_GET, L"/api/commandresult/");
 	Soc->DeleteReqHandler(StkWebAppExec::STKWEBAPP_METHOD_GET, L"/api/commandresult/$/");
+	Soc->DeleteReqHandler(StkWebAppExec::STKWEBAPP_METHOD_GET, L"/api/timeseriesdata/");
+	Soc->DeleteReqHandler(StkWebAppExec::STKWEBAPP_METHOD_GET, L"/api/timeseriesdata/$/");
 
 	StkWebAppUm_UnregisterApi(Soc);
 

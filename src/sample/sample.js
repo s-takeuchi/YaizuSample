@@ -1164,7 +1164,10 @@ function viewConsole() {
 ////////////////////////////////////////////////////////////////////////////////
 
 function transDisplayDashboard() {
-    apiCall('GET', '/api/agent/', null, 'API_GET_AGTINFO', displayDashboard);
+    let contents = [{ method: 'GET', url: '/api/agent/', request: null, keystring: 'API_GET_AGTINFO' },
+                    { method: 'GET', url: '/api/timeseriesdata/MOUSHIN/', request: null, keystring: 'API_GET_TIMESERIESDATA' }
+    ];
+    MultiApiCall(contents, displayDashboard);
 }
 
 function displayDashboard() {
@@ -1181,13 +1184,22 @@ function displayDashboard() {
         $('#dashboard').append(getClientMessage('NOAGTINFO'));
         return;
     }
+    let timeseriesdata = getArray(responseData['API_GET_TIMESERIESDATA'].Data.TimeSeriesData);
 
     let wsize = $(window).width();
     let hsize = 30;
     drowContainerFluid($('<div id="dashboard" class="col-xs-12" style="display:block"></div>'));
 
+    let curDate = new Date();
+    let curTimeInMs = curDate.getTime();
+    let curTime = Math.floor(curTimeInMs / 1000);
     for (let loop = 0; loop < agentInfos.length; loop++) {
         $('#dashboard').append(agentInfos[loop].Name + '<br/>');
+        for (let loopTsd = 0; loopTsd < timeseriesdata.length; loopTsd++) {
+            let updTimeInt = parseInt(timeseriesdata[loopTsd].UpdTime, 16);
+            let diftime = curTime - updTimeInt;
+            let tmp = 172800 - diftime; // 172800 = 60sec * 60min * 24hour * 2days
+        }
         $('#dashboard').append(
             '<svg xmlns="http://www.w3.org/2000/svg" width="' + (wsize - 10) + 'px" height="' + hsize + 'px" viewBox="0 0 ' + (wsize - 10) + ' ' + hsize + '">' +
             '<rect x="50" y="0" width="' + (wsize - 60) + '" height="30" fill="lightgreen"><title>hello</title></rect>' +

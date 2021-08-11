@@ -959,7 +959,7 @@ int DataAccess::AddTimeSeriesData(const wchar_t* AgtName, int Status)
 	return 0;
 }
 
-int DataAccess::GetTimeSeriesData(const wchar_t* AgtName, long long UpdTime[DA_MAXNUM_OF_TIMESERIESDATAPERAGENT], int Status[DA_MAXNUM_OF_TIMESERIESDATAPERAGENT])
+int DataAccess::GetTimeSeriesData(const wchar_t* AgtName, int AgtId[DA_MAXNUM_OF_TIMESERIESDATAPERAGENT], long long UpdTime[DA_MAXNUM_OF_TIMESERIESDATAPERAGENT], int Status[DA_MAXNUM_OF_TIMESERIESDATAPERAGENT])
 {
 	// Retrieve agent ID
 	ColumnData* ColDatAgtFind[1];
@@ -968,24 +968,24 @@ int DataAccess::GetTimeSeriesData(const wchar_t* AgtName, long long UpdTime[DA_M
 	LockTable(L"AgentInfo", LOCK_SHARE);
 	RecordData* RespDat = GetRecord(RecDatAgtFind);
 	UnlockTable(L"AgentInfo");
-	int AgtId = -1;
+	int TargetAgtId = -1;
 	if (RespDat) {
 		ColumnDataInt* AgtIdColDat = (ColumnDataInt*)RespDat->GetColumn(0);
 		if (AgtIdColDat) {
-			AgtId = AgtIdColDat->GetValue();
+			TargetAgtId = AgtIdColDat->GetValue();
 		}
 	}
 	delete RespDat;
 	delete RecDatAgtFind;
 
 	// Get time series data
-	if (AgtId == -1) {
+	if (TargetAgtId == -1) {
 		return -1;
 	}
 	wchar_t TblName[32] = L"";
-	StkPlSwPrintf(TblName, 32, L"TimeSeries%d", AgtId % 5);
+	StkPlSwPrintf(TblName, 32, L"TimeSeries%d", TargetAgtId % 5);
 	ColumnData* ColDatTimeSeriesFind[1];
-	ColDatTimeSeriesFind[0] = new ColumnDataInt(L"AgtId", AgtId);
+	ColDatTimeSeriesFind[0] = new ColumnDataInt(L"AgentId", TargetAgtId);
 	RecordData* RecDatTimeSeriesFind = new RecordData(TblName, ColDatTimeSeriesFind, 1);
 	LockTable(TblName, LOCK_SHARE);
 	RecordData* ResDat = GetRecord(RecDatTimeSeriesFind);
@@ -994,6 +994,10 @@ int DataAccess::GetTimeSeriesData(const wchar_t* AgtName, long long UpdTime[DA_M
 	int Index = 0;
 	RecordData* CurResDat = ResDat;
 	while (CurResDat) {
+		ColumnDataInt* AgtIdCol = (ColumnDataInt*)CurResDat->GetColumn(0);
+		if (AgtIdCol != NULL) {
+			AgtId[Index] = AgtIdCol->GetValue();
+		}
 		ColumnDataBin* UpdTimeCol = (ColumnDataBin*)CurResDat->GetColumn(1);
 		if (UpdTimeCol != NULL) {
 			StkPlMemCpy(&UpdTime[Index], UpdTimeCol->GetValue(), DA_MAXLEN_OF_UNIXTIME);
@@ -1020,13 +1024,19 @@ int DataAccess::GetTimeSeriesData(const wchar_t* AgtName, long long UpdTime[DA_M
 			}
 		}
 		if (MinTimeIndex != -1) {
+			int AgtIdTmp = -1;
 			long long UpdTimeTmp = -1;
 			int StatusTmp = -1;
 			//
+			AgtIdTmp = AgtId[Loop1];
 			UpdTimeTmp = UpdTime[Loop1];
 			StatusTmp = Status[Loop1];
+			//
+			AgtId[Loop1] = AgtId[MinTimeIndex];
 			UpdTime[Loop1] = UpdTime[MinTimeIndex];
 			Status[Loop1] = Status[MinTimeIndex];
+			//
+			AgtId[MinTimeIndex] = AgtIdTmp;
 			UpdTime[MinTimeIndex] = UpdTimeTmp;
 			Status[MinTimeIndex] = StatusTmp;
 		}
