@@ -938,6 +938,8 @@ int DataAccess::AddTimeSeriesData(const wchar_t* AgtName, int Status)
 	}
 	delete ResDat;
 	delete RecDatAgtFind;
+
+	// Add time series data
 	if (AgtId == -1) {
 		return -1;
 	}
@@ -955,4 +957,80 @@ int DataAccess::AddTimeSeriesData(const wchar_t* AgtName, int Status)
 	delete RecDatAgtUpd;
 
 	return 0;
+}
+
+int DataAccess::GetTimeSeriesData(const wchar_t* AgtName, long long UpdTime[DA_MAXNUM_OF_TIMESERIESDATAPERAGENT], int Status[DA_MAXNUM_OF_TIMESERIESDATAPERAGENT])
+{
+	// Retrieve agent ID
+	ColumnData* ColDatAgtFind[1];
+	ColDatAgtFind[0] = new ColumnDataWStr(L"Name", AgtName);
+	RecordData* RecDatAgtFind = new RecordData(L"AgentInfo", ColDatAgtFind, 1);
+	LockTable(L"AgentInfo", LOCK_SHARE);
+	RecordData* RespDat = GetRecord(RecDatAgtFind);
+	UnlockTable(L"AgentInfo");
+	int AgtId = -1;
+	if (RespDat) {
+		ColumnDataInt* AgtIdColDat = (ColumnDataInt*)RespDat->GetColumn(0);
+		if (AgtIdColDat) {
+			AgtId = AgtIdColDat->GetValue();
+		}
+	}
+	delete RespDat;
+	delete RecDatAgtFind;
+
+	// Get time series data
+	if (AgtId == -1) {
+		return -1;
+	}
+	wchar_t TblName[32] = L"";
+	StkPlSwPrintf(TblName, 32, L"TimeSeries%d", AgtId % 5);
+	ColumnData* ColDatTimeSeriesFind[1];
+	ColDatTimeSeriesFind[0] = new ColumnDataInt(L"AgtId", AgtId);
+	RecordData* RecDatTimeSeriesFind = new RecordData(TblName, ColDatTimeSeriesFind, 1);
+	LockTable(TblName, LOCK_SHARE);
+	RecordData* ResDat = GetRecord(RecDatTimeSeriesFind);
+	UnlockTable(TblName);
+
+	int Index = 0;
+	RecordData* CurResDat = ResDat;
+	while (CurResDat) {
+		ColumnDataBin* UpdTimeCol = (ColumnDataBin*)CurResDat->GetColumn(1);
+		if (UpdTimeCol != NULL) {
+			StkPlMemCpy(&UpdTime[Index], UpdTimeCol->GetValue(), DA_MAXLEN_OF_UNIXTIME);
+		}
+		ColumnDataInt* StatusCol = (ColumnDataInt*)CurResDat->GetColumn(2);
+		if (StatusCol != NULL) {
+			Status[Index] = StatusCol->GetValue();
+		}
+		CurResDat = CurResDat->GetNextRecord();
+		Index++;
+	}
+	delete RecDatTimeSeriesFind;
+	delete ResDat;
+
+	// Sorting
+	for (int Loop1 = 0; Loop1 < Index; Loop1++) {
+		// Search max time
+		long long MinTime = 0x7fffffffffffffff;
+		int MinTimeIndex = -1;
+		for (int Loop2 = Loop1; Loop2 < Index; Loop2++) {
+			if (MinTime > UpdTime[Loop2]) {
+				MinTime = UpdTime[Loop2];
+				MinTimeIndex = Loop2;
+			}
+		}
+		if (MinTimeIndex != -1) {
+			long long UpdTimeTmp = -1;
+			int StatusTmp = -1;
+			//
+			UpdTimeTmp = UpdTime[Loop1];
+			StatusTmp = Status[Loop1];
+			UpdTime[Loop1] = UpdTime[MinTimeIndex];
+			Status[Loop1] = Status[MinTimeIndex];
+			UpdTime[MinTimeIndex] = UpdTimeTmp;
+			Status[MinTimeIndex] = StatusTmp;
+		}
+	}
+
+	return Index;
 }

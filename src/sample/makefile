@@ -1,7 +1,7 @@
 LDFLAGS = -L/usr/local/lib64 -L/usr/local/lib
 LIBS    = -lssl -lcrypto
 
-sample : sample.o ApiGetServerInfo.o ApiPostServerInfo.o ApiGetAgentInfo.o ApiPostAgentInfo.o ApiGetCommandForStatus.o ApiGetCommandForOperation.o ApiGetCommand.o ApiPostCommand.o ApiDeleteCommand.o ApiGetFile.o ApiPostFile.o ApiGetFileList.o ApiDeleteFile.o ApiGetCommandResult.o dataaccess.o
+sample : sample.o ApiGetServerInfo.o ApiPostServerInfo.o ApiGetAgentInfo.o ApiPostAgentInfo.o ApiGetCommandForStatus.o ApiGetCommandForOperation.o ApiGetCommand.o ApiPostCommand.o ApiDeleteCommand.o ApiGetFile.o ApiPostFile.o ApiGetFileList.o ApiDeleteFile.o ApiGetCommandResult.o ApiGetTimeSeriesData.o dataaccess.o
 	cd ../../../YaizuComLib/src/stkpl; make
 	cp ../../../YaizuComLib/src/stkpl/stkpl.a .
 	cd ../../../YaizuComLib/src/stkwebapp; make
@@ -17,7 +17,7 @@ sample : sample.o ApiGetServerInfo.o ApiPostServerInfo.o ApiGetAgentInfo.o ApiPo
 	cd ../../../YaizuComLib/src/stkdata; make
 	cp ../../../YaizuComLib/src/stkdata/stkdata.a .
 
-	g++ -o sample sample.o ApiGetServerInfo.o ApiPostServerInfo.o ApiGetAgentInfo.o ApiPostAgentInfo.o ApiGetCommandForStatus.o ApiGetCommandForOperation.o ApiGetCommand.o ApiPostCommand.o ApiDeleteCommand.o ApiGetFile.o ApiPostFile.o ApiGetFileList.o ApiDeleteFile.o ApiGetCommandResult.o dataaccess.o stkpl.a stkwebapp.a stkwebapp_um.a commonfunc.a stksocket.a stkthread.a stkdata.a -std=c++1z -lstdc++fs -pthread -static-libgcc -static-libstdc++ $(LDFLAGS) $(LIBS)
+	g++ -o sample sample.o ApiGetServerInfo.o ApiPostServerInfo.o ApiGetAgentInfo.o ApiPostAgentInfo.o ApiGetCommandForStatus.o ApiGetCommandForOperation.o ApiGetCommand.o ApiPostCommand.o ApiDeleteCommand.o ApiGetFile.o ApiPostFile.o ApiGetFileList.o ApiDeleteFile.o ApiGetCommandResult.o ApiGetTimeSeriesData.o dataaccess.o stkpl.a stkwebapp.a stkwebapp_um.a commonfunc.a stksocket.a stkthread.a stkdata.a -std=c++1z -lstdc++fs -pthread -static-libgcc -static-libstdc++ $(LDFLAGS) $(LIBS)
 
 ApiGetServerInfo.o : ApiGetServerInfo.cpp
 	g++ -c ApiGetServerInfo.cpp -std=c++1z
@@ -61,6 +61,9 @@ ApiDeleteFile.o : ApiDeleteFile.cpp
 ApiGetCommandResult.o : ApiGetCommandResult.cpp
 	g++ -c ApiGetCommandResult.cpp -std=c++1z
 
+ApiGetTimeSeriesData.o : ApiGetTimeSeriesData.cpp
+	g++ -c ApiGetTimeSeriesData.cpp -std=c++1z
+
 dataaccess.o : dataaccess.cpp
 	g++ -c dataaccess.cpp -std=c++1z
 
@@ -78,4 +81,3 @@ clean :
 	cd ../../../YaizuComLib/src/stkdata; make clean
 
 all : clean sample
-
