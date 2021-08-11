@@ -1193,16 +1193,26 @@ function displayDashboard() {
     let curDate = new Date();
     let curTimeInMs = curDate.getTime();
     let curTime = Math.floor(curTimeInMs / 1000);
+    let startTime = curTime - 172800;
+    let unitw = (wsize - 60) / 172800;
+    let rectStr = '';
     for (let loop = 0; loop < agentInfos.length; loop++) {
         $('#dashboard').append(agentInfos[loop].Name + '<br/>');
         for (let loopTsd = 0; loopTsd < timeseriesdata.length; loopTsd++) {
             let updTimeInt = parseInt(timeseriesdata[loopTsd].UpdTime, 16);
-            let diftime = curTime - updTimeInt;
-            let tmp = 172800 - diftime; // 172800 = 60sec * 60min * 24hour * 2days
+            if (updTimeInt < startTime) {
+                continue;
+            }
+            let graphX = unitw * (updTimeInt - startTime) + 50;
+            let graphWidth = unitw * 60 * 5 + 1;
+            let dateUpdTime = new Date(updTimeInt * 1000);
+            let label = dateUpdTime + ':' + timeseriesdata[loopTsd].Status;
+            rectStr = rectStr + '<rect x="' + graphX + '" y="0" width="' + graphWidth + '" height="30" fill="LightGreen"><title>' + label + '</title></rect>';
         }
         $('#dashboard').append(
             '<svg xmlns="http://www.w3.org/2000/svg" width="' + (wsize - 10) + 'px" height="' + hsize + 'px" viewBox="0 0 ' + (wsize - 10) + ' ' + hsize + '">' +
-            '<rect x="50" y="0" width="' + (wsize - 60) + '" height="30" fill="lightgreen"><title>hello</title></rect>' +
+            '<rect x="50" y="0" width="' + (wsize - 60) + '" height="30" fill="Silver"></rect>' +
+            rectStr +
             '</svg>'
         );
     }
