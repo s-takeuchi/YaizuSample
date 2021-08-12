@@ -1268,7 +1268,7 @@ function checkLoginAfterApiCall() {
             { actApiName : "transDisplayCommandResult()", title : 'Result' }
         ];
         iconAlwaysVisible();
-        initMainPage('SERVAL', 'squirrel.svg', contents);
+        initMainPage('SERVAL', 'squirrel.svg', contents, 'transDisplayDashboard()');
         clearRsCommand();
 
         let usermenuContents = [];
