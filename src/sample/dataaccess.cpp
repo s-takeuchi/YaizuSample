@@ -166,12 +166,14 @@ int DataAccess::CreateTables(const wchar_t* DataFileName)
 				ColumnDefInt ColDefAgentId(L"AgentId");
 				ColumnDefBin ColDefUpdTime(L"UpdTime", DA_MAXLEN_OF_UNIXTIME);
 				ColumnDefInt ColDefStatus(L"Status");
+				ColumnDefInt ColDefSaInterval(L"SaInterval");
 				wchar_t TableNameBuf[TABLE_NAME_SIZE];
 				StkPlSwPrintf(TableNameBuf, TABLE_NAME_SIZE, L"TimeSeries%d", Loop);
 				TableDef TabDefTimeSeries(TableNameBuf, DA_MAXNUM_OF_TIMESERIESDATA);
 				TabDefTimeSeries.AddColumnDef(&ColDefAgentId);
 				TabDefTimeSeries.AddColumnDef(&ColDefUpdTime);
 				TabDefTimeSeries.AddColumnDef(&ColDefStatus);
+				TabDefTimeSeries.AddColumnDef(&ColDefSaInterval);
 				if (CreateTable(&TabDefTimeSeries) != 0) {
 					UnlockAllTable();
 					return -1;
@@ -939,6 +941,11 @@ int DataAccess::AddTimeSeriesData(const wchar_t* AgtName, int Status)
 	delete ResDat;
 	delete RecDatAgtFind;
 
+	// Acquire server information
+	int PInterval = -1;
+	int SaInterval = -1;
+	GetServerInfo(&PInterval, &SaInterval);
+
 	// Add time series data
 	if (AgtId == -1) {
 		return -1;
@@ -946,11 +953,12 @@ int DataAccess::AddTimeSeriesData(const wchar_t* AgtName, int Status)
 	long long UpdTime = StkPlGetTime();
 	wchar_t TblName[32] = L"";
 	StkPlSwPrintf(TblName, 32, L"TimeSeries%d", AgtId % 5);
-	ColumnData *ColDatAgtUpd[3];
+	ColumnData *ColDatAgtUpd[4];
 	ColDatAgtUpd[0] = new ColumnDataInt(L"AgentId", AgtId);
 	ColDatAgtUpd[1] = new ColumnDataBin(L"UpdTime", (unsigned char*)&UpdTime, DA_MAXLEN_OF_UNIXTIME);
 	ColDatAgtUpd[2] = new ColumnDataInt(L"Status", Status);
-	RecordData* RecDatAgtUpd = new RecordData(TblName, ColDatAgtUpd, 3);
+	ColDatAgtUpd[3] = new ColumnDataInt(L"SaInterval", SaInterval);
+	RecordData* RecDatAgtUpd = new RecordData(TblName, ColDatAgtUpd, 4);
 	LockTable(TblName, LOCK_EXCLUSIVE);
 	InsertRecord(RecDatAgtUpd);
 	UnlockTable(TblName);
@@ -959,7 +967,7 @@ int DataAccess::AddTimeSeriesData(const wchar_t* AgtName, int Status)
 	return 0;
 }
 
-int DataAccess::GetTimeSeriesData(const wchar_t* AgtName, int AgtId[DA_MAXNUM_OF_TIMESERIESDATAPERAGENT], long long UpdTime[DA_MAXNUM_OF_TIMESERIESDATAPERAGENT], int Status[DA_MAXNUM_OF_TIMESERIESDATAPERAGENT])
+int DataAccess::GetTimeSeriesData(const wchar_t* AgtName, int AgtId[DA_MAXNUM_OF_TIMESERIESDATAPERAGENT], long long UpdTime[DA_MAXNUM_OF_TIMESERIESDATAPERAGENT], int Status[DA_MAXNUM_OF_TIMESERIESDATAPERAGENT], int SaInterval[DA_MAXNUM_OF_TIMESERIESDATAPERAGENT])
 {
 	// Retrieve agent ID
 	ColumnData* ColDatAgtFind[1];
@@ -1006,6 +1014,10 @@ int DataAccess::GetTimeSeriesData(const wchar_t* AgtName, int AgtId[DA_MAXNUM_OF
 		if (StatusCol != NULL) {
 			Status[Index] = StatusCol->GetValue();
 		}
+		ColumnDataInt* SaIntervalCol = (ColumnDataInt*)CurResDat->GetColumn(3);
+		if (SaIntervalCol != NULL) {
+			SaInterval[Index] = SaIntervalCol->GetValue();
+		}
 		CurResDat = CurResDat->GetNextRecord();
 		Index++;
 	}
@@ -1027,18 +1039,22 @@ int DataAccess::GetTimeSeriesData(const wchar_t* AgtName, int AgtId[DA_MAXNUM_OF
 			int AgtIdTmp = -1;
 			long long UpdTimeTmp = -1;
 			int StatusTmp = -1;
+			int SaIntervalTmp = -1;
 			//
 			AgtIdTmp = AgtId[Loop1];
 			UpdTimeTmp = UpdTime[Loop1];
 			StatusTmp = Status[Loop1];
+			SaIntervalTmp = SaInterval[Loop1];
 			//
 			AgtId[Loop1] = AgtId[MinTimeIndex];
 			UpdTime[Loop1] = UpdTime[MinTimeIndex];
 			Status[Loop1] = Status[MinTimeIndex];
+			SaInterval[Loop1] = SaInterval[MinTimeIndex];
 			//
 			AgtId[MinTimeIndex] = AgtIdTmp;
 			UpdTime[MinTimeIndex] = UpdTimeTmp;
 			Status[MinTimeIndex] = StatusTmp;
+			SaInterval[MinTimeIndex] = SaIntervalTmp;
 		}
 	}
 

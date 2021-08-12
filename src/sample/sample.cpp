@@ -277,9 +277,7 @@ void Server(wchar_t* IpAddr, int Port, int NumOfWorkerThreads, int ThreadInterva
 	ApiGetCommandResult* ApiGetCommandResultWpObj = new ApiGetCommandResult();
 	Soc->AddReqHandler(StkWebAppExec::STKWEBAPP_METHOD_GET, L"/api/commandresult/$/", (StkWebAppExec*)ApiGetCommandResultWpObj);
 	ApiGetTimeSeriesData* ApiGetTimeSeriesDataObj = new ApiGetTimeSeriesData();
-	Soc->AddReqHandler(StkWebAppExec::STKWEBAPP_METHOD_GET, L"/api/timeseriesdata/", (StkWebAppExec*)ApiGetTimeSeriesDataObj);
-	ApiGetTimeSeriesData* ApiGetTimeSeriesDataWpObj = new ApiGetTimeSeriesData();
-	Soc->AddReqHandler(StkWebAppExec::STKWEBAPP_METHOD_GET, L"/api/timeseriesdata/$/", (StkWebAppExec*)ApiGetTimeSeriesDataWpObj);
+	Soc->AddReqHandler(StkWebAppExec::STKWEBAPP_METHOD_GET, L"/api/timeseriesdata/$/", (StkWebAppExec*)ApiGetTimeSeriesDataObj);
 
 	StkWebAppUm_RegisterApi(Soc);
 
@@ -302,7 +300,6 @@ void Server(wchar_t* IpAddr, int Port, int NumOfWorkerThreads, int ThreadInterva
 	Soc->DeleteReqHandler(StkWebAppExec::STKWEBAPP_METHOD_DELETE, L"/api/file/$/");
 	Soc->DeleteReqHandler(StkWebAppExec::STKWEBAPP_METHOD_GET, L"/api/commandresult/");
 	Soc->DeleteReqHandler(StkWebAppExec::STKWEBAPP_METHOD_GET, L"/api/commandresult/$/");
-	Soc->DeleteReqHandler(StkWebAppExec::STKWEBAPP_METHOD_GET, L"/api/timeseriesdata/");
 	Soc->DeleteReqHandler(StkWebAppExec::STKWEBAPP_METHOD_GET, L"/api/timeseriesdata/$/");
 
 	StkWebAppUm_UnregisterApi(Soc);

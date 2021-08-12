@@ -17,6 +17,7 @@ StkObject* ApiGetTimeSeriesData::ExecuteImpl(StkObject* ReqObj, int Method, wcha
 		*ResultCode = 401;
 		return TmpObj;
 	}
+
 	wchar_t TargetAgtName[DA_MAXLEN_OF_AGTNAME];
 	StkStringParser::ParseInto1Param(UrlPath, L"/api/timeseriesdata/$/", L'$', TargetAgtName, DA_MAXLEN_OF_AGTNAME);
 
@@ -25,7 +26,8 @@ StkObject* ApiGetTimeSeriesData::ExecuteImpl(StkObject* ReqObj, int Method, wcha
 	int AgtId[DA_MAXNUM_OF_TIMESERIESDATAPERAGENT];
 	long long UpdTime[DA_MAXNUM_OF_TIMESERIESDATAPERAGENT];
 	int Status[DA_MAXNUM_OF_TIMESERIESDATAPERAGENT];
-	int Cnt = DataAccess::GetInstance()->GetTimeSeriesData(TargetAgtName, AgtId, UpdTime, Status);
+	int SaInterval[DA_MAXNUM_OF_TIMESERIESDATAPERAGENT];
+	int Cnt = DataAccess::GetInstance()->GetTimeSeriesData(TargetAgtName, AgtId, UpdTime, Status, SaInterval);
 
 	for (int Loop = 0; Loop < Cnt; Loop++) {
 		StkObject* TmpObjC = new StkObject(L"TimeSeriesData");
@@ -34,9 +36,11 @@ StkObject* ApiGetTimeSeriesData::ExecuteImpl(StkObject* ReqObj, int Method, wcha
 		StkPlSwPrintf(UpdTimeStr, DA_MAXLEN_OF_UNIXTIME * 2 + 1, L"%016x", UpdTime[Loop]);
 		StkObject* UpdTimeObj = new StkObject(L"UpdTime", UpdTimeStr);
 		StkObject* StatusObj = new StkObject(L"Status", Status[Loop]);
+		StkObject* SaIntervalObj = new StkObject(L"SaInterval", SaInterval[Loop]);
 		TmpObjC->AppendChildElement(AgtIdObj);
 		TmpObjC->AppendChildElement(UpdTimeObj);
 		TmpObjC->AppendChildElement(StatusObj);
+		TmpObjC->AppendChildElement(SaIntervalObj);
 		TmpObjD->AppendChildElement(TmpObjC);
 	}
 
