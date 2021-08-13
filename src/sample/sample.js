@@ -1192,6 +1192,7 @@ function displayDashboard() {
 }
 
 function drawAgentStatusHistory() {
+    $('#dashboard').empty();
     let agentInfos = getArray(responseData['API_GET_AGTINFO'].Data.AgentInfo);
     let timeseriesdata = getArray(responseData['API_GET_TIMESERIESDATA'].Data.TimeSeriesData);
 
@@ -1201,20 +1202,24 @@ function drawAgentStatusHistory() {
     let curDate = new Date();
     let curTimeInMs = curDate.getTime();
     let curTime = Math.floor(curTimeInMs / 1000);
-    let startTime = curTime - 172800; // 172800 =60sec * 60min * 24hour * 2days
+    let startTime = curTime - 172800; // 172800 = 60sec * 60min * 24hour * 2days
     let unitw = (wsize - 60) / 172800;
     let rectStr = '';
     $('#dashboard').append(agentInfos[ashCurrentAgentInfo].Name + '<br/>');
     for (let loopTsd = 0; loopTsd < timeseriesdata.length; loopTsd++) {
+        let theColor = 'LightGreen';
         let updTimeInt = parseInt(timeseriesdata[loopTsd].UpdTime, 16);
         if (updTimeInt < startTime) {
             continue;
         }
         let graphX = unitw * (updTimeInt - startTime) + 50;
         let graphWidth = unitw * timeseriesdata[loopTsd].SaInterval + 1;
+        if (graphX + graphWidth > wsize - 10) {
+            graphWidth = wsize - 10 - graphX;
+        }
         let dateUpdTime = new Date(updTimeInt * 1000);
         let label = dateUpdTime + ':' + timeseriesdata[loopTsd].Status;
-        rectStr = rectStr + '<rect x="' + graphX + '" y="0" width="' + graphWidth + '" height="30" fill="LightGreen"><title>' + label + '</title></rect>';
+        rectStr = rectStr + '<rect x="' + graphX + '" y="0" width="' + graphWidth + '" height="30" fill="' + theColor + '"><title>' + label + '</title></rect>';
     }
     $('#dashboard').append(
         '<svg xmlns="http://www.w3.org/2000/svg" width="' + (wsize - 10) + 'px" height="' + hsize + 'px" viewBox="0 0 ' + (wsize - 10) + ' ' + hsize + '">' +
@@ -1300,7 +1305,7 @@ function resizeComponent() {
     $("#filemgmttable").css("height", hsize_filemgmttable + "px");
     $("#resulttable").css("height", hsize_resulttable + "px");
     if ($('#dashboard').length) {
-        displayDashboard();
+        drawAgentStatusHistory();
     }
 }
 
