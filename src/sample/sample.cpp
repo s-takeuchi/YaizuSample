@@ -49,6 +49,8 @@ int StatusChecker(int Id)
 {
 	StkPlSleepMs(15000);
 
+	// Check status not received from agent
+	//
 	int PInterval = 0;
 	int SaInterval = 0;
 	DataAccess::GetInstance()->GetServerInfo(&PInterval, &SaInterval);
@@ -73,6 +75,15 @@ int StatusChecker(int Id)
 				DataAccess::GetInstance()->SetAgentInfoForStatus(AgtName[Loop], -993);
 			}
 		}
+	}
+
+	// Delete expired time series data
+	//
+	int Cnt = DataAccess::GetInstance()->DeleteExpiredTimeSeriesData(1); // 14976 = 12 datapoints/hour * (48 + 4)hours * 24 agents
+	if (Cnt > 0) {
+		char Buf[128] = "";
+		StkPlSPrintf(Buf, 128, "%d time series data has been deleted.", Cnt);
+		MessageProc::AddLog(Buf, MessageProc::LOG_TYPE_INFO);
 	}
 
 	return 0;

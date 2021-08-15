@@ -922,6 +922,57 @@ int DataAccess::IncreaseId(const wchar_t* Name)
 	return TargetId;
 }
 
+int DataAccess::DeleteExpiredTimeSeriesData(int NumOfRecords)
+{
+	int TotalNumOfTargetIds = 0;
+	for (int Loop = 0; Loop < 5; Loop++) {
+		wchar_t TblName[32] = L"";
+		StkPlSwPrintf(TblName, 32, L"TimeSeries%d", Loop);
+		int RecCnt = GetNumOfRecords(TblName);
+		if (RecCnt > NumOfRecords) {
+			int TargetIdList[DA_MAXNUM_OF_TIMESERIESDATA];
+			int NumOfTargetIds = 0;
+
+			// Get target IDs
+			long long TargetTime = StkPlGetTime() - (2 * 24 * 60 * 60 + 60 * 60);
+			LockTable(TblName, LOCK_SHARE);
+			RecordData* ResDat = GetRecord(TblName);
+			UnlockTable(TblName);
+			RecordData* TopResDat = ResDat;
+			while (ResDat) {
+				ColumnDataBin* UpdTime = (ColumnDataBin*)ResDat->GetColumn(1);
+				if (UpdTime != NULL) {
+					long long UpdTimeVal = 0;
+					StkPlMemCpy(&UpdTimeVal, UpdTime->GetValue(), DA_MAXLEN_OF_UNIXTIME);
+					if (UpdTimeVal < TargetTime) {
+						ColumnDataInt* TargetId = (ColumnDataInt*)ResDat->GetColumn(0);
+						if (TargetId != NULL) {
+							TargetIdList[NumOfTargetIds] = TargetId->GetValue();
+							NumOfTargetIds++;
+						}
+					}
+				}
+				ResDat = ResDat->GetNextRecord();
+			}
+			delete TopResDat;
+
+			// Delete expored data
+			for (int DelLoop = 0; DelLoop < NumOfTargetIds; DelLoop++) {
+				ColumnData *ColDatFind[1];
+				ColDatFind[0] = new ColumnDataInt(L"AgentId", TargetIdList[DelLoop]);
+				RecordData* RecDatFind = new RecordData(TblName, ColDatFind, 1);
+				LockTable(TblName, LOCK_EXCLUSIVE);
+				DeleteRecord(RecDatFind);
+				UnlockTable(TblName);
+				delete RecDatFind;
+			}
+
+			TotalNumOfTargetIds += NumOfTargetIds;
+		}
+	}
+	return TotalNumOfTargetIds;
+}
+
 int DataAccess::AddTimeSeriesData(const wchar_t* AgtName, int Status)
 {
 	// Retrieve agent ID
