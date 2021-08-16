@@ -922,6 +922,17 @@ int DataAccess::IncreaseId(const wchar_t* Name)
 	return TargetId;
 }
 
+int DataAccess::GetTotalNumOfTimeSeriesData()
+{
+	int TotalNum = 0;
+	for (int Loop = 0; Loop < 5; Loop++) {
+		wchar_t TblName[32] = L"";
+		StkPlSwPrintf(TblName, 32, L"TimeSeries%d", Loop);
+		TotalNum += GetNumOfRecords(TblName);
+	}
+	return TotalNum;
+}
+
 int DataAccess::DeleteExpiredTimeSeriesData(int NumOfRecords)
 {
 	int TotalNumOfTargetIds = 0;
