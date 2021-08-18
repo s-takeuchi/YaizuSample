@@ -79,9 +79,9 @@ int StatusChecker(int Id)
 
 	// Delete expired time series data
 	//
+	int TotalCnt = DataAccess::GetInstance()->GetTotalNumOfTimeSeriesData();
 	int Cnt = DataAccess::GetInstance()->DeleteExpiredTimeSeriesData(1); // 14976 = 12 datapoints/hour * (48 + 4)hours * 24 agents
 	if (Cnt > 0) {
-		int TotalCnt = DataAccess::GetInstance()->GetTotalNumOfTimeSeriesData();
 		char Buf[128] = "";
 		StkPlSPrintf(Buf, 128, "[Status checker] %d/%d time series data has been deleted.", Cnt, TotalCnt);
 		MessageProc::AddLog(Buf, MessageProc::LOG_TYPE_INFO);

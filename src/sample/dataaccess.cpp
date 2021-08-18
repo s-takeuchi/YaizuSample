@@ -942,10 +942,11 @@ int DataAccess::DeleteExpiredTimeSeriesData(int NumOfRecords)
 		int RecCnt = GetNumOfRecords(TblName);
 		if (RecCnt > NumOfRecords) {
 			int TargetIdList[DA_MAXNUM_OF_TIMESERIESDATA];
+			long long TargetUpdTimeList[DA_MAXNUM_OF_TIMESERIESDATA];
 			int NumOfTargetIds = 0;
 
 			// Get target IDs
-			long long TargetTime = StkPlGetTime() - (2 * 24 * 60 * 60 + 60 * 60);
+			long long TargetTime = StkPlGetTime() - (2 * 24 * 60 * 60 - 60 * 60);
 			LockTable(TblName, LOCK_SHARE);
 			RecordData* ResDat = GetRecord(TblName);
 			UnlockTable(TblName);
@@ -959,6 +960,7 @@ int DataAccess::DeleteExpiredTimeSeriesData(int NumOfRecords)
 						ColumnDataInt* TargetId = (ColumnDataInt*)ResDat->GetColumn(0);
 						if (TargetId != NULL) {
 							TargetIdList[NumOfTargetIds] = TargetId->GetValue();
+							TargetUpdTimeList[NumOfTargetIds] = UpdTimeVal;
 							NumOfTargetIds++;
 						}
 					}
@@ -969,9 +971,10 @@ int DataAccess::DeleteExpiredTimeSeriesData(int NumOfRecords)
 
 			// Delete expored data
 			for (int DelLoop = 0; DelLoop < NumOfTargetIds; DelLoop++) {
-				ColumnData *ColDatFind[1];
+				ColumnData *ColDatFind[2];
 				ColDatFind[0] = new ColumnDataInt(L"AgentId", TargetIdList[DelLoop]);
-				RecordData* RecDatFind = new RecordData(TblName, ColDatFind, 1);
+				ColDatFind[1] = new ColumnDataBin(L"UpdTime", (unsigned char*)&TargetUpdTimeList[DelLoop], DA_MAXLEN_OF_UNIXTIME);
+				RecordData* RecDatFind = new RecordData(TblName, ColDatFind, 2);
 				LockTable(TblName, LOCK_EXCLUSIVE);
 				DeleteRecord(RecDatFind);
 				UnlockTable(TblName);

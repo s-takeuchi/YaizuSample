@@ -1195,6 +1195,10 @@ function drawAgentStatusHistory() {
     $('#dashboard').empty();
     let agentInfos = getArray(responseData['API_GET_AGTINFO'].Data.AgentInfo);
     let timeseriesdata = getArray(responseData['API_GET_TIMESERIESDATA'].Data.TimeSeriesData);
+    if (agentInfos == null || timeseriesdata == null) {
+        $('#dashboard').append(getClientMessage('NOAGTINFO'));
+        return;
+    }
 
     let wsize = $(window).width();
     let hsize = 30;
