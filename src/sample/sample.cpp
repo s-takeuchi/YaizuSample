@@ -66,10 +66,10 @@ int StatusChecker(int Id)
 	long long IniTime[DA_MAXNUM_OF_AGTRECORDS];
 	int ReAgtCount = DataAccess::GetInstance()->GetAgentInfo(AgtName, Status, StatusCmd, OpStatus, OpCmd, ReqTime, AcqTime, UpdTime, IniTime);
 
+	long long CurTime = StkPlGetTime();
 	for (int Loop = 0; Loop < ReAgtCount; Loop++) {
 		long long ReqTime = DataAccess::GetInstance()->GetAgentInfoForReqTime(AgtName[Loop]);
 		if (ReqTime != 0) {
-			long long CurTime = StkPlGetTime();
 			long long DifTime = CurTime - ReqTime;
 			if (DifTime > PInterval + 60) {
 				DataAccess::GetInstance()->SetAgentInfoForStatus(AgtName[Loop], -993);
@@ -79,12 +79,20 @@ int StatusChecker(int Id)
 
 	// Delete expired time series data
 	//
-	int TotalCnt = DataAccess::GetInstance()->GetTotalNumOfTimeSeriesData();
-	int Cnt = DataAccess::GetInstance()->DeleteExpiredTimeSeriesData(1); // 14976 = 12 datapoints/hour * (48 + 4)hours * 24 agents
-	if (Cnt > 0) {
-		char Buf[128] = "";
-		StkPlSPrintf(Buf, 128, "[Status checker] %d/%d time series data has been deleted.", Cnt, TotalCnt);
-		MessageProc::AddLog(Buf, MessageProc::LOG_TYPE_INFO);
+	static int WaitCnt = 0;
+	if (WaitCnt == 0) { // Works once a half hour
+		WaitCnt++;
+		int TotalCnt = DataAccess::GetInstance()->GetTotalNumOfTimeSeriesData();
+		int Cnt = DataAccess::GetInstance()->DeleteExpiredTimeSeriesData(14976); // 14976 = 12 datapoints/hour * (48 + 4)hours * 24 agents
+		if (Cnt > 0) {
+			char Buf[128] = "";
+			StkPlSPrintf(Buf, 128, "[Status checker] %d/%d time series data have been deleted.", Cnt, TotalCnt);
+			MessageProc::AddLog(Buf, MessageProc::LOG_TYPE_INFO);
+		}
+	} else if (WaitCnt == 4 * 30) {
+		WaitCnt = 0;
+	} else {
+		WaitCnt++;
 	}
 
 	return 0;
