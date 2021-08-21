@@ -1201,12 +1201,13 @@ function drawAgentStatusHistory() {
     }
 
     let wsize = $(window).width();
-    let hsize = 30;
+    let hsize = 50;
 
     let curDate = new Date();
     let curTimeInMs = curDate.getTime();
     let curTime = Math.floor(curTimeInMs / 1000);
     let startTime = curTime - 172800; // 172800 = 60sec * 60min * 24hour * 2days
+    let odbTime = curTime - 86400; // 86400 = 60sec * 60min * 24hour
     let unitw = (wsize - 60) / 172800;
     let rectStr = '';
     $('#dashboard').append(agentInfos[ashCurrentAgentInfo].Name + '<br/>');
@@ -1225,10 +1226,17 @@ function drawAgentStatusHistory() {
         let label = dateUpdTime + ':' + timeseriesdata[loopTsd].Status;
         rectStr = rectStr + '<rect x="' + graphX + '" y="0" width="' + graphWidth + '" height="30" fill="' + theColor + '"><title>' + label + '</title></rect>';
     }
+    let startTimeDate = new Date(startTime * 1000);
+    let odbTimeDate = new Date(odbTime * 1000);
+
     $('#dashboard').append(
         '<svg xmlns="http://www.w3.org/2000/svg" width="' + (wsize - 10) + 'px" height="' + hsize + 'px" viewBox="0 0 ' + (wsize - 10) + ' ' + hsize + '">' +
         '<rect x="50" y="0" width="' + (wsize - 60) + '" height="30" fill="Silver"></rect>' +
         rectStr +
+        '<line x1="50" y1="20" x2="50" y2="45" stroke="blue" stroke-width="2"/>' +
+        '<text x="53" y="45" fill="blue">' + (startTimeDate.getMonth() + 1) + '/' + startTimeDate.getDate() + ' ' + ('00' + startTimeDate.getHours()).slice(-2) + ':' + ('00' + startTimeDate.getMinutes()).slice(-2) + '</text>' +
+        '<line x1="' + (wsize / 2 + 50) + '" y1="20" x2="' + (wsize / 2 + 50) + '" y2="45" stroke="blue" stroke-width="2"/>' +
+        '<text x="' + (wsize / 2 + 53) + '" y="45" fill="blue">' + (odbTimeDate.getMonth() + 1) + '/' + odbTimeDate.getDate() + ' ' + ('00' + odbTimeDate.getHours()).slice(-2) + ':' + ('00' + odbTimeDate.getMinutes()).slice(-2) + '</text>' +
         '</svg>'
     );
     if (ashCurrentAgentInfo < ashAgentInfoCnt - 1) {
