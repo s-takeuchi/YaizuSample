@@ -933,56 +933,53 @@ int DataAccess::GetTotalNumOfTimeSeriesData()
 	return TotalNum;
 }
 
-int DataAccess::DeleteExpiredTimeSeriesData(int NumOfRecords)
+int DataAccess::DeleteExpiredTimeSeriesData()
 {
 	int TotalNumOfTargetIds = 0;
 	for (int Loop = 0; Loop < 5; Loop++) {
 		wchar_t TblName[32] = L"";
 		StkPlSwPrintf(TblName, 32, L"TimeSeries%d", Loop);
-		int RecCnt = GetNumOfRecords(TblName);
-		if (RecCnt > NumOfRecords) {
-			int TargetIdList[DA_MAXNUM_OF_TIMESERIESDATA];
-			long long TargetUpdTimeList[DA_MAXNUM_OF_TIMESERIESDATA];
-			int NumOfTargetIds = 0;
+		int TargetIdList[DA_MAXNUM_OF_TIMESERIESDATA];
+		long long TargetUpdTimeList[DA_MAXNUM_OF_TIMESERIESDATA];
+		int NumOfTargetIds = 0;
 
-			// Get target IDs
-			long long TargetTime = StkPlGetTime() - (2 * 24 * 60 * 60 - 60 * 60);
-			LockTable(TblName, LOCK_SHARE);
-			RecordData* ResDat = GetRecord(TblName);
-			UnlockTable(TblName);
-			RecordData* TopResDat = ResDat;
-			while (ResDat) {
-				ColumnDataBin* UpdTime = (ColumnDataBin*)ResDat->GetColumn(1);
-				if (UpdTime != NULL) {
-					long long UpdTimeVal = 0;
-					StkPlMemCpy(&UpdTimeVal, UpdTime->GetValue(), DA_MAXLEN_OF_UNIXTIME);
-					if (UpdTimeVal < TargetTime) {
-						ColumnDataInt* TargetId = (ColumnDataInt*)ResDat->GetColumn(0);
-						if (TargetId != NULL) {
-							TargetIdList[NumOfTargetIds] = TargetId->GetValue();
-							TargetUpdTimeList[NumOfTargetIds] = UpdTimeVal;
-							NumOfTargetIds++;
-						}
+		// Get target IDs
+		long long TargetTime = StkPlGetTime() - (2 * 24 * 60 * 60 - 60 * 60);
+		LockTable(TblName, LOCK_SHARE);
+		RecordData* ResDat = GetRecord(TblName);
+		UnlockTable(TblName);
+		RecordData* TopResDat = ResDat;
+		while (ResDat) {
+			ColumnDataBin* UpdTime = (ColumnDataBin*)ResDat->GetColumn(1);
+			if (UpdTime != NULL) {
+				long long UpdTimeVal = 0;
+				StkPlMemCpy(&UpdTimeVal, UpdTime->GetValue(), DA_MAXLEN_OF_UNIXTIME);
+				if (UpdTimeVal < TargetTime) {
+					ColumnDataInt* TargetId = (ColumnDataInt*)ResDat->GetColumn(0);
+					if (TargetId != NULL) {
+						TargetIdList[NumOfTargetIds] = TargetId->GetValue();
+						TargetUpdTimeList[NumOfTargetIds] = UpdTimeVal;
+						NumOfTargetIds++;
 					}
 				}
-				ResDat = ResDat->GetNextRecord();
 			}
-			delete TopResDat;
-
-			// Delete expored data
-			for (int DelLoop = 0; DelLoop < NumOfTargetIds; DelLoop++) {
-				ColumnData *ColDatFind[2];
-				ColDatFind[0] = new ColumnDataInt(L"AgentId", TargetIdList[DelLoop]);
-				ColDatFind[1] = new ColumnDataBin(L"UpdTime", (unsigned char*)&TargetUpdTimeList[DelLoop], DA_MAXLEN_OF_UNIXTIME);
-				RecordData* RecDatFind = new RecordData(TblName, ColDatFind, 2);
-				LockTable(TblName, LOCK_EXCLUSIVE);
-				DeleteRecord(RecDatFind);
-				UnlockTable(TblName);
-				delete RecDatFind;
-			}
-
-			TotalNumOfTargetIds += NumOfTargetIds;
+			ResDat = ResDat->GetNextRecord();
 		}
+		delete TopResDat;
+
+		// Delete expored data
+		for (int DelLoop = 0; DelLoop < NumOfTargetIds; DelLoop++) {
+			ColumnData *ColDatFind[2];
+			ColDatFind[0] = new ColumnDataInt(L"AgentId", TargetIdList[DelLoop]);
+			ColDatFind[1] = new ColumnDataBin(L"UpdTime", (unsigned char*)&TargetUpdTimeList[DelLoop], DA_MAXLEN_OF_UNIXTIME);
+			RecordData* RecDatFind = new RecordData(TblName, ColDatFind, 2);
+			LockTable(TblName, LOCK_EXCLUSIVE);
+			DeleteRecord(RecDatFind);
+			UnlockTable(TblName);
+			delete RecDatFind;
+		}
+
+		TotalNumOfTargetIds += NumOfTargetIds;
 	}
 	return TotalNumOfTargetIds;
 }

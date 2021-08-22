@@ -80,16 +80,16 @@ int StatusChecker(int Id)
 	// Delete expired time series data
 	//
 	static int WaitCnt = 0;
-	if (WaitCnt == 0) { // Works once a half hour
+	if (WaitCnt == 0) { // Works once a four hours
 		WaitCnt++;
 		int TotalCnt = DataAccess::GetInstance()->GetTotalNumOfTimeSeriesData();
-		int Cnt = DataAccess::GetInstance()->DeleteExpiredTimeSeriesData(14976); // 14976 = 12 datapoints/hour * (48 + 4)hours * 24 agents
+		int Cnt = DataAccess::GetInstance()->DeleteExpiredTimeSeriesData();
 		if (Cnt > 0) {
 			char Buf[128] = "";
 			StkPlSPrintf(Buf, 128, "[Status checker] %d/%d time series data have been deleted.", Cnt, TotalCnt);
 			MessageProc::AddLog(Buf, MessageProc::LOG_TYPE_INFO);
 		}
-	} else if (WaitCnt == 4 * 30) {
+	} else if (WaitCnt == 4 * 60 * 4) { // 15sec * 4 * 60min * 4hour
 		WaitCnt = 0;
 	} else {
 		WaitCnt++;

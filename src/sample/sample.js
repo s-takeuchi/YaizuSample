@@ -1173,6 +1173,7 @@ function transDisplayDashboard() {
 
 function displayDashboard() {
     drowContainerFluid($('<div id="dashboard" class="col-xs-12" style="display:block"></div>'));
+    setTimeout(function() {dashboardSizeChange();}, 2000);
     if (statusCode['API_GET_AGTINFO'] == -1 || statusCode['API_GET_AGTINFO'] == 0) {
         displayAlertDanger('#dashboard', getClientMessage('CONNERR'));
         return;
@@ -1192,7 +1193,6 @@ function displayDashboard() {
 }
 
 function drawAgentStatusHistory() {
-    $('#dashboard').empty();
     let agentInfos = getArray(responseData['API_GET_AGTINFO'].Data.AgentInfo);
     let timeseriesdata = getArray(responseData['API_GET_TIMESERIESDATA'].Data.TimeSeriesData);
     if (agentInfos == null || timeseriesdata == null) {
@@ -1201,7 +1201,7 @@ function drawAgentStatusHistory() {
     }
 
     let wsize = $(window).width();
-    let hsize = 50;
+    let hsize = 70;
 
     let curDate = new Date();
     let curTimeInMs = curDate.getTime();
@@ -1210,7 +1210,6 @@ function drawAgentStatusHistory() {
     let odbTime = curTime - 86400; // 86400 = 60sec * 60min * 24hour
     let unitw = (wsize - 60) / 172800;
     let rectStr = '';
-    $('#dashboard').append(agentInfos[ashCurrentAgentInfo].Name + '<br/>');
     for (let loopTsd = 0; loopTsd < timeseriesdata.length; loopTsd++) {
         let theColor = 'LightGreen';
         let updTimeInt = parseInt(timeseriesdata[loopTsd].UpdTime, 16);
@@ -1224,24 +1223,47 @@ function drawAgentStatusHistory() {
         }
         let dateUpdTime = new Date(updTimeInt * 1000);
         let label = dateUpdTime + ':' + timeseriesdata[loopTsd].Status;
-        rectStr = rectStr + '<rect x="' + graphX + '" y="0" width="' + graphWidth + '" height="30" fill="' + theColor + '"><title>' + label + '</title></rect>';
+        rectStr = rectStr + '<rect x="' + graphX + '" y="20" width="' + graphWidth + '" height="30" fill="' + theColor + '"><title>' + label + '</title></rect>';
     }
     let startTimeDate = new Date(startTime * 1000);
     let odbTimeDate = new Date(odbTime * 1000);
 
-    $('#dashboard').append(
-        '<svg xmlns="http://www.w3.org/2000/svg" width="' + (wsize - 10) + 'px" height="' + hsize + 'px" viewBox="0 0 ' + (wsize - 10) + ' ' + hsize + '">' +
-        '<rect x="50" y="0" width="' + (wsize - 60) + '" height="30" fill="Silver"></rect>' +
+    let newSvg = $(
+        '<svg id="' + agentInfos[ashCurrentAgentInfo].Name + '" xmlns="http://www.w3.org/2000/svg" width="' + (wsize - 10) + 'px" height="' + hsize + 'px" viewBox="0 0 ' + (wsize - 10) + ' ' + hsize + '">' +
+        '<text x="10" y="19" fill="black">' + agentInfos[ashCurrentAgentInfo].Name + '</text>' +
+        '<rect x="50" y="20" width="' + (wsize - 60) + '" height="30" fill="Silver"></rect>' +
         rectStr +
-        '<line x1="50" y1="20" x2="50" y2="45" stroke="blue" stroke-width="2"/>' +
-        '<text x="53" y="45" fill="blue">' + (startTimeDate.getMonth() + 1) + '/' + startTimeDate.getDate() + ' ' + ('00' + startTimeDate.getHours()).slice(-2) + ':' + ('00' + startTimeDate.getMinutes()).slice(-2) + '</text>' +
-        '<line x1="' + (wsize / 2 + 50) + '" y1="20" x2="' + (wsize / 2 + 50) + '" y2="45" stroke="blue" stroke-width="2"/>' +
-        '<text x="' + (wsize / 2 + 53) + '" y="45" fill="blue">' + (odbTimeDate.getMonth() + 1) + '/' + odbTimeDate.getDate() + ' ' + ('00' + odbTimeDate.getHours()).slice(-2) + ':' + ('00' + odbTimeDate.getMinutes()).slice(-2) + '</text>' +
+        '<line x1="50" y1="40" x2="50" y2="65" stroke="blue" stroke-width="2"/>' +
+        '<text x="53" y="65" fill="blue">' + (startTimeDate.getMonth() + 1) + '/' + startTimeDate.getDate() + ' ' + ('00' + startTimeDate.getHours()).slice(-2) + ':' + ('00' + startTimeDate.getMinutes()).slice(-2) + '</text>' +
+        '<line x1="' + ((wsize - 60) / 2 + 50) + '" y1="40" x2="' + ((wsize - 60) / 2 + 50) + '" y2="65" stroke="blue" stroke-width="2"/>' +
+        '<text x="' + ((wsize - 60) / 2 + 53) + '" y="65" fill="blue">' + (odbTimeDate.getMonth() + 1) + '/' + odbTimeDate.getDate() + ' ' + ('00' + odbTimeDate.getHours()).slice(-2) + ':' + ('00' + odbTimeDate.getMinutes()).slice(-2) + '</text>' +
         '</svg>'
     );
+    if ($('#' + agentInfos[ashCurrentAgentInfo].Name).length) {
+        $('#' + agentInfos[ashCurrentAgentInfo].Name).replaceWith(newSvg);
+    } else {
+        $('#dashboard').append(newSvg);
+    }
     if (ashCurrentAgentInfo < ashAgentInfoCnt - 1) {
         ashCurrentAgentInfo++;
         apiCall('GET', '/api/timeseriesdata/' + agentInfos[ashCurrentAgentInfo].Name + '/', null, 'API_GET_TIMESERIESDATA', drawAgentStatusHistory);
+    }
+}
+
+{
+    let prevDbWidth = 0;
+    function dashboardSizeChange() {
+        if ($('#dashboard').length) {
+            let wsize = $(window).width();
+            if (prevDbWidth != wsize) {
+                prevDbWidth = wsize;
+                ashCurrentAgentInfo = 0;
+                transDisplayDashboard();
+                setTimeout(function() {dashboardSizeChange();}, 2000);
+            } else {
+                setTimeout(function() {dashboardSizeChange();}, 2000);
+            }
+        }
     }
 }
 
@@ -1316,9 +1338,6 @@ function resizeComponent() {
     $("#agentinfotable").css("height", hsize_agentinfotable + "px");
     $("#filemgmttable").css("height", hsize_filemgmttable + "px");
     $("#resulttable").css("height", hsize_resulttable + "px");
-    if ($('#dashboard').length) {
-        drawAgentStatusHistory();
-    }
 }
 
 $(document).ready(function () {
