@@ -1239,8 +1239,8 @@ function drawAgentStatusHistory() {
         '<text x="' + ((wsize - 60) / 2 + 53) + '" y="65" fill="blue">' + (odbTimeDate.getMonth() + 1) + '/' + odbTimeDate.getDate() + ' ' + ('00' + odbTimeDate.getHours()).slice(-2) + ':' + ('00' + odbTimeDate.getMinutes()).slice(-2) + '</text>' +
         '</svg>'
     );
-    if ($('#' + agentInfos[ashCurrentAgentInfo].Name).length) {
-        $('#' + agentInfos[ashCurrentAgentInfo].Name).replaceWith(newSvg);
+    if ($('#' + escapeSelectorString(agentInfos[ashCurrentAgentInfo].Name)).length) {
+        $('#' + escapeSelectorString(agentInfos[ashCurrentAgentInfo].Name)).replaceWith(newSvg);
     } else {
         $('#dashboard').append(newSvg);
     }
@@ -1248,6 +1248,10 @@ function drawAgentStatusHistory() {
         ashCurrentAgentInfo++;
         apiCall('GET', '/api/timeseriesdata/' + agentInfos[ashCurrentAgentInfo].Name + '/', null, 'API_GET_TIMESERIESDATA', drawAgentStatusHistory);
     }
+}
+
+function escapeSelectorString(val){
+    return val.replace(/[ !"#$%&'()*+,.\/:;<=>?@\[\\\]^`{|}~]/g, "\\$&");
 }
 
 {
@@ -1258,7 +1262,9 @@ function drawAgentStatusHistory() {
             if (prevDbWidth != wsize) {
                 prevDbWidth = wsize;
                 ashCurrentAgentInfo = 0;
-                transDisplayDashboard();
+                let agentInfos = getArray(responseData['API_GET_AGTINFO'].Data.AgentInfo);
+                apiCall('GET', '/api/timeseriesdata/' + agentInfos[0].Name + '/', null, 'API_GET_TIMESERIESDATA', drawAgentStatusHistory);
+
                 setTimeout(function() {dashboardSizeChange();}, 2000);
             } else {
                 setTimeout(function() {dashboardSizeChange();}, 2000);
