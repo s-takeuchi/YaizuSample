@@ -1187,9 +1187,50 @@ function displayDashboard() {
         $('#dashboard').append(getClientMessage('NOAGTINFO'));
         return;
     }
-    ashAgentInfoCnt = agentInfos.length;
-    ashCurrentAgentInfo = 0;
-    apiCall('GET', '/api/timeseriesdata/' + agentInfos[0].Name + '/', null, 'API_GET_TIMESERIESDATA', drawAgentStatusHistory);
+    drasPieChart($('#dashboard'), agentInfos);
+
+    //ashAgentInfoCnt = agentInfos.length;
+    //ashCurrentAgentInfo = 0;
+    //apiCall('GET', '/api/timeseriesdata/' + agentInfos[0].Name + '/', null, 'API_GET_TIMESERIESDATA', drawAgentStatusHistory);
+}
+
+function drasPieChart(element, agentInfos) {
+    let totalAgentCnt = agentInfos.length;
+    let successCnt = 0;
+    let errorCnt = 0;
+    let noRequestCnt = 0;
+    for (let loop = 0; loop < totalAgentCnt; loop++) {
+        if (agentInfos[loop].Status == -993) {
+            noRequestCnt++;
+        } else if (agentInfos[loop].Status == -981) {
+            successCnt++;
+        } else {
+            errorCnt++;
+        }
+    }
+    let errorCntOffset = (successCnt / totalAgentCnt) * 314.15;
+    let noRequestCntOffset = errorCntOffset + (errorCnt / totalAgentCnt) * 314.15;
+    let wsize = $(window).width();
+    let hsize = 220;
+    let newSvg = $(
+        '<svg id="piechart" xmlns="http://www.w3.org/2000/svg" width="' + (wsize - 10) + '" height="' + hsize + '" viewBox="0 0 400 220">' +
+        '<text x="250" y="40" font-size="20" fill="black">Total: ' + totalAgentCnt + '</text>' +
+        '<text x="250" y="70" font-size="20" fill="black">Success: ' + successCnt + '</text>' +
+        '<text x="250" y="100" font-size="20" fill="black">Error: ' + errorCnt + '</text>' +
+        '<text x="250" y="130" font-size="20" fill="black">No request: ' + noRequestCnt + '</text>' +
+        '<rect x="230" y="55" width="18" height="18" fill="LightGreen"></rect>' +
+        '<rect x="230" y="85" width="18" height="18" fill="LightCoral"></rect>' +
+        '<rect x="230" y="115" width="18" height="18" fill="Silver"></rect>' +
+		'<circle r="50" cx="110" cy="110" fill="rgba(0,0,0,0)" stroke="LightGreen" stroke-width="100" stroke-dashoffset="0" stroke-dasharray="314.15"/>' + 
+		'<circle r="50" cx="110" cy="110" fill="rgba(0,0,0,0)" stroke="LightCoral" stroke-width="100" stroke-dashoffset="' + errorCntOffset + '" stroke-dasharray="314.15"/>' +
+		'<circle r="50" cx="110" cy="110" fill="rgba(0,0,0,0)" stroke="Silver" stroke-width="100" stroke-dashoffset="' + noRequestCntOffset + '" stroke-dasharray="314.15"/>' +
+        '</svg>'
+    );
+    if ($('#piechart').length) {
+        $('#piechart').replaceWith(newSvg);
+    } else {
+        element.append(newSvg);
+    }
 }
 
 function drawAgentStatusHistory() {
@@ -1229,7 +1270,7 @@ function drawAgentStatusHistory() {
     let odbTimeDate = new Date(odbTime * 1000);
 
     let newSvg = $(
-        '<svg id="' + agentInfos[ashCurrentAgentInfo].Name + '" xmlns="http://www.w3.org/2000/svg" width="' + (wsize - 10) + 'px" height="' + hsize + 'px" viewBox="0 0 ' + (wsize - 10) + ' ' + hsize + '">' +
+        '<svg id="' + agentInfos[ashCurrentAgentInfo].Name + '" xmlns="http://www.w3.org/2000/svg" width="' + (wsize - 10) + '" height="' + hsize + '" viewBox="0 0 ' + (wsize - 10) + ' ' + hsize + '">' +
         '<text x="10" y="19" fill="black">' + agentInfos[ashCurrentAgentInfo].Name + '</text>' +
         '<rect x="50" y="20" width="' + (wsize - 60) + '" height="30" fill="Silver"></rect>' +
         rectStr +
@@ -1263,8 +1304,10 @@ function escapeSelectorString(val){
                 prevDbWidth = wsize;
                 ashCurrentAgentInfo = 0;
                 let agentInfos = getArray(responseData['API_GET_AGTINFO'].Data.AgentInfo);
+                drasPieChart($('#dashboard'), agentInfos);
                 apiCall('GET', '/api/timeseriesdata/' + agentInfos[0].Name + '/', null, 'API_GET_TIMESERIESDATA', drawAgentStatusHistory);
 
+                //transDisplayDashboard();
                 setTimeout(function() {dashboardSizeChange();}, 2000);
             } else {
                 setTimeout(function() {dashboardSizeChange();}, 2000);
