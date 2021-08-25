@@ -1189,9 +1189,9 @@ function displayDashboard() {
     }
     drasPieChart($('#dashboard'), agentInfos);
 
-    //ashAgentInfoCnt = agentInfos.length;
-    //ashCurrentAgentInfo = 0;
-    //apiCall('GET', '/api/timeseriesdata/' + agentInfos[0].Name + '/', null, 'API_GET_TIMESERIESDATA', drawAgentStatusHistory);
+    ashAgentInfoCnt = agentInfos.length;
+    ashCurrentAgentInfo = 0;
+    apiCall('GET', '/api/timeseriesdata/' + agentInfos[0].Name + '/', null, 'API_GET_TIMESERIESDATA', drawAgentStatusHistory);
 }
 
 function drasPieChart(element, agentInfos) {
@@ -1208,10 +1208,12 @@ function drasPieChart(element, agentInfos) {
             errorCnt++;
         }
     }
+ 
     let errorCntOffset = (successCnt / totalAgentCnt) * 314.15;
     let noRequestCntOffset = errorCntOffset + (errorCnt / totalAgentCnt) * 314.15;
     let wsize = $(window).width();
     let hsize = 220;
+ 
     let newSvg = $(
         '<svg id="piechart" xmlns="http://www.w3.org/2000/svg" width="' + (wsize - 10) + '" height="' + hsize + '" viewBox="0 0 400 220">' +
         '<text x="250" y="40" font-size="20" fill="black">Total: ' + totalAgentCnt + '</text>' +
@@ -1236,8 +1238,22 @@ function drasPieChart(element, agentInfos) {
 function drawAgentStatusHistory() {
     let agentInfos = getArray(responseData['API_GET_AGTINFO'].Data.AgentInfo);
     let timeseriesdata = getArray(responseData['API_GET_TIMESERIESDATA'].Data.TimeSeriesData);
-    if (agentInfos == null || timeseriesdata == null) {
-        $('#dashboard').append(getClientMessage('NOAGTINFO'));
+    if (agentInfos == null) {
+        return;
+    }
+    if ($('.top10tsd').length > 10) {
+        return;
+    }
+
+    if (timeseriesdata == null ||
+        agentInfos[ashCurrentAgentInfo].Status == -993 ||
+        agentInfos[ashCurrentAgentInfo].Status == 0 ||
+        (agentInfos[ashCurrentAgentInfo].Status <= -980 && agentInfos[ashCurrentAgentInfo].Status >= -985))
+    {
+        if (ashCurrentAgentInfo < ashAgentInfoCnt - 1) {
+            ashCurrentAgentInfo++;
+            apiCall('GET', '/api/timeseriesdata/' + agentInfos[ashCurrentAgentInfo].Name + '/', null, 'API_GET_TIMESERIESDATA', drawAgentStatusHistory);
+        }
         return;
     }
 
@@ -1253,6 +1269,14 @@ function drawAgentStatusHistory() {
     let rectStr = '';
     for (let loopTsd = 0; loopTsd < timeseriesdata.length; loopTsd++) {
         let theColor = 'LightGreen';
+        if (timeseriesdata[loopTsd].Status == 0 ||
+            (timeseriesdata[loopTsd].Status <= -980 && timeseriesdata[loopTsd].Status >= -985))
+        {
+            theColor = 'LightGreen';
+        } else {
+            theColor = 'LightCoral';
+        }
+    
         let updTimeInt = parseInt(timeseriesdata[loopTsd].UpdTime, 16);
         if (updTimeInt < startTime) {
             continue;
@@ -1270,7 +1294,7 @@ function drawAgentStatusHistory() {
     let odbTimeDate = new Date(odbTime * 1000);
 
     let newSvg = $(
-        '<svg id="' + agentInfos[ashCurrentAgentInfo].Name + '" xmlns="http://www.w3.org/2000/svg" width="' + (wsize - 10) + '" height="' + hsize + '" viewBox="0 0 ' + (wsize - 10) + ' ' + hsize + '">' +
+        '<svg id="' + agentInfos[ashCurrentAgentInfo].Name + '" class="top10tsd" xmlns="http://www.w3.org/2000/svg" width="' + (wsize - 10) + '" height="' + hsize + '" viewBox="0 0 ' + (wsize - 10) + ' ' + hsize + '">' +
         '<text x="10" y="19" fill="black">' + agentInfos[ashCurrentAgentInfo].Name + '</text>' +
         '<rect x="50" y="20" width="' + (wsize - 60) + '" height="30" fill="Silver"></rect>' +
         rectStr +
@@ -1285,6 +1309,7 @@ function drawAgentStatusHistory() {
     } else {
         $('#dashboard').append(newSvg);
     }
+
     if (ashCurrentAgentInfo < ashAgentInfoCnt - 1) {
         ashCurrentAgentInfo++;
         apiCall('GET', '/api/timeseriesdata/' + agentInfos[ashCurrentAgentInfo].Name + '/', null, 'API_GET_TIMESERIESDATA', drawAgentStatusHistory);
