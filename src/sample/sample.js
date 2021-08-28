@@ -24,10 +24,6 @@ var svrinfo_msg = '';
 var command_msg = '';
 var usermgt_msg = '';
 
-// For drawing agent status history on dashboard
-var ashAgentInfoCnt = 0;
-var ashCurrentAgentInfo = 0;
-
 function initClientMessage() {
     addClientMessage('USER_MGMT', {'en':'User Management', 'ja':'ユーザー管理'});
     addClientMessage('USER_CHG_PW', {'en':'Change Password', 'ja':'パスワードの変更'});
@@ -42,6 +38,11 @@ function initClientMessage() {
     addClientMessage('NOCMDEXIST', {'en':'<p>No command exists</p>', 'ja':'<p>コマンドはありません</p>'});
     addClientMessage('NOFILEEXIST', {'en':'<p>No file exists</p>', 'ja':'<p>ファイルはありません</p>'});
     addClientMessage('NORESULTEXIST', {'en':'<p>No command result exists</p>', 'ja':'<p>コマンド実行結果はありません</p>'});
+
+    addClientMessage('DASHBOARD_AGENTS', {'en':'Agent status', 'ja':'エージェントの状態'});
+    addClientMessage('DASHBOARD_SELECt_AGENT', {'en':'Select agent', 'ja':'エージェントの選択'});
+    addClientMessage('DASHBOARD_STATUS_DESC', {'en':'You can choose maximum 8 agents time series status on dashboard.', 'ja':'最大8件のエージェントの状態をダッシュボードに表示できます。'});
+    addClientMessage('DASHBOARD_UNSPECIFIED', {'en':'Unspecified', 'ja':'未指定'});
 
     addClientMessage('AINAME', {'en':'Name', 'ja':'名称'});
     addClientMessage('AISTATUS', {'en':'Status', 'ja':'状態'});
@@ -1171,172 +1172,190 @@ function transDisplayDashboard() {
     apiCall('GET', '/api/agent/', null, 'API_GET_AGTINFO', displayDashboard);
 }
 
-function displayDashboard() {
-    drowContainerFluid($('<div id="dashboard" class="col-xs-12" style="display:block"></div>'));
-    setTimeout(function() {dashboardSizeChange();}, 2000);
-    if (statusCode['API_GET_AGTINFO'] == -1 || statusCode['API_GET_AGTINFO'] == 0) {
-        displayAlertDanger('#dashboard', getClientMessage('CONNERR'));
-        return;
-    }
-    if (statusCode['API_GET_AGTINFO'] != 200) {
-        displayAlertDanger('#dashboard', getSvrMsg(responseData['API_GET_AGTINFO']));
-        return;
-    }
-    let agentInfos = getArray(responseData['API_GET_AGTINFO'].Data.AgentInfo);
-    if (agentInfos == null) {
-        $('#dashboard').append(getClientMessage('NOAGTINFO'));
-        return;
-    }
-    drasPieChart($('#dashboard'), agentInfos);
+{
+    // Name of selected time series data
+    let selectedTsd = new Array('n/a', 'n/a', 'n/a', 'n/a', 'n/a', 'n/a', 'n/a', 'n/a');
 
-    ashAgentInfoCnt = agentInfos.length;
-    ashCurrentAgentInfo = 0;
-    apiCall('GET', '/api/timeseriesdata/' + agentInfos[0].Name + '/', null, 'API_GET_TIMESERIESDATA', drawAgentStatusHistory);
-}
-
-function drasPieChart(element, agentInfos) {
-    let totalAgentCnt = agentInfos.length;
-    let successCnt = 0;
-    let errorCnt = 0;
-    let noRequestCnt = 0;
-    for (let loop = 0; loop < totalAgentCnt; loop++) {
-        if (agentInfos[loop].Status == -993) {
-            noRequestCnt++;
-        } else if (agentInfos[loop].Status == -981) {
-            successCnt++;
-        } else {
-            errorCnt++;
-        }
-    }
- 
-    let errorCntOffset = (successCnt / totalAgentCnt) * 314.15;
-    let noRequestCntOffset = errorCntOffset + (errorCnt / totalAgentCnt) * 314.15;
-    let wsize = $(window).width();
-    let hsize = 220;
- 
-    let newSvg = $(
-        '<svg id="piechart" xmlns="http://www.w3.org/2000/svg" width="' + (wsize - 10) + '" height="' + hsize + '" viewBox="0 0 400 220">' +
-        '<text x="250" y="40" font-size="20" fill="black">Total: ' + totalAgentCnt + '</text>' +
-        '<text x="250" y="70" font-size="20" fill="black">Success: ' + successCnt + '</text>' +
-        '<text x="250" y="100" font-size="20" fill="black">Error: ' + errorCnt + '</text>' +
-        '<text x="250" y="130" font-size="20" fill="black">No request: ' + noRequestCnt + '</text>' +
-        '<rect x="230" y="55" width="18" height="18" fill="LightGreen"></rect>' +
-        '<rect x="230" y="85" width="18" height="18" fill="LightCoral"></rect>' +
-        '<rect x="230" y="115" width="18" height="18" fill="Silver"></rect>' +
-		'<circle r="50" cx="110" cy="110" fill="rgba(0,0,0,0)" stroke="LightGreen" stroke-width="100" stroke-dashoffset="0" stroke-dasharray="314.15"/>' + 
-		'<circle r="50" cx="110" cy="110" fill="rgba(0,0,0,0)" stroke="LightCoral" stroke-width="100" stroke-dashoffset="' + errorCntOffset + '" stroke-dasharray="314.15"/>' +
-		'<circle r="50" cx="110" cy="110" fill="rgba(0,0,0,0)" stroke="Silver" stroke-width="100" stroke-dashoffset="' + noRequestCntOffset + '" stroke-dasharray="314.15"/>' +
-        '</svg>'
-    );
-    if ($('#piechart').length) {
-        $('#piechart').replaceWith(newSvg);
-    } else {
-        element.append(newSvg);
-    }
-}
-
-function drawAgentStatusHistory() {
-    let agentInfos = getArray(responseData['API_GET_AGTINFO'].Data.AgentInfo);
-    let timeseriesdata = getArray(responseData['API_GET_TIMESERIESDATA'].Data.TimeSeriesData);
-    if (agentInfos == null) {
-        return;
-    }
-    if ($('.top10tsd').length > 10) {
-        return;
-    }
-
-    if (timeseriesdata == null ||
-        agentInfos[ashCurrentAgentInfo].Status == -993 ||
-        agentInfos[ashCurrentAgentInfo].Status == 0 ||
-        (agentInfos[ashCurrentAgentInfo].Status <= -980 && agentInfos[ashCurrentAgentInfo].Status >= -985))
-    {
-        if (ashCurrentAgentInfo < ashAgentInfoCnt - 1) {
-            ashCurrentAgentInfo++;
-            apiCall('GET', '/api/timeseriesdata/' + agentInfos[ashCurrentAgentInfo].Name + '/', null, 'API_GET_TIMESERIESDATA', drawAgentStatusHistory);
-        }
-        return;
-    }
-
-    let wsize = $(window).width();
-    let hsize = 70;
-
-    let curDate = new Date();
-    let curTimeInMs = curDate.getTime();
-    let curTime = Math.floor(curTimeInMs / 1000);
-    let startTime = curTime - 172800; // 172800 = 60sec * 60min * 24hour * 2days
-    let odbTime = curTime - 86400; // 86400 = 60sec * 60min * 24hour
-    let unitw = (wsize - 60) / 172800;
-    let rectStr = '';
-    for (let loopTsd = 0; loopTsd < timeseriesdata.length; loopTsd++) {
-        let theColor = 'LightGreen';
-        if (timeseriesdata[loopTsd].Status == 0 ||
-            (timeseriesdata[loopTsd].Status <= -980 && timeseriesdata[loopTsd].Status >= -985))
-        {
-            theColor = 'LightGreen';
-        } else {
-            theColor = 'LightCoral';
+    function showSelectTimeSeriesDataDlg() {
+        let selectTsdDlg = $('<div/>');
+        selectTsdDlg.append(getClientMessage('DASHBOARD_STATUS_DESC'));
+    
+        let agentInfos = getArray(responseData['API_GET_AGTINFO'].Data.AgentInfo);
+        for (let loop = 0; loop < 8; loop++) {
+            var btnGrp = $('<div class="btn-group">');
+            btnGrp.append('<button type="button" class="btn btn-dark dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><span id="selecteTsd' + loop + '">' + selectedTsd[loop] + '</span><span class="caret"></span></button>');
+            var ddMenu = $('<ul class="dropdown-menu" role="menu">');
+            ddMenu.append('<li role="presentation"><a onclick="selectTimeSeriesData(' + loop + ', -1)" role="menuitem" tabindex="-1" href="#">' + getClientMessage('DASHBOARD_UNSPECIFIED') + '</a></li>');
+            for (let loopMenu = 0; loopMenu < agentInfos.length; loopMenu++) {
+                ddMenu.append('<li role="presentation"><a onclick="selectTimeSeriesData(' + loop + ', ' + loopMenu + ')" role="menuitem" tabindex="-1" href="#">' + agentInfos[loopMenu].Name + '</a></li>');
+            }
+            btnGrp.append(ddMenu);
+        
+            selectTsdDlg.append('<p>');
+            selectTsdDlg.append('' + (loop + 1) + ': ');
+            selectTsdDlg.append(btnGrp);
+            selectTsdDlg.append('</p>');
         }
     
-        let updTimeInt = parseInt(timeseriesdata[loopTsd].UpdTime, 16);
-        if (updTimeInt < startTime) {
-            continue;
+        showInputModal('<h5 class="modal-title">' + getClientMessage('DASHBOARD_SELECt_AGENT') + '</h5>', selectTsdDlg);
+        selectTsdDlg.append('<p>');
+        selectTsdDlg.append('<button type="button" id="OK" class="btn btn-dark" onclick="closeInputModal()">OK</button> ');
+        selectTsdDlg.append('<button type="button" id="Cancel" class="btn btn-dark" onclick="closeInputModal()">Cancel</button> ');
+        selectTsdDlg.append('</p>');
+    }
+    
+    function selectTimeSeriesData(index, name) {
+        let agentInfos = getArray(responseData['API_GET_AGTINFO'].Data.AgentInfo);
+        if (name == -1) {
+            selectedTsd[index] = getClientMessage('DASHBOARD_UNSPECIFIED');
+        } else {
+            selectedTsd[index] = agentInfos[name].Name;
         }
-        let graphX = unitw * (updTimeInt - startTime) + 50;
-        let graphWidth = unitw * timeseriesdata[loopTsd].SaInterval + 1;
-        if (graphX + graphWidth > wsize - 10) {
-            graphWidth = wsize - 10 - graphX;
+        $('#selecteTsd' + index).text(selectedTsd[index]);
+    }
+
+    function displayDashboard() {
+        drowContainerFluid($('<div id="dashboard" class="col-xs-12" style="display:block"></div>'));
+        if (statusCode['API_GET_AGTINFO'] == -1 || statusCode['API_GET_AGTINFO'] == 0) {
+            displayAlertDanger('#dashboard', getClientMessage('CONNERR'));
+            return;
         }
-        let dateUpdTime = new Date(updTimeInt * 1000);
-        let label = dateUpdTime + ':' + timeseriesdata[loopTsd].Status;
-        rectStr = rectStr + '<rect x="' + graphX + '" y="20" width="' + graphWidth + '" height="30" fill="' + theColor + '"><title>' + label + '</title></rect>';
-    }
-    let startTimeDate = new Date(startTime * 1000);
-    let odbTimeDate = new Date(odbTime * 1000);
-
-    let newSvg = $(
-        '<svg id="' + agentInfos[ashCurrentAgentInfo].Name + '" class="top10tsd" xmlns="http://www.w3.org/2000/svg" width="' + (wsize - 10) + '" height="' + hsize + '" viewBox="0 0 ' + (wsize - 10) + ' ' + hsize + '">' +
-        '<text x="10" y="19" fill="black">' + agentInfos[ashCurrentAgentInfo].Name + '</text>' +
-        '<rect x="50" y="20" width="' + (wsize - 60) + '" height="30" fill="Silver"></rect>' +
-        rectStr +
-        '<line x1="50" y1="40" x2="50" y2="65" stroke="blue" stroke-width="2"/>' +
-        '<text x="53" y="65" fill="blue">' + (startTimeDate.getMonth() + 1) + '/' + startTimeDate.getDate() + ' ' + ('00' + startTimeDate.getHours()).slice(-2) + ':' + ('00' + startTimeDate.getMinutes()).slice(-2) + '</text>' +
-        '<line x1="' + ((wsize - 60) / 2 + 50) + '" y1="40" x2="' + ((wsize - 60) / 2 + 50) + '" y2="65" stroke="blue" stroke-width="2"/>' +
-        '<text x="' + ((wsize - 60) / 2 + 53) + '" y="65" fill="blue">' + (odbTimeDate.getMonth() + 1) + '/' + odbTimeDate.getDate() + ' ' + ('00' + odbTimeDate.getHours()).slice(-2) + ':' + ('00' + odbTimeDate.getMinutes()).slice(-2) + '</text>' +
-        '</svg>'
-    );
-    if ($('#' + escapeSelectorString(agentInfos[ashCurrentAgentInfo].Name)).length) {
-        $('#' + escapeSelectorString(agentInfos[ashCurrentAgentInfo].Name)).replaceWith(newSvg);
-    } else {
-        $('#dashboard').append(newSvg);
-    }
-
-    if (ashCurrentAgentInfo < ashAgentInfoCnt - 1) {
-        ashCurrentAgentInfo++;
-        apiCall('GET', '/api/timeseriesdata/' + agentInfos[ashCurrentAgentInfo].Name + '/', null, 'API_GET_TIMESERIESDATA', drawAgentStatusHistory);
-    }
-}
-
-function escapeSelectorString(val){
-    return val.replace(/[ !"#$%&'()*+,.\/:;<=>?@\[\\\]^`{|}~]/g, "\\$&");
-}
-
-{
-    let prevDbWidth = 0;
-    function dashboardSizeChange() {
-        if ($('#dashboard').length) {
-            let wsize = $(window).width();
-            if (prevDbWidth != wsize) {
-                prevDbWidth = wsize;
-                ashCurrentAgentInfo = 0;
-                let agentInfos = getArray(responseData['API_GET_AGTINFO'].Data.AgentInfo);
-                drasPieChart($('#dashboard'), agentInfos);
-                apiCall('GET', '/api/timeseriesdata/' + agentInfos[0].Name + '/', null, 'API_GET_TIMESERIESDATA', drawAgentStatusHistory);
-
-                //transDisplayDashboard();
-                setTimeout(function() {dashboardSizeChange();}, 2000);
-            } else {
-                setTimeout(function() {dashboardSizeChange();}, 2000);
+        if (statusCode['API_GET_AGTINFO'] != 200) {
+            displayAlertDanger('#dashboard', getSvrMsg(responseData['API_GET_AGTINFO']));
+            return;
+        }
+        let agentInfos = getArray(responseData['API_GET_AGTINFO'].Data.AgentInfo);
+        if (agentInfos == null) {
+            $('#dashboard').append(getClientMessage('NOAGTINFO'));
+            return;
+        }
+        drasPieChart($('#dashboard'), agentInfos);
+    
+        $('#dashboard').append('<h4><div class="plane-link">&nbsp;&nbsp;&nbsp;&nbsp;' + getClientMessage('DASHBOARD_AGENTS') + '&nbsp;&nbsp;<a onclick="showSelectTimeSeriesDataDlg();" class="plane-link" style="cursor: pointer;" href="#"><span class="icon icon-cog" style="font-size:20px;"></span></a></div></h4>');
+    
+        let contents = [];
+        for (let loop = 0; loop < 8; loop++) {
+            if (selectedTsd[loop] === getClientMessage('DASHBOARD_UNSPECIFIED') || selectedTsd[loop] === 'n/a') {
+                continue;
             }
+            let tmpUrl = '/api/timeseriesdata/' + selectedTsd[loop] + '/';
+            contents.push({ method: 'GET', url: tmpUrl, request: null, keystring: 'API_GET_TIMESERIESDATA_' + loop });
+        }
+        if (contents.length != 0) {
+            initSequentialApiCall();
+            sequentialApiCall(contents, drawAgentStatusHistory);
+        }
+    }
+
+    function drawAgentStatusHistory() {
+        finalSequentialApiCall();
+        for (let loop = 0; loop < 8; loop++) {
+            if (selectedTsd[loop] === getClientMessage('DASHBOARD_UNSPECIFIED') || selectedTsd[loop] === 'n/a') {
+                continue;
+            }
+            let timeseriesdata = getArray(responseData['API_GET_TIMESERIESDATA_' + loop].Data.TimeSeriesData);
+            drawAgentStatusHistoryImpl(selectedTsd[loop], timeseriesdata);
+        }
+    }
+    
+    function drawAgentStatusHistoryImpl(agentName, timeseriesdata) {
+        let wsize = $(window).width();
+        let hsize = 70;
+    
+        let curDate = new Date();
+        let curTimeInMs = curDate.getTime();
+        let curTime = Math.floor(curTimeInMs / 1000);
+        let startTime = curTime - 172800; // 172800 = 60sec * 60min * 24hour * 2days
+        let odbTime = curTime - 86400; // 86400 = 60sec * 60min * 24hour
+        let unitw = (wsize - 60) / 172800;
+        let rectStr = '';
+        for (let loopTsd = 0; loopTsd < timeseriesdata.length; loopTsd++) {
+            let theColor = 'LightGreen';
+            if (timeseriesdata[loopTsd].Status == 0 ||
+                (timeseriesdata[loopTsd].Status <= -980 && timeseriesdata[loopTsd].Status >= -985))
+            {
+                theColor = 'LightGreen';
+            } else {
+                theColor = 'LightCoral';
+            }
+        
+            let updTimeInt = parseInt(timeseriesdata[loopTsd].UpdTime, 16);
+            if (updTimeInt < startTime) {
+                continue;
+            }
+            let graphX = unitw * (updTimeInt - startTime) + 50;
+            let graphWidth = unitw * timeseriesdata[loopTsd].SaInterval + 1;
+            if (graphX + graphWidth > wsize - 10) {
+                graphWidth = wsize - 10 - graphX;
+            }
+            let dateUpdTime = new Date(updTimeInt * 1000);
+            let label = dateUpdTime + ':' + timeseriesdata[loopTsd].Status;
+            rectStr = rectStr + '<rect x="' + graphX + '" y="20" width="' + graphWidth + '" height="30" fill="' + theColor + '"><title>' + label + '</title></rect>';
+        }
+        let startTimeDate = new Date(startTime * 1000);
+        let odbTimeDate = new Date(odbTime * 1000);
+    
+        let newSvg = $(
+            '<svg id="' + agentName + '" xmlns="http://www.w3.org/2000/svg" width="' + (wsize - 10) + '" height="' + hsize + '" viewBox="0 0 ' + (wsize - 10) + ' ' + hsize + '">' +
+            '<text x="10" y="19" fill="black">' + agentName + '</text>' +
+            '<rect x="50" y="20" width="' + (wsize - 60) + '" height="30" fill="Silver"></rect>' +
+            rectStr +
+            '<line x1="50" y1="40" x2="50" y2="65" stroke="blue" stroke-width="2"/>' +
+            '<text x="53" y="65" fill="blue">' + (startTimeDate.getMonth() + 1) + '/' + startTimeDate.getDate() + ' ' + ('00' + startTimeDate.getHours()).slice(-2) + ':' + ('00' + startTimeDate.getMinutes()).slice(-2) + '</text>' +
+            '<line x1="' + ((wsize - 60) / 2 + 50) + '" y1="40" x2="' + ((wsize - 60) / 2 + 50) + '" y2="65" stroke="blue" stroke-width="2"/>' +
+            '<text x="' + ((wsize - 60) / 2 + 53) + '" y="65" fill="blue">' + (odbTimeDate.getMonth() + 1) + '/' + odbTimeDate.getDate() + ' ' + ('00' + odbTimeDate.getHours()).slice(-2) + ':' + ('00' + odbTimeDate.getMinutes()).slice(-2) + '</text>' +
+            '</svg>'
+        );
+    
+        let escapeSelectorString = function(val){
+            return val.replace(/[ !"#$%&'()*+,.\/:;<=>?@\[\\\]^`{|}~]/g, "\\$&");
+        }
+        
+        if ($('#' + escapeSelectorString(agentName)).length) {
+            $('#' + escapeSelectorString(agentName)).replaceWith(newSvg);
+        } else {
+            $('#dashboard').append(newSvg);
+        }
+    }
+
+    function drasPieChart(element, agentInfos) {
+        let totalAgentCnt = agentInfos.length;
+        let successCnt = 0;
+        let errorCnt = 0;
+        let noRequestCnt = 0;
+        for (let loop = 0; loop < totalAgentCnt; loop++) {
+            if (agentInfos[loop].Status == -993) {
+                noRequestCnt++;
+            } else if (agentInfos[loop].Status == 0 || (agentInfos[loop].Status <= -980 && agentInfos[loop].Status >= -985)) {
+                successCnt++;
+            } else {
+                errorCnt++;
+            }
+        }
+    
+        let errorCntOffset = (successCnt / totalAgentCnt) * 314.15;
+        let noRequestCntOffset = errorCntOffset + (errorCnt / totalAgentCnt) * 314.15;
+        let wsize = $(window).width();
+        let hsize = 220;
+     
+        let newSvg = $(
+            '<svg id="piechart" xmlns="http://www.w3.org/2000/svg" width="' + (wsize - 10) + '" height="' + hsize + '" viewBox="0 0 400 220">' +
+            '<text x="250" y="40" font-size="20" fill="black">Total: ' + totalAgentCnt + '</text>' +
+            '<text x="250" y="70" font-size="20" fill="black">Success: ' + successCnt + '</text>' +
+            '<text x="250" y="100" font-size="20" fill="black">Error: ' + errorCnt + '</text>' +
+            '<text x="250" y="130" font-size="20" fill="black">No request: ' + noRequestCnt + '</text>' +
+            '<rect x="230" y="55" width="18" height="18" fill="LightGreen"></rect>' +
+            '<rect x="230" y="85" width="18" height="18" fill="LightCoral"></rect>' +
+            '<rect x="230" y="115" width="18" height="18" fill="Silver"></rect>' +
+            '<circle r="50" cx="110" cy="110" fill="rgba(0,0,0,0)" stroke="LightGreen" stroke-width="100" stroke-dashoffset="0" stroke-dasharray="314.15"/>' + 
+            '<circle r="50" cx="110" cy="110" fill="rgba(0,0,0,0)" stroke="LightCoral" stroke-width="100" stroke-dashoffset="' + errorCntOffset + '" stroke-dasharray="314.15"/>' +
+            '<circle r="50" cx="110" cy="110" fill="rgba(0,0,0,0)" stroke="Silver" stroke-width="100" stroke-dashoffset="' + noRequestCntOffset + '" stroke-dasharray="314.15"/>' +
+            '</svg>'
+        );
+        if ($('#piechart').length) {
+            $('#piechart').replaceWith(newSvg);
+        } else {
+            element.append(newSvg);
         }
     }
 }
@@ -1412,6 +1431,13 @@ function resizeComponent() {
     $("#agentinfotable").css("height", hsize_agentinfotable + "px");
     $("#filemgmttable").css("height", hsize_filemgmttable + "px");
     $("#resulttable").css("height", hsize_resulttable + "px");
+
+    // Dashboard resize
+    if ($('#dashboard').length) {
+        let agentInfos = getArray(responseData['API_GET_AGTINFO'].Data.AgentInfo);
+        drasPieChart($('#dashboard'), agentInfos);
+        drawAgentStatusHistory();
+    }
 }
 
 $(document).ready(function () {
