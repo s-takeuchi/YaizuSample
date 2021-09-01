@@ -2,6 +2,7 @@
 #include "../../../YaizuComLib/src/stkdata/stkdata.h"
 #include "../../../YaizuComLib/src/stkdata/stkdataapi.h"
 #include "../../../YaizuComLib/src/stkwebapp_um/stkwebapp_um.h"
+#include "../../../YaizuComLib/src/commonfunc/msgproc.h" //////////////////////////////////
 #include "sample.h"
 #include "dataaccess.h"
 
@@ -1081,6 +1082,15 @@ int DataAccess::GetTimeSeriesData(const wchar_t* AgtName, int AgtId[DA_MAXNUM_OF
 			SaInterval[Index] = SaIntervalCol->GetValue();
 		}
 		CurResDat = CurResDat->GetNextRecord();
+
+		////////////// debug start
+		if (AgtId[Index] > 1000 || Status[Index] > 0) {
+			char Buf[256] = "";
+			StkPlSPrintf(Buf, 128, "dubug: ID=%d, Status=5d", AgtId[Index], Status[Index]);
+			MessageProc::AddLog(Buf, MessageProc::LOG_TYPE_INFO);
+		}
+		////////////// debug end
+
 		Index++;
 	}
 	delete RecDatTimeSeriesFind;
