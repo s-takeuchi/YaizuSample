@@ -1199,9 +1199,14 @@ function transDisplayDashboard() {
     
         showInputModal('<h5 class="modal-title">' + getClientMessage('DASHBOARD_SELECt_AGENT') + '</h5>', selectTsdDlg);
         selectTsdDlg.append('<p>');
-        selectTsdDlg.append('<button type="button" id="OK" class="btn btn-dark" onclick="closeInputModal()">OK</button> ');
+        selectTsdDlg.append('<button type="button" id="OK" class="btn btn-dark" onclick="changeTimeSeriesData()">OK</button> ');
         selectTsdDlg.append('<button type="button" id="Cancel" class="btn btn-dark" onclick="closeInputModal()">Cancel</button> ');
         selectTsdDlg.append('</p>');
+    }
+
+    function changeTimeSeriesData() {
+        closeInputModal();
+        displayDashboard();
     }
     
     function selectTimeSeriesData(index, name) {
@@ -1269,7 +1274,7 @@ function transDisplayDashboard() {
         let odbTime = curTime - 86400; // 86400 = 60sec * 60min * 24hour
         let unitw = (wsize - 60) / 172800;
         let rectStr = '';
-        for (let loopTsd = 0; loopTsd < timeseriesdata.length; loopTsd++) {
+        for (let loopTsd = 0; timeseriesdata != null && loopTsd < timeseriesdata.length; loopTsd++) {
             let theColor = 'LightGreen';
             if (timeseriesdata[loopTsd].Status == 0 ||
                 (timeseriesdata[loopTsd].Status <= -980 && timeseriesdata[loopTsd].Status >= -985))
@@ -1423,6 +1428,7 @@ function checkLoginAfterApiCall() {
         return;
     }
 }
+
 function resizeComponent() {
     let wsize = $(window).width();
     let hsize_agentinfotable = $(window).height() - 111;
