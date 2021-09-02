@@ -43,9 +43,9 @@ StkObject* ApiGetTimeSeriesData::ExecuteImpl(StkObject* ReqObj, int Method, wcha
 		TmpObjC->AppendChildElement(SaIntervalObj);
 		TmpObjD->AppendChildElement(TmpObjC);
 	}
-
 	AddCodeAndMsg(TmpObj, 0, L"", L"");
 	TmpObj->AppendChildElement(TmpObjD);
 	*ResultCode = 200;
+	DebugObject(TmpObj);
 	return TmpObj;
 }
