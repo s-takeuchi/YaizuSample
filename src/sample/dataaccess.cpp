@@ -1086,7 +1086,7 @@ int DataAccess::GetTimeSeriesData(const wchar_t* AgtName, int AgtId[DA_MAXNUM_OF
 		////////////// debug start
 		if (AgtId[Index] > 1000 || Status[Index] > 0) {
 			char Buf[256] = "";
-			StkPlSPrintf(Buf, 256, "dubug: ID=%d, Status=%d", AgtId[Index], Status[Index]);
+			StkPlSPrintf(Buf, 256, "dubug(1): ID=%d, Status=%d", AgtId[Index], Status[Index]);
 			MessageProc::AddLog(Buf, MessageProc::LOG_TYPE_INFO);
 		}
 		////////////// debug end
