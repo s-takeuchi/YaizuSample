@@ -1107,16 +1107,23 @@ int DataAccess::GetTimeSeriesData(const wchar_t* AgtName, int AgtId[DA_MAXNUM_OF
 				MinTimeIndex = Loop2;
 			}
 		}
-		if (MinTimeIndex != -1) {
-			int AgtIdTmp = -1;
-			long long UpdTimeTmp = -1;
-			int StatusTmp = -1;
-			int SaIntervalTmp = -1;
+		if (MinTimeIndex != -1 && MinTimeIndex != Loop1) {
+			////////////// debug start
+			{
+				char Buf[256] = "";
+				StkPlSPrintf(Buf, 256, "sort-1: [%d, %016x, %d, %d] <--> [%d, %016x, %d, %d]",
+					AgtId[Loop1], UpdTime[Loop1], Status[Loop1], SaInterval[Loop1],
+					AgtId[MinTimeIndex], UpdTime[MinTimeIndex], Status[MinTimeIndex], SaInterval[MinTimeIndex]
+				);
+				MessageProc::AddLog(Buf, MessageProc::LOG_TYPE_INFO);
+			}
+			////////////// debug end
+
 			//
-			AgtIdTmp = AgtId[Loop1];
-			UpdTimeTmp = UpdTime[Loop1];
-			StatusTmp = Status[Loop1];
-			SaIntervalTmp = SaInterval[Loop1];
+			int AgtIdTmp = AgtId[Loop1];
+			long long UpdTimeTmp = UpdTime[Loop1];
+			int StatusTmp = Status[Loop1];
+			int SaIntervalTmp = SaInterval[Loop1];
 			//
 			AgtId[Loop1] = AgtId[MinTimeIndex];
 			UpdTime[Loop1] = UpdTime[MinTimeIndex];
@@ -1127,6 +1134,17 @@ int DataAccess::GetTimeSeriesData(const wchar_t* AgtName, int AgtId[DA_MAXNUM_OF
 			UpdTime[MinTimeIndex] = UpdTimeTmp;
 			Status[MinTimeIndex] = StatusTmp;
 			SaInterval[MinTimeIndex] = SaIntervalTmp;
+
+			////////////// debug start
+			{
+				char Buf[256] = "";
+				StkPlSPrintf(Buf, 256, "sort-2: [%d, %016x, %d, %d] <--> [%d, %016x, %d, %d]",
+					AgtId[Loop1], UpdTime[Loop1], Status[Loop1], SaInterval[Loop1],
+					AgtId[MinTimeIndex], UpdTime[MinTimeIndex], Status[MinTimeIndex], SaInterval[MinTimeIndex]
+				);
+				MessageProc::AddLog(Buf, MessageProc::LOG_TYPE_INFO);
+			}
+			////////////// debug end
 		}
 	}
 
