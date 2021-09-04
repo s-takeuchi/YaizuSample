@@ -1030,7 +1030,7 @@ int DataAccess::AddTimeSeriesData(const wchar_t* AgtName, int Status)
 	return 0;
 }
 
-int DataAccess::GetTimeSeriesData(const wchar_t* AgtName, int AgtId[DA_MAXNUM_OF_TIMESERIESDATAPERAGENT], long long UpdTime[DA_MAXNUM_OF_TIMESERIESDATAPERAGENT], int Status[DA_MAXNUM_OF_TIMESERIESDATAPERAGENT], int SaInterval[DA_MAXNUM_OF_TIMESERIESDATAPERAGENT])
+int DataAccess::GetTimeSeriesData(const wchar_t* AgtName, int AgtId[DA_MAXNUM_OF_TIMESERIESDATA], long long UpdTime[DA_MAXNUM_OF_TIMESERIESDATA], int Status[DA_MAXNUM_OF_TIMESERIESDATA], int SaInterval[DA_MAXNUM_OF_TIMESERIESDATA])
 {
 	// Retrieve agent ID
 	ColumnData* ColDatAgtFind[1];

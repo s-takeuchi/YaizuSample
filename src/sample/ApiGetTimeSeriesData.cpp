@@ -23,10 +23,10 @@ StkObject* ApiGetTimeSeriesData::ExecuteImpl(StkObject* ReqObj, int Method, wcha
 
 	StkObject* TmpObjD = new StkObject(L"Data");
 
-	int AgtId[DA_MAXNUM_OF_TIMESERIESDATAPERAGENT];
-	long long UpdTime[DA_MAXNUM_OF_TIMESERIESDATAPERAGENT];
-	int Status[DA_MAXNUM_OF_TIMESERIESDATAPERAGENT];
-	int SaInterval[DA_MAXNUM_OF_TIMESERIESDATAPERAGENT];
+	int AgtId[DA_MAXNUM_OF_TIMESERIESDATA];
+	long long UpdTime[DA_MAXNUM_OF_TIMESERIESDATA];
+	int Status[DA_MAXNUM_OF_TIMESERIESDATA];
+	int SaInterval[DA_MAXNUM_OF_TIMESERIESDATA];
 	int Cnt = DataAccess::GetInstance()->GetTimeSeriesData(TargetAgtName, AgtId, UpdTime, Status, SaInterval);
 
 	for (int Loop = 0; Loop < Cnt; Loop++) {

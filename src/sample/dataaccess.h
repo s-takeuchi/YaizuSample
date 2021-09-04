@@ -20,7 +20,6 @@
 #define DA_MAXLEN_OF_CMDOUTPUT 262144
 #define DA_MAXNUM_OF_RESULT 120
 #define DA_MAXNUM_OF_TIMESERIESDATA 16383
-#define DA_MAXNUM_OF_TIMESERIESDATAPERAGENT 12 * 24 * 2
 
 class DataAccess
 {
@@ -78,5 +77,5 @@ public:
 	int GetTotalNumOfTimeSeriesData();
 	int DeleteExpiredTimeSeriesData();
 	int AddTimeSeriesData(const wchar_t*, int);
-	int GetTimeSeriesData(const wchar_t*, int[DA_MAXNUM_OF_TIMESERIESDATAPERAGENT], long long[DA_MAXNUM_OF_TIMESERIESDATAPERAGENT], int[DA_MAXNUM_OF_TIMESERIESDATAPERAGENT], int[DA_MAXNUM_OF_TIMESERIESDATAPERAGENT]);
+	int GetTimeSeriesData(const wchar_t*, int[DA_MAXNUM_OF_TIMESERIESDATA], long long[DA_MAXNUM_OF_TIMESERIESDATA], int[DA_MAXNUM_OF_TIMESERIESDATA], int[DA_MAXNUM_OF_TIMESERIESDATA]);
 };
