@@ -1095,7 +1095,15 @@ int DataAccess::GetTimeSeriesData(const wchar_t* AgtName, int AgtId[DA_MAXNUM_OF
 	}
 	delete RecDatTimeSeriesFind;
 	delete ResDat;
+	////////////// debug start
+	{
+		char Buf[256] = "";
+		StkPlSPrintf(Buf, 256, "Time series data count=%d", Index);
+		MessageProc::AddLog(Buf, MessageProc::LOG_TYPE_INFO);
+	}
+	////////////// debug end
 
+	/*
 	// Sorting
 	for (int Loop1 = 0; Loop1 < Index; Loop1++) {
 		// Search max time
@@ -1147,6 +1155,7 @@ int DataAccess::GetTimeSeriesData(const wchar_t* AgtName, int AgtId[DA_MAXNUM_OF
 			////////////// debug end
 		}
 	}
+	*/
 
 	return Index;
 }
