@@ -2,7 +2,6 @@
 #include "../../../YaizuComLib/src/stkdata/stkdata.h"
 #include "../../../YaizuComLib/src/stkdata/stkdataapi.h"
 #include "../../../YaizuComLib/src/stkwebapp_um/stkwebapp_um.h"
-#include "../../../YaizuComLib/src/commonfunc/msgproc.h" //////////////////////////////////
 #include "sample.h"
 #include "dataaccess.h"
 
@@ -945,7 +944,7 @@ int DataAccess::DeleteExpiredTimeSeriesData()
 		int NumOfTargetIds = 0;
 
 		// Get target IDs
-		long long TargetTime = StkPlGetTime() - (2 * 24 * 60 * 60 - 60 * 60);
+		long long TargetTime = StkPlGetTime() - (2 * 24 * 60 * 60 + 60 * 60);
 		LockTable(TblName, LOCK_SHARE);
 		RecordData* ResDat = GetRecord(TblName);
 		UnlockTable(TblName);
@@ -1083,25 +1082,10 @@ int DataAccess::GetTimeSeriesData(const wchar_t* AgtName, int AgtId[DA_MAXNUM_OF
 		}
 		CurResDat = CurResDat->GetNextRecord();
 
-		////////////// debug start
-		if (AgtId[Index] > 1000 || Status[Index] > 0) {
-			char Buf[256] = "";
-			StkPlSPrintf(Buf, 256, "dubug(1): ID=%d, Status=%d", AgtId[Index], Status[Index]);
-			MessageProc::AddLog(Buf, MessageProc::LOG_TYPE_INFO);
-		}
-		////////////// debug end
-
 		Index++;
 	}
 	delete RecDatTimeSeriesFind;
 	delete ResDat;
-	////////////// debug start
-	{
-		char Buf[256] = "";
-		StkPlSPrintf(Buf, 256, "Time series data count=%d", Index);
-		MessageProc::AddLog(Buf, MessageProc::LOG_TYPE_INFO);
-	}
-	////////////// debug end
 
 	// Sorting
 	for (int Loop1 = 0; Loop1 < Index; Loop1++) {

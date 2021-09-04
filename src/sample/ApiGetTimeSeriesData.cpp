@@ -30,13 +30,6 @@ StkObject* ApiGetTimeSeriesData::ExecuteImpl(StkObject* ReqObj, int Method, wcha
 	int Cnt = DataAccess::GetInstance()->GetTimeSeriesData(TargetAgtName, AgtId, UpdTime, Status, SaInterval);
 
 	for (int Loop = 0; Loop < Cnt; Loop++) {
-		////////////// debug start
-		if (AgtId[Loop] > 1000 || Status[Loop] > 0) {
-			char Buf[256] = "";
-			StkPlSPrintf(Buf, 256, "dubug(2): ID=%d, Status=%d", AgtId[Loop], Status[Loop]);
-			MessageProc::AddLog(Buf, MessageProc::LOG_TYPE_INFO);
-		}
-		////////////// debug end
 		StkObject* TmpObjC = new StkObject(L"TimeSeriesData");
 		StkObject* AgtIdObj = new StkObject(L"AgentId", AgtId[Loop]);
 		wchar_t UpdTimeStr[DA_MAXLEN_OF_UNIXTIME * 2 + 1] = L"";
@@ -53,6 +46,5 @@ StkObject* ApiGetTimeSeriesData::ExecuteImpl(StkObject* ReqObj, int Method, wcha
 	AddCodeAndMsg(TmpObj, 0, L"", L"");
 	TmpObj->AppendChildElement(TmpObjD);
 	*ResultCode = 200;
-	DebugObject(TmpObj);
 	return TmpObj;
 }
