@@ -23,6 +23,8 @@
 #include "ApiDeleteFile.h"
 #include "ApiGetCommandResult.h"
 #include "ApiGetTimeSeriesData.h"
+#include "ApiPostViewSetting.h"
+#include "ApiGetViewSetting.h"
 #include "dataaccess.h"
 
 wchar_t Global::Global_WorkDirPath[FILENAME_MAX];
@@ -298,6 +300,10 @@ void Server(wchar_t* IpAddr, int Port, int NumOfWorkerThreads, int ThreadInterva
 	Soc->AddReqHandler(StkWebAppExec::STKWEBAPP_METHOD_GET, L"/api/commandresult/$/", (StkWebAppExec*)ApiGetCommandResultWpObj);
 	ApiGetTimeSeriesData* ApiGetTimeSeriesDataObj = new ApiGetTimeSeriesData();
 	Soc->AddReqHandler(StkWebAppExec::STKWEBAPP_METHOD_GET, L"/api/timeseriesdata/$/", (StkWebAppExec*)ApiGetTimeSeriesDataObj);
+	ApiPostViewSetting* ApiPostViewSettingObj = new ApiPostViewSetting();
+	Soc->AddReqHandler(StkWebAppExec::STKWEBAPP_METHOD_POST, L"/api/viewsetting/", (StkWebAppExec*)ApiPostViewSettingObj);
+	ApiGetViewSetting* ApiGetViewSettingObj = new ApiGetViewSetting();
+	Soc->AddReqHandler(StkWebAppExec::STKWEBAPP_METHOD_GET, L"/api/viewsetting/", (StkWebAppExec*)ApiGetViewSettingObj);
 
 	StkWebAppUm_RegisterApi(Soc);
 
@@ -321,6 +327,8 @@ void Server(wchar_t* IpAddr, int Port, int NumOfWorkerThreads, int ThreadInterva
 	Soc->DeleteReqHandler(StkWebAppExec::STKWEBAPP_METHOD_GET, L"/api/commandresult/");
 	Soc->DeleteReqHandler(StkWebAppExec::STKWEBAPP_METHOD_GET, L"/api/commandresult/$/");
 	Soc->DeleteReqHandler(StkWebAppExec::STKWEBAPP_METHOD_GET, L"/api/timeseriesdata/$/");
+	Soc->DeleteReqHandler(StkWebAppExec::STKWEBAPP_METHOD_POST, L"/api/viewsetting/");
+	Soc->DeleteReqHandler(StkWebAppExec::STKWEBAPP_METHOD_GET, L"/api/viewsetting/");
 
 	StkWebAppUm_UnregisterApi(Soc);
 
@@ -482,6 +490,15 @@ int main(int Argc, char* Argv[])
 		StkWebAppUm_SetPropertyValueInt(L"DbVersion", 1);
 		StkWebAppUm_SetPropertyValueInt(L"MaxResultId", 0);
 		StkWebAppUm_SetPropertyValueInt(L"MaxAgentId", 0);
+		// For view setting
+		StkWebAppUm_SetPropertyValueWStr(L"ViewSetting_d1", L"");
+		StkWebAppUm_SetPropertyValueWStr(L"ViewSetting_d2", L"");
+		StkWebAppUm_SetPropertyValueWStr(L"ViewSetting_d3", L"");
+		StkWebAppUm_SetPropertyValueWStr(L"ViewSetting_d4", L"");
+		StkWebAppUm_SetPropertyValueWStr(L"ViewSetting_d5", L"");
+		StkWebAppUm_SetPropertyValueWStr(L"ViewSetting_d6", L"");
+		StkWebAppUm_SetPropertyValueWStr(L"ViewSetting_d7", L"");
+		StkWebAppUm_SetPropertyValueWStr(L"ViewSetting_d8", L"");
 		DbVer = 1;
 	}
 

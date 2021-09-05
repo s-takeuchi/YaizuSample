@@ -1206,7 +1206,17 @@ function transDisplayDashboard() {
 
     function changeTimeSeriesData() {
         closeInputModal();
-        displayDashboard();
+        var ReqObj = { "ViewSetting" : [
+            {"Index" : 1, "TargetAgent" : selectedTsd[0]},
+            {"Index" : 2, "TargetAgent" : selectedTsd[1]},
+            {"Index" : 3, "TargetAgent" : selectedTsd[2]},
+            {"Index" : 4, "TargetAgent" : selectedTsd[3]},
+            {"Index" : 5, "TargetAgent" : selectedTsd[4]},
+            {"Index" : 6, "TargetAgent" : selectedTsd[5]},
+            {"Index" : 7, "TargetAgent" : selectedTsd[6]},
+            {"Index" : 8, "TargetAgent" : selectedTsd[7]},
+        ] };
+        apiCall('POST', '/api/viewsetting/', ReqObj, 'API_POST_VIEWSETTING', displayDashboard);
     }
     
     function selectTimeSeriesData(index, name) {

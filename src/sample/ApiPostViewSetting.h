@@ -1,6 +1,6 @@
 #pragma once
 #include "../../../YaizuComLib/src/stkwebapp_um/ApiBase.h"
-#include "../../../YaizuComLib/src/commonfunc/stkobject.h"
+#include "../../../YaizuComLib/src/commonfunc/StkObject.h"
 
 class ApiPostViewSetting : ApiBase
 {
