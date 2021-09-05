@@ -114,10 +114,12 @@
     <ClCompile Include="ApiGetFileList.cpp" />
     <ClCompile Include="ApiGetServerInfo.cpp" />
     <ClCompile Include="ApiGetTimeSeriesData.cpp" />
+    <ClCompile Include="ApiGetViewSetting.cpp" />
     <ClCompile Include="ApiPostAgentInfo.cpp" />
     <ClCompile Include="ApiPostCommand.cpp" />
     <ClCompile Include="ApiPostFile.cpp" />
     <ClCompile Include="ApiPostServerInfo.cpp" />
+    <ClCompile Include="ApiPostViewSetting.cpp" />
     <ClCompile Include="dataaccess.cpp" />
     <ClCompile Include="sample.cpp" />
   </ItemGroup>
@@ -133,10 +135,12 @@
     <ClInclude Include="ApiGetFileList.h" />
     <ClInclude Include="ApiGetServerInfo.h" />
     <ClInclude Include="ApiGetTimeSeriesData.h" />
+    <ClInclude Include="ApiGetViewSetting.h" />
     <ClInclude Include="ApiPostAgentInfo.h" />
     <ClInclude Include="ApiPostCommand.h" />
     <ClInclude Include="ApiPostFile.h" />
     <ClInclude Include="ApiPostServerInfo.h" />
+    <ClInclude Include="ApiPostViewSetting.h" />
     <ClInclude Include="dataaccess.h" />
     <ClInclude Include="sample.h" />
   </ItemGroup>
