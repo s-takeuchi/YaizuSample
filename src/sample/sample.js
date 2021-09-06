@@ -1169,22 +1169,37 @@ function viewConsole() {
 ////////////////////////////////////////////////////////////////////////////////
 
 function transDisplayDashboard() {
-    apiCall('GET', '/api/agent/', null, 'API_GET_AGTINFO', displayDashboard);
+    let contents = [];
+    contents.push({ method: 'GET', url: '/api/agent/', request: null, keystring: 'API_GET_AGTINFO' });
+    contents.push({ method: 'GET', url: '/api/viewsetting/', request: null, keystring: 'API_GET_VIEWSETTING' });
+    sequentialApiCall(contents, displayDashboard);
 }
 
 {
     // Name of selected time series data
-    let selectedTsd = new Array('n/a', 'n/a', 'n/a', 'n/a', 'n/a', 'n/a', 'n/a', 'n/a');
+    let selectedTsd = new Array('', '', '', '', '', '', '', '');
+
+    function transShowSelectTimeSeriesDataDlg() {
+        apiCall('GET', '/api/viewsetting/', null, 'API_GET_VIEWSETTING', showSelectTimeSeriesDataDlg);
+    }
 
     function showSelectTimeSeriesDataDlg() {
         let selectTsdDlg = $('<div/>');
         selectTsdDlg.append(getClientMessage('DASHBOARD_STATUS_DESC'));
     
         let agentInfos = getArray(responseData['API_GET_AGTINFO'].Data.AgentInfo);
+        let viewSettings = getArray(responseData['API_GET_VIEWSETTING'].Data.ViewSetting);
         for (let loop = 0; loop < 8; loop++) {
-            var btnGrp = $('<div class="btn-group">');
-            btnGrp.append('<button type="button" class="btn btn-dark dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><span id="selecteTsd' + loop + '">' + selectedTsd[loop] + '</span><span class="caret"></span></button>');
-            var ddMenu = $('<ul class="dropdown-menu" role="menu">');
+            selectedTsd[loop] = viewSettings[loop];
+        }
+        for (let loop = 0; loop < 8; loop++) {
+            let curTsd = selectedTsd[loop];
+            if (selectedTsd[loop] === '') {
+                curTsd = getClientMessage('DASHBOARD_UNSPECIFIED');
+            }
+            let btnGrp = $('<div class="btn-group">');
+            btnGrp.append('<button type="button" class="btn btn-dark dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><span id="selecteTsd' + loop + '">' + curTsd + '</span><span class="caret"></span></button>');
+            let ddMenu = $('<ul class="dropdown-menu" role="menu">');
             ddMenu.append('<li role="presentation"><a onclick="selectTimeSeriesData(' + loop + ', -1)" role="menuitem" tabindex="-1" href="#">' + getClientMessage('DASHBOARD_UNSPECIFIED') + '</a></li>');
             for (let loopMenu = 0; loopMenu < agentInfos.length; loopMenu++) {
                 ddMenu.append('<li role="presentation"><a onclick="selectTimeSeriesData(' + loop + ', ' + loopMenu + ')" role="menuitem" tabindex="-1" href="#">' + agentInfos[loopMenu].Name + '</a></li>');
@@ -1222,11 +1237,12 @@ function transDisplayDashboard() {
     function selectTimeSeriesData(index, name) {
         let agentInfos = getArray(responseData['API_GET_AGTINFO'].Data.AgentInfo);
         if (name == -1) {
-            selectedTsd[index] = getClientMessage('DASHBOARD_UNSPECIFIED');
+            selectedTsd[index] = "";
+            $('#selecteTsd' + index).text(getClientMessage('DASHBOARD_UNSPECIFIED'));
         } else {
             selectedTsd[index] = agentInfos[name].Name;
+            $('#selecteTsd' + index).text(selectedTsd[index]);
         }
-        $('#selecteTsd' + index).text(selectedTsd[index]);
     }
 
     function displayDashboard() {
@@ -1246,11 +1262,15 @@ function transDisplayDashboard() {
         }
         drasPieChart($('#dashboard'), agentInfos);
     
-        $('#dashboard').append('<h4><div class="plane-link">&nbsp;&nbsp;&nbsp;&nbsp;' + getClientMessage('DASHBOARD_AGENTS') + '&nbsp;&nbsp;<a onclick="showSelectTimeSeriesDataDlg();" class="plane-link" style="cursor: pointer;" href="#"><span class="icon icon-cog" style="font-size:20px;"></span></a></div></h4>');
+        $('#dashboard').append('<h4><div class="plane-link">&nbsp;&nbsp;&nbsp;&nbsp;' + getClientMessage('DASHBOARD_AGENTS') + '&nbsp;&nbsp;<a onclick="transShowSelectTimeSeriesDataDlg();" class="plane-link" style="cursor: pointer;" href="#"><span class="icon icon-cog" style="font-size:20px;"></span></a></div></h4>');
+        let viewSettings = getArray(responseData['API_GET_VIEWSETTING'].Data.ViewSetting);
+        for (let loop = 0; loop < 8; loop++) {
+            selectedTsd[loop] = viewSettings[loop];
+        }
     
         let contents = [];
         for (let loop = 0; loop < 8; loop++) {
-            if (selectedTsd[loop] === getClientMessage('DASHBOARD_UNSPECIFIED') || selectedTsd[loop] === 'n/a') {
+            if (selectedTsd[loop] === getClientMessage('DASHBOARD_UNSPECIFIED') || selectedTsd[loop] === '') {
                 continue;
             }
             let tmpUrl = '/api/timeseriesdata/' + selectedTsd[loop] + '/';
@@ -1265,7 +1285,7 @@ function transDisplayDashboard() {
     function drawAgentStatusHistory() {
         finalSequentialApiCall();
         for (let loop = 0; loop < 8; loop++) {
-            if (selectedTsd[loop] === getClientMessage('DASHBOARD_UNSPECIFIED') || selectedTsd[loop] === 'n/a') {
+            if (selectedTsd[loop] === getClientMessage('DASHBOARD_UNSPECIFIED') || selectedTsd[loop] === '') {
                 continue;
             }
             let timeseriesdata = getArray(responseData['API_GET_TIMESERIESDATA_' + loop].Data.TimeSeriesData);
