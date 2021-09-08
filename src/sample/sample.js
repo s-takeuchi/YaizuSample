@@ -1231,7 +1231,7 @@ function transDisplayDashboard() {
             {"Index" : 7, "TargetAgent" : selectedTsd[6]},
             {"Index" : 8, "TargetAgent" : selectedTsd[7]},
         ] };
-        apiCall('POST', '/api/viewsetting/', ReqObj, 'API_POST_VIEWSETTING', displayDashboard);
+        apiCall('POST', '/api/viewsetting/', ReqObj, 'API_POST_VIEWSETTING', transDisplayDashboard);
     }
     
     function selectTimeSeriesData(index, name) {
