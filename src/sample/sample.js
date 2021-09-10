@@ -1278,12 +1278,16 @@ function transDisplayDashboard() {
         }
         if (contents.length != 0) {
             initSequentialApiCall();
-            sequentialApiCall(contents, drawAgentStatusHistory);
+            sequentialApiCall(contents, transDrawAgentStatusHitory);
         }
     }
 
-    function drawAgentStatusHistory() {
+    function transDrawAgentStatusHitory() {
         finalSequentialApiCall();
+        drawAgentStatusHistory();
+    }
+
+    function drawAgentStatusHistory() {
         for (let loop = 0; loop < 8; loop++) {
             if (selectedTsd[loop] === getClientMessage('DASHBOARD_UNSPECIFIED') || selectedTsd[loop] === '') {
                 continue;
@@ -1302,7 +1306,7 @@ function transDisplayDashboard() {
         let curTime = Math.floor(curTimeInMs / 1000);
         let startTime = curTime - 172800; // 172800 = 60sec * 60min * 24hour * 2days
         let odbTime = curTime - 86400; // 86400 = 60sec * 60min * 24hour
-        let unitw = (wsize - 60) / 172800;
+        let unitw = (wsize - 90) / 172800;
         let rectStr = '';
         for (let loopTsd = 0; timeseriesdata != null && loopTsd < timeseriesdata.length; loopTsd++) {
             let theColor = 'LightGreen';
@@ -1320,8 +1324,8 @@ function transDisplayDashboard() {
             }
             let graphX = unitw * (updTimeInt - startTime) + 50;
             let graphWidth = unitw * timeseriesdata[loopTsd].SaInterval + 1;
-            if (graphX + graphWidth > wsize - 10) {
-                graphWidth = wsize - 10 - graphX;
+            if (graphX + graphWidth > wsize - 40) {
+                graphWidth = wsize - 40 - graphX;
             }
             let dateUpdTime = new Date(updTimeInt * 1000);
             let label = dateUpdTime + ':' + timeseriesdata[loopTsd].Status;
@@ -1331,14 +1335,14 @@ function transDisplayDashboard() {
         let odbTimeDate = new Date(odbTime * 1000);
     
         let newSvg = $(
-            '<svg id="' + agentName + '" xmlns="http://www.w3.org/2000/svg" width="' + (wsize - 10) + '" height="' + hsize + '" viewBox="0 0 ' + (wsize - 10) + ' ' + hsize + '">' +
+            '<svg id="' + agentName + '" xmlns="http://www.w3.org/2000/svg" width="' + (wsize - 40) + '" height="' + hsize + '" viewBox="0 0 ' + (wsize - 40) + ' ' + hsize + '">' +
             '<text x="10" y="19" fill="black">' + agentName + '</text>' +
-            '<rect x="50" y="20" width="' + (wsize - 60) + '" height="30" fill="Silver"></rect>' +
+            '<rect x="50" y="20" width="' + (wsize - 90) + '" height="30" fill="Silver"></rect>' +
             rectStr +
             '<line x1="50" y1="40" x2="50" y2="65" stroke="blue" stroke-width="2"/>' +
             '<text x="53" y="65" fill="blue">' + (startTimeDate.getMonth() + 1) + '/' + startTimeDate.getDate() + ' ' + ('00' + startTimeDate.getHours()).slice(-2) + ':' + ('00' + startTimeDate.getMinutes()).slice(-2) + '</text>' +
-            '<line x1="' + ((wsize - 60) / 2 + 50) + '" y1="40" x2="' + ((wsize - 60) / 2 + 50) + '" y2="65" stroke="blue" stroke-width="2"/>' +
-            '<text x="' + ((wsize - 60) / 2 + 53) + '" y="65" fill="blue">' + (odbTimeDate.getMonth() + 1) + '/' + odbTimeDate.getDate() + ' ' + ('00' + odbTimeDate.getHours()).slice(-2) + ':' + ('00' + odbTimeDate.getMinutes()).slice(-2) + '</text>' +
+            '<line x1="' + ((wsize - 90) / 2 + 50) + '" y1="40" x2="' + ((wsize - 90) / 2 + 50) + '" y2="65" stroke="blue" stroke-width="2"/>' +
+            '<text x="' + ((wsize - 90) / 2 + 53) + '" y="65" fill="blue">' + (odbTimeDate.getMonth() + 1) + '/' + odbTimeDate.getDate() + ' ' + ('00' + odbTimeDate.getHours()).slice(-2) + ':' + ('00' + odbTimeDate.getMinutes()).slice(-2) + '</text>' +
             '</svg>'
         );
     

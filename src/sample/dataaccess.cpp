@@ -933,6 +933,22 @@ int DataAccess::GetTotalNumOfTimeSeriesData()
 	return TotalNum;
 }
 
+int DataAccess::GetTimeSeriesDataTableContainsMinimumRecords()
+{
+	int MinRecs = DA_MAXNUM_OF_TIMESERIESDATA;
+	int MinTbl = 0;
+	for (int Loop = 0; Loop < 5; Loop++) {
+		wchar_t TblName[32] = L"";
+		StkPlSwPrintf(TblName, 32, L"TimeSeries%d", Loop);
+		int Recs = GetNumOfRecords(TblName);
+		if (Recs < MinRecs) {
+			MinRecs = Recs;
+			MinTbl = Loop;
+		}
+	}
+	return MinTbl;
+}
+
 int DataAccess::DeleteExpiredTimeSeriesData()
 {
 	int TotalNumOfTargetIds = 0;
@@ -967,7 +983,7 @@ int DataAccess::DeleteExpiredTimeSeriesData()
 		}
 		delete TopResDat;
 
-		// Delete expored data
+		// Delete expired data
 		for (int DelLoop = 0; DelLoop < NumOfTargetIds; DelLoop++) {
 			ColumnData *ColDatFind[2];
 			ColDatFind[0] = new ColumnDataInt(L"AgentId", TargetIdList[DelLoop]);
@@ -1013,8 +1029,17 @@ int DataAccess::AddTimeSeriesData(const wchar_t* AgtName, int Status)
 		return -1;
 	}
 	long long UpdTime = StkPlGetTime();
+	// Get target TimeSeries table index
+	wchar_t AgtMapPropName[32] = L"";
+	StkPlSwPrintf(AgtMapPropName, 32, L"AgentTsdMap%05d", AgtId);
+	int TargetTblIdx = StkWebAppUm_GetPropertyValueInt(AgtMapPropName);
+	if (TargetTblIdx == -1) {
+		TargetTblIdx = GetTimeSeriesDataTableContainsMinimumRecords();
+		StkWebAppUm_SetPropertyValueInt(AgtMapPropName, TargetTblIdx);
+	}
+	// Acquire time series data
 	wchar_t TblName[32] = L"";
-	StkPlSwPrintf(TblName, 32, L"TimeSeries%d", AgtId % 5);
+	StkPlSwPrintf(TblName, 32, L"TimeSeries%d", TargetTblIdx);
 	ColumnData *ColDatAgtUpd[4];
 	ColDatAgtUpd[0] = new ColumnDataInt(L"AgentId", AgtId);
 	ColDatAgtUpd[1] = new ColumnDataBin(L"UpdTime", (unsigned char*)&UpdTime, DA_MAXLEN_OF_UNIXTIME);
@@ -1052,8 +1077,16 @@ int DataAccess::GetTimeSeriesData(const wchar_t* AgtName, int AgtId[DA_MAXNUM_OF
 	if (TargetAgtId == -1) {
 		return -1;
 	}
+	// Get target TimeSeries table index
+	wchar_t AgtMapPropName[32] = L"";
+	StkPlSwPrintf(AgtMapPropName, 32, L"AgentTsdMap%05d", TargetAgtId);
+	int TargetTblIdx = StkWebAppUm_GetPropertyValueInt(AgtMapPropName);
+	if (TargetTblIdx == -1) {
+		return 0;
+	}
+
 	wchar_t TblName[32] = L"";
-	StkPlSwPrintf(TblName, 32, L"TimeSeries%d", TargetAgtId % 5);
+	StkPlSwPrintf(TblName, 32, L"TimeSeries%d", TargetTblIdx);
 	ColumnData* ColDatTimeSeriesFind[1];
 	ColDatTimeSeriesFind[0] = new ColumnDataInt(L"AgentId", TargetAgtId);
 	RecordData* RecDatTimeSeriesFind = new RecordData(TblName, ColDatTimeSeriesFind, 1);
