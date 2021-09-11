@@ -606,14 +606,17 @@ int main(int argc, char* argv[])
 			StartXxx(HostOrIpAddr, PortNum, InvalidDirectory, NULL);
 		}
 		while (true) { StkPlSleepMs(1000); }
-	} else {
+	} else if (argc == 2 && StkPlStrCmp(argv[1], "help") == 0) {
 		StkPlPrintf("Usage: %s  destination_host_name_or_IP_addres  port_number  path_to_bucket  host_name  [trusted_certificate]\r\n", argv[0]);
+	} else if (argc == 1) {
 #ifdef WIN32
 		StartServiceCtrlDispatcher(ServiceTable);
 #else
 		LoadPropertyFileAndStart();
 		while (true) { StkPlSleepMs(1000); }
 #endif
+	} else {
+		StkPlPrintf("Command option error.  Execute '%s help' to refer to command options.\r\n", argv[0]);
 	}
 
 	return 0;
