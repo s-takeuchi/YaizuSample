@@ -311,8 +311,10 @@ int CommonProcess(StkObject* CommandSearch, char TmpTime[64], StkWebAppSend* Snd
 				if (TmpType == 0) {
 					if (OperationFlag) {
 						StkPlWriteFile(L"aaa-operation.sh", TmpScript, StkPlStrLen(TmpScript));
+						StkPlSystem("/usr/bin/chmod 755 aaa-operation.sh");
 					} else {
 						StkPlWriteFile(L"aaa-status.sh", TmpScript, StkPlStrLen(TmpScript));
+						StkPlSystem("/usr/bin/chmod 755 aaa-status.sh");
 					}
 				} else if (TmpType == 1) {
 					if (OperationFlag) {
