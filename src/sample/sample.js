@@ -1168,16 +1168,12 @@ function viewConsole() {
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 
-function transDisplayDashboard() {
-    let contents = [];
-    contents.push({ method: 'GET', url: '/api/agent/', request: null, keystring: 'API_GET_AGTINFO' });
-    contents.push({ method: 'GET', url: '/api/viewsetting/', request: null, keystring: 'API_GET_VIEWSETTING' });
-    sequentialApiCall(contents, displayDashboard);
-}
-
 {
     // Name of selected time series data
     let selectedTsd = new Array('', '', '', '', '', '', '', '');
+
+    // Current time for drawing agent status history
+    let curTime = 0;
 
     function transShowSelectTimeSeriesDataDlg() {
         apiCall('GET', '/api/viewsetting/', null, 'API_GET_VIEWSETTING', showSelectTimeSeriesDataDlg);
@@ -1245,6 +1241,13 @@ function transDisplayDashboard() {
         }
     }
 
+    function transDisplayDashboard() {
+        let contents = [];
+        contents.push({ method: 'GET', url: '/api/agent/', request: null, keystring: 'API_GET_AGTINFO' });
+        contents.push({ method: 'GET', url: '/api/viewsetting/', request: null, keystring: 'API_GET_VIEWSETTING' });
+        sequentialApiCall(contents, displayDashboard);
+    }
+    
     function displayDashboard() {
         drowContainerFluid($('<div id="dashboard" class="col-xs-12" style="display:block"></div>'));
         if (statusCode['API_GET_AGTINFO'] == -1 || statusCode['API_GET_AGTINFO'] == 0) {
@@ -1284,6 +1287,11 @@ function transDisplayDashboard() {
 
     function transDrawAgentStatusHitory() {
         finalSequentialApiCall();
+
+        let curDate = new Date();
+        let curTimeInMs = curDate.getTime();
+        curTime = Math.floor(curTimeInMs / 1000);
+
         drawAgentStatusHistory();
     }
 
@@ -1293,6 +1301,7 @@ function transDisplayDashboard() {
                 continue;
             }
             let timeseriesdata = getArray(responseData['API_GET_TIMESERIESDATA_' + loop].Data.TimeSeriesData);
+
             drawAgentStatusHistoryImpl(selectedTsd[loop], timeseriesdata);
         }
     }
@@ -1301,9 +1310,6 @@ function transDisplayDashboard() {
         let wsize = $(window).width();
         let hsize = 70;
     
-        let curDate = new Date();
-        let curTimeInMs = curDate.getTime();
-        let curTime = Math.floor(curTimeInMs / 1000);
         let startTime = curTime - 172800; // 172800 = 60sec * 60min * 24hour * 2days
         let odbTime = curTime - 86400; // 86400 = 60sec * 60min * 24hour
         let unitw = (wsize - 90) / 172800;
@@ -1475,8 +1481,10 @@ function resizeComponent() {
     // Dashboard resize
     if ($('#dashboard').length) {
         let agentInfos = getArray(responseData['API_GET_AGTINFO'].Data.AgentInfo);
-        drasPieChart($('#dashboard'), agentInfos);
-        drawAgentStatusHistory();
+        if (agentInfos != null) {
+            drasPieChart($('#dashboard'), agentInfos);
+            drawAgentStatusHistory();
+        }
     }
 }
 
