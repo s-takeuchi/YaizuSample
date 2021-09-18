@@ -1181,8 +1181,21 @@ function viewConsole() {
 
     function showSelectTimeSeriesDataDlg() {
         let selectTsdDlg = $('<div/>');
-        selectTsdDlg.append(getClientMessage('DASHBOARD_STATUS_DESC'));
+        showInputModal('<h5 class="modal-title">' + getClientMessage('DASHBOARD_SELECt_AGENT') + '</h5>', selectTsdDlg);
     
+        if (statusCode['API_GET_VIEWSETTING'] == -1 || statusCode['API_GET_VIEWSETTING'] == 0) {
+            selectTsdDlg.append('<div id="stsError"/>');
+            displayAlertDanger('#stsError', getClientMessage('CONNERR'));
+            return;
+        }
+        if (statusCode['API_GET_VIEWSETTING'] != 200) {
+            selectTsdDlg.append('<div id="stsError"/>');
+            displayAlertDanger('#stsError', getSvrMsg(responseData['API_GET_VIEWSETTING']));
+            return;
+        }
+
+        selectTsdDlg.append(getClientMessage('DASHBOARD_STATUS_DESC'));
+
         let agentInfos = getArray(responseData['API_GET_AGTINFO'].Data.AgentInfo);
         let viewSettings = getArray(responseData['API_GET_VIEWSETTING'].Data.ViewSetting);
         for (let loop = 0; loop < 8; loop++) {
@@ -1208,7 +1221,6 @@ function viewConsole() {
             selectTsdDlg.append('</p>');
         }
     
-        showInputModal('<h5 class="modal-title">' + getClientMessage('DASHBOARD_SELECt_AGENT') + '</h5>', selectTsdDlg);
         selectTsdDlg.append('<p>');
         selectTsdDlg.append('<button type="button" id="OK" class="btn btn-dark" onclick="changeTimeSeriesData()">OK</button> ');
         selectTsdDlg.append('<button type="button" id="Cancel" class="btn btn-dark" onclick="closeInputModal()">Cancel</button> ');
@@ -1245,17 +1257,22 @@ function viewConsole() {
         let contents = [];
         contents.push({ method: 'GET', url: '/api/agent/', request: null, keystring: 'API_GET_AGTINFO' });
         contents.push({ method: 'GET', url: '/api/viewsetting/', request: null, keystring: 'API_GET_VIEWSETTING' });
-        sequentialApiCall(contents, displayDashboard);
+        MultiApiCall(contents, displayDashboard);
     }
     
     function displayDashboard() {
         drowContainerFluid($('<div id="dashboard" class="col-xs-12" style="display:block"></div>'));
-        if (statusCode['API_GET_AGTINFO'] == -1 || statusCode['API_GET_AGTINFO'] == 0) {
+        if (statusCode['API_GET_AGTINFO'] == -1 || statusCode['API_GET_AGTINFO'] == 0 ||
+            statusCode['API_GET_VIEWSETTING'] == -1 || statusCode['API_GET_VIEWSETTING'] == 0) {
             displayAlertDanger('#dashboard', getClientMessage('CONNERR'));
             return;
         }
         if (statusCode['API_GET_AGTINFO'] != 200) {
             displayAlertDanger('#dashboard', getSvrMsg(responseData['API_GET_AGTINFO']));
+            return;
+        }
+        if (statusCode['API_GET_VIEWSETTING'] != 200) {
+            displayAlertDanger('#dashboard', getSvrMsg(responseData['API_GET_VIEWSETTING']));
             return;
         }
         let agentInfos = getArray(responseData['API_GET_AGTINFO'].Data.AgentInfo);
