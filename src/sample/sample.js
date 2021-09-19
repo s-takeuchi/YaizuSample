@@ -1206,9 +1206,9 @@ function viewConsole() {
             if (selectedTsd[loop] === '') {
                 curTsd = getClientMessage('DASHBOARD_UNSPECIFIED');
             }
-            let btnGrp = $('<div class="btn-group">');
+            let btnGrp = $('<div class="btn-group" style="width:90%;">');
             btnGrp.append('<button type="button" class="btn btn-dark dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><span id="selecteTsd' + loop + '">' + curTsd + '</span><span class="caret"></span></button>');
-            let ddMenu = $('<ul class="dropdown-menu" role="menu">');
+            let ddMenu = $('<ul class="dropdown-menu" role="menu" style="width:100%;">');
             ddMenu.append('<li role="presentation"><a onclick="selectTimeSeriesData(' + loop + ', -1)" role="menuitem" tabindex="-1" href="#">' + getClientMessage('DASHBOARD_UNSPECIFIED') + '</a></li>');
             for (let loopMenu = 0; loopMenu < agentInfos.length; loopMenu++) {
                 ddMenu.append('<li role="presentation"><a onclick="selectTimeSeriesData(' + loop + ', ' + loopMenu + ')" role="menuitem" tabindex="-1" href="#">' + agentInfos[loopMenu].Name + '</a></li>');
