@@ -44,7 +44,7 @@ SPEC=sample.spec
 cat <<EOF > ./$SPEC
 Name:    YaizuSample
 Version: 1
-Release: 1%{?dist}
+Release: 1
 Summary: YaizuSample
 Requires: nginx = 1:1.12.2-1.el7_4.ngx
 

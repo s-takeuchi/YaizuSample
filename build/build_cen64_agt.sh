@@ -22,7 +22,7 @@ SPEC=agent.spec
 cat <<EOF > ./$SPEC
 Name:    YaizuSampleAgent
 Version: 1
-Release: 1%{?dist}
+Release: 1
 Summary: YaizuSampleAgent
 
 License: No License No Life
