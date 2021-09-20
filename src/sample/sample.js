@@ -1220,26 +1220,12 @@ function viewConsole() {
             selectTsdDlg.append(btnGrp);
             selectTsdDlg.append('</p>');
         }
+        selectTsdDlg.append('<div id="stsError"/>');
     
         selectTsdDlg.append('<p>');
         selectTsdDlg.append('<button type="button" id="OK" class="btn btn-dark" onclick="changeTimeSeriesData()">OK</button> ');
         selectTsdDlg.append('<button type="button" id="Cancel" class="btn btn-dark" onclick="closeInputModal()">Cancel</button> ');
         selectTsdDlg.append('</p>');
-    }
-
-    function changeTimeSeriesData() {
-        closeInputModal();
-        var ReqObj = { "ViewSetting" : [
-            {"Index" : 1, "TargetAgent" : selectedTsd[0]},
-            {"Index" : 2, "TargetAgent" : selectedTsd[1]},
-            {"Index" : 3, "TargetAgent" : selectedTsd[2]},
-            {"Index" : 4, "TargetAgent" : selectedTsd[3]},
-            {"Index" : 5, "TargetAgent" : selectedTsd[4]},
-            {"Index" : 6, "TargetAgent" : selectedTsd[5]},
-            {"Index" : 7, "TargetAgent" : selectedTsd[6]},
-            {"Index" : 8, "TargetAgent" : selectedTsd[7]},
-        ] };
-        apiCall('POST', '/api/viewsetting/', ReqObj, 'API_POST_VIEWSETTING', transDisplayDashboard);
     }
     
     function selectTimeSeriesData(index, name) {
@@ -1251,6 +1237,33 @@ function viewConsole() {
             selectedTsd[index] = agentInfos[name].Name;
             $('#selecteTsd' + index).text(selectedTsd[index]);
         }
+    }
+
+    function changeTimeSeriesData() {
+        var ReqObj = { "ViewSetting" : [
+            {"Index" : 1, "TargetAgent" : selectedTsd[0]},
+            {"Index" : 2, "TargetAgent" : selectedTsd[1]},
+            {"Index" : 3, "TargetAgent" : selectedTsd[2]},
+            {"Index" : 4, "TargetAgent" : selectedTsd[3]},
+            {"Index" : 5, "TargetAgent" : selectedTsd[4]},
+            {"Index" : 6, "TargetAgent" : selectedTsd[5]},
+            {"Index" : 7, "TargetAgent" : selectedTsd[6]},
+            {"Index" : 8, "TargetAgent" : selectedTsd[7]},
+        ] };
+        apiCall('POST', '/api/viewsetting/', ReqObj, 'API_POST_VIEWSETTING', afterChangeTimeSeriesData);
+    }
+
+    function afterChangeTimeSeriesData() {
+        if (statusCode['API_POST_VIEWSETTING'] == -1 || statusCode['API_POST_VIEWSETTING'] == 0) {
+            displayAlertDanger('#stsError', getClientMessage('CONNERR'));
+            return;
+        }
+        if (statusCode['API_POST_VIEWSETTING'] != 200) {
+            displayAlertDanger('#stsError', getSvrMsg(responseData['API_POST_VIEWSETTING']));
+            return;
+        }
+        closeInputModal();
+        transDisplayDashboard();
     }
 
     function transDisplayDashboard() {
@@ -1282,7 +1295,11 @@ function viewConsole() {
         }
         drasPieChart($('#dashboard'), agentInfos);
     
-        $('#dashboard').append('<h4><div class="plane-link">&nbsp;&nbsp;&nbsp;&nbsp;' + getClientMessage('DASHBOARD_AGENTS') + '&nbsp;&nbsp;<a onclick="transShowSelectTimeSeriesDataDlg();" class="plane-link" style="cursor: pointer;" href="#"><span class="icon icon-cog" style="font-size:20px;"></span></a></div></h4>');
+        let selectAgentBtn = '';
+        if (userRole != 1) {
+            selectAgentBtn = '<a onclick="transShowSelectTimeSeriesDataDlg();" class="plane-link" style="cursor: pointer;" href="#"><span class="icon icon-cog" style="font-size:20px;"></span></a>';
+        }
+        $('#dashboard').append('<h4><div class="plane-link">&nbsp;&nbsp;&nbsp;&nbsp;' + getClientMessage('DASHBOARD_AGENTS') + '&nbsp;&nbsp;' + selectAgentBtn + '</div></h4>');
         let viewSettings = getArray(responseData['API_GET_VIEWSETTING'].Data.ViewSetting);
         for (let loop = 0; loop < 8; loop++) {
             selectedTsd[loop] = viewSettings[loop];
