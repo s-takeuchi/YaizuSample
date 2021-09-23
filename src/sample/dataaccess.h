@@ -75,7 +75,7 @@ public:
 	int IncreaseId(const wchar_t*);
 
 	int GetTotalNumOfTimeSeriesData();
-	int GetTimeSeriesDataTableContainsMinimumRecords();
+	int GetTimeSeriesDataTableContainsLessAmountOfOfAgents();
 	int DeleteExpiredTimeSeriesData();
 	int AddTimeSeriesData(const wchar_t*, int);
 	int GetTimeSeriesData(const wchar_t*, int[DA_MAXNUM_OF_TIMESERIESDATA], long long[DA_MAXNUM_OF_TIMESERIESDATA], int[DA_MAXNUM_OF_TIMESERIESDATA], int[DA_MAXNUM_OF_TIMESERIESDATA]);

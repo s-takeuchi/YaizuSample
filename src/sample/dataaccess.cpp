@@ -933,20 +933,31 @@ int DataAccess::GetTotalNumOfTimeSeriesData()
 	return TotalNum;
 }
 
-int DataAccess::GetTimeSeriesDataTableContainsMinimumRecords()
+int DataAccess::GetTimeSeriesDataTableContainsLessAmountOfOfAgents()
 {
-	int MinRecs = DA_MAXNUM_OF_TIMESERIESDATA;
-	int MinTbl = 0;
-	for (int Loop = 0; Loop < 5; Loop++) {
-		wchar_t TblName[32] = L"";
-		StkPlSwPrintf(TblName, 32, L"TimeSeries%d", Loop);
-		int Recs = GetNumOfRecords(TblName);
-		if (Recs < MinRecs) {
-			MinRecs = Recs;
-			MinTbl = Loop;
+	wchar_t Name[STKWEBAPPUM_MAXNUM_OF_PROPERTY_RECORDS][STKWEBAPPUM_MAXLEN_OF_PROPERTY_NAME];
+	int ValInt[STKWEBAPPUM_MAXNUM_OF_PROPERTY_RECORDS];
+	wchar_t ValWStr[STKWEBAPPUM_MAXNUM_OF_PROPERTY_RECORDS][STKWEBAPPUM_MAXLEN_OF_PROPERTY_VALUEWSTR];
+	int TblCnt[5] = { 0, 0, 0, 0, 0 };
+
+	int NumProp = StkWebAppUm_GetAllPropertyData(Name, ValInt, ValWStr);
+	for (int Loop = 0; Loop < NumProp; Loop++) {
+		if (StkPlWcsStr(Name[Loop], L"AgentTsdMap") != 0) {
+			int TmpInt = ValInt[Loop];
+			if (TmpInt >= 0 && TmpInt < 5) {
+				TblCnt[TmpInt]++;
+			}
 		}
 	}
-	return MinTbl;
+	int MinVal = TblCnt[0];
+	int MinIndex = 0;
+	for (int Loop = 1; Loop < 5; Loop++) {
+		if (TblCnt[Loop] < MinVal) {
+			MinVal = TblCnt[Loop];
+			MinIndex = Loop;
+		}
+	}
+	return MinIndex;
 }
 
 int DataAccess::DeleteExpiredTimeSeriesData()
@@ -1034,7 +1045,7 @@ int DataAccess::AddTimeSeriesData(const wchar_t* AgtName, int Status)
 	StkPlSwPrintf(AgtMapPropName, 32, L"AgentTsdMap%05d", AgtId);
 	int TargetTblIdx = StkWebAppUm_GetPropertyValueInt(AgtMapPropName);
 	if (TargetTblIdx == -1) {
-		TargetTblIdx = GetTimeSeriesDataTableContainsMinimumRecords();
+		TargetTblIdx = GetTimeSeriesDataTableContainsLessAmountOfOfAgents();
 		StkWebAppUm_SetPropertyValueInt(AgtMapPropName, TargetTblIdx);
 	}
 	// Acquire time series data
@@ -1051,7 +1062,7 @@ int DataAccess::AddTimeSeriesData(const wchar_t* AgtName, int Status)
 	UnlockTable(TblName);
 	delete RecDatAgtUpd;
 
-	return 0;
+	return TargetTblIdx;
 }
 
 int DataAccess::GetTimeSeriesData(const wchar_t* AgtName, int AgtId[DA_MAXNUM_OF_TIMESERIESDATA], long long UpdTime[DA_MAXNUM_OF_TIMESERIESDATA], int Status[DA_MAXNUM_OF_TIMESERIESDATA], int SaInterval[DA_MAXNUM_OF_TIMESERIESDATA])
