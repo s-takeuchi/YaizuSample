@@ -17,7 +17,7 @@
 CmdFreakのREST APIは，以下の一覧に示すAPIをクライアント提供します。
 <table class="tblstyle">
 <tr><td>GET /api/server/</td><td>Acquires server information of YaizuSample</td></tr>
-<tr><td>POST /api/server/</td><td>Configure server information.</td></tr>
+<tr><td>POST /api/server/</td><td>Configure server information</td></tr>
 <tr><td>GET /api/command/</td><td>Get command information</td></tr>
 <tr><td>POST /api/command/</td><td>Configure command information</td></tr>
 <tr><td>DELETE /api/command/n/</td><td>Delete command information</td></tr>
@@ -30,6 +30,9 @@ CmdFreakのREST APIは，以下の一覧に示すAPIをクライアント提供�
 <tr><td>GET /api/filelist/</td><td>Get file information list in the target directory</td></tr>
 <tr><td>DELETE /api/file/x/</td><td>Delete file</td></tr>
 <tr><td>GET /api/commandresult/x/</td><td>Get command execution result</td></tr>
+<tr><td>GET /api/viewsetting/</td><td>Get view setting</td></tr>
+<tr><td>POST /api/viewsetting/</td><td>Configure view setting</td></tr>
+<tr><td>GET /api/timeseriesdata/x/</td><td>Get time series data</td></tr>
 </table>
 </div>
 
@@ -661,7 +664,7 @@ Delete the specified file.<br/>
 </pre>
 <table class="tblstyle">
 <tr><td>Code</td><td>Integer</td><td>Result code
-                                     0:success(HTTP status code=200)
+                                     0:success(HTTP status code=200),
                                      4206:Authorization error(HTTP status code=401),
                                      4204:Access Right error(HTTP status code=403),
 </td></tr>
@@ -686,36 +689,36 @@ Delete the specified file.<br/>
     <li>Response<br/>
       <u>In case x is not specified.</u>
       <pre>
-      {
-        "Code" : 1234,
-        "MsgEng" : "abc",
-        "MsgJpn" : "あいう",
-        "Data" : {
-          "Result" : {
-            "AgentName" : "agent name",
-            "CommandName" : "command name",
-            "UpdTime" : "00000000ffffffff",
-            "Id" : 123
-          }
-        }
-      }
+{
+  "Code" : 1234,
+  "MsgEng" : "abc",
+  "MsgJpn" : "あいう",
+  "Data" : {
+    "Result" : {
+      "AgentName" : "agent name",
+      "CommandName" : "command name",
+      "UpdTime" : "00000000ffffffff",
+      "Id" : 123
+    }
+  }
+}
       </pre>
       <u>In case x is specified.</u>
       <pre>
-        {
-          "Code" : 1234,
-          "MsgEng" : "abc",
-          "MsgJpn" : "あいう",
-          "Data" : {
-            "Result" : {
-              "Output" : "00FF00FF00FF00FF"
-            }
-          }
-        }
+{
+  "Code" : 1234,
+  "MsgEng" : "abc",
+  "MsgJpn" : "あいう",
+  "Data" : {
+    "Result" : {
+      "Output" : "00FF00FF00FF00FF"
+    }
+  }
+}
       </pre>
       <table class="tblstyle">
         <tr><td>Code</td><td>Integer</td><td>Result code
-                                             0:success(HTTP status code=200)
+                                             0:success(HTTP status code=200),
                                              4206:Authorization error(HTTP status code=401),
                                              4100:The specified result does not exist(HTTP status code=400),
         </td></tr>
@@ -731,6 +734,140 @@ Delete the specified file.<br/>
       </table><br/>
     </li>
   </ul>
+</div>
+
+
+<H2 ID="2.17">2.17 GET /api/viewsetting/</H2>
+<div class="topic">
+  Get view setting.<br/>
+  <ul>
+    <li>Request
+      <p>nothing</p>
+    </li>
+    <li>Response
+      <pre>
+{
+  "Code" : 1234,
+  "MsgEng" : "abc",
+  "MsgJpn" : "あいう",
+  "Data" : {
+    "ViewSetting" : [
+      "agent-1",
+      "agent-2",
+      "agent-3",
+      "agent-4",
+      "agent-5",
+      "agent-6",
+      "agent-7",
+      "agent-8"
+    ]
+  }
+}
+      </pre>
+      <table class="tblstyle">
+        <tr><td>Code</td><td>Integer</td><td>Result code
+                                             0:success(HTTP status code=200),
+                                             4206:Authorization error(HTTP status code=401)
+        </td></tr>
+        <tr><td>MsgEng</td><td>String</td><td>English message. Empty string is returned when result code is 0.</td></tr>
+        <tr><td>MsgJpn</td><td>String</td><td>Japanese message. Empty string is returned when result code is 0.</td></tr>
+        <tr><td>Data</td><td>Element</td><td>Not returned when result code is not zero.</td></tr>
+        <tr><td>ViewSetting</td><td>Array of String</td><td>Array of name of the agent whose time series data are displayed on dashboard.</td></tr>
+      </table><br/>
+    </li>
+  </ul>    
+</div>
+
+
+<H2 ID="2.18">2.18 POST /api/viewsetting/</H2>
+<div class="topic">
+  Configure view setting.<br/>
+  <ul>
+    <li>Request
+      <pre>
+{
+  "ViewSetting" : [
+    { "Index" : 1, "TargetAgent" : "agent-1" },
+    { "Index" : 2, "TargetAgent" : "agent-2" },
+    { "Index" : 3, "TargetAgent" : "agent-3" },
+    { "Index" : 4, "TargetAgent" : "agent-4" },
+    { "Index" : 5, "TargetAgent" : "agent-5" },
+    { "Index" : 6, "TargetAgent" : "agent-6" },
+    { "Index" : 7, "TargetAgent" : "agent-7" },
+    { "Index" : 8, "TargetAgent" : "agent-8" }
+  ]
+}
+      </pre>
+      <table class="tblstyle">
+        <tr><td>ViewSetting</td><td>Element</td><td></td></tr>
+        <tr><td>Index</td><td>Integer</td><td>Index of view setting data</td></tr>
+        <tr><td>TargetAgent</td><td>String</td><td>Name of the agent whose time series data are displayed on dashboard.</td></tr>
+      </table><br/>
+    </li>
+    <li>Response
+      <pre>
+{
+  "Code" : 1234,
+  "MsgEng" : "abc",
+  "MsgJpn" : "あいう",
+}
+      </pre>
+      <table class="tblstyle">
+        <tr><td>Code</td><td>Integer</td><td>Result code
+                                             0:success(HTTP status code=200),
+                                             4206:Authorization error(HTTP status code=401),
+                                             4204:Access Right error(HTTP status code=403),
+                                             4201:Name element does not exist(HTTP status code=400),
+                                             4203:No request specified(HTTP status code=400)
+        </td></tr>
+        <tr><td>MsgEng</td><td>String</td><td>English message. Empty string is returned when result code is 0.</td></tr>
+        <tr><td>MsgJpn</td><td>String</td><td>Japanese message. Empty string is returned when result code is 0.</td></tr>
+      </table><br/>
+    </li>
+  </ul>    
+</div>
+
+
+<H2 ID="2.19">2.19 GET /api/timeseriesdata/x/</H2>
+<div class="topic">
+  Get time series data.<br/>
+  <ul>
+    <li>Request
+      <p>
+        x in URL means agent name which you want to get.<br/>
+      </p>
+    </li>
+    <li>Response
+      <pre>
+{
+  "Code" : 1234,
+  "MsgEng" : "abc",
+  "MsgJpn" : "あいう",
+  "Data" : {
+    "TimeSeriesData" : [
+      { "AgentId" : "agent-1", "UpdTime" : "00ff00ff00ff00ff", "Status" : 0, "SaInterval", 300 },
+      { "AgentId" : "agent-1", "UpdTime" : "00ff00ff00ffffff", "Status" : 0, "SaInterval", 300 },
+      { "AgentId" : "agent-1", "UpdTime" : "00ff00ffffffffff", "Status" : 0, "SaInterval", 300 }
+    ]
+  }
+}
+      </pre>
+      <table class="tblstyle">
+        <tr><td>Code</td><td>Integer</td><td>Result code
+                                             0:success(HTTP status code=200),
+                                             4206:Authorization error(HTTP status code=401),
+        </td></tr>
+        <tr><td>MsgEng</td><td>String</td><td>English message. Empty string is returned when result code is 0.</td></tr>
+        <tr><td>MsgJpn</td><td>String</td><td>Japanese message. Empty string is returned when result code is 0.</td></tr>
+        <tr><td>Data</td><td>Element</td><td>Not returned when result code is not zero.</td></tr>
+        <tr><td>TimeSeriesData</td><td>Element</td><td>Time series data of specified agent.</td></tr>
+        <tr><td>AgentId</td><td>String</td><td>Agent which you want to acquire the time series data.</td></tr>
+        <tr><td>UpdTime</td><td>String</td><td>Hexadecimal expression in 16 characters of status update time (unix epoch time).</td></tr>
+        <tr><td>Status</td><td>Integer</td><td>Agent status of the point.</td></tr>
+        <tr><td>SaInterval</td><td>Integer</td><td>Interval of agent's status acquisition.</td></tr>
+      </table><br/>
+    </li>
+  </ul>    
 </div>
 
 </div><p>
