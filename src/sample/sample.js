@@ -246,10 +246,6 @@ function displayAgentInfo() {
             showAgentPropertiesDialog(AgentInfo[loop].Name);
         });
     }
-    let agentInfoButtonDiv = $('<div id="agentinfobutton" style="padding: 6px 6px 10px 10px; background-color: #e9ecef">')
-    agentInfoButtonDiv.append('<button type="button" id="setAgentStatusCommand" class="btn btn-dark disabled" onclick="displayAgentStatusCommandDlg()">' + getClientMessage('AISETSTATUSCMD') + '</button> ');
-    agentInfoButtonDiv.append('<button type="button" id="execOpeCommand" class="btn btn-dark disabled" onclick="displayExecCommandDlg()">' + getClientMessage('AIEXECCMD') + '</button> ');
-    $('#agtinfo').append(agentInfoButtonDiv);
     resizeComponent();
 }
 
@@ -277,10 +273,17 @@ function switchAgentInfoButton() {
             foundFlag = true;
         }
     }
+    clearRsCommand();
     if (foundFlag == true) {
+        addRsCommand("displayAgentStatusCommandDlg()", "icon-pencil", true);
+        addRsCommand("displayExecCommandDlg()", "icon-play", true);
+        addRsCommand("displayExecCommandDlg()", "icon-bin", true);
         $('#setAgentStatusCommand').removeClass('disabled');
         $('#execOpeCommand').removeClass('disabled');
     } else {
+        addRsCommand("displayAgentStatusCommandDlg()", "icon-pencil", false);
+        addRsCommand("displayExecCommandDlg()", "icon-play", false);
+        addRsCommand("displayExecCommandDlg()", "icon-bin", false);
         $('#setAgentStatusCommand').addClass('disabled');
         $('#execOpeCommand').addClass('disabled');
     }
@@ -872,6 +875,7 @@ function switchFileInfoButton() {
             }
         }
     }
+    clearRsCommand();
     if (foundFlag == true) {
         $('#fileInfoDelete').removeClass('disabled');
     } else {
@@ -942,6 +946,7 @@ function transDisplayCommand() {
 
 function displayCommand() {
     drowContainer($('<div id="command" class="row col-xs-12" style="display:block"></div>'));
+    clearRsCommand();
 
     $('#command').append('<h2>' + getClientMessage('COMMAND') + '</h2>');
     if (statusCode['API_GET_COMMAND'] == -1 || statusCode['API_GET_COMMAND'] == 0) {
@@ -1099,6 +1104,8 @@ function transDisplayCommandResult() {
 
 function displayCommandResult() {
     drowContainerFluid($('<div id="commandresult" class="col-xs-12" style="display:block"></div>'));
+    clearRsCommand();
+
     if (statusCode['API_GET_COMMANDRESULT'] == -1 || statusCode['API_GET_COMMANDRESULT'] == 0) {
         displayAlertDanger('#commandresult', getClientMessage('CONNERR'));
         return;
@@ -1275,6 +1282,8 @@ function viewConsole() {
     
     function displayDashboard() {
         drowContainerFluid($('<div id="dashboard" class="col-xs-12" style="display:block"></div>'));
+        clearRsCommand();
+
         if (statusCode['API_GET_AGTINFO'] == -1 || statusCode['API_GET_AGTINFO'] == 0 ||
             statusCode['API_GET_VIEWSETTING'] == -1 || statusCode['API_GET_VIEWSETTING'] == 0) {
             displayAlertDanger('#dashboard', getClientMessage('CONNERR'));
@@ -1505,10 +1514,8 @@ function checkLoginAfterApiCall() {
 
 function resizeComponent() {
     let wsize = $(window).width();
-    let hsize_agentinfotable = $(window).height() - 111;
     let hsize_filemgmttable = $(window).height() - 111;
     let hsize_resulttable = $(window).height() - 57;
-    $("#agentinfotable").css("height", hsize_agentinfotable + "px");
     $("#filemgmttable").css("height", hsize_filemgmttable + "px");
     $("#resulttable").css("height", hsize_resulttable + "px");
 
