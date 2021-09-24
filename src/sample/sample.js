@@ -63,6 +63,7 @@ function initClientMessage() {
         'en':'Information related wtih the specified agents will be deleted from SERVAL server .<br/>Uninstall agents from the hosts to avoid re-registration of the agents.<br/>', 
         'ja':'指定したエージェントに関連する情報はSERVALサーバから削除されます。<br/>エージェントが再登録されないようにホストからエージェントをアンインストールしてください。<br/>'
     });
+    addClientMessage('DELAGENTLIST', {'en':'Agents shown below will be deleted.', 'ja':'以下のエージェントが削除されます。'});
     addClientMessage('RESCODE-980', {'en':'-980 : Agent service has started.\r\n', 'ja':'-980 : エージェントサービスが起動した\r\n'});
     addClientMessage('RESCODE-981', {'en':'-981 : No script is defined.\r\n', 'ja':'-981 : スクリプトが定義されていない\r\n'});
     addClientMessage('RESCODE-982', {'en':'-982 : Status acquisition cmd has been changed.\r\n', 'ja':'-982 : 状態取得コマンドが変更された\r\n'});
@@ -283,14 +284,10 @@ function switchAgentInfoButton() {
         addRsCommand("displayAgentStatusCommandDlg()", "icon-pencil", true);
         addRsCommand("displayExecCommandDlg()", "icon-play", true);
         addRsCommand("displayDeleteAgentDlg()", "icon-bin", true);
-        $('#setAgentStatusCommand').removeClass('disabled');
-        $('#execOpeCommand').removeClass('disabled');
     } else {
         addRsCommand("displayAgentStatusCommandDlg()", "icon-pencil", false);
         addRsCommand("displayExecCommandDlg()", "icon-play", false);
         addRsCommand("displayDeleteAgentDlg()", "icon-bin", false);
-        $('#setAgentStatusCommand').addClass('disabled');
-        $('#execOpeCommand').addClass('disabled');
     }
 }
 
@@ -432,13 +429,50 @@ function selectAgentStatusCommand(agentStatusCommand) {
 }
 
 function displayDeleteAgentDlg() {
-    var deleteAgentDlg = $('<div/>')
+    let AgentInfo = getArray(responseData['API_GET_AGTINFO'].Data.AgentInfo);
+    let foundFlag = false;
+    for (var loop = 0; loop < AgentInfo.length; loop++) {
+        if ($('#agtInfoId' + loop).prop('checked') == true) {
+            foundFlag = true;
+        }
+    }
+    if (foundFlag == false) {
+        return;
+    }
+
+    let deleteAgentDlg = $('<div/>')
     deleteAgentDlg.append(getClientMessage('DELAGENTCONFIRM'));
+    deleteAgentDlg.append(getClientMessage('DELAGENTLIST'));
     deleteAgentDlg.append('<p></p>');
-    deleteAgentDlg.append('<button type="button" id="OK" class="btn btn-dark" onclick="closeInputModal()">Delete</button> ');
+    for (let loop = 0; loop < AgentInfo.length; loop++) {
+        if ($('#agtInfoId' + loop).prop('checked') == true) {
+            deleteAgentDlg.append('&nbsp;&nbsp;&nbsp;' + AgentInfo[loop].Name + '<br/>');
+        }
+    }
+    deleteAgentDlg.append('<p></p>');
+
+    deleteAgentDlg.append('<button type="button" id="OK" class="btn btn-dark" onclick="closeDeleteAgentDlg()">Delete</button> ');
     deleteAgentDlg.append('<button type="button" id="Cancel" class="btn btn-dark" onclick="closeInputModal()">Cancel</button> ');
 
     showInputModal('<h5 class="modal-title">' + getClientMessage('DELAGENT') + '</h5>', deleteAgentDlg);
+}
+
+function closeDeleteAgentDlg() {
+    let AgentInfo = getArray(responseData['API_GET_AGTINFO'].Data.AgentInfo);
+    let contents = [];
+    for (var loop = 0; loop < AgentInfo.length; loop++) {
+        if ($('#agtInfoId' + loop).prop('checked') == true) {
+            contents.push({ method: 'DELETE', url: '/api/agent/' + AgentInfo[loop].Name + '/', request: null, keystring: 'API_DELETE_AGTINFO' })
+        }
+    }
+    initSequentialApiCall();
+    sequentialApiCall(contents, completeDeleteAgentDlg);
+    closeInputModal();
+}
+
+function completeDeleteAgentDlg() {
+    finalSequentialApiCall();
+    transDisplayAgentInfo();
 }
 
 function showAgentPropertiesDialog(targetName) {
@@ -1521,9 +1555,9 @@ function checkLoginAfterApiCall() {
 
 function resizeComponent() {
     let wsize = $(window).width();
-    let hsize_agentinfotable = window.innerHeight - 57;
-    let hsize_filemgmttable = window.innerHeight - 57;
-    let hsize_resulttable = window.innerHeight - 57;
+    let hsize_agentinfotable = $(window).height() - 57;
+    let hsize_filemgmttable = $(window).height() - 57;
+    let hsize_resulttable = $(window).height() - 57;
     $("#agentinfotable").css("height", hsize_agentinfotable + "px");
     $("#filemgmttable").css("height", hsize_filemgmttable + "px");
     $("#resulttable").css("height", hsize_resulttable + "px");

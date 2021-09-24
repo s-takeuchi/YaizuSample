@@ -12,6 +12,7 @@
 #include "ApiPostServerInfo.h"
 #include "ApiGetAgentInfo.h"
 #include "ApiPostAgentInfo.h"
+#include "ApiDeleteAgentInfo.h"
 #include "ApiGetCommandForStatus.h"
 #include "ApiGetCommand.h"
 #include "ApiPostCommand.h"
@@ -125,6 +126,8 @@ void InitMessageResource()
 	MessageProc::AddJpn(MSG_SERVICESTOPPED, L"サービスが停止しました。");
 	MessageProc::AddEng(MSG_SERVICETERMINATED, L"Service has terminated.");
 	MessageProc::AddJpn(MSG_SERVICETERMINATED, L"サービスが異常停止しました。");
+	MessageProc::AddEng(MSG_AGTDELETE, L"An agent has been deleted.");
+	MessageProc::AddJpn(MSG_AGTDELETE, L"エージェントを削除しました。");
 	MessageProc::AddEng(MSG_NEWAGTNOTIFIED, L"New agent information has been notified.");
 	MessageProc::AddJpn(MSG_NEWAGTNOTIFIED, L"新規にエージェント情報が通知されました。");
 	MessageProc::AddEng(MSG_SVRINFOUPDATED, L"Server information has been changed.");
@@ -304,6 +307,8 @@ void Server(wchar_t* IpAddr, int Port, int NumOfWorkerThreads, int ThreadInterva
 	Soc->AddReqHandler(StkWebAppExec::STKWEBAPP_METHOD_POST, L"/api/viewsetting/", (StkWebAppExec*)ApiPostViewSettingObj);
 	ApiGetViewSetting* ApiGetViewSettingObj = new ApiGetViewSetting();
 	Soc->AddReqHandler(StkWebAppExec::STKWEBAPP_METHOD_GET, L"/api/viewsetting/", (StkWebAppExec*)ApiGetViewSettingObj);
+	ApiDeleteAgentInfo* ApiDeleteAgentInfoObj = new ApiDeleteAgentInfo();
+	Soc->AddReqHandler(StkWebAppExec::STKWEBAPP_METHOD_DELETE, L"/api/agent/$/", (StkWebAppExec*)ApiDeleteAgentInfoObj);
 
 	StkWebAppUm_RegisterApi(Soc);
 
@@ -329,6 +334,7 @@ void Server(wchar_t* IpAddr, int Port, int NumOfWorkerThreads, int ThreadInterva
 	Soc->DeleteReqHandler(StkWebAppExec::STKWEBAPP_METHOD_GET, L"/api/timeseriesdata/$/");
 	Soc->DeleteReqHandler(StkWebAppExec::STKWEBAPP_METHOD_POST, L"/api/viewsetting/");
 	Soc->DeleteReqHandler(StkWebAppExec::STKWEBAPP_METHOD_GET, L"/api/viewsetting/");
+	Soc->DeleteReqHandler(StkWebAppExec::STKWEBAPP_METHOD_DELETE, L"/api/agent/$/");
 
 	StkWebAppUm_UnregisterApi(Soc);
 

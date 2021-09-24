@@ -532,6 +532,69 @@ long long DataAccess::GetAgentInfoForTime(int Type, wchar_t AgtName[DA_MAXLEN_OF
 	return IniTime;
 }
 
+void DataAccess::DeleteAgentInfo(wchar_t AgtName[DA_MAXLEN_OF_AGTNAME])
+{
+	{
+		// Delete time series data and its mapping info
+		ColumnData *ColDatAgtFind[1];
+		ColDatAgtFind[0] = new ColumnDataWStr(L"Name", AgtName);
+		RecordData* RecDatAgtFind = new RecordData(L"AgentInfo", ColDatAgtFind, 1);
+		LockTable(L"AgentInfo", LOCK_SHARE);
+		RecordData* ResDat = GetRecord(RecDatAgtFind);
+		UnlockTable(L"AgentInfo");
+		int AgtId = -1;
+		if (ResDat) {
+			ColumnDataInt* AgtIdColDat = (ColumnDataInt*)ResDat->GetColumn(0);
+			if (AgtIdColDat) {
+				AgtId = AgtIdColDat->GetValue();
+			}
+		}
+		delete ResDat;
+		delete RecDatAgtFind;
+
+		wchar_t AgtMapPropName[32] = L"";
+		StkPlSwPrintf(AgtMapPropName, 32, L"AgentTsdMap%05d", AgtId);
+		int TargetTblIdx = StkWebAppUm_GetPropertyValueInt(AgtMapPropName);
+		if (TargetTblIdx != -1) {
+			// Acquire time series data
+			wchar_t TblName[32] = L"";
+			StkPlSwPrintf(TblName, 32, L"TimeSeries%d", TargetTblIdx);
+			ColumnData *ColDatAgtDel[4];
+			ColDatAgtDel[0] = new ColumnDataInt(L"AgentId", AgtId);
+			RecordData* RecDatAgtDel = new RecordData(TblName, ColDatAgtDel, 1);
+			LockTable(TblName, LOCK_EXCLUSIVE);
+			DeleteRecord(RecDatAgtDel);
+			UnlockTable(TblName);
+			delete RecDatAgtDel;
+		}
+		StkWebAppUm_DeleteProperty(AgtMapPropName);
+	}
+
+	{
+		// Delete AgentInfo
+		ColumnData *ColDatAgtFind[1];
+		ColDatAgtFind[0] = new ColumnDataWStr(L"Name", AgtName);
+		RecordData* RecDatAgtFind = new RecordData(L"AgentInfo", ColDatAgtFind, 1);
+		LockTable(L"AgentInfo", LOCK_EXCLUSIVE);
+		DeleteRecord(RecDatAgtFind);
+		UnlockTable(L"AgentInfo");
+		delete RecDatAgtFind;
+	}
+
+	{
+		// Reset ViewSetting
+		for (int Loop = 1; Loop <= 8; Loop++) {
+			wchar_t TargetAgent[DA_MAXLEN_OF_AGTNAME] = L"";
+			wchar_t PropName[256] = L"";
+			StkPlSwPrintf(PropName, 256, L"ViewSetting_d%d", Loop);
+			StkWebAppUm_GetPropertyValueWStr(PropName, TargetAgent);
+			if (StkPlWcsCmp(TargetAgent, AgtName) == 0) {
+				StkWebAppUm_SetPropertyValueWStr(PropName, L"");
+			}
+		}
+	}
+}
+
 int  DataAccess::GetServerInfo(int* PInterval, int* SaInterval)
 {
 	LockTable(L"ServerInfo", LOCK_SHARE);

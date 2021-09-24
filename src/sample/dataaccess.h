@@ -57,6 +57,7 @@ public:
 	long long GetAgentInfoForReqTime(wchar_t[DA_MAXLEN_OF_AGTNAME]);
 	long long GetAgentInfoForUpdTime(wchar_t[DA_MAXLEN_OF_AGTNAME]);
 	long long GetAgentInfoForIniTime(wchar_t[DA_MAXLEN_OF_AGTNAME]);
+	void DeleteAgentInfo(wchar_t AgtName[DA_MAXLEN_OF_AGTNAME]);
 
 	int GetServerInfo(int*, int*);
 	int SetServerInfo(int, int);
