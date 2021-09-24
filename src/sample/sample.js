@@ -58,6 +58,11 @@ function initClientMessage() {
     addClientMessage('SELOPCMD', {'en':'Select operation command', 'ja':'操作コマンドを選択してください'});
     addClientMessage('SELSTATUSCMD', {'en':'Select status acquisition command', 'ja':'状態取得コマンドを選択してください'});
     addClientMessage('SELCMD', {'en':'Select Command ', 'ja':'コマンドを選択してください'});
+    addClientMessage('DELAGENT', {'en':'Delete agents', 'ja':'エージェントの削除'});
+    addClientMessage('DELAGENTCONFIRM', {
+        'en':'Information related wtih the specified agents will be deleted from SERVAL server .<br/>Uninstall agents from the hosts to avoid re-registration of the agents.<br/>', 
+        'ja':'指定したエージェントに関連する情報はSERVALサーバから削除されます。<br/>エージェントが再登録されないようにホストからエージェントをアンインストールしてください。<br/>'
+    });
     addClientMessage('RESCODE-980', {'en':'-980 : Agent service has started.\r\n', 'ja':'-980 : エージェントサービスが起動した\r\n'});
     addClientMessage('RESCODE-981', {'en':'-981 : No script is defined.\r\n', 'ja':'-981 : スクリプトが定義されていない\r\n'});
     addClientMessage('RESCODE-982', {'en':'-982 : Status acquisition cmd has been changed.\r\n', 'ja':'-982 : 状態取得コマンドが変更された\r\n'});
@@ -277,13 +282,13 @@ function switchAgentInfoButton() {
     if (foundFlag == true) {
         addRsCommand("displayAgentStatusCommandDlg()", "icon-pencil", true);
         addRsCommand("displayExecCommandDlg()", "icon-play", true);
-        addRsCommand("displayExecCommandDlg()", "icon-bin", true);
+        addRsCommand("displayDeleteAgentDlg()", "icon-bin", true);
         $('#setAgentStatusCommand').removeClass('disabled');
         $('#execOpeCommand').removeClass('disabled');
     } else {
         addRsCommand("displayAgentStatusCommandDlg()", "icon-pencil", false);
         addRsCommand("displayExecCommandDlg()", "icon-play", false);
-        addRsCommand("displayExecCommandDlg()", "icon-bin", false);
+        addRsCommand("displayDeleteAgentDlg()", "icon-bin", false);
         $('#setAgentStatusCommand').addClass('disabled');
         $('#execOpeCommand').addClass('disabled');
     }
@@ -312,10 +317,9 @@ function displayExecCommandDlg() {
         ddMenu.append('<li role="presentation"><a onclick="selectExecCommand(' + loop + ')" role="menuitem" tabindex="-1" href="#">' + commandList[loop].Name + '</a></li>');
     }
     btnGrp.append(ddMenu);
-    execCommandDlg.append('<p>');
     execCommandDlg.append(getClientMessage('COMMANDLABEL'));
     execCommandDlg.append(btnGrp);
-    execCommandDlg.append('</p>');
+    execCommandDlg.append('<p></p>');
 
     execCommandDlg.append('<button type="button" id="OK" class="btn btn-dark" onclick="closeExecCommandDlg(true)">Execute</button> ');
     execCommandDlg.append('<button type="button" id="Cancel" class="btn btn-dark" onclick="closeExecCommandDlg(false)">Cancel</button> ');
@@ -367,10 +371,9 @@ function displayAgentStatusCommandDlg() {
         ddMenu.append('<li role="presentation"><a onclick="selectAgentStatusCommand(' + loop + ')" role="menuitem" tabindex="-1" href="#">' + commandList[loop].Name + '</a></li>');
     }
     btnGrp.append(ddMenu);
-    execSaCommandDlg.append('<p>');
     execSaCommandDlg.append(getClientMessage('COMMANDLABEL'));
     execSaCommandDlg.append(btnGrp);
-    execSaCommandDlg.append('</p>');
+    execSaCommandDlg.append('<p></p>');
 
     execSaCommandDlg.append('<button type="button" id="OK" class="btn btn-dark" onclick="closeAgentStatusCommandDlg(true)">OK</button> ');
     execSaCommandDlg.append('<button type="button" id="Cancel" class="btn btn-dark" onclick="closeAgentStatusCommandDlg(false)">Cancel</button> ');
@@ -426,6 +429,16 @@ function selectAgentStatusCommand(agentStatusCommand) {
     var commandList = getArray(responseData['API_GET_COMMAND'].Data.Command);
     $('#selectedAgentStatus').text(commandList[agentStatusCommand].Name);
     selectedAgentStatusCommand = agentStatusCommand;
+}
+
+function displayDeleteAgentDlg() {
+    var deleteAgentDlg = $('<div/>')
+    deleteAgentDlg.append(getClientMessage('DELAGENTCONFIRM'));
+    deleteAgentDlg.append('<p></p>');
+    deleteAgentDlg.append('<button type="button" id="OK" class="btn btn-dark" onclick="closeInputModal()">Delete</button> ');
+    deleteAgentDlg.append('<button type="button" id="Cancel" class="btn btn-dark" onclick="closeInputModal()">Cancel</button> ');
+
+    showInputModal('<h5 class="modal-title">' + getClientMessage('DELAGENT') + '</h5>', deleteAgentDlg);
 }
 
 function showAgentPropertiesDialog(targetName) {
@@ -529,10 +542,10 @@ function displayServerInfo() {
     ddMenu.append('<li role="presentation"><a onclick="selectPollingInterval(2)" role="menuitem" tabindex="-1" href="#">' + pollingIntervalStr[2] + '</a></li>');
     ddMenu.append('<li role="presentation"><a onclick="selectPollingInterval(3)" role="menuitem" tabindex="-1" href="#">' + pollingIntervalStr[3] + '</a></li>');
     btnGrp.append(ddMenu);
-    $('#svrinfo').append('<p>');
+    $('#svrinfo').append('<p></p>');
     $('#svrinfo').append(getClientMessage('SIPOLLINTVL'));
     $('#svrinfo').append(btnGrp);
-    $('#svrinfo').append('</p>');
+    $('#svrinfo').append('<p></p>');
 
     // Status Acquisition Interval
     if (responseData['API_GET_SVRINFO'].Data.ServerInfo.StatusAcquisitionInterval == 300) {
@@ -553,16 +566,16 @@ function displayServerInfo() {
     ddMenu.append('<li role="presentation"><a onclick="selectStatusAcquisitionInterval(3)" role="menuitem" tabindex="-1" href="#">' + statusAcquisitionIntervalStr[3] + '</a></li>');
     btnGrp.append(ddMenu);
 
-    $('#svrinfo').append('<p>');
+    $('#svrinfo').append('<p></p>');
     $('#svrinfo').append(getClientMessage('SISTACQINTVL'));
     $('#svrinfo').append(btnGrp);
-    $('#svrinfo').append('</p>');
+    $('#svrinfo').append('<p></p>');
 
     $('#svrinfo').append('<div id="svrinfo_errmsg">');
 
-    $('#svrinfo').append('<p>');
+    $('#svrinfo').append('<p></p>');
     $('#svrinfo').append('<button type="button" id="serverInfoBtnUpdate" class="btn btn-primary" onclick="updateServerInfo()">' + getClientMessage('SIUPDATEBTN') + '</button> ');
-    $('#svrinfo').append('</p>');
+    $('#svrinfo').append('<p></p>');
     $('td').css('vertical-align', 'middle');
 }
 
@@ -1216,17 +1229,17 @@ function viewConsole() {
             }
             btnGrp.append(ddMenu);
         
-            selectTsdDlg.append('<p>');
+            selectTsdDlg.append('<p></p>');
             selectTsdDlg.append('' + (loop + 1) + ': ');
             selectTsdDlg.append(btnGrp);
-            selectTsdDlg.append('</p>');
+            selectTsdDlg.append('<p></p>');
         }
         selectTsdDlg.append('<div id="stsError"/>');
     
-        selectTsdDlg.append('<p>');
+        selectTsdDlg.append('<p></p>');
         selectTsdDlg.append('<button type="button" id="OK" class="btn btn-dark" onclick="changeTimeSeriesData()">OK</button> ');
         selectTsdDlg.append('<button type="button" id="Cancel" class="btn btn-dark" onclick="closeInputModal()">Cancel</button> ');
-        selectTsdDlg.append('</p>');
+        selectTsdDlg.append('<p></p>');
     }
     
     function selectTimeSeriesData(index, name) {
