@@ -686,18 +686,7 @@ function displayFileMgmt() {
         }
     }
 
-    let fileMgmtButtonDiv = $('<div id="filemgmtbutton" style="padding: 6px 6px 10px 10px; background-color: #e9ecef;">')
-    fileMgmtButtonDiv.append('<form id="fileuploadform" method="post" action="/api/filea/" enctype="multipart/form-data"><input type="file" id="fileupload" style="display:none" multiple/></form>');
-    let tmpJq = $('<button id="fileInfoUpload" class="btn btn-dark" type="button">' + getClientMessage('FILE_UPLOAD') + '</button>');
-    if (userRole != 1) {
-        tmpJq.click(function() {
-            $("#fileupload").trigger("click");
-        });
-    }
-    fileMgmtButtonDiv.append(tmpJq);
-    fileMgmtButtonDiv.append('&nbsp;');
-    fileMgmtButtonDiv.append('<button id="fileInfoDelete" class="btn btn-dark" type="button" onclick="deleteFile()">' + getClientMessage('FILE_DELETE') + '</button>');
-    $('#filemgmt').append(fileMgmtButtonDiv);
+    $('#filemgmt').append('<form id="fileuploadform" method="post" action="/api/filea/" enctype="multipart/form-data"><input type="file" id="fileupload" style="display:none" multiple/></form>');
     resizeComponent();
     switchFileInfoButton();
 
@@ -865,6 +854,10 @@ function fileDownloadImpl() {
     finalSequentialApiCall();
 }
 
+function clickUpload() {
+    $("#fileupload").trigger("click");
+}
+
 function switchFileInfoButton() {
     var foundFlag = false;
     if (responseData['API_GET_FILELIST'].Data !== undefined && responseData['API_GET_FILELIST'].Data.FileInfo !== undefined) {
@@ -877,14 +870,15 @@ function switchFileInfoButton() {
     }
     clearRsCommand();
     if (foundFlag == true) {
-        $('#fileInfoDelete').removeClass('disabled');
+        addRsCommand("deleteFile()", "icon-bin", true);
     } else {
-        $('#fileInfoDelete').addClass('disabled');
+        addRsCommand("deleteFile()", "icon-bin", false);
     }
+
     if  (userRole != 1) {
-        $('#fileInfoUpload').removeClass('disabled');
+        addRsCommand("clickUpload()", "icon-cloud-upload", true);
     } else {
-        $('#fileInfoUpload').addClass('disabled');
+        addRsCommand("clickUpload()", "icon-cloud-upload", false);
     }
 }
 
@@ -1513,12 +1507,6 @@ function checkLoginAfterApiCall() {
 }
 
 function resizeComponent() {
-    let wsize = $(window).width();
-    let hsize_filemgmttable = $(window).height() - 111;
-    let hsize_resulttable = $(window).height() - 57;
-    $("#filemgmttable").css("height", hsize_filemgmttable + "px");
-    $("#resulttable").css("height", hsize_resulttable + "px");
-
     // Dashboard resize
     if ($('#dashboard').length) {
         let agentInfos = getArray(responseData['API_GET_AGTINFO'].Data.AgentInfo);
