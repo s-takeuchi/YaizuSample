@@ -1555,9 +1555,9 @@ function checkLoginAfterApiCall() {
 
 function resizeComponent() {
     let wsize = $(window).width();
-    let hsize_agentinfotable = $(window).height() - 57;
-    let hsize_filemgmttable = $(window).height() - 57;
-    let hsize_resulttable = $(window).height() - 57;
+    let hsize_agentinfotable = window.innerHeight - 57;
+    let hsize_filemgmttable = window.innerHeight - 57;
+    let hsize_resulttable = window.innerHeight - 57;
     $("#agentinfotable").css("height", hsize_agentinfotable + "px");
     $("#filemgmttable").css("height", hsize_filemgmttable + "px");
     $("#resulttable").css("height", hsize_resulttable + "px");
