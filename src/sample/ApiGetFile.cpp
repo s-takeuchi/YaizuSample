@@ -31,9 +31,6 @@ StkObject* ApiGetFile::ExecuteImpl(StkObject* ReqObj, int Method, wchar_t UrlPat
 		return TmpObj;
 	}
 
-	char* Buffer = new char[1000000];
-	wchar_t* HexBuf = new wchar_t[2000001];
-	size_t ActSize;
 	void* FilePtr = StkPlOpenFileForRead(TargetFullPath);
 	if (FilePtr == NULL) {
 		StkObject* TmpObj = new StkObject(L"");
@@ -41,6 +38,9 @@ StkObject* ApiGetFile::ExecuteImpl(StkObject* ReqObj, int Method, wchar_t UrlPat
 		*ResultCode = 400;
 		return TmpObj;
 	}
+	char* Buffer = new char[1000000];
+	wchar_t* HexBuf = new wchar_t[2000001];
+	size_t ActSize;
 	StkPlSeekFromBegin(FilePtr, Offset);
 	StkPlRead(FilePtr, Buffer, 1000000, &ActSize);
 	StkPlCloseFile(FilePtr);
@@ -51,7 +51,7 @@ StkObject* ApiGetFile::ExecuteImpl(StkObject* ReqObj, int Method, wchar_t UrlPat
 		HexBuf[Loop * 2 + 1] = HexChar[(unsigned char)Buffer[Loop] % 16];
 	}
 	HexBuf[Loop * 2] = '\0';
-	delete Buffer;
+	delete [] Buffer;
 
 	StkObject* TmpObj = new StkObject(L"");
 	StkObject* TmpObjD = new StkObject(L"Data");
@@ -61,7 +61,7 @@ StkObject* ApiGetFile::ExecuteImpl(StkObject* ReqObj, int Method, wchar_t UrlPat
 	TmpObjD->AppendChildElement(new StkObject(L"FileOffset", (int)Offset));
 	TmpObjD->AppendChildElement(new StkObject(L"FileData", HexBuf));
 	TmpObj->AppendChildElement(TmpObjD);
-	delete HexBuf;
+	delete [] HexBuf;
 	*ResultCode = 200;
 	return TmpObj;
 }
