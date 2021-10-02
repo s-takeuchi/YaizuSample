@@ -145,7 +145,7 @@ StkObject* ApiPostFile::ExecuteImpl(StkObject* ReqObj, int Method, wchar_t UrlPa
 			}
 		}
 
-		delete DataChar;
+		delete [] DataChar;
 	}
 	AddCodeAndMsg(TmpObj, 0, L"", L"");
 	*ResultCode = 200;

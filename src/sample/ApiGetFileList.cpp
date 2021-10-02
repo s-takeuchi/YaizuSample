@@ -31,6 +31,9 @@ StkObject* ApiGetFileList::ExecuteImpl(StkObject* ReqObj, int Method, wchar_t Ur
 	FileInfoListObj = TopFileInfoListObj;
 
 	if (FileInfoListObj == NULL || AllDir) {
+		if (FileInfoListObj != NULL) {
+			StkPlDeleteFileInfoList(TopFileInfoListObj);
+		}
 		StkObject* TmpObj = new StkObject(L"");
 		AddCodeAndMsg(TmpObj, 0, L"", L"");
 		*ResultCode = 200;
