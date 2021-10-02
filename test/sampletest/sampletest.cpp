@@ -438,6 +438,13 @@ void TestPostFile(StkWebAppSend* StkWebAppSendObj)
 void TestGetFile(StkWebAppSend* StkWebAppSendObj)
 {
 	int TargetFileSize = -1;
+#ifdef WIN32
+	wchar_t ExefileW[32] = L"sample.exe";
+	char Exefile[32] = "sample.exe";
+#else
+	wchar_t ExefileW[32] = L"sample";
+	char Exefile[32] = "sample";
+#endif
 
 	{
 		StkPlPrintf("Get file list (normal scenarios) ... ");
@@ -475,7 +482,7 @@ void TestGetFile(StkWebAppSend* StkWebAppSendObj)
 							}
 							FileInfoObj = FileInfoObj->GetNext();
 						}
-						if (StkPlWcsCmp(FileName, L"sample.exe") == 0) {
+						if (StkPlWcsCmp(FileName, ExefileW) == 0) {
 							FndFlag4SampleExe = true;
 							TargetFileSize = FileSize;
 						}
@@ -505,7 +512,7 @@ void TestGetFile(StkWebAppSend* StkWebAppSendObj)
 		for (int LoopLd = 0; LoopLd < 100; LoopLd++) {
 			for (int Loop = 0; Loop < TryCount; Loop++) {
 				char TmpUrl[128] = "";
-				StkPlSPrintf(TmpUrl, 128, "/api/file/sample.exe/%d/", Loop * 1000000);
+				StkPlSPrintf(TmpUrl, 128, "/api/file/%s/%d/", Exefile, Loop * 1000000);
 				StkObject*ResObj = StkWebAppSendObj->SendRequestRecvResponse(StkWebAppSend::STKWEBAPP_METHOD_GET, TmpUrl, NULL, &ResultCode);
 				if (ResultCode != 200) {
 					wchar_t TmpBuf[1024] = L"";
