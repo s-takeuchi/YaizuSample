@@ -435,6 +435,112 @@ void TestPostFile(StkWebAppSend* StkWebAppSendObj)
 	}
 }
 
+void TestGetFile(StkWebAppSend* StkWebAppSendObj)
+{
+	int TargetFileSize = -1;
+
+	{
+		StkPlPrintf("Get file list (normal scenarios) ... ");
+		int ResultCode = 0;
+		int ErrCode = 0;
+		StkWebAppSendObj->SetAutholization("Bearer admin manager");
+		StkObject* ResObj = StkWebAppSendObj->SendRequestRecvResponse(StkWebAppSend::STKWEBAPP_METHOD_GET, "/api/filelist/", NULL, &ResultCode);
+
+		if (ResultCode != 200) {
+			wchar_t TmpBuf[1024] = L"";
+			ResObj->ToJson(TmpBuf, 1024);
+			StkPlWPrintf(L"[NG] Res=%d;\n%ls\n", ResultCode, TmpBuf);
+			StkPlExit(1);
+		}
+		bool FndFlag4SampleExe = false;
+		bool FndFlag4SampleDat = false;
+
+		StkObject* CurObj = ResObj->GetFirstChildElement();
+		while (CurObj) {
+			if (StkPlWcsCmp(CurObj->GetName(), L"Data") == 0) {
+				StkObject* FileListObj = CurObj->GetFirstChildElement();
+				while (FileListObj) {
+					if (StkPlWcsCmp(FileListObj->GetName(), L"FileInfo") == 0) {
+						StkObject* FileInfoObj = FileListObj->GetFirstChildElement();
+						wchar_t FileName[256] = L"";
+						int FileSize = -1;
+						wchar_t FileUpdTime[64] = L"";
+						while (FileInfoObj) {
+							if (StkPlWcsCmp(FileInfoObj->GetName(), L"Name") == 0) {
+								StkPlWcsCpy(FileName, 256, FileInfoObj->GetStringValue());
+							} else if (StkPlWcsCmp(FileInfoObj->GetName(), L"Size") == 0) {
+								FileSize = FileInfoObj->GetIntValue();
+							} else if (StkPlWcsCmp(FileInfoObj->GetName(), L"UpdTime") == 0) {
+								StkPlWcsCpy(FileUpdTime, 64, FileInfoObj->GetStringValue());
+							}
+							FileInfoObj = FileInfoObj->GetNext();
+						}
+						if (StkPlWcsCmp(FileName, L"sample.exe") == 0) {
+							FndFlag4SampleExe = true;
+							TargetFileSize = FileSize;
+						}
+						if (StkPlWcsCmp(FileName, L"sample.dat") == 0) {
+							FndFlag4SampleDat = true;
+						}
+					}
+					FileListObj = FileListObj->GetNext();
+				}
+			}
+			CurObj = CurObj->GetNext();
+		}
+		delete ResObj;
+		if (FndFlag4SampleExe == false || FndFlag4SampleDat == false) {
+			StkPlWPrintf(L"[NG]\n");
+			StkPlExit(1);
+		}
+		StkPlPrintf("[OK]\n");
+	}
+	{
+		StkPlPrintf("Get file (normal scenarios) ... ");
+		int ResultCode = 0;
+		int ErrCode = 0;
+		int TryCount = TargetFileSize / 1000000 + 1;
+		StkWebAppSendObj->SetAutholization("Bearer admin manager");
+
+		for (int LoopLd = 0; LoopLd < 100; LoopLd++) {
+			for (int Loop = 0; Loop < TryCount; Loop++) {
+				char TmpUrl[128] = "";
+				StkPlSPrintf(TmpUrl, 128, "/api/file/sample.exe/%d/", Loop * 1000000);
+				StkObject*ResObj = StkWebAppSendObj->SendRequestRecvResponse(StkWebAppSend::STKWEBAPP_METHOD_GET, TmpUrl, NULL, &ResultCode);
+				if (ResultCode != 200) {
+					wchar_t TmpBuf[1024] = L"";
+					ResObj->ToJson(TmpBuf, 1024);
+					StkPlWPrintf(L"[NG] Res=%d;\n%ls\n", ResultCode, TmpBuf);
+					StkPlExit(1);
+				}
+				delete ResObj;
+			}
+			StkObject*ResObj = StkWebAppSendObj->SendRequestRecvResponse(StkWebAppSend::STKWEBAPP_METHOD_GET, "/api/server/", NULL, &ResultCode);
+			if (ResultCode != 200) {
+				wchar_t TmpBuf[1024] = L"";
+				ResObj->ToJson(TmpBuf, 1024);
+				StkPlWPrintf(L"[NG] Res=%d;\n%ls\n", ResultCode, TmpBuf);
+				StkPlExit(1);
+			}
+			int PhMem = -1;
+			int ViMem = -1;
+			StkObject* TgtObj = new StkObject(L"ServerInfo");
+			StkObject* PhMemObj = ResObj->Contains(TgtObj)->GetFirstChildElement();
+			delete TgtObj;
+			while (PhMemObj) {
+				if (StkPlWcsCmp(PhMemObj->GetName(), L"UsedPhysicalMemory") == 0) {
+					PhMem = PhMemObj->GetIntValue();
+				}
+				if (StkPlWcsCmp(PhMemObj->GetName(), L"UsedVirtualMemory") == 0) {
+					ViMem = PhMemObj->GetIntValue();
+				}
+				PhMemObj = PhMemObj->GetNext();
+			}
+			StkPlPrintf("PhMem=%d, ViMem=%d\n", PhMem, ViMem);
+		}
+	}
+}
+
 int main(int Argc, char* Argv[])
 {
 	StkPlSleepMs(3000);
@@ -450,6 +556,7 @@ int main(int Argc, char* Argv[])
 	TestNewCommand(StkWebAppSendObj);
 
 	TestPostFile(StkWebAppSendObj);
+	TestGetFile(StkWebAppSendObj);
 
 	TestPostOperationStop(StkWebAppSendObj);
 	delete StkWebAppSendObj;
