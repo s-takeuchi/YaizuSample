@@ -6,6 +6,88 @@
 #include "dataaccess.h"
 #include "ApiGetFile.h"
 
+ApiGetFile::ApiGetFile()
+{
+	for (int Loop = 0; Loop < 10; Loop++) {
+		OrgDat[Loop] = new char[1000000];
+		HexDat[Loop] = new wchar_t[2000001];
+		LockTableOrgDat[Loop] = NULL;
+		LockTableHexDat[Loop] = NULL;
+	}
+}
+
+ApiGetFile::~ApiGetFile()
+{
+	for (int Loop = 0; Loop < 10; Loop++) {
+		delete [] OrgDat[Loop];
+		delete [] HexDat[Loop];
+	}
+}
+
+char* ApiGetFile::GetOrgDat()
+{
+	StkPlLockCs(&CsGetFile);
+	char* RetPtr = NULL;
+	while (!RetPtr) {
+		for (int Loop = 0; Loop < 10; Loop++) {
+			if (LockTableOrgDat[Loop] == NULL) {
+				LockTableOrgDat[Loop] = OrgDat[Loop];
+				RetPtr = LockTableOrgDat[Loop];
+			}
+		}
+		if (!RetPtr) {
+			break;
+		} else {
+			StkPlSleepMs(50);
+		}
+	}
+	StkPlUnlockCs(&CsGetFile);
+	return RetPtr;
+}
+
+void ApiGetFile::ReleaseOrgDat(char* Target)
+{
+	StkPlLockCs(&CsGetFile);
+	for (int Loop = 0; Loop < 10; Loop++) {
+		if (LockTableOrgDat[Loop] == Target) {
+			LockTableOrgDat[Loop] = NULL;
+		}
+	}
+	StkPlUnlockCs(&CsGetFile);
+}
+
+wchar_t* ApiGetFile::GetHexDat()
+{
+	StkPlLockCs(&CsGetFile);
+	wchar_t* RetPtr = NULL;
+	while (!RetPtr) {
+		for (int Loop = 0; Loop < 10; Loop++) {
+			if (LockTableHexDat[Loop] == NULL) {
+				LockTableHexDat[Loop] = HexDat[Loop];
+				RetPtr = LockTableHexDat[Loop];
+			}
+		}
+		if (!RetPtr) {
+			break;
+		} else {
+			StkPlSleepMs(50);
+		}
+	}
+	StkPlUnlockCs(&CsGetFile);
+	return RetPtr;
+}
+
+void ApiGetFile::ReleaseHexDat(wchar_t* Target)
+{
+	StkPlLockCs(&CsGetFile);
+	for (int Loop = 0; Loop < 10; Loop++) {
+		if (LockTableHexDat[Loop] == Target) {
+			LockTableHexDat[Loop] = NULL;
+		}
+	}
+	StkPlUnlockCs(&CsGetFile);
+}
+
 StkObject* ApiGetFile::ExecuteImpl(StkObject* ReqObj, int Method, wchar_t UrlPath[StkWebAppExec::URL_PATH_LENGTH], int* ResultCode, wchar_t Locale[3], wchar_t* Token)
 {
 	wchar_t TargetFileName[FILENAME_MAX * 4];
@@ -38,8 +120,8 @@ StkObject* ApiGetFile::ExecuteImpl(StkObject* ReqObj, int Method, wchar_t UrlPat
 		*ResultCode = 400;
 		return TmpObj;
 	}
-	char* Buffer = new char[1000000];
-	wchar_t* HexBuf = new wchar_t[2000001];
+	char* Buffer = GetOrgDat();
+	wchar_t* HexBuf = GetHexDat();
 	size_t ActSize;
 	StkPlSeekFromBegin(FilePtr, Offset);
 	StkPlRead(FilePtr, Buffer, 1000000, &ActSize);
@@ -51,7 +133,7 @@ StkObject* ApiGetFile::ExecuteImpl(StkObject* ReqObj, int Method, wchar_t UrlPat
 		HexBuf[Loop * 2 + 1] = HexChar[(unsigned char)Buffer[Loop] % 16];
 	}
 	HexBuf[Loop * 2] = '\0';
-	delete [] Buffer;
+	ReleaseOrgDat(Buffer);
 
 	StkObject* TmpObj = new StkObject(L"");
 	StkObject* TmpObjD = new StkObject(L"Data");
@@ -61,7 +143,7 @@ StkObject* ApiGetFile::ExecuteImpl(StkObject* ReqObj, int Method, wchar_t UrlPat
 	TmpObjD->AppendChildElement(new StkObject(L"FileOffset", (int)Offset));
 	TmpObjD->AppendChildElement(new StkObject(L"FileData", HexBuf));
 	TmpObj->AppendChildElement(TmpObjD);
-	delete [] HexBuf;
+	ReleaseHexDat(HexBuf);
 	*ResultCode = 200;
 	return TmpObj;
 }
