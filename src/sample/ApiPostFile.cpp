@@ -7,53 +7,6 @@
 
 #define CHUNKSIZE_POSTFILE 100000
 
-ApiPostFile::ApiPostFile()
-{
-	for (int Loop = 0; Loop < 10; Loop++) {
-		OrgDat[Loop] = new unsigned char[CHUNKSIZE_POSTFILE];
-		LockTableOrgDat[Loop] = NULL;
-	}
-}
-
-ApiPostFile::~ApiPostFile()
-{
-	for (int Loop = 0; Loop < 10; Loop++) {
-		delete[] OrgDat[Loop];
-	}
-}
-
-unsigned char* ApiPostFile::GetOrgDat()
-{
-	StkPlLockCs(&CsGetFile);
-	unsigned char* RetPtr = NULL;
-	while (!RetPtr) {
-		for (int Loop = 0; Loop < 10; Loop++) {
-			if (LockTableOrgDat[Loop] == NULL) {
-				LockTableOrgDat[Loop] = OrgDat[Loop];
-				RetPtr = LockTableOrgDat[Loop];
-			}
-		}
-		if (!RetPtr) {
-			break;
-		} else {
-			StkPlSleepMs(50);
-		}
-	}
-	StkPlUnlockCs(&CsGetFile);
-	return RetPtr;
-}
-
-void ApiPostFile::ReleaseOrgDat(unsigned char* Target)
-{
-	StkPlLockCs(&CsGetFile);
-	for (int Loop = 0; Loop < 10; Loop++) {
-		if (LockTableOrgDat[Loop] == Target) {
-			LockTableOrgDat[Loop] = NULL;
-		}
-	}
-	StkPlUnlockCs(&CsGetFile);
-}
-
 StkObject* ApiPostFile::ExecuteImpl(StkObject* ReqObj, int Method, wchar_t UrlPath[StkWebAppExec::URL_PATH_LENGTH], int* ResultCode, wchar_t Locale[3], wchar_t* Token)
 {
 	wchar_t UserName[ApiBase::MAXLEN_OF_USERNAME];
