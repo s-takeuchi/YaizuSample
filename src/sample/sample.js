@@ -770,12 +770,12 @@ function displayFileMgmt() {
                         } else {
                             encData = encData + orgData[loop].toString(16).toUpperCase();
                         }
-                        if (loop % 1000000 == 999999 || loop == orgData.byteLength - 1) {
+                        if (loop % 100000 == 99999 || loop == orgData.byteLength - 1) {
                             let offset = 0;
-                            if (loop < 1000000) {
+                            if (loop < 100000) {
                                 offset = 0;
                             } else {
-                                offset = parseInt(loop / 1000000) * 1000000;
+                                offset = parseInt(loop / 100000) * 100000;
                             }
                             let sendData = {
                                 FileName : targetFile.name,
@@ -817,11 +817,11 @@ function displayFileMgmt() {
 }
 
 function fileDownload(fileName, filesize, offset) {
-    let chunks = parseInt(filesize / 1000000 + 1);
+    let chunks = parseInt(filesize / 100000 + 1);
     let contents = [];
     for (let loop = 0; loop < chunks; loop++) {
         let encFileName = encodeURI(fileName);
-        let tmpUrl = '/api/file/' + encFileName + '/' + loop * 1000000 + '/';
+        let tmpUrl = '/api/file/' + encFileName + '/' + loop * 100000 + '/';
         contents.push({ method: 'GET', url: tmpUrl, request: null, keystring: 'API_GET_FILE_' + loop });
     }
     initSequentialApiCall();
@@ -855,7 +855,7 @@ function fileDownloadImpl() {
 
     let fileName = responseData['API_GET_FILE_0'].Data.FileName;
     let fileSize = responseData['API_GET_FILE_0'].Data.FileSize;
-    let chunks = parseInt(fileSize / 1000000 + 1);
+    let chunks = parseInt(fileSize / 100000 + 1);
     let typedArrays = [chunks];
     if (fileSize == 0) {
         typedArrays[0] = new Uint8Array(0);

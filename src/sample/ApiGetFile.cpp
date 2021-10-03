@@ -6,11 +6,13 @@
 #include "dataaccess.h"
 #include "ApiGetFile.h"
 
+#define CHUNKSIZE_GETFILE 100000
+
 ApiGetFile::ApiGetFile()
 {
 	for (int Loop = 0; Loop < 10; Loop++) {
-		OrgDat[Loop] = new char[1000000];
-		HexDat[Loop] = new wchar_t[2000001];
+		OrgDat[Loop] = new char[CHUNKSIZE_GETFILE];
+		HexDat[Loop] = new wchar_t[CHUNKSIZE_GETFILE * 2 + 1];
 		LockTableOrgDat[Loop] = NULL;
 		LockTableHexDat[Loop] = NULL;
 	}
@@ -124,7 +126,7 @@ StkObject* ApiGetFile::ExecuteImpl(StkObject* ReqObj, int Method, wchar_t UrlPat
 	wchar_t* HexBuf = GetHexDat();
 	size_t ActSize;
 	StkPlSeekFromBegin(FilePtr, Offset);
-	StkPlRead(FilePtr, Buffer, 1000000, &ActSize);
+	StkPlRead(FilePtr, Buffer, CHUNKSIZE_GETFILE, &ActSize);
 	StkPlCloseFile(FilePtr);
 	wchar_t HexChar[16] = { L'0', L'1', L'2', L'3', L'4', L'5', L'6', L'7', L'8', L'9', L'A', L'B', L'C', L'D', L'E', L'F' };
 	size_t Loop = 0;

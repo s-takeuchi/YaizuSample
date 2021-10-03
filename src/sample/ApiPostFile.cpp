@@ -5,6 +5,55 @@
 #include "dataaccess.h"
 #include "ApiPostFile.h"
 
+#define CHUNKSIZE_POSTFILE 100000
+
+ApiPostFile::ApiPostFile()
+{
+	for (int Loop = 0; Loop < 10; Loop++) {
+		OrgDat[Loop] = new unsigned char[CHUNKSIZE_POSTFILE];
+		LockTableOrgDat[Loop] = NULL;
+	}
+}
+
+ApiPostFile::~ApiPostFile()
+{
+	for (int Loop = 0; Loop < 10; Loop++) {
+		delete[] OrgDat[Loop];
+	}
+}
+
+unsigned char* ApiPostFile::GetOrgDat()
+{
+	StkPlLockCs(&CsGetFile);
+	unsigned char* RetPtr = NULL;
+	while (!RetPtr) {
+		for (int Loop = 0; Loop < 10; Loop++) {
+			if (LockTableOrgDat[Loop] == NULL) {
+				LockTableOrgDat[Loop] = OrgDat[Loop];
+				RetPtr = LockTableOrgDat[Loop];
+			}
+		}
+		if (!RetPtr) {
+			break;
+		} else {
+			StkPlSleepMs(50);
+		}
+	}
+	StkPlUnlockCs(&CsGetFile);
+	return RetPtr;
+}
+
+void ApiPostFile::ReleaseOrgDat(unsigned char* Target)
+{
+	StkPlLockCs(&CsGetFile);
+	for (int Loop = 0; Loop < 10; Loop++) {
+		if (LockTableOrgDat[Loop] == Target) {
+			LockTableOrgDat[Loop] = NULL;
+		}
+	}
+	StkPlUnlockCs(&CsGetFile);
+}
+
 StkObject* ApiPostFile::ExecuteImpl(StkObject* ReqObj, int Method, wchar_t UrlPath[StkWebAppExec::URL_PATH_LENGTH], int* ResultCode, wchar_t Locale[3], wchar_t* Token)
 {
 	wchar_t UserName[ApiBase::MAXLEN_OF_USERNAME];
@@ -72,7 +121,7 @@ StkObject* ApiPostFile::ExecuteImpl(StkObject* ReqObj, int Method, wchar_t UrlPa
 		}
 		wchar_t* FileDataPtr = FileData;
 		int FileDataLen = (int)StkPlWcsLen(FileData);
-		unsigned char* DataChar = new unsigned char[1000001];
+		unsigned char* DataChar = new unsigned char[CHUNKSIZE_POSTFILE + 1];
 		int DataCharIndex = 0;
 		wchar_t HexNum[128];
 		HexNum[L'0'] = 0;
@@ -92,7 +141,7 @@ StkObject* ApiPostFile::ExecuteImpl(StkObject* ReqObj, int Method, wchar_t UrlPa
 		HexNum[L'E'] = 14;
 		HexNum[L'F'] = 15;
 		while (*FileDataPtr != L'\0') {
-			if (DataCharIndex >= 1000000) {
+			if (DataCharIndex >= CHUNKSIZE_POSTFILE) {
 				break;
 			}
 			DataChar[DataCharIndex] = HexNum[*FileDataPtr] * 16 + HexNum[*(FileDataPtr + 1)];

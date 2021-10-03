@@ -30,6 +30,8 @@ SERVICE_TABLE_ENTRY ServiceTable[] = {
 #define AGT_PLATFORM 0
 #endif
 
+#define CHUNKSIZE_FILE 100000
+
 #define RESULTCODE_AGENTSTART            -980
 #define RESULTCODE_NOSCRIPT              -981
 #define RESULTCODE_OPCOMMANDSTART        -985
@@ -76,18 +78,18 @@ int LoadAndPostFile(char* FileName, int Type, wchar_t* CommandName, StkWebAppSen
 		return -1;
 	}
 
-	int LoopCnt = FileSize / 1000000 + 1;
+	int LoopCnt = FileSize / CHUNKSIZE_FILE + 1;
 
 	int Result = 0;
 	for (int LoopChunk = 0; LoopChunk < LoopCnt; LoopChunk++) {
-		int Offset = LoopChunk * 1000000;
-		char* Buffer = new char[1000000];
-		wchar_t* HexBuf = new wchar_t[2000001];
+		int Offset = LoopChunk * CHUNKSIZE_FILE;
+		char* Buffer = new char[CHUNKSIZE_FILE];
+		wchar_t* HexBuf = new wchar_t[CHUNKSIZE_FILE * 2 + 1];
 		size_t ActSize;
 		void* FilePtr = StkPlOpenFileForRead(FileNameWc);
 		if (FilePtr != NULL) {
 			StkPlSeekFromBegin(FilePtr, Offset);
-			StkPlRead(FilePtr, Buffer, 1000000, &ActSize);
+			StkPlRead(FilePtr, Buffer, CHUNKSIZE_FILE, &ActSize);
 			StkPlCloseFile(FilePtr);
 			Buffer[ActSize] = '\0';
 		} else {
@@ -156,11 +158,11 @@ int GetAndSaveFile(char* FileName, size_t FileSize, StkWebAppSend* SndObj)
 {
 	int Result = 0;
 
-	int LoopCnt = (int)FileSize / 1000000 + 1;
+	int LoopCnt = (int)FileSize / CHUNKSIZE_FILE + 1;
 
 	for (int Loop = 0; Loop < LoopCnt; Loop++) {
 		char Url[128] = "";
-		StkPlSPrintf(Url, 128, "/api/file/%s/%d/", FileName, Loop * 1000000);
+		StkPlSPrintf(Url, 128, "/api/file/%s/%d/", FileName, Loop * CHUNKSIZE_FILE);
 		StkObject* ResObj2 = SndObj->SendRequestRecvResponse(StkWebAppSend::STKWEBAPP_METHOD_GET, Url, NULL, &Result);
 		if (ResObj2 == NULL) {
 			return Result;
@@ -180,7 +182,7 @@ int GetAndSaveFile(char* FileName, size_t FileSize, StkWebAppSend* SndObj)
 				wchar_t* FileData = CurResObj2->GetStringValue();
 				wchar_t* FileDataPtr = FileData;
 				int FileDataLen = (int)StkPlWcsLen(FileData);
-				unsigned char* DataChar = new unsigned char[1000001];
+				unsigned char* DataChar = new unsigned char[CHUNKSIZE_FILE + 1];
 				int DataCharIndex = 0;
 				wchar_t HexNum[128];
 				HexNum[L'0'] = 0;
@@ -200,7 +202,7 @@ int GetAndSaveFile(char* FileName, size_t FileSize, StkWebAppSend* SndObj)
 				HexNum[L'E'] = 14;
 				HexNum[L'F'] = 15;
 				while (*FileDataPtr != L'\0') {
-					if (DataCharIndex >= 1000000) {
+					if (DataCharIndex >= CHUNKSIZE_FILE) {
 						break;
 					}
 					DataChar[DataCharIndex] = HexNum[*FileDataPtr] * 16 + HexNum[*(FileDataPtr + 1)];

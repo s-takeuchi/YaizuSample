@@ -312,7 +312,7 @@ void TestPostFile(StkWebAppSend* StkWebAppSendObj)
 		StkPlPrintf("Post file (abnormal scenarios (non-continuous data reception)) ... ");
 		int ResultCode = 0;
 		int ErrCode = 0;
-		StkObject* ReqObj = StkObject::CreateObjectFromJson(L"{\"FileName\" : \"testpostfile.dat\", \"FileOffset\" : 1000000, \"FileData\" : \"20202020\", \"FileSize\" : 4}", &ErrCode);
+		StkObject* ReqObj = StkObject::CreateObjectFromJson(L"{\"FileName\" : \"testpostfile.dat\", \"FileOffset\" : 100000, \"FileData\" : \"20202020\", \"FileSize\" : 4}", &ErrCode);
 		StkWebAppSendObj->SetAutholization("Bearer admin manager");
 		StkObject* ResObj = StkWebAppSendObj->SendRequestRecvResponse(StkWebAppSend::STKWEBAPP_METHOD_POST, "/api/file/", ReqObj, &ResultCode);
 
@@ -335,7 +335,7 @@ void TestPostFile(StkWebAppSend* StkWebAppSendObj)
 		StkPlPrintf("Post file (abnormal scenarios (command execution result:Element insufficient)) ... ");
 		int ResultCode = 0;
 		int ErrCode = 0;
-		StkObject* ReqObj = StkObject::CreateObjectFromJson(L"{\"FileName\" : \"testpostfile.dat\", \"FileOffset\" : 1000000, \"FileData\" : \"20202020\", \"FileSize\" : 4, \"Type\" : 1}", &ErrCode);
+		StkObject* ReqObj = StkObject::CreateObjectFromJson(L"{\"FileName\" : \"testpostfile.dat\", \"FileOffset\" : 100000, \"FileData\" : \"20202020\", \"FileSize\" : 4, \"Type\" : 1}", &ErrCode);
 		StkWebAppSendObj->SetAutholization("Bearer admin manager");
 		StkObject* ResObj = StkWebAppSendObj->SendRequestRecvResponse(StkWebAppSend::STKWEBAPP_METHOD_POST, "/api/file/", ReqObj, &ResultCode);
 
@@ -358,7 +358,7 @@ void TestPostFile(StkWebAppSend* StkWebAppSendObj)
 		StkPlPrintf("Post file (normal scenarios (command execution result)) ... ");
 		int ResultCode = 0;
 		int ErrCode = 0;
-		StkObject* ReqObj = StkObject::CreateObjectFromJson(L"{\"FileName\" : \"testpostfile.dat\", \"FileOffset\" : 1000000, \"FileData\" : \"20202020\", \"FileSize\" : 4, \"Type\" : 1, \"AgentName\" : \"aaa\", \"CommandName\" : \"ccc\"}", &ErrCode);
+		StkObject* ReqObj = StkObject::CreateObjectFromJson(L"{\"FileName\" : \"testpostfile.dat\", \"FileOffset\" : 100000, \"FileData\" : \"20202020\", \"FileSize\" : 4, \"Type\" : 1, \"AgentName\" : \"aaa\", \"CommandName\" : \"ccc\"}", &ErrCode);
 		StkWebAppSendObj->SetAutholization("Bearer admin manager");
 		StkObject* ResObj = StkWebAppSendObj->SendRequestRecvResponse(StkWebAppSend::STKWEBAPP_METHOD_POST, "/api/file/", ReqObj, &ResultCode);
 
@@ -506,13 +506,13 @@ void TestGetFile(StkWebAppSend* StkWebAppSendObj)
 		StkPlPrintf("Get file (normal scenarios) ... ");
 		int ResultCode = 0;
 		int ErrCode = 0;
-		int TryCount = TargetFileSize / 1000000 + 1;
+		int TryCount = TargetFileSize / 100000 + 1;
 		StkWebAppSendObj->SetAutholization("Bearer admin manager");
 
 		for (int LoopLd = 0; LoopLd < 100; LoopLd++) {
 			for (int Loop = 0; Loop < TryCount; Loop++) {
 				char TmpUrl[128] = "";
-				StkPlSPrintf(TmpUrl, 128, "/api/file/%s/%d/", Exefile, Loop * 1000000);
+				StkPlSPrintf(TmpUrl, 128, "/api/file/%s/%d/", Exefile, Loop * 100000);
 				StkObject*ResObj = StkWebAppSendObj->SendRequestRecvResponse(StkWebAppSend::STKWEBAPP_METHOD_GET, TmpUrl, NULL, &ResultCode);
 				if (ResultCode != 200) {
 					wchar_t TmpBuf[1024] = L"";
