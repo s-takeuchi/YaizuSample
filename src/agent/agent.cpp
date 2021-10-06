@@ -82,11 +82,12 @@ int LoadAndPostFile(char* FileName, int Type, wchar_t* CommandName, StkWebAppSen
 	if (FileSize < 0) {
 		return -1;
 	}
-	if (Type == TYPE_COMMANDRESULT && FileSize >= ActChunkSize) {
-		FileSize = ActChunkSize;
-	}
 
 	int LoopCnt = FileSize / ActChunkSize + 1;
+	if (Type == TYPE_COMMANDRESULT && FileSize >= ActChunkSize) {
+		FileSize = ActChunkSize;
+		LoopCnt = 1;
+	}
 
 	int Result = 0;
 	for (int LoopChunk = 0; LoopChunk < LoopCnt; LoopChunk++) {
@@ -128,7 +129,7 @@ int LoadAndPostFile(char* FileName, int Type, wchar_t* CommandName, StkWebAppSen
 			}
 		}
 		
-		wchar_t* HexBuf = new wchar_t[CHUNKSIZE_FILE * 2 + 1];
+		wchar_t* HexBuf = new wchar_t[ActSize * 2 + 1];
 		wchar_t HexChar[16] = { L'0', L'1', L'2', L'3', L'4', L'5', L'6', L'7', L'8', L'9', L'A', L'B', L'C', L'D', L'E', L'F' };
 		size_t Loop = 0;
 		for (; Loop < ActSize; Loop++) {
