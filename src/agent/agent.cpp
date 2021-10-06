@@ -72,26 +72,35 @@ StkObject* GetAgentInfoForOpStatus(int Status)
 
 int LoadAndPostFile(char* FileName, int Type, wchar_t* CommandName, StkWebAppSend* SndObj)
 {
+	int ActChunkSize = CHUNKSIZE_FILE;
+	if (Type == TYPE_COMMANDRESULT) {
+		ActChunkSize = CHUNKSIZE_FILE / 2;
+	}
+
 	wchar_t* FileNameWc = StkPlCreateWideCharFromUtf8(FileName);
 	int FileSize = (int)StkPlGetFileSize(FileNameWc);
 	if (FileSize < 0) {
 		return -1;
 	}
+	if (Type == TYPE_COMMANDRESULT && FileSize >= ActChunkSize) {
+		FileSize = ActChunkSize;
+	}
 
-	int LoopCnt = FileSize / CHUNKSIZE_FILE + 1;
+	int LoopCnt = FileSize / ActChunkSize + 1;
 
 	int Result = 0;
 	for (int LoopChunk = 0; LoopChunk < LoopCnt; LoopChunk++) {
-		int Offset = LoopChunk * CHUNKSIZE_FILE;
-		char* Buffer = new char[CHUNKSIZE_FILE];
-		wchar_t* HexBuf = new wchar_t[CHUNKSIZE_FILE * 2 + 1];
+		int Offset = LoopChunk * ActChunkSize;
+		char* Buffer = new char[ActChunkSize + 3];
 		size_t ActSize;
 		void* FilePtr = StkPlOpenFileForRead(FileNameWc);
 		if (FilePtr != NULL) {
 			StkPlSeekFromBegin(FilePtr, Offset);
-			StkPlRead(FilePtr, Buffer, CHUNKSIZE_FILE, &ActSize);
+			StkPlRead(FilePtr, Buffer, ActChunkSize, &ActSize);
 			StkPlCloseFile(FilePtr);
 			Buffer[ActSize] = '\0';
+			Buffer[ActSize + 1] = '\0';
+			Buffer[ActSize + 2] = '\0';
 		} else {
 			delete Buffer;
 			delete FileNameWc;
@@ -119,6 +128,7 @@ int LoadAndPostFile(char* FileName, int Type, wchar_t* CommandName, StkWebAppSen
 			}
 		}
 		
+		wchar_t* HexBuf = new wchar_t[CHUNKSIZE_FILE * 2 + 1];
 		wchar_t HexChar[16] = { L'0', L'1', L'2', L'3', L'4', L'5', L'6', L'7', L'8', L'9', L'A', L'B', L'C', L'D', L'E', L'F' };
 		size_t Loop = 0;
 		for (; Loop < ActSize; Loop++) {
