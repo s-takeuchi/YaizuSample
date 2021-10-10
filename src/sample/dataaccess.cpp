@@ -879,7 +879,7 @@ int DataAccess::GetCommandResult(wchar_t AgentName[DA_MAXNUM_OF_RESULT][DA_MAXLE
 			delete CmdResult;
 			return -1;
 		}
-		StkPlWcsCpy(CommandName[Index], DA_MAXLEN_OF_AGTNAME, ColCmdName->GetValue());
+		StkPlWcsCpy(CommandName[Index], DA_MAXLEN_OF_CMDNAME, ColCmdName->GetValue());
 
 		ColumnDataBin*  ColUpdTime = (ColumnDataBin*)CurRec->GetColumn(L"UpdTime");
 		if (!ColUpdTime) {
