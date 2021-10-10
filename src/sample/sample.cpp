@@ -257,8 +257,6 @@ void Server(wchar_t* IpAddr, int Port, int NumOfWorkerThreads, int ThreadInterva
 	} else {
 		Soc = new StkWebApp(Ids, NumOfWorkerThreads, IpAddr, Port);
 	}
-	Soc->SetSendBufSize(250000);
-	Soc->SetRecvBufSize(250000);
 	for (int Loop = 0; Loop < NumOfWorkerThreads; Loop++) {
 		SetStkThreadInterval(Ids[Loop], ThreadInterval);
 	}
