@@ -37,7 +37,7 @@ StkObject* ApiGetCommandResult::ExecuteImpl(StkObject* ReqObj, int Method, wchar
 		size_t TmpBufLen = StkPlWcsLen(TmpBuf);
 		///////////////////////////////////////////////////////////////////////
 		char TBuf[50] = "";
-		StkPlSPrintf(TBuf, 50, "file size (2) = %d", TmpBufLen);
+		StkPlSPrintf(TBuf, 50, "file size (2) = %d, db length = %d", TmpBufLen, Length);
 		MessageProc::AddLog(TBuf, MessageProc::LOG_TYPE_INFO);
 		///////////////////////////////////////////////////////////////////////
 
