@@ -116,6 +116,11 @@ StkObject* ApiPostFile::ExecuteImpl(StkObject* ReqObj, int Method, wchar_t UrlPa
 			}
 			// Write data to database
 			DataAccess::GetInstance()->SetCommandResult(AgentName, CommandName, (char*)DataChar, DataCharIndex + 1);
+			///////////////////////////////////////////////////////////////////////
+			char TBuf[50] = "";
+			StkPlSPrintf(TBuf, 50, "file size (1) = %d", DataCharIndex);
+			MessageProc::AddLog(TBuf, MessageProc::LOG_TYPE_INFO);
+			///////////////////////////////////////////////////////////////////////
 		} else {
 			// Writing data to file
 			void* FilePtr = NULL;

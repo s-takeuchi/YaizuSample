@@ -35,6 +35,12 @@ StkObject* ApiGetCommandResult::ExecuteImpl(StkObject* ReqObj, int Method, wchar
 		StkObject* TmpObjC = new StkObject(L"Result");
 		wchar_t* TmpBuf = StkPlCreateWideCharFromUtf8(Output);
 		size_t TmpBufLen = StkPlWcsLen(TmpBuf);
+		///////////////////////////////////////////////////////////////////////
+		char TBuf[50] = "";
+		StkPlSPrintf(TBuf, 50, "file size (2) = %d", TmpBufLen);
+		MessageProc::AddLog(TBuf, MessageProc::LOG_TYPE_INFO);
+		///////////////////////////////////////////////////////////////////////
+
 		wchar_t* TmpOut = new wchar_t[TmpBufLen * 6 + 1];
 		TmpOut[0] = L'\0';
 		int Index = 0;
