@@ -77,6 +77,7 @@ StkObject* ApiGetCommandResult::ExecuteImpl(StkObject* ReqObj, int Method, wchar
 				Index++;
 			}
 		}
+		TmpOut[Index] = L'\0';
 		TmpObjC->AppendChildElement(new StkObject(L"Output", TmpOut));
 		delete [] TmpOut;
 		delete TmpBuf;
