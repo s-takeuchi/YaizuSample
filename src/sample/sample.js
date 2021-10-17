@@ -1200,15 +1200,21 @@ function transViewConsole(resultId) {
 }
 
 function viewConsole() {
-    let commandOutput = responseData['API_GET_OUTPUT'].Data.Result;
-    let consoleDlg = $('<div/>');
-    let consoleArea = $('<div style="overflow-wrap: break-word; padding: 6px 6px 10px 10px; color: #ffffff; background-color: #000000; font-family: monospace;"/>');
-    consoleArea.html(commandOutput.Output);
-    consoleDlg.append(consoleArea);
+    let consoleDlg = $('<div id="viewconsole"/>');
+    showInputModal('<h5 class="modal-title">' + getClientMessage('RESULT_OUTPUT') + '</h5>', consoleDlg);
+
+    if (statusCode['API_GET_OUTPUT'] == -1 || statusCode['API_GET_OUTPUT'] == 0) {
+        displayAlertDanger('#viewconsole', getClientMessage('CONNERR'));
+    } else if (statusCode['API_GET_OUTPUT'] != 200) {
+        displayAlertDanger('#viewconsole', getSvrMsg(responseData['API_GET_OUTPUT']));
+    } else {
+        let commandOutput = responseData['API_GET_OUTPUT'].Data.Result;
+        let consoleArea = $('<div style="overflow-wrap: break-word; padding: 6px 6px 10px 10px; color: #ffffff; background-color: #000000; font-family: monospace;"/>');
+        consoleArea.html(commandOutput.Output);
+        consoleDlg.append(consoleArea);
+    }
     consoleDlg.append('<p/>')
     consoleDlg.append('<button type="button" class="btn btn-dark" onclick="closeInputModal();">' + getClientMessage('RESULT_CONSOLECLOSE') + '</button> ');
-
-    showInputModal('<h5 class="modal-title">' + getClientMessage('RESULT_OUTPUT') + '</h5>', consoleDlg);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
