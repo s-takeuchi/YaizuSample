@@ -513,7 +513,8 @@ void TestGetFile(StkWebAppSend* StkWebAppSendObj)
 		int FirstViMem = -1;
 		int LastPhMem = -1;
 		int LastViMem = -1;
-		for (int LoopLd = 0; LoopLd < 50; LoopLd++) {
+		const int LOOPLD_COUNT = 50;
+		for (int LoopLd = 0; LoopLd < LOOPLD_COUNT; LoopLd++) {
 			for (int Loop = 0; Loop < TryCount; Loop++) {
 				char TmpUrl[128] = "";
 				StkPlSPrintf(TmpUrl, 128, "/api/file/%s/%d/", Exefile, Loop * 100000);
@@ -540,14 +541,14 @@ void TestGetFile(StkWebAppSend* StkWebAppSendObj)
 				if (StkPlWcsCmp(PhMemObj->GetName(), L"UsedPhysicalMemory") == 0) {
 					if (LoopLd == 0) {
 						FirstPhMem = PhMemObj->GetIntValue();
-					} else if (LoopLd == 99) {
+					} else if (LoopLd == LOOPLD_COUNT - 1) {
 						LastPhMem = PhMemObj->GetIntValue();
 					}
 				}
 				if (StkPlWcsCmp(PhMemObj->GetName(), L"UsedVirtualMemory") == 0) {
 					if (LoopLd == 0) {
 						FirstViMem = PhMemObj->GetIntValue();
-					} else if (LoopLd == 99) {
+					} else if (LoopLd == LOOPLD_COUNT - 1) {
 						LastViMem = PhMemObj->GetIntValue();
 					}
 				}
