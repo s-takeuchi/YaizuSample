@@ -294,7 +294,7 @@ void TestPostFile(StkWebAppSend* StkWebAppSendObj)
 		StkObject* ResObj = StkWebAppSendObj->SendRequestRecvResponse(StkWebAppSend::STKWEBAPP_METHOD_POST, "/api/file/", ReqObj, &ResultCode);
 
 		if (ResultCode != 400) {
-			StkPlWPrintf(L"[NG] Res=%d;\n", ResultCode);
+			StkPlPrintf("[NG] Res=%d;\n", ResultCode);
 			StkPlExit(1);
 		}
 		StkObject* ChkObj = new StkObject(L"Code", 4201);
@@ -317,7 +317,7 @@ void TestPostFile(StkWebAppSend* StkWebAppSendObj)
 		StkObject* ResObj = StkWebAppSendObj->SendRequestRecvResponse(StkWebAppSend::STKWEBAPP_METHOD_POST, "/api/file/", ReqObj, &ResultCode);
 
 		if (ResultCode != 400) {
-			StkPlWPrintf(L"[NG] Res=%d;\n", ResultCode);
+			StkPlPrintf("[NG] Res=%d;\n", ResultCode);
 			StkPlExit(1);
 		}
 		StkObject* ChkObj = new StkObject(L"Code", 4082);
@@ -340,7 +340,7 @@ void TestPostFile(StkWebAppSend* StkWebAppSendObj)
 		StkObject* ResObj = StkWebAppSendObj->SendRequestRecvResponse(StkWebAppSend::STKWEBAPP_METHOD_POST, "/api/file/", ReqObj, &ResultCode);
 
 		if (ResultCode != 400) {
-			StkPlWPrintf(L"[NG] Res=%d;\n", ResultCode);
+			StkPlPrintf("[NG] Res=%d;\n", ResultCode);
 			StkPlExit(1);
 		}
 		StkObject* ChkObj = new StkObject(L"Code", 4201);
@@ -363,7 +363,7 @@ void TestPostFile(StkWebAppSend* StkWebAppSendObj)
 		StkObject* ResObj = StkWebAppSendObj->SendRequestRecvResponse(StkWebAppSend::STKWEBAPP_METHOD_POST, "/api/file/", ReqObj, &ResultCode);
 
 		if (ResultCode != 200) {
-			StkPlWPrintf(L"[NG] Res=%d;\n", ResultCode);
+			StkPlPrintf("[NG] Res=%d;\n", ResultCode);
 			StkPlExit(1);
 		}
 		delete ReqObj;
@@ -378,7 +378,7 @@ void TestPostFile(StkWebAppSend* StkWebAppSendObj)
 		StkObject* ResObj = StkWebAppSendObj->SendRequestRecvResponse(StkWebAppSend::STKWEBAPP_METHOD_GET, "/api/commandresult/", NULL, &ResultCode);
 
 		if (ResultCode != 200) {
-			StkPlWPrintf(L"[NG] Res=%d;\n", ResultCode);
+			StkPlPrintf("[NG] Res=%d;\n", ResultCode);
 			StkPlExit(1);
 		}
 		bool SuccessFlag = false;
@@ -418,7 +418,7 @@ void TestPostFile(StkWebAppSend* StkWebAppSendObj)
 		StkObject* ResObj = StkWebAppSendObj->SendRequestRecvResponse(StkWebAppSend::STKWEBAPP_METHOD_GET, "/api/commandresult/2/", NULL, &ResultCode);
 
 		if (ResultCode != 400) {
-			StkPlWPrintf(L"[NG] Res=%d;\n", ResultCode);
+			StkPlPrintf("[NG] Res=%d;\n", ResultCode);
 			StkPlExit(1);
 		}
 		StkObject* ChkObj = new StkObject(L"Code", 4100);
@@ -497,7 +497,7 @@ void TestGetFile(StkWebAppSend* StkWebAppSendObj)
 		}
 		delete ResObj;
 		if (FndFlag4SampleExe == false || FndFlag4SampleDat == false) {
-			StkPlWPrintf(L"[NG]\n");
+			StkPlPrintf("[NG]\n");
 			StkPlExit(1);
 		}
 		StkPlPrintf("[OK]\n");
@@ -509,7 +509,11 @@ void TestGetFile(StkWebAppSend* StkWebAppSendObj)
 		int TryCount = TargetFileSize / 100000 + 1;
 		StkWebAppSendObj->SetAutholization("Bearer admin manager");
 
-		for (int LoopLd = 0; LoopLd < 100; LoopLd++) {
+		int FirstPhMem = -1;
+		int FirstViMem = -1;
+		int LastPhMem = -1;
+		int LastViMem = -1;
+		for (int LoopLd = 0; LoopLd < 50; LoopLd++) {
 			for (int Loop = 0; Loop < TryCount; Loop++) {
 				char TmpUrl[128] = "";
 				StkPlSPrintf(TmpUrl, 128, "/api/file/%s/%d/", Exefile, Loop * 100000);
@@ -529,21 +533,33 @@ void TestGetFile(StkWebAppSend* StkWebAppSendObj)
 				StkPlWPrintf(L"[NG] Res=%d;\n%ls\n", ResultCode, TmpBuf);
 				StkPlExit(1);
 			}
-			int PhMem = -1;
-			int ViMem = -1;
 			StkObject* TgtObj = new StkObject(L"ServerInfo");
 			StkObject* PhMemObj = ResObj->Contains(TgtObj)->GetFirstChildElement();
 			delete TgtObj;
 			while (PhMemObj) {
 				if (StkPlWcsCmp(PhMemObj->GetName(), L"UsedPhysicalMemory") == 0) {
-					PhMem = PhMemObj->GetIntValue();
+					if (LoopLd == 0) {
+						FirstPhMem = PhMemObj->GetIntValue();
+					} else if (LoopLd == 99) {
+						LastPhMem = PhMemObj->GetIntValue();
+					}
 				}
 				if (StkPlWcsCmp(PhMemObj->GetName(), L"UsedVirtualMemory") == 0) {
-					ViMem = PhMemObj->GetIntValue();
+					if (LoopLd == 0) {
+						FirstViMem = PhMemObj->GetIntValue();
+					} else if (LoopLd == 99) {
+						LastViMem = PhMemObj->GetIntValue();
+					}
 				}
 				PhMemObj = PhMemObj->GetNext();
 			}
-			StkPlPrintf("PhMem=%d, ViMem=%d\n", PhMem, ViMem);
+		}
+		StkPlPrintf("1st(Ph/Vi)=(%d/%d) ==> last(Ph/Vi)=(%d/%d): ", FirstPhMem, FirstViMem, LastPhMem, LastViMem);
+		if (FirstPhMem * 2 > LastPhMem) {
+			StkPlPrintf("[OK]\n");
+		} else {
+			StkPlPrintf("[NG]\n");
+			StkPlExit(1);
 		}
 	}
 }
