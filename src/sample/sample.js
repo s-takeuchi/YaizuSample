@@ -64,18 +64,20 @@ function initClientMessage() {
         'ja':'指定したエージェントに関連する情報はSERVALサーバから削除されます。<br/>エージェントが再登録されないようにホストからエージェントをアンインストールしてください。<br/>'
     });
     addClientMessage('DELAGENTLIST', {'en':'Agents shown below will be deleted.', 'ja':'以下のエージェントが削除されます。'});
-    addClientMessage('RESCODE-980', {'en':'-980 : Agent service has started.\r\n', 'ja':'-980 : エージェントサービスが起動した\r\n'});
-    addClientMessage('RESCODE-981', {'en':'-981 : No script is defined.\r\n', 'ja':'-981 : スクリプトが定義されていない\r\n'});
-    addClientMessage('RESCODE-982', {'en':'-982 : Status acquisition cmd has been changed.\r\n', 'ja':'-982 : 状態取得コマンドが変更された\r\n'});
-    addClientMessage('RESCODE-983', {'en':'-983 : Operation cmd has been changed.\r\n', 'ja':'-983 : 操作コマンドが変更された\r\n'});
-    addClientMessage('RESCODE-984', {'en':'-984 : Waiting for a request.\r\n', 'ja':'-984 : 要求待ち\r\n'});
-    addClientMessage('RESCODE-985', {'en':'-985 : A command for operation has started.\r\n', 'ja':'-985 : 操作コマンドが実行された\r\n'});
-    addClientMessage('RESCODE-990', {'en':'-990 : Server file handling error.\r\n', 'ja':'-990 : サーバファイルハンドリングエラー\r\n'});
-    addClientMessage('RESCODE-991', {'en':'-991 : Agent file handling error.\r\n', 'ja':'-991 : エージェントファイルハンドリングエラー\r\n'});
-    addClientMessage('RESCODE-992', {'en':'-992 : Platform error.\r\n', 'ja':'-992 : プラットフォームエラー\r\n'});
-    addClientMessage('RESCODE-993', {'en':'-993 : No request from agent.\r\n', 'ja':'-993 : エージェントからの要求がない\r\n'});
-    addClientMessage('RESCODE-994', {'en':'-994 : Invalid agent directory.\r\n', 'ja':'-994 : エージェントディレクトリが不正\r\n'});
-    addClientMessage('RESCODE-995', {'en':'-995 : Command execution result handling error.\r\n', 'ja' : '-995 : コマンド実行結果ハンドリングエラー\r\n'});
+    addClientMessage('RESCODE_SUC', {'en':'SUCCS : Command successfully ended.\r\n', 'ja':'SUCCS : コマンドが成功した\r\n'});
+    addClientMessage('RESCODE_FAI', {'en':'FAILD : Command failed.\r\n', 'ja':'FAILD : コマンドが失敗した\r\n'});
+    addClientMessage('RESCODE-970', {'en':'NOREQ : No request from agent.\r\n', 'ja':'NOREQ : エージェントからの要求がない\r\n'});
+    addClientMessage('RESCODE-980', {'en':'START : Agent service has started.\r\n', 'ja':'START : エージェントサービスが起動した\r\n'});
+    addClientMessage('RESCODE-981', {'en':'NOCMD : No status acquisition command is configured.\r\n', 'ja':'NOCMD : 情報取得コマンドが設定されていない\r\n'});
+    addClientMessage('RESCODE-982', {'en':'CHSTC : Status acquisition cmd has been changed.\r\n', 'ja':'CHSTC : 状態取得コマンドが変更された\r\n'});
+    addClientMessage('RESCODE-983', {'en':'CHOPC : Operation cmd has been changed.\r\n', 'ja':'CHOPC : 操作コマンドが変更された\r\n'});
+    addClientMessage('RESCODE-984', {'en':'OPWAI : Waiting for an operation command request.\r\n', 'ja':'OPWAI : 操作コマンド要求待ち\r\n'});
+    addClientMessage('RESCODE-985', {'en':'OPEXE : A command for operation has started.\r\n', 'ja':'OPEXE : 操作コマンドが実行された\r\n'});
+    addClientMessage('RESCODE-990', {'en':'SFILE : Server file handling error.\r\n', 'ja':'SFILE : サーバファイルハンドリングエラー\r\n'});
+    addClientMessage('RESCODE-991', {'en':'AFILE : Agent file handling error.\r\n', 'ja':'AFILE : エージェントファイルハンドリングエラー\r\n'});
+    addClientMessage('RESCODE-992', {'en':'PLATF : Platform error.\r\n', 'ja':'PLATF : プラットフォームエラー\r\n'});
+    addClientMessage('RESCODE-994', {'en':'AGDIR : Invalid agent directory.\r\n', 'ja':'AGDIR : エージェントディレクトリが不正\r\n'});
+    addClientMessage('RESCODE-995', {'en':'CMRLT : Command execution result handling error.\r\n', 'ja' : 'CMRLT : コマンド実行結果ハンドリングエラー\r\n'});
 
     addClientMessage('SISTARTTIME', {'en':'Service start time : ', 'ja':'サービス開始時刻 : '});
     addClientMessage('SISVRVERSION', {'en':'Server version : ', 'ja':'サーバーバージョン : '});
@@ -223,18 +225,20 @@ function displayAgentInfo() {
         tBody.append('<tr>' +
                      tmpChkBoxStr +
                      '<td><a id="agentprop' + Loop + '" style="cursor: pointer;">' + AgentInfo[Loop].Name + '</a></td>' +
-                     '<td><div align="center" id="statusTd' + Loop + '" data-toggle="tooltip" title="' + getTooltipStr() + '">' + AgentInfo[Loop].Status + '</div></td>' +
+                     '<td><div align="center" id="statusTd' + Loop + '" data-toggle="tooltip" title="' + getTooltipStr() + '">' + getStatusLabel(AgentInfo[Loop].Status) + '</div></td>' +
                      '<td class="d-none d-sm-table-cell">' + cmdNameStatus + '</td>' +
                      '<td>' + acqTimeStr + '</td>' +
                      '<td class="d-none d-md-table-cell">' + updTimeStr + '</td>' +
-                     '<td class="d-none d-lg-table-cell"><div align="center" id="opStatusTd' + Loop + '" data-toggle="tooltip" title="' + getTooltipStr() + '">' + AgentInfo[Loop].OpStatus + '</div></td>' +
+                     '<td class="d-none d-lg-table-cell"><div align="center" id="opStatusTd' + Loop + '" data-toggle="tooltip" title="' + getTooltipStr() + '">' + getStatusLabel(AgentInfo[Loop].OpStatus) + '</div></td>' +
                      '<td class="d-none d-lg-table-cell">' + cmdNameOp + '</td>' +
                      '</tr>');
         // Draw rectangle for agent status
         if (AgentInfo[Loop].Status == 0) {
             $('#statusTd' + Loop).css('background-color', 'LightGreen');
+        } else if (AgentInfo[Loop].Status <= -970 && AgentInfo[Loop].Status >= -979) {
+            $('#statusTd' + Loop).css('background-color', 'Silver');
         } else if (AgentInfo[Loop].Status <= -980 && AgentInfo[Loop].Status >= -989) {
-            $('#statusTd' + Loop).css('background-color', 'LightGreen');
+            $('#statusTd' + Loop).css('background-color', 'LightSkyBlue');
         } else {
             $('#statusTd' + Loop).css('background-color', 'LightCoral');
         }
@@ -242,7 +246,7 @@ function displayAgentInfo() {
         if (AgentInfo[Loop].OpStatus == 0) {
             $('#opStatusTd' + Loop).css('background-color', 'LightGreen');
         } else if (AgentInfo[Loop].OpStatus <= -980 && AgentInfo[Loop].OpStatus >= -989) {
-            $('#opStatusTd' + Loop).css('background-color', 'LightGreen');
+            $('#opStatusTd' + Loop).css('background-color', 'LightSkyBlue');
         } else {
             $('#opStatusTd' + Loop).css('background-color', 'LightCoral');
         }
@@ -256,7 +260,10 @@ function displayAgentInfo() {
 }
 
 function getTooltipStr() {
-    var tooltipStr = getClientMessage('RESCODE-980') +
+    var tooltipStr = getClientMessage('RESCODE_SUC') +
+                     getClientMessage('RESCODE_FAI') +
+                     getClientMessage('RESCODE-970') +
+                     getClientMessage('RESCODE-980') +
                      getClientMessage('RESCODE-981') +
                      getClientMessage('RESCODE-982') +
                      getClientMessage('RESCODE-983') +
@@ -265,10 +272,28 @@ function getTooltipStr() {
                      getClientMessage('RESCODE-990') +
                      getClientMessage('RESCODE-991') +
                      getClientMessage('RESCODE-992') +
-                     getClientMessage('RESCODE-993') +
                      getClientMessage('RESCODE-994') +
                      getClientMessage('RESCODE-995');
     return tooltipStr;
+}
+
+function getStatusLabel(status) {
+    switch (status) {
+        case -970: return 'NOREQ';
+        case -980: return 'START';
+        case -981: return 'NOCMD';
+        case -982: return 'CHSTC';
+        case -983: return 'CHOPC';
+        case -984: return 'OPWAI';
+        case -985: return 'OPEXE';
+        case -990: return 'SFILE';
+        case -991: return 'AFILE';
+        case -992: return 'PLATF';
+        case -994: return 'AGDIR';
+        case -995: return 'CMRLT';
+        case 0: return 'SUCCS';
+        default: return 'FAILD';
+    }
 }
 
 function switchAgentInfoButton() {
@@ -1405,11 +1430,11 @@ function viewConsole() {
         let unitw = (wsize - 90) / 172800;
         let rectStr = '';
         for (let loopTsd = 0; timeseriesdata != null && loopTsd < timeseriesdata.length; loopTsd++) {
-            let theColor = 'LightGreen';
-            if (timeseriesdata[loopTsd].Status == 0 ||
-                (timeseriesdata[loopTsd].Status <= -980 && timeseriesdata[loopTsd].Status >= -985))
-            {
+            let theColor = '';
+            if (timeseriesdata[loopTsd].Status == 0) {
                 theColor = 'LightGreen';
+            } else if (timeseriesdata[loopTsd].Status <= -980 && timeseriesdata[loopTsd].Status >= -989) {
+                theColor = 'LightSkyBlue';
             } else {
                 theColor = 'LightCoral';
             }
@@ -1456,12 +1481,15 @@ function viewConsole() {
     function drasPieChart(element, agentInfos) {
         let totalAgentCnt = agentInfos.length;
         let successCnt = 0;
+        let eventCnt = 0;
         let errorCnt = 0;
         let noRequestCnt = 0;
         for (let loop = 0; loop < totalAgentCnt; loop++) {
-            if (agentInfos[loop].Status == -993) {
+            if (agentInfos[loop].Status <= -970 && agentInfos[loop].Status >= -979) {
                 noRequestCnt++;
-            } else if (agentInfos[loop].Status == 0 || (agentInfos[loop].Status <= -980 && agentInfos[loop].Status >= -985)) {
+            } else if (agentInfos[loop].Status <= -980 && agentInfos[loop].Status >= -989) {
+                eventCnt++;
+            } else if (agentInfos[loop].Status == 0) {
                 successCnt++;
             } else {
                 errorCnt++;
@@ -1477,11 +1505,13 @@ function viewConsole() {
             '<svg id="piechart" xmlns="http://www.w3.org/2000/svg" width="' + (wsize - 10) + '" height="' + hsize + '" viewBox="0 0 400 220">' +
             '<text x="250" y="40" font-size="20" fill="black">Total: ' + totalAgentCnt + '</text>' +
             '<text x="250" y="70" font-size="20" fill="black">Success: ' + successCnt + '</text>' +
-            '<text x="250" y="100" font-size="20" fill="black">Error: ' + errorCnt + '</text>' +
-            '<text x="250" y="130" font-size="20" fill="black">No request: ' + noRequestCnt + '</text>' +
+            '<text x="250" y="100" font-size="20" fill="black">Event: ' + successCnt + '</text>' +
+            '<text x="250" y="130" font-size="20" fill="black">Error: ' + errorCnt + '</text>' +
+            '<text x="250" y="160" font-size="20" fill="black">No request: ' + noRequestCnt + '</text>' +
             '<rect x="230" y="55" width="18" height="18" fill="LightGreen"></rect>' +
-            '<rect x="230" y="85" width="18" height="18" fill="LightCoral"></rect>' +
-            '<rect x="230" y="115" width="18" height="18" fill="Silver"></rect>' +
+            '<rect x="230" y="85" width="18" height="18" fill="LightSkyBlue"></rect>' +
+            '<rect x="230" y="115" width="18" height="18" fill="LightCoral"></rect>' +
+            '<rect x="230" y="145" width="18" height="18" fill="Silver"></rect>' +
             '<circle r="50" cx="110" cy="110" fill="rgba(0,0,0,0)" stroke="LightGreen" stroke-width="100" stroke-dashoffset="0" stroke-dasharray="314.15"/>' + 
             '<circle r="50" cx="110" cy="110" fill="rgba(0,0,0,0)" stroke="LightCoral" stroke-width="100" stroke-dashoffset="' + errorCntOffset + '" stroke-dasharray="314.15"/>' +
             '<circle r="50" cx="110" cy="110" fill="rgba(0,0,0,0)" stroke="Silver" stroke-width="100" stroke-dashoffset="' + noRequestCntOffset + '" stroke-dasharray="314.15"/>' +
