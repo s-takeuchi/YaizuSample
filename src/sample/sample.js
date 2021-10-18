@@ -68,9 +68,9 @@ function initClientMessage() {
     addClientMessage('RESCODE_FAI', {'en':'FAILD : Command failed.\r\n', 'ja':'FAILD : コマンドが失敗した\r\n'});
     addClientMessage('RESCODE-970', {'en':'NOREQ : No request from agent.\r\n', 'ja':'NOREQ : エージェントからの要求がない\r\n'});
     addClientMessage('RESCODE-980', {'en':'START : Agent service has started.\r\n', 'ja':'START : エージェントサービスが起動した\r\n'});
-    addClientMessage('RESCODE-981', {'en':'NOCMD : No status acquisition command is configured.\r\n', 'ja':'NOCMD : 情報取得コマンドが設定されていない\r\n'});
-    addClientMessage('RESCODE-982', {'en':'CHSTC : Status acquisition cmd has been changed.\r\n', 'ja':'CHSTC : 状態取得コマンドが変更された\r\n'});
-    addClientMessage('RESCODE-983', {'en':'CHOPC : Operation cmd has been changed.\r\n', 'ja':'CHOPC : 操作コマンドが変更された\r\n'});
+    addClientMessage('RESCODE-981', {'en':'NOCMD : No status acquisition command is configured.\r\n', 'ja':'NOCMD : 状態取得コマンドが設定されていない\r\n'});
+    addClientMessage('RESCODE-982', {'en':'CHSTC : Status acquisition command has been changed.\r\n', 'ja':'CHSTC : 状態取得コマンドが変更された\r\n'});
+    addClientMessage('RESCODE-983', {'en':'CHOPC : Operation command has been changed.\r\n', 'ja':'CHOPC : 操作コマンドが変更された\r\n'});
     addClientMessage('RESCODE-984', {'en':'OPWAI : Waiting for an operation command request.\r\n', 'ja':'OPWAI : 操作コマンド要求待ち\r\n'});
     addClientMessage('RESCODE-985', {'en':'OPEXE : A command for operation has started.\r\n', 'ja':'OPEXE : 操作コマンドが実行された\r\n'});
     addClientMessage('RESCODE-990', {'en':'SFILE : Server file handling error.\r\n', 'ja':'SFILE : サーバファイルハンドリングエラー\r\n'});
@@ -1422,7 +1422,7 @@ function viewConsole() {
     }
     
     function drawAgentStatusHistoryImpl(agentName, timeseriesdata) {
-        let wsize = window.innerWidth;
+        let wsize = window.innerWidth;//$(window).width();
         let hsize = 70;
     
         let startTime = curTime - 172800; // 172800 = 60sec * 60min * 24hour * 2days
