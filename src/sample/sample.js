@@ -1422,7 +1422,7 @@ function viewConsole() {
     }
     
     function drawAgentStatusHistoryImpl(agentName, timeseriesdata) {
-        let wsize = $(window).width();
+        let wsize = window.innerWidth;
         let hsize = 70;
     
         let startTime = curTime - 172800; // 172800 = 60sec * 60min * 24hour * 2days
@@ -1496,7 +1496,8 @@ function viewConsole() {
             }
         }
     
-        let errorCntOffset = (successCnt / totalAgentCnt) * 314.15;
+        let eventCntOffset = (successCnt / totalAgentCnt) * 314.15;
+        let errorCntOffset = eventCntOffset + (eventCnt / totalAgentCnt) * 314.15;
         let noRequestCntOffset = errorCntOffset + (errorCnt / totalAgentCnt) * 314.15;
         let wsize = $(window).width();
         let hsize = 220;
@@ -1513,6 +1514,7 @@ function viewConsole() {
             '<rect x="230" y="115" width="18" height="18" fill="LightCoral"></rect>' +
             '<rect x="230" y="145" width="18" height="18" fill="Silver"></rect>' +
             '<circle r="50" cx="110" cy="110" fill="rgba(0,0,0,0)" stroke="LightGreen" stroke-width="100" stroke-dashoffset="0" stroke-dasharray="314.15"/>' + 
+            '<circle r="50" cx="110" cy="110" fill="rgba(0,0,0,0)" stroke="LightSkyBlue" stroke-width="100" stroke-dashoffset="' + eventCntOffset + '" stroke-dasharray="314.15"/>' +
             '<circle r="50" cx="110" cy="110" fill="rgba(0,0,0,0)" stroke="LightCoral" stroke-width="100" stroke-dashoffset="' + errorCntOffset + '" stroke-dasharray="314.15"/>' +
             '<circle r="50" cx="110" cy="110" fill="rgba(0,0,0,0)" stroke="Silver" stroke-width="100" stroke-dashoffset="' + noRequestCntOffset + '" stroke-dasharray="314.15"/>' +
             '</svg>'
