@@ -1449,7 +1449,7 @@ function viewConsole() {
                 graphWidth = wsize - 40 - graphX;
             }
             let dateUpdTime = new Date(updTimeInt * 1000);
-            let label = dateUpdTime + ':' + timeseriesdata[loopTsd].Status;
+            let label = dateUpdTime + ':' + getStatusLabel(timeseriesdata[loopTsd].Status);
             rectStr = rectStr + '<rect x="' + graphX + '" y="20" width="' + graphWidth + '" height="30" fill="' + theColor + '"><title>' + label + '</title></rect>';
         }
         let startTimeDate = new Date(startTime * 1000);
@@ -1505,7 +1505,7 @@ function viewConsole() {
             '<svg id="piechart" xmlns="http://www.w3.org/2000/svg" width="' + (wsize - 10) + '" height="' + hsize + '" viewBox="0 0 400 220">' +
             '<text x="250" y="40" font-size="20" fill="black">Total: ' + totalAgentCnt + '</text>' +
             '<text x="250" y="70" font-size="20" fill="black">Success: ' + successCnt + '</text>' +
-            '<text x="250" y="100" font-size="20" fill="black">Event: ' + successCnt + '</text>' +
+            '<text x="250" y="100" font-size="20" fill="black">Event: ' + eventCnt + '</text>' +
             '<text x="250" y="130" font-size="20" fill="black">Error: ' + errorCnt + '</text>' +
             '<text x="250" y="160" font-size="20" fill="black">No request: ' + noRequestCnt + '</text>' +
             '<rect x="230" y="55" width="18" height="18" fill="LightGreen"></rect>' +
