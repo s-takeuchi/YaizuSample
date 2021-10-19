@@ -135,6 +135,25 @@ function getArray(targetObject) {
     }
 }
 
+function getStatusLabel(status) {
+    switch (status) {
+        case -970: return 'NOREQ';
+        case -980: return 'START';
+        case -981: return 'NOCMD';
+        case -982: return 'CHSTC';
+        case -983: return 'CHOPC';
+        case -984: return 'OPWAI';
+        case -985: return 'OPEXE';
+        case -990: return 'SFILE';
+        case -991: return 'AFILE';
+        case -992: return 'PLATF';
+        case -994: return 'AGDIR';
+        case -995: return 'CMRLT';
+        case 0: return 'SUCCS';
+        default: return 'FAILD';
+    }
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
@@ -253,7 +272,7 @@ function displayAgentInfo() {
     }
     for (let loop = 0; loop < AgentInfo.length; loop++) {
         $('#agentprop' + loop).on('click', function() {
-            showAgentPropertiesDialog(AgentInfo[loop].Name);
+            transShowAgentPropertiesDialog(AgentInfo[loop].Name);
         });
     }
     resizeComponent();
@@ -275,25 +294,6 @@ function getTooltipStr() {
                      getClientMessage('RESCODE-994') +
                      getClientMessage('RESCODE-995');
     return tooltipStr;
-}
-
-function getStatusLabel(status) {
-    switch (status) {
-        case -970: return 'NOREQ';
-        case -980: return 'START';
-        case -981: return 'NOCMD';
-        case -982: return 'CHSTC';
-        case -983: return 'CHOPC';
-        case -984: return 'OPWAI';
-        case -985: return 'OPEXE';
-        case -990: return 'SFILE';
-        case -991: return 'AFILE';
-        case -992: return 'PLATF';
-        case -994: return 'AGDIR';
-        case -995: return 'CMRLT';
-        case 0: return 'SUCCS';
-        default: return 'FAILD';
-    }
 }
 
 function switchAgentInfoButton() {
@@ -500,44 +500,64 @@ function completeDeleteAgentDlg() {
     transDisplayAgentInfo();
 }
 
-function showAgentPropertiesDialog(targetName) {
-    let agentPropDlg = $('<div/>');
-    if (responseData['API_GET_AGTINFO'].Data === undefined) {
-        agentPropDlg.append(getClientMessage('NOAGTINFO'));
-        showInputModal('<h5 class="modal-title">' + targetName + '</h5>', agentPropDlg);
-        return;
-    }
-    let agentInfo = getArray(responseData['API_GET_AGTINFO'].Data.AgentInfo);
-    if (agentInfo == null) {
-        agentPropDlg.append(getClientMessage('NOAGTINFO'));
-        showInputModal('<h5 class="modal-title">' + targetName + '</h5>', agentPropDlg);
-        return;
-    }
-    for (let loop = 0; loop < agentInfo.length; loop++) {
-        if (targetName === agentInfo[loop].Name) {
-            agentPropDlg.append(getClientMessage('AINAME') + ' : ' + targetName + '<br/>');
-            let acqTimeInt = parseInt(agentInfo[loop].AcqTime, 16);
-            let updTimeInt = parseInt(agentInfo[loop].UpdTime, 16);
-            let iniTimeInt = parseInt(agentInfo[loop].IniTime, 16);
-            let reqTimeInt = parseInt(agentInfo[loop].ReqTime, 16);
-            let dateAcqTime = new Date(acqTimeInt * 1000);
-            let dateUpdTime = new Date(updTimeInt * 1000);
-            let dateIniTime = new Date(iniTimeInt * 1000);
-            let dateReqTime = new Date(reqTimeInt * 1000);
-            let acqTimeStr = dateAcqTime.toString();
-            let updTimeStr = dateUpdTime.toString();
-            let iniTimeStr = dateIniTime.toString();
-            let reqTimeStr = dateReqTime.toString();
-            agentPropDlg.append(getClientMessage('AISTATUSINITIME') + ' : ' + iniTimeStr + '<br/>');
-            agentPropDlg.append(getClientMessage('AILASTPOLLINGTIME') + ' : ' + reqTimeStr + '<br/>');
-            agentPropDlg.append(getClientMessage('AISTATUSTIME') + ' : ' + acqTimeStr + '<br/>');
-            agentPropDlg.append(getClientMessage('AISTATUSUPTIME') + ' : ' + acqTimeStr + '<br/>');
-            agentPropDlg.append('<p></p>');
-            agentPropDlg.append('<button type="button" id="OK" class="btn btn-dark" onclick="closeInputModal()">OK</button> ');
-        }
-    }
+{
+    let targetName = '';
 
-    showInputModal('<h5 class="modal-title">' + targetName + '</h5>', agentPropDlg);
+    function transShowAgentPropertiesDialog(paramTargetName) {
+        targetName = paramTargetName;
+        let contents = [];
+        contents.push({ method: 'GET', url: '/api/timeseriesdata/' + targetName + '/', request: null, keystring: 'API_GET_TIMESERIESDATA' });
+        contents.push({ method: 'GET', url: '/api/agent/', request: null, keystring: 'API_GET_AGTINFO' });
+        MultiApiCall(contents, showAgentPropertiesDialog);
+    }
+    
+    function showAgentPropertiesDialog() {
+        let agentPropDlg = $('<div/>');
+        showInputModal('<h5 class="modal-title">' + targetName + '</h5>', agentPropDlg);
+
+        if (responseData['API_GET_AGTINFO'].Data === undefined) {
+            agentPropDlg.append(getClientMessage('NOAGTINFO'));
+            return;
+        }
+        let agentInfo = getArray(responseData['API_GET_AGTINFO'].Data.AgentInfo);
+        if (agentInfo == null) {
+            agentPropDlg.append(getClientMessage('NOAGTINFO'));
+            return;
+        }
+        for (let loop = 0; loop < agentInfo.length; loop++) {
+            if (targetName === agentInfo[loop].Name) {
+                let timeseriesdata = getArray(responseData['API_GET_TIMESERIESDATA'].Data.TimeSeriesData);
+                let newSvg = drawAgentStatusHistoryImpl(targetName, timeseriesdata, 320);
+                agentPropDlg.append(newSvg);
+        
+                let tableListData = $('<table>');
+                tableListData.addClass('table stktable table-striped');
+                let tBody = $('<tbody>');
+                tableListData.append(tBody);
+                agentPropDlg.append(tableListData);
+    
+                let acqTimeInt = parseInt(agentInfo[loop].AcqTime, 16);
+                let updTimeInt = parseInt(agentInfo[loop].UpdTime, 16);
+                let iniTimeInt = parseInt(agentInfo[loop].IniTime, 16);
+                let reqTimeInt = parseInt(agentInfo[loop].ReqTime, 16);
+                let dateAcqTime = new Date(acqTimeInt * 1000);
+                let dateUpdTime = new Date(updTimeInt * 1000);
+                let dateIniTime = new Date(iniTimeInt * 1000);
+                let dateReqTime = new Date(reqTimeInt * 1000);
+                let acqTimeStr = dateAcqTime.toString();
+                let updTimeStr = dateUpdTime.toString();
+                let iniTimeStr = dateIniTime.toString();
+                let reqTimeStr = dateReqTime.toString();
+                tBody.append('<tr><td>' + getClientMessage('AINAME') + '</td><td>' + targetName + '</td></tr>');
+                tBody.append('<tr><td>' + getClientMessage('AISTATUSINITIME') + '</td><td>' + iniTimeStr + '</td></tr>');
+                tBody.append('<tr><td>' + getClientMessage('AILASTPOLLINGTIME') + '</td><td>' + reqTimeStr + '</td></tr>');
+                tBody.append('<tr><td>' + getClientMessage('AISTATUSTIME') + '</td><td>' + acqTimeStr + '</td></tr>');
+                tBody.append('<tr><td>' + getClientMessage('AISTATUSUPTIME') + '</td><td>' + updTimeStr + '</td></tr>');
+                agentPropDlg.append('<p></p>');
+                agentPropDlg.append('<button type="button" id="OK" class="btn btn-dark" onclick="closeInputModal()">OK</button> ');
+            }
+        }
+    }    
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -1411,18 +1431,27 @@ function viewConsole() {
     }
 
     function drawAgentStatusHistory() {
+        let escapeSelectorString = function(val){
+            return val.replace(/[ !"#$%&'()*+,.\/:;<=>?@\[\\\]^`{|}~]/g, "\\$&");
+        }
+
         for (let loop = 0; loop < 8; loop++) {
             if (selectedTsd[loop] === getClientMessage('DASHBOARD_UNSPECIFIED') || selectedTsd[loop] === '') {
                 continue;
             }
             let timeseriesdata = getArray(responseData['API_GET_TIMESERIESDATA_' + loop].Data.TimeSeriesData);
 
-            drawAgentStatusHistoryImpl(selectedTsd[loop], timeseriesdata);
+            let newSvg = drawAgentStatusHistoryImpl(selectedTsd[loop], timeseriesdata, window.innerWidth);
+
+            if ($('#' + escapeSelectorString(selectedTsd[loop])).length) {
+                $('#' + escapeSelectorString(selectedTsd[loop])).replaceWith(newSvg);
+            } else {
+                $('#dashboard').append(newSvg);
+            }
         }
     }
     
-    function drawAgentStatusHistoryImpl(agentName, timeseriesdata) {
-        let wsize = window.innerWidth;//$(window).width();
+    function drawAgentStatusHistoryImpl(agentName, timeseriesdata, wsize) {
         let hsize = 70;
     
         let startTime = curTime - 172800; // 172800 = 60sec * 60min * 24hour * 2days
@@ -1466,16 +1495,7 @@ function viewConsole() {
             '<text x="' + ((wsize - 90) / 2 + 53) + '" y="65" fill="blue">' + (odbTimeDate.getMonth() + 1) + '/' + odbTimeDate.getDate() + ' ' + ('00' + odbTimeDate.getHours()).slice(-2) + ':' + ('00' + odbTimeDate.getMinutes()).slice(-2) + '</text>' +
             '</svg>'
         );
-    
-        let escapeSelectorString = function(val){
-            return val.replace(/[ !"#$%&'()*+,.\/:;<=>?@\[\\\]^`{|}~]/g, "\\$&");
-        }
-        
-        if ($('#' + escapeSelectorString(agentName)).length) {
-            $('#' + escapeSelectorString(agentName)).replaceWith(newSvg);
-        } else {
-            $('#dashboard').append(newSvg);
-        }
+        return newSvg;
     }
 
     function drasPieChart(element, agentInfos) {
