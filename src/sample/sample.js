@@ -511,8 +511,21 @@ function completeDeleteAgentDlg() {
         MultiApiCall(contents, showAgentPropertiesDialog);
     }
     
+    function resizeAgentStatusHistory(wsize) {
+        let escapeSelectorString = function(val){
+            return val.replace(/[ !"#$%&'()*+,.\/:;<=>?@\[\\\]^`{|}~]/g, "\\$&");
+        }
+        let timeseriesdata = getArray(responseData['API_GET_TIMESERIESDATA'].Data.TimeSeriesData);
+        let newSvg = drawAgentStatusHistoryImpl(targetName, timeseriesdata, wsize);
+        if ($('#' + escapeSelectorString(targetName)).length) {
+            $('#' + escapeSelectorString(targetName)).replaceWith(newSvg);
+        } else {
+            $('#agentdetail').append(newSvg);
+        }
+    }
+
     function showAgentPropertiesDialog() {
-        let agentPropDlg = $('<div/>');
+        let agentPropDlg = $('<div id="agentdetail"/>');
         showInputModal('<h5 class="modal-title">' + targetName + '</h5>', agentPropDlg);
 
         if (responseData['API_GET_AGTINFO'].Data === undefined) {
@@ -526,9 +539,7 @@ function completeDeleteAgentDlg() {
         }
         for (let loop = 0; loop < agentInfo.length; loop++) {
             if (targetName === agentInfo[loop].Name) {
-                let timeseriesdata = getArray(responseData['API_GET_TIMESERIESDATA'].Data.TimeSeriesData);
-                let newSvg = drawAgentStatusHistoryImpl(targetName, timeseriesdata, 320);
-                agentPropDlg.append(newSvg);
+                resizeAgentStatusHistory(320);
         
                 let tableListData = $('<table>');
                 tableListData.addClass('table stktable table-striped');
@@ -548,7 +559,7 @@ function completeDeleteAgentDlg() {
                 let updTimeStr = dateUpdTime.toString();
                 let iniTimeStr = dateIniTime.toString();
                 let reqTimeStr = dateReqTime.toString();
-                tBody.append('<tr><td>' + getClientMessage('AINAME') + '</td><td>' + targetName + '</td></tr>');
+                tBody.append('<p></p>');
                 tBody.append('<tr><td>' + getClientMessage('AISTATUSINITIME') + '</td><td>' + iniTimeStr + '</td></tr>');
                 tBody.append('<tr><td>' + getClientMessage('AILASTPOLLINGTIME') + '</td><td>' + reqTimeStr + '</td></tr>');
                 tBody.append('<tr><td>' + getClientMessage('AISTATUSTIME') + '</td><td>' + acqTimeStr + '</td></tr>');
@@ -557,6 +568,7 @@ function completeDeleteAgentDlg() {
                 agentPropDlg.append('<button type="button" id="OK" class="btn btn-dark" onclick="closeInputModal()">OK</button> ');
             }
         }
+        resizeComponent();
     }    
 }
 
@@ -1627,6 +1639,22 @@ function resizeComponent() {
             drasPieChart($('#dashboard'), agentInfos);
             drawAgentStatusHistory();
         }
+    }
+    // Agent detail dialog resize
+    if ($('#agentdetail').length) {
+        let tmpWSize = 0;
+        if (wsize >= 1200) {
+            tmpWSize = 1000;
+        } else if (wsize >= 992) {
+            tmpWSize = 792;
+        } else if (wsize >= 576) {
+            tmpWSize = 476;
+        } else if (wsize >= 400) {
+            tmpWSize = 350;
+        } else {
+            tmpWSize = 280;
+        }
+        resizeAgentStatusHistory(tmpWSize);
     }
 }
 
