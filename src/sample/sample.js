@@ -159,15 +159,15 @@ function getStatusDetailLabel(status) {
         case -970: return getClientMessage('RESCODE-970');
         case -980: return getClientMessage('RESCODE-980');
         case -981: return getClientMessage('RESCODE-981');
-        case -982: return getClientMessage('RESCODE-980');
-        case -983: return getClientMessage('RESCODE-980');
-        case -984: return getClientMessage('RESCODE-980');
-        case -985: return getClientMessage('RESCODE-980');
-        case -990: return getClientMessage('RESCODE-980');
-        case -991: return getClientMessage('RESCODE-980');
-        case -992: return getClientMessage('RESCODE-980');
-        case -994: return getClientMessage('RESCODE-980');
-        case -995: return getClientMessage('RESCODE-980');
+        case -982: return getClientMessage('RESCODE-982');
+        case -983: return getClientMessage('RESCODE-983');
+        case -984: return getClientMessage('RESCODE-984');
+        case -985: return getClientMessage('RESCODE-985');
+        case -990: return getClientMessage('RESCODE-990');
+        case -991: return getClientMessage('RESCODE-991');
+        case -992: return getClientMessage('RESCODE-992');
+        case -994: return getClientMessage('RESCODE-994');
+        case -995: return getClientMessage('RESCODE-995');
         case 0: return getClientMessage('RESCODE_SUC');
         default: return getClientMessage('RESCODE_FAI');
     }
@@ -579,12 +579,24 @@ function completeDeleteAgentDlg() {
                 let updTimeStr = dateUpdTime.toString();
                 let iniTimeStr = dateIniTime.toString();
                 let reqTimeStr = dateReqTime.toString();
+
+                let commandList = getArray(responseData['API_GET_COMMAND'].Data.Command);
+                let cmdNameStatus = '';
+                for (let loopcmd = 0; commandList != null && loopcmd < commandList.length; loopcmd++) {
+                    if (agentInfo[loop].StatusCmd == commandList[loopcmd].Id) {
+                        cmdNameStatus = commandList[loopcmd].Name;
+                        break;
+                    }
+                }
+        
                 tBody.append('<p></p>');
                 tBody.append('<tr><td>' + getClientMessage('AISTATUS') + '</td><td id="adStatusTd' + loop + '">' + getStatusDetailLabel(agentInfo[loop].Status) + '</td></tr>');
+                tBody.append('<tr><td>' + getClientMessage('AISTATUSCMD') + '</td><td>' + cmdNameStatus + '</td></tr>');
                 tBody.append('<tr><td>' + getClientMessage('AISTATUSTIME') + '</td><td>' + acqTimeStr + '</td></tr>');
                 tBody.append('<tr><td>' + getClientMessage('AISTATUSUPTIME') + '</td><td>' + updTimeStr + '</td></tr>');
                 tBody.append('<tr><td>' + getClientMessage('AISTATUSINITIME') + '</td><td>' + iniTimeStr + '</td></tr>');
                 tBody.append('<tr><td>' + getClientMessage('AILASTPOLLINGTIME') + '</td><td>' + reqTimeStr + '</td></tr>');
+                tBody.append('<tr><td>' + getClientMessage('AIOPSTATUS') + '</td><td id="adOpStatusTd' + loop + '">' + getStatusDetailLabel(agentInfo[loop].OpStatus) + '</td></tr>');
                 if (agentInfo[loop].Status == 0) {
                     $('#adStatusTd' + loop).css('background-color', 'LightGreen');
                 } else if (agentInfo[loop].Status <= -970 && agentInfo[loop].Status >= -979) {
@@ -593,6 +605,15 @@ function completeDeleteAgentDlg() {
                     $('#adStatusTd' + loop).css('background-color', 'LightSkyBlue');
                 } else {
                     $('#adStatusTd' + loop).css('background-color', 'LightCoral');
+                }
+                if (agentInfo[loop].OpStatus == 0) {
+                    $('#adOpStatusTd' + loop).css('background-color', 'LightGreen');
+                } else if (agentInfo[loop].OpStatus <= -970 && agentInfo[loop].OpStatus >= -979) {
+                    $('#adOpStatusTd' + loop).css('background-color', 'Silver');
+                } else if (agentInfo[loop].OpStatus <= -980 && agentInfo[loop].OpStatus >= -989) {
+                    $('#adOpStatusTd' + loop).css('background-color', 'LightSkyBlue');
+                } else {
+                    $('#adOpStatusTd' + loop).css('background-color', 'LightCoral');
                 }
                 agentPropDlg.append('<p></p>');
                 agentPropDlg.append('<button type="button" id="OK" class="btn btn-dark" onclick="closeInputModal()">OK</button> ');
