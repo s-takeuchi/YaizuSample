@@ -69,9 +69,9 @@ function initClientMessage() {
     addClientMessage('RESCODE-970', {'en':'NOREQ : No request from agent.\r\n', 'ja':'NOREQ : エージェントからの要求がない\r\n'});
     addClientMessage('RESCODE-980', {'en':'START : Agent service has started.\r\n', 'ja':'START : エージェントサービスが起動した\r\n'});
     addClientMessage('RESCODE-981', {'en':'NOCMD : No status acquisition command is configured.\r\n', 'ja':'NOCMD : 状態取得コマンドが設定されていない\r\n'});
-    addClientMessage('RESCODE-982', {'en':'CHSTC : Status acquisition command has been changed.\r\n', 'ja':'CHSTC : 状態取得コマンドが変更された\r\n'});
-    addClientMessage('RESCODE-983', {'en':'CHOPC : Operation command has been changed.\r\n', 'ja':'CHOPC : 操作コマンドが変更された\r\n'});
-    addClientMessage('RESCODE-984', {'en':'OPWAI : Waiting for an operation command request.\r\n', 'ja':'OPWAI : 操作コマンド要求待ち\r\n'});
+    addClientMessage('RESCODE-982', {'en':'STCHG : Status acquisition command has been changed.\r\n', 'ja':'STCHG : 状態取得コマンドが変更された\r\n'});
+    addClientMessage('RESCODE-983', {'en':'OPCHG : Operation command has been changed.\r\n', 'ja':'OPCHG : 操作コマンドが変更された\r\n'});
+    addClientMessage('RESCODE-984', {'en':'OPWIT : Waiting for an operation command request.\r\n', 'ja':'OPWIT : 操作コマンド要求待ち\r\n'});
     addClientMessage('RESCODE-985', {'en':'OPEXE : A command for operation has started.\r\n', 'ja':'OPEXE : 操作コマンドが実行された\r\n'});
     addClientMessage('RESCODE-990', {'en':'SFILE : Server file handling error.\r\n', 'ja':'SFILE : サーバファイルハンドリングエラー\r\n'});
     addClientMessage('RESCODE-991', {'en':'AFILE : Agent file handling error.\r\n', 'ja':'AFILE : エージェントファイルハンドリングエラー\r\n'});
@@ -140,9 +140,9 @@ function getStatusLabel(status) {
         case -970: return 'NOREQ';
         case -980: return 'START';
         case -981: return 'NOCMD';
-        case -982: return 'CHSTC';
-        case -983: return 'CHOPC';
-        case -984: return 'OPWAI';
+        case -982: return 'STCHG';
+        case -983: return 'OPCHG';
+        case -984: return 'OPWIT';
         case -985: return 'OPEXE';
         case -990: return 'SFILE';
         case -991: return 'AFILE';
@@ -151,6 +151,25 @@ function getStatusLabel(status) {
         case -995: return 'CMRLT';
         case 0: return 'SUCCS';
         default: return 'FAILD';
+    }
+}
+
+function getStatusDetailLabel(status) {
+    switch (status) {
+        case -970: return getClientMessage('RESCODE-970');
+        case -980: return getClientMessage('RESCODE-980');
+        case -981: return getClientMessage('RESCODE-981');
+        case -982: return getClientMessage('RESCODE-980');
+        case -983: return getClientMessage('RESCODE-980');
+        case -984: return getClientMessage('RESCODE-980');
+        case -985: return getClientMessage('RESCODE-980');
+        case -990: return getClientMessage('RESCODE-980');
+        case -991: return getClientMessage('RESCODE-980');
+        case -992: return getClientMessage('RESCODE-980');
+        case -994: return getClientMessage('RESCODE-980');
+        case -995: return getClientMessage('RESCODE-980');
+        case 0: return getClientMessage('RESCODE_SUC');
+        default: return getClientMessage('RESCODE_FAI');
     }
 }
 
@@ -516,6 +535,7 @@ function completeDeleteAgentDlg() {
             return val.replace(/[ !"#$%&'()*+,.\/:;<=>?@\[\\\]^`{|}~]/g, "\\$&");
         }
         let timeseriesdata = getArray(responseData['API_GET_TIMESERIESDATA'].Data.TimeSeriesData);
+        resetCurDate();
         let newSvg = drawAgentStatusHistoryImpl(targetName, timeseriesdata, wsize);
         if ($('#' + escapeSelectorString(targetName)).length) {
             $('#' + escapeSelectorString(targetName)).replaceWith(newSvg);
@@ -560,10 +580,20 @@ function completeDeleteAgentDlg() {
                 let iniTimeStr = dateIniTime.toString();
                 let reqTimeStr = dateReqTime.toString();
                 tBody.append('<p></p>');
-                tBody.append('<tr><td>' + getClientMessage('AISTATUSINITIME') + '</td><td>' + iniTimeStr + '</td></tr>');
-                tBody.append('<tr><td>' + getClientMessage('AILASTPOLLINGTIME') + '</td><td>' + reqTimeStr + '</td></tr>');
+                tBody.append('<tr><td>' + getClientMessage('AISTATUS') + '</td><td id="adStatusTd' + loop + '">' + getStatusDetailLabel(agentInfo[loop].Status) + '</td></tr>');
                 tBody.append('<tr><td>' + getClientMessage('AISTATUSTIME') + '</td><td>' + acqTimeStr + '</td></tr>');
                 tBody.append('<tr><td>' + getClientMessage('AISTATUSUPTIME') + '</td><td>' + updTimeStr + '</td></tr>');
+                tBody.append('<tr><td>' + getClientMessage('AISTATUSINITIME') + '</td><td>' + iniTimeStr + '</td></tr>');
+                tBody.append('<tr><td>' + getClientMessage('AILASTPOLLINGTIME') + '</td><td>' + reqTimeStr + '</td></tr>');
+                if (agentInfo[loop].Status == 0) {
+                    $('#adStatusTd' + loop).css('background-color', 'LightGreen');
+                } else if (agentInfo[loop].Status <= -970 && agentInfo[loop].Status >= -979) {
+                    $('#adStatusTd' + loop).css('background-color', 'Silver');
+                } else if (agentInfo[loop].Status <= -980 && agentInfo[loop].Status >= -989) {
+                    $('#adStatusTd' + loop).css('background-color', 'LightSkyBlue');
+                } else {
+                    $('#adStatusTd' + loop).css('background-color', 'LightCoral');
+                }
                 agentPropDlg.append('<p></p>');
                 agentPropDlg.append('<button type="button" id="OK" class="btn btn-dark" onclick="closeInputModal()">OK</button> ');
             }
@@ -1432,13 +1462,15 @@ function viewConsole() {
         }
     }
 
-    function transDrawAgentStatusHitory() {
-        finalSequentialApiCall();
-
+    function resetCurDate() {
         let curDate = new Date();
         let curTimeInMs = curDate.getTime();
         curTime = Math.floor(curTimeInMs / 1000);
+    }
 
+    function transDrawAgentStatusHitory() {
+        finalSequentialApiCall();
+        resetCurDate();
         drawAgentStatusHistory();
     }
 
