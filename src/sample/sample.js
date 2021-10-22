@@ -582,10 +582,13 @@ function completeDeleteAgentDlg() {
 
                 let commandList = getArray(responseData['API_GET_COMMAND'].Data.Command);
                 let cmdNameStatus = '';
+                let cmdNameOpStatus = '';
                 for (let loopcmd = 0; commandList != null && loopcmd < commandList.length; loopcmd++) {
                     if (agentInfo[loop].StatusCmd == commandList[loopcmd].Id) {
                         cmdNameStatus = commandList[loopcmd].Name;
-                        break;
+                    }
+                    if (agentInfo[loop].OpCmd == commandList[loopcmd].Id) {
+                        cmdNameOpStatus = commandList[loopcmd].Name;
                     }
                 }
         
@@ -597,6 +600,7 @@ function completeDeleteAgentDlg() {
                 tBody.append('<tr><td>' + getClientMessage('AISTATUSINITIME') + '</td><td>' + iniTimeStr + '</td></tr>');
                 tBody.append('<tr><td>' + getClientMessage('AILASTPOLLINGTIME') + '</td><td>' + reqTimeStr + '</td></tr>');
                 tBody.append('<tr><td>' + getClientMessage('AIOPSTATUS') + '</td><td id="adOpStatusTd' + loop + '">' + getStatusDetailLabel(agentInfo[loop].OpStatus) + '</td></tr>');
+                tBody.append('<tr><td>' + getClientMessage('AIOPSTATUSCMD') + '</td><td>' + cmdNameOpStatus + '</td></tr>');
                 if (agentInfo[loop].Status == 0) {
                     $('#adStatusTd' + loop).css('background-color', 'LightGreen');
                 } else if (agentInfo[loop].Status <= -970 && agentInfo[loop].Status >= -979) {
