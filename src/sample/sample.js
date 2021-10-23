@@ -64,6 +64,7 @@ function initClientMessage() {
         'ja':'指定したエージェントに関連する情報はSERVALサーバから削除されます。<br/>エージェントが再登録されないようにホストからエージェントをアンインストールしてください。<br/>'
     });
     addClientMessage('DELAGENTLIST', {'en':'Agents shown below will be deleted.', 'ja':'以下のエージェントが削除されます。'});
+    addClientMessage('AIDOESNOTEXIST', {'en':'The specified agent does not exist.', 'ja':'指定したエージェントは存在しません。'});
     addClientMessage('RESCODE_SUC', {'en':'SUCCS : Command successfully ended.\r\n', 'ja':'SUCCS : コマンドが成功した\r\n'});
     addClientMessage('RESCODE_FAI', {'en':'FAILD : Command failed.\r\n', 'ja':'FAILD : コマンドが失敗した\r\n'});
     addClientMessage('RESCODE-970', {'en':'NOREQ : No request from agent.\r\n', 'ja':'NOREQ : エージェントからの要求がない\r\n'});
@@ -289,9 +290,9 @@ function displayAgentInfo() {
             $('#opStatusTd' + Loop).css('background-color', 'LightCoral');
         }
     }
-    for (let loop = 0; loop < AgentInfo.length; loop++) {
-        $('#agentprop' + loop).on('click', function() {
-            transShowAgentPropertiesDialog(AgentInfo[loop].Name);
+    for (let loopclick = 0; loopclick < AgentInfo.length; loopclick++) {
+        $('#agentprop' + loopclick).on('click', function() {
+            transShowAgentPropertiesDialog(AgentInfo[loopclick].Name);
         });
     }
     resizeComponent();
@@ -548,6 +549,14 @@ function completeDeleteAgentDlg() {
         let agentPropDlg = $('<div id="agentdetail"/>');
         showInputModal('<h5 class="modal-title">' + targetName + '</h5>', agentPropDlg);
 
+        if (statusCode['API_GET_AGTINFO'] == -1 || statusCode['API_GET_AGTINFO'] == 0) {
+            agentPropDlg.append(getClientMessage('CONNERR'));
+            return;
+        }
+        if (statusCode['API_GET_AGTINFO'] != 200) {
+            agentPropDlg.append(getSvrMsg(responseData['API_GET_AGTINFO']));
+            return;
+        }
         if (responseData['API_GET_AGTINFO'].Data === undefined) {
             agentPropDlg.append(getClientMessage('NOAGTINFO'));
             return;
@@ -557,8 +566,10 @@ function completeDeleteAgentDlg() {
             agentPropDlg.append(getClientMessage('NOAGTINFO'));
             return;
         }
+        let targetAgentExistFlag = false;
         for (let loop = 0; loop < agentInfo.length; loop++) {
             if (targetName === agentInfo[loop].Name) {
+                targetAgentExistFlag = true;
                 resizeAgentStatusHistory(320);
         
                 let tableListData = $('<table>');
@@ -619,11 +630,14 @@ function completeDeleteAgentDlg() {
                 } else {
                     $('#adOpStatusTd' + loop).css('background-color', 'LightCoral');
                 }
-                agentPropDlg.append('<p></p>');
-                agentPropDlg.append('<button type="button" id="OK" class="btn btn-dark" onclick="closeInputModal()">OK</button> ');
+                resizeComponent();
             }
         }
-        resizeComponent();
+        if (targetAgentExistFlag == false) {
+            agentPropDlg.append(getClientMessage('AIDOESNOTEXIST'));
+        }
+        agentPropDlg.append('<p></p>');
+        agentPropDlg.append('<button type="button" id="OK" class="btn btn-dark" onclick="closeInputModal()">OK</button> ');
     }    
 }
 
@@ -1707,7 +1721,7 @@ function resizeComponent() {
         } else if (wsize >= 576) {
             tmpWSize = 476;
         } else if (wsize >= 400) {
-            tmpWSize = 350;
+            tmpWSize = 380;
         } else {
             tmpWSize = 280;
         }
