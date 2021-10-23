@@ -50,6 +50,8 @@ wchar_t HostName[256];
 #define SCRIPT_ENCODE_SJIS 1
 int ScriptEncode = SCRIPT_ENCODE_UTF8;
 
+bool InvalidDirFlag = false;
+
 StkObject* GetAgentInfo(int Status)
 {
 	StkObject* NewObj = new StkObject(L"");
@@ -250,6 +252,9 @@ int GetAndSaveFile(char* FileName, size_t FileSize, StkWebAppSend* SndObj)
 
 int CommonProcess(StkObject* CommandSearch, char TmpTime[64], StkWebAppSend* SndObj, bool OperationFlag)
 {
+	if (InvalidDirFlag) {
+		return RESULTCODE_ERROR_INVALIDAGTDIR;
+	}
 	int ReturnCode = RESULTCODE_NOSCRIPT;
 	while (CommandSearch) {
 		if (StkPlWcsCmp(CommandSearch->GetName(), L"Data") == 0) {
@@ -566,15 +571,16 @@ void StartXxx(wchar_t HostOrIpAddr[256], int PortNum, int InvalidDirectory, char
 		int Result = 0;
 		StkObject* ResObj = SoForTh1->SendRequestRecvResponse(StkWebAppSend::STKWEBAPP_METHOD_POST, "/api/agent/", GetAgentInfo(RESULTCODE_ERROR_INVALIDAGTDIR), &Result);
 		delete ResObj;
+		InvalidDirFlag = true;
 	} else {
 		int Result = 0;
 		StkObject* ResObj = SoForTh1->SendRequestRecvResponse(StkWebAppSend::STKWEBAPP_METHOD_POST, "/api/agent/", GetAgentInfo(RESULTCODE_AGENTSTART), &Result);
 		delete ResObj;
-
-		AddStkThread(1, L"StatusLoop", L"", NULL, NULL, StatusLoop, NULL, NULL);
-		AddStkThread(2, L"OperationLoop", L"", NULL, NULL, OperationLoop, NULL, NULL);
-		StartAllOfStkThreads();
+		InvalidDirFlag = false;
 	}
+	AddStkThread(1, L"StatusLoop", L"", NULL, NULL, StatusLoop, NULL, NULL);
+	AddStkThread(2, L"OperationLoop", L"", NULL, NULL, OperationLoop, NULL, NULL);
+	StartAllOfStkThreads();
 }
 
 void LoadPropertyFileAndStart()
