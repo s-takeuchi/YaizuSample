@@ -532,7 +532,9 @@ long long DataAccess::GetAgentInfoForTime(int Type, wchar_t AgtName[DA_MAXLEN_OF
 	return IniTime;
 }
 
-void DataAccess::DeleteAgentInfo(wchar_t AgtName[DA_MAXLEN_OF_AGTNAME])
+// AgtName [In] : Delete target agent name
+// Return : true=AgentInfo is found, false=not found
+bool DataAccess::DeleteAgentInfo(wchar_t AgtName[DA_MAXLEN_OF_AGTNAME])
 {
 	{
 		// Delete time series data and its mapping info
@@ -551,6 +553,9 @@ void DataAccess::DeleteAgentInfo(wchar_t AgtName[DA_MAXLEN_OF_AGTNAME])
 		}
 		delete ResDat;
 		delete RecDatAgtFind;
+		if (AgtId == -1) {
+			return false;
+		}
 
 		wchar_t AgtMapPropName[32] = L"";
 		StkPlSwPrintf(AgtMapPropName, 32, L"AgentTsdMap%05d", AgtId);
@@ -593,6 +598,7 @@ void DataAccess::DeleteAgentInfo(wchar_t AgtName[DA_MAXLEN_OF_AGTNAME])
 			}
 		}
 	}
+	return true;
 }
 
 int  DataAccess::GetServerInfo(int* PInterval, int* SaInterval)

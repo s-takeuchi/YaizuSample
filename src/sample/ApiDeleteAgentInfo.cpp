@@ -25,16 +25,18 @@ StkObject* ApiDeleteAgentInfo::ExecuteImpl(StkObject* ReqObj, int Method, wchar_
 
 	wchar_t AgentName[DA_MAXLEN_OF_AGTNAME] = L"";
 	StkStringParser::ParseInto1Param(UrlPath, L"/api/agent/$/", L'$', AgentName, DA_MAXLEN_OF_AGTNAME);
-	DataAccess::GetInstance()->DeleteAgentInfo(AgentName);
+	bool FndFlag = DataAccess::GetInstance()->DeleteAgentInfo(AgentName);
 
 	AddCodeAndMsg(TmpObj, 0, L"", L"");
 	*ResultCode = 200;
 
-	wchar_t LogMsg[256] = L"";
-	wchar_t LogMsgJa[256] = L"";
-	StkPlSwPrintf(LogMsg, 256, L"%ls [%ls]", MessageProc::GetMsgEng(MSG_AGTDELETE), AgentName);
-	StkPlSwPrintf(LogMsgJa, 256, L"%ls [%ls]", MessageProc::GetMsgJpn(MSG_AGTDELETE), AgentName);
-	EventLogging(LogMsg, LogMsgJa, UserId);
+	if (FndFlag) {
+		wchar_t LogMsg[256] = L"";
+		wchar_t LogMsgJa[256] = L"";
+		StkPlSwPrintf(LogMsg, 256, L"%ls [%ls]", MessageProc::GetMsgEng(MSG_AGTDELETE), AgentName);
+		StkPlSwPrintf(LogMsgJa, 256, L"%ls [%ls]", MessageProc::GetMsgJpn(MSG_AGTDELETE), AgentName);
+		EventLogging(LogMsg, LogMsgJa, UserId);
+	}
 
 	return TmpObj;
 }
