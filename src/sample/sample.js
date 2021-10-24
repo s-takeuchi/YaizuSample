@@ -517,6 +517,24 @@ function closeDeleteAgentDlg() {
 
 function completeDeleteAgentDlg() {
     finalSequentialApiCall();
+
+    let errDlg = function(msg) {
+        let deleteAgentDlg = $('<div/>');
+        showInputModal('<h5 class="modal-title">' + getClientMessage('DELAGENT') + '</h5>', deleteAgentDlg);
+        deleteAgentDlg.append(msg);
+        deleteAgentDlg.append('<p></p>');
+        deleteAgentDlg.append('<button type="button" id="OK" class="btn btn-dark" onclick="closeInputModal()">OK</button> ');
+        transDisplayAgentInfo();
+    }
+
+    if (statusCode['API_DELETE_AGTINFO'] == -1 || statusCode['API_DELETE_AGTINFO'] == 0) {
+        errDlg(getClientMessage('CONNERR'));
+        return;
+    }
+    if (statusCode['API_DELETE_AGTINFO'] != 200) {
+        errDlg(getSvrMsg(responseData['API_DELETE_AGTINFO']));
+        return;
+    }
     transDisplayAgentInfo();
 }
 
@@ -546,29 +564,38 @@ function completeDeleteAgentDlg() {
     }
 
     function showAgentPropertiesDialog() {
-        let agentPropDlg = $('<div id="agentdetail"/>');
-        showInputModal('<h5 class="modal-title">' + targetName + '</h5>', agentPropDlg);
+        let errDlg = function(msg) {
+            let errDlgDiv = $('<div/>');
+            showInputModal('<h5 class="modal-title">' + targetName + '</h5>', errDlgDiv);
+            errDlgDiv.append(msg);
+            errDlgDiv.append('<p></p>');
+            errDlgDiv.append('<button type="button" id="OK" class="btn btn-dark" onclick="closeInputModal()">OK</button> ');
+            transDisplayAgentInfo();
+        }
 
         if (statusCode['API_GET_AGTINFO'] == -1 || statusCode['API_GET_AGTINFO'] == 0) {
-            agentPropDlg.append(getClientMessage('CONNERR'));
+            errDlg(getClientMessage('CONNERR'));
             return;
         }
         if (statusCode['API_GET_AGTINFO'] != 200) {
-            agentPropDlg.append(getSvrMsg(responseData['API_GET_AGTINFO']));
+            errDlg(getSvrMsg(responseData['API_GET_AGTINFO']));
             return;
         }
         if (responseData['API_GET_AGTINFO'].Data === undefined) {
-            agentPropDlg.append(getClientMessage('NOAGTINFO'));
+            errDlg(getClientMessage('NOAGTINFO'));
             return;
         }
         let agentInfo = getArray(responseData['API_GET_AGTINFO'].Data.AgentInfo);
         if (agentInfo == null) {
-            agentPropDlg.append(getClientMessage('NOAGTINFO'));
+            errDlg(getClientMessage('NOAGTINFO'));
             return;
         }
         let targetAgentExistFlag = false;
         for (let loop = 0; loop < agentInfo.length; loop++) {
             if (targetName === agentInfo[loop].Name) {
+                let agentPropDlg = $('<div id="agentdetail"/>');
+                showInputModal('<h5 class="modal-title">' + targetName + '</h5>', agentPropDlg);
+
                 targetAgentExistFlag = true;
                 resizeAgentStatusHistory(320);
         
@@ -630,14 +657,16 @@ function completeDeleteAgentDlg() {
                 } else {
                     $('#adOpStatusTd' + loop).css('background-color', 'LightCoral');
                 }
+                agentPropDlg.append('<p></p>');
+                agentPropDlg.append('<button type="button" id="OK" class="btn btn-dark" onclick="closeInputModal()">OK</button> ');
+
                 resizeComponent();
             }
         }
         if (targetAgentExistFlag == false) {
-            agentPropDlg.append(getClientMessage('AIDOESNOTEXIST'));
+            errDlg(getClientMessage('AIDOESNOTEXIST'));
+            return;
         }
-        agentPropDlg.append('<p></p>');
-        agentPropDlg.append('<button type="button" id="OK" class="btn btn-dark" onclick="closeInputModal()">OK</button> ');
     }    
 }
 
