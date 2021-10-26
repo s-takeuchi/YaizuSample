@@ -136,6 +136,23 @@ function getArray(targetObject) {
     }
 }
 
+function getDateAndTimeStr(datentime) {
+    let datentimeInt = parseInt(datentime, 16);
+    let datentimeObj = new Date(datentimeInt * 1000);
+    let datentimeStr = '';
+    if (true) {
+        datentimeStr = datentimeObj.getFullYear() + '/'
+                       + ('00' + (datentimeObj.getMonth() + 1)).slice(-2) + '/'
+                       + ('00' + datentimeObj.getDate()).slice(-2) + ' '
+                       + ('00' + datentimeObj.getHours()).slice(-2) + ':'
+                       + ('00' + datentimeObj.getMinutes()).slice(-2) + ':'
+                       + ('00' + datentimeObj.getSeconds()).slice(-2);
+    } else {
+        datentimeStr = datentimeObj.toString();
+    }
+    return datentimeStr;
+}
+
 function getStatusLabel(status) {
     switch (status) {
         case -970: return 'NOREQ';
@@ -250,12 +267,8 @@ function displayAgentInfo() {
                 break;
             }
         }
-        let acqTimeInt = parseInt(AgentInfo[Loop].AcqTime, 16);
-        let updTimeInt = parseInt(AgentInfo[Loop].UpdTime, 16);
-        let dateAcqTime = new Date(acqTimeInt * 1000);
-        let dateUpdTime = new Date(updTimeInt * 1000);
-        let acqTimeStr = dateAcqTime.toString()
-        let updTimeStr = dateUpdTime.toString()
+        let acqTimeStr = getDateAndTimeStr(AgentInfo[Loop].AcqTime);
+        let updTimeStr = getDateAndTimeStr(AgentInfo[Loop].UpdTime);
 
         let tmpChkBoxStr = '';
         if (userRole != 1) {
@@ -604,19 +617,11 @@ function completeDeleteAgentDlg() {
                 let tBody = $('<tbody>');
                 tableListData.append(tBody);
                 agentPropDlg.append(tableListData);
-    
-                let acqTimeInt = parseInt(agentInfo[loop].AcqTime, 16);
-                let updTimeInt = parseInt(agentInfo[loop].UpdTime, 16);
-                let iniTimeInt = parseInt(agentInfo[loop].IniTime, 16);
-                let reqTimeInt = parseInt(agentInfo[loop].ReqTime, 16);
-                let dateAcqTime = new Date(acqTimeInt * 1000);
-                let dateUpdTime = new Date(updTimeInt * 1000);
-                let dateIniTime = new Date(iniTimeInt * 1000);
-                let dateReqTime = new Date(reqTimeInt * 1000);
-                let acqTimeStr = dateAcqTime.toString();
-                let updTimeStr = dateUpdTime.toString();
-                let iniTimeStr = dateIniTime.toString();
-                let reqTimeStr = dateReqTime.toString();
+
+                let acqTimeStr = getDateAndTimeStr(agentInfo[loop].AcqTime);
+                let updTimeStr = getDateAndTimeStr(agentInfo[loop].UpdTime);
+                let iniTimeStr = getDateAndTimeStr(agentInfo[loop].IniTime);
+                let reqTimeStr = getDateAndTimeStr(agentInfo[loop].ReqTime);
 
                 let commandList = getArray(responseData['API_GET_COMMAND'].Data.Command);
                 let cmdNameStatus = '';
@@ -702,9 +707,7 @@ function displayServerInfo() {
     let buildTimeStr = responseData['API_GET_SVRINFO'].Data.ServerInfo.BuildTime;
     $('#svrinfo').append('<p>' + getClientMessage('SIBUILDTIME') + buildTimeStr + '</p>');
 
-    let startTimeInt = parseInt(responseData['API_GET_SVRINFO'].Data.ServerInfo.StartTime, 16);
-    let dateStartTime = new Date(startTimeInt * 1000);
-    let StartTimeStr = dateStartTime.toString()
+    let StartTimeStr = getDateAndTimeStr(responseData['API_GET_SVRINFO'].Data.ServerInfo.StartTime);
     $('#svrinfo').append('<p>' + getClientMessage('SISTARTTIME') + StartTimeStr + '</p>');
 
     let PhyMem = responseData['API_GET_SVRINFO'].Data.ServerInfo.UsedPhysicalMemory;
@@ -872,8 +875,7 @@ function displayFileMgmt() {
                 tmpChkBoxStr = '<td><div class="checkbox"><input type="checkbox" id="fileInfoId' + Loop + '" value="" onclick="switchFileInfoButton()"/></div></td>';
             }
 
-            let updTimeInt = parseInt(fileList[Loop].UpdTime, 16);
-            let dateUpdTime = new Date(updTimeInt * 1000);
+            let dateUpdTime = getDateAndTimeStr(fileList[Loop].UpdTime);
             tBody.append('<tr>' + tmpChkBoxStr + '<td><a id="fileInfoAncId' + Loop + '" style="cursor: pointer;">' + fileList[Loop].Name + '</a></td><td>' + fileList[Loop].Size + '</td><td>' + dateUpdTime + '</td></tr>');
         }
 
@@ -1329,8 +1331,7 @@ function displayCommandResult() {
 
         let tBody = $('<tbody>');
         for (let Loop = 0; Loop < commandresultList.length; Loop++) {
-            let updTimeInt = parseInt(commandresultList[Loop].UpdTime, 16);
-            let dateUpdTime = new Date(updTimeInt * 1000);
+            let dateUpdTime = getDateAndTimeStr(commandresultList[Loop].UpdTime);
             let resultId = commandresultList[Loop].Id;
             tBody.append('<tr><td>' + dateUpdTime + '</td><td>' + commandresultList[Loop].AgentName + '</td><td>' + commandresultList[Loop].CommandName + '</td><td><a id="resultAncId' + resultId + '">' + '<span class="icon icon-terminal" style="font-size:30px;"></span>' + '</a></td></tr>');
         }
@@ -1589,7 +1590,7 @@ function viewConsole() {
             if (graphX + graphWidth > wsize - 40) {
                 graphWidth = wsize - 40 - graphX;
             }
-            let dateUpdTime = new Date(updTimeInt * 1000);
+            let dateUpdTime = getDateAndTimeStr(timeseriesdata[loopTsd].UpdTime);
             let label = dateUpdTime + ':' + getStatusLabel(timeseriesdata[loopTsd].Status);
             rectStr = rectStr + '<rect x="' + graphX + '" y="20" width="' + graphWidth + '" height="30" fill="' + theColor + '"><title>' + label + '</title></rect>';
         }
