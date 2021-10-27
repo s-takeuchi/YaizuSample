@@ -58,6 +58,7 @@ function initClientMessage() {
     addClientMessage('SELOPCMD', {'en':'Select operation command', 'ja':'操作コマンドを選択してください'});
     addClientMessage('SELSTATUSCMD', {'en':'Select status acquisition command', 'ja':'状態取得コマンドを選択してください'});
     addClientMessage('SELCMD', {'en':'Select Command ', 'ja':'コマンドを選択してください'});
+    addClientMessage('AICMDUNSPECIFIED', {'en':'Unspecified', 'ja':'未指定'});
     addClientMessage('DELAGENT', {'en':'Delete agents', 'ja':'エージェントの削除'});
     addClientMessage('DELAGENTCONFIRM', {
         'en':'Information related wtih the specified agents will be deleted from SERVAL server .<br/>Uninstall agents from the hosts to avoid re-registration of the agents.<br/>', 
@@ -405,6 +406,7 @@ function displayAgentStatusCommandDlg() {
     var btnGrp = $('<div class="btn-group">');
     btnGrp.append('<button type="button" class="btn btn-dark dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><span id="selectedAgentStatus">' + getAgentStatusCommand() + '</span><span class="caret"></span></button>');
     var ddMenu = $('<ul class="dropdown-menu" role="menu">');
+    ddMenu.append('<li role="presentation"><a onclick="selectAgentStatusCommand(-1)" role="menuitem" tabindex="-1" href="#">' + getClientMessage('AICMDUNSPECIFIED') + '</a></li>');
     for (var loop = 0; commandList != null && loop < commandList.length; loop++) {
         ddMenu.append('<li role="presentation"><a onclick="selectAgentStatusCommand(' + loop + ')" role="menuitem" tabindex="-1" href="#">' + commandList[loop].Name + '</a></li>');
     }
@@ -420,12 +422,17 @@ function displayAgentStatusCommandDlg() {
 }
 
 function closeAgentStatusCommandDlg(okFlag) {
-    if (okFlag == true && selectedAgentStatusCommand != -1) {
+    if (okFlag == true) {
         var commandList = getArray(responseData['API_GET_COMMAND'].Data.Command);
         var AgentInfo = getArray(responseData['API_GET_AGTINFO'].Data.AgentInfo);
         for (var loop = 0; loop < AgentInfo.length; loop++) {
             if ($('#agtInfoId' + loop).prop('checked') == true) {
-                var ReqObj = { Name : AgentInfo[loop].Name, StatusCmd : commandList[selectedAgentStatusCommand].Id };
+                var ReqObj = {};
+                if (selectedAgentStatusCommand == -1) {
+                    ReqObj = { Name : AgentInfo[loop].Name, StatusCmd : -1 };
+                } else {
+                    ReqObj = { Name : AgentInfo[loop].Name, StatusCmd : commandList[selectedAgentStatusCommand].Id };
+                }
                 apiCall('POST', '/api/agent/', ReqObj, 'API_POST_AGTINFO', null);
             }
         }
@@ -438,21 +445,23 @@ function getAgentStatusCommand() {
     var AgentInfo = getArray(responseData['API_GET_AGTINFO'].Data.AgentInfo);
     var commandList = getArray(responseData['API_GET_COMMAND'].Data.Command);
     var allSame = true;
-    var commandId = -1;
+    var commandId = -999;
     var commandStr = '';
     for (var loop = 0; loop < AgentInfo.length; loop++) {
         if ($('#agtInfoId' + loop).prop('checked') == true) {
-            if (commandId != -1 && AgentInfo[loop].StatusCmd != commandId) {
+            if (commandId != -999 && AgentInfo[loop].StatusCmd != commandId) {
                 allSame = false;
             } else {
                 commandId = AgentInfo[loop].StatusCmd;
             }
         }
     }
-    if (commandId == -1 || allSame == false) {
+    if (allSame == false) {
         return '';
     } else {
-        if (commandList != null) {
+        if (commandId == -1) {
+            return getClientMessage('AICMDUNSPECIFIED');
+        } else if (commandList != null) {
             for (var loop = 0; loop < commandList.length; loop++) {
                 if (commandId == commandList[loop].Id) {
                     return commandList[loop].Name;
@@ -464,8 +473,12 @@ function getAgentStatusCommand() {
 }
 
 function selectAgentStatusCommand(agentStatusCommand) {
-    var commandList = getArray(responseData['API_GET_COMMAND'].Data.Command);
-    $('#selectedAgentStatus').text(commandList[agentStatusCommand].Name);
+    if (agentStatusCommand == -1) {
+        $('#selectedAgentStatus').text(getClientMessage('AICMDUNSPECIFIED'));
+    } else {
+        var commandList = getArray(responseData['API_GET_COMMAND'].Data.Command);
+        $('#selectedAgentStatus').text(commandList[agentStatusCommand].Name);
+    }
     selectedAgentStatusCommand = agentStatusCommand;
 }
 
