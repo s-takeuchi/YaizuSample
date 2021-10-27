@@ -136,23 +136,6 @@ function getArray(targetObject) {
     }
 }
 
-function getDateAndTimeStr(datentime) {
-    let datentimeInt = parseInt(datentime, 16);
-    let datentimeObj = new Date(datentimeInt * 1000);
-    let datentimeStr = '';
-    if (true) {
-        datentimeStr = datentimeObj.getFullYear() + '/'
-                       + ('00' + (datentimeObj.getMonth() + 1)).slice(-2) + '/'
-                       + ('00' + datentimeObj.getDate()).slice(-2) + ' '
-                       + ('00' + datentimeObj.getHours()).slice(-2) + ':'
-                       + ('00' + datentimeObj.getMinutes()).slice(-2) + ':'
-                       + ('00' + datentimeObj.getSeconds()).slice(-2);
-    } else {
-        datentimeStr = datentimeObj.toString();
-    }
-    return datentimeStr;
-}
-
 function getStatusLabel(status) {
     switch (status) {
         case -970: return 'NOREQ';
