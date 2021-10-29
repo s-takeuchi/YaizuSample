@@ -567,17 +567,26 @@ void StartXxx(wchar_t HostOrIpAddr[256], int PortNum, int InvalidDirectory, char
 	SoForTh2->SetSendBufSize(5000000);
 	SoForTh2->SetRecvBufSize(5000000);
 
-	if (InvalidDirectory != 0) {
+	while (true) {
 		int Result = 0;
-		StkObject* ResObj = SoForTh1->SendRequestRecvResponse(StkWebAppSend::STKWEBAPP_METHOD_POST, "/api/agent/", GetAgentInfo(RESULTCODE_ERROR_INVALIDAGTDIR), &Result);
+		StkObject* ResObj = NULL;
+		if (InvalidDirectory != 0) {
+			ResObj = SoForTh1->SendRequestRecvResponse(StkWebAppSend::STKWEBAPP_METHOD_POST, "/api/agent/", GetAgentInfo(RESULTCODE_ERROR_INVALIDAGTDIR), &Result);
+			InvalidDirFlag = true;
+		} else {
+			ResObj = SoForTh1->SendRequestRecvResponse(StkWebAppSend::STKWEBAPP_METHOD_POST, "/api/agent/", GetAgentInfo(RESULTCODE_AGENTSTART), &Result);
+			InvalidDirFlag = false;
+		}
 		delete ResObj;
-		InvalidDirFlag = true;
-	} else {
-		int Result = 0;
-		StkObject* ResObj = SoForTh1->SendRequestRecvResponse(StkWebAppSend::STKWEBAPP_METHOD_POST, "/api/agent/", GetAgentInfo(RESULTCODE_AGENTSTART), &Result);
-		delete ResObj;
-		InvalidDirFlag = false;
+
+		if (Result == 200) {
+			StkPlSleepMs(5000);
+			break;
+		} else {
+			StkPlSleepMs(30000);
+		}
 	}
+
 	AddStkThread(1, L"StatusLoop", L"", NULL, NULL, StatusLoop, NULL, NULL);
 	AddStkThread(2, L"OperationLoop", L"", NULL, NULL, OperationLoop, NULL, NULL);
 	StartAllOfStkThreads();
