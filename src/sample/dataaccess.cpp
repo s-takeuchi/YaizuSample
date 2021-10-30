@@ -751,20 +751,73 @@ int DataAccess::SetCommand(int Id, wchar_t Name[DA_MAXLEN_OF_CMDNAME], int Type,
 
 int DataAccess::DeleteCommand(int Id)
 {
+	LockTable(L"Command", LOCK_EXCLUSIVE);
+	LockTable(L"AgentInfo", LOCK_EXCLUSIVE);
+
 	ColumnData *ColDatCmdFind[1];
 	ColDatCmdFind[0] = new ColumnDataInt(L"Id", Id);
 	RecordData* RecDatCmdFind = new RecordData(L"Command", ColDatCmdFind, 1);
 
-	LockTable(L"Command", LOCK_SHARE);
 	RecordData* RecDatCmdFindRes = GetRecord(RecDatCmdFind);
-	UnlockTable(L"Command");
 	if (RecDatCmdFindRes != NULL) {
 		delete RecDatCmdFindRes;
-
-		LockTable(L"Command", LOCK_EXCLUSIVE);
 		DeleteRecord(RecDatCmdFind);
-		UnlockTable(L"Command");
 		delete RecDatCmdFind;
+
+		// Change agent status : begin
+		{
+			ColumnData* ColDatAgtSaCmdSearch[1];
+			ColDatAgtSaCmdSearch[0] = new ColumnDataInt(L"StatusCmd", Id);
+			RecordData* RecDatAgtSaCmdSearch = new RecordData(L"AgentInfo", ColDatAgtSaCmdSearch, 1);
+
+			ColumnData* ColDatAgtOpCmdSearch[1];
+			ColDatAgtOpCmdSearch[0] = new ColumnDataInt(L"OpCmd", Id);
+			RecordData* RecDatAgtOpCmdSearch = new RecordData(L"AgentInfo", ColDatAgtOpCmdSearch, 1);
+
+			RecordData* RecDatAgtSaCmdRes = GetRecord(RecDatAgtSaCmdSearch);
+			RecordData* RecDatAgtOpCmdRes = GetRecord(RecDatAgtOpCmdSearch);
+
+			delete RecDatAgtSaCmdSearch;
+			delete RecDatAgtOpCmdSearch;
+
+			RecordData* CurRecDatSaCmdRes = RecDatAgtSaCmdRes;
+			while (CurRecDatSaCmdRes) {
+				int AgtId = ((ColumnDataInt*)CurRecDatSaCmdRes->GetColumn(0))->GetValue();
+				ColumnData* ColDatRstTgtAgt[1];
+				ColDatRstTgtAgt[0] = new ColumnDataInt(L"Id", AgtId);
+				RecordData* RecDatRstTgtAgt = new RecordData(L"AgentInfo", ColDatRstTgtAgt, 1);
+				ColumnData* ColDatRstDat[2];
+				ColDatRstDat[0] = new ColumnDataInt(L"StatusCmd", -1);
+				ColDatRstDat[1] = new ColumnDataInt(L"Status", -982);
+				RecordData* RecDatRstDat = new RecordData(L"AgentInfo", ColDatRstDat, 2);
+				UpdateRecord(RecDatRstTgtAgt, RecDatRstDat);
+				delete RecDatRstTgtAgt;
+				delete RecDatRstDat;
+				CurRecDatSaCmdRes = CurRecDatSaCmdRes->GetNextRecord();
+			}
+			delete RecDatAgtSaCmdRes;
+
+			RecordData* CurRecDatOpCmdRes = RecDatAgtOpCmdRes;
+			while (CurRecDatOpCmdRes) {
+				int AgtId = ((ColumnDataInt*)CurRecDatOpCmdRes->GetColumn(0))->GetValue();
+				ColumnData* ColDatRstTgtAgt[1];
+				ColDatRstTgtAgt[0] = new ColumnDataInt(L"Id", AgtId);
+				RecordData* RecDatRstTgtAgt = new RecordData(L"AgentInfo", ColDatRstTgtAgt, 1);
+				ColumnData* ColDatRstDat[2];
+				ColDatRstDat[0] = new ColumnDataInt(L"OpCmd", -1);
+				ColDatRstDat[1] = new ColumnDataInt(L"OpStatus", -984);
+				RecordData* RecDatRstDat = new RecordData(L"AgentInfo", ColDatRstDat, 2);
+				UpdateRecord(RecDatRstTgtAgt, RecDatRstDat);
+				delete RecDatRstTgtAgt;
+				delete RecDatRstDat;
+				CurRecDatOpCmdRes = CurRecDatOpCmdRes->GetNextRecord();
+			}
+			delete RecDatAgtOpCmdRes;
+		}
+		// Change agent status : end
+
+		UnlockTable(L"AgentInfo");
+		UnlockTable(L"Command");
 	} else {
 		delete RecDatCmdFind;
 		return -1;
