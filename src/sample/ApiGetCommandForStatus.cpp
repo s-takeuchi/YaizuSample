@@ -20,7 +20,7 @@ StkObject* ApiGetCommandForStatus::ExecuteImpl(StkObject* ReqObj, int Method, wc
 		return TmpObj;
 	}
 
-	long long ReqTime = DataAccess::GetInstance()->SetAgentInfoForReqTime(TargetAgtName);
+	long long ReqTime = DataAccess::GetInstance()->SetAgentInfoForTime(TargetAgtName, 0);
 	long long IniTime = DataAccess::GetInstance()->GetAgentInfoForIniTime(TargetAgtName);
 
 	while (true) {
@@ -85,7 +85,8 @@ StkObject* ApiGetCommandForStatus::ExecuteImpl(StkObject* ReqObj, int Method, wc
 			long long AcqTime[DA_MAXNUM_OF_AGTRECORDS];
 			long long UpdTime[DA_MAXNUM_OF_AGTRECORDS];
 			long long IniTime[DA_MAXNUM_OF_AGTRECORDS];
-			int ReAgtCount = DataAccess::GetInstance()->GetAgentInfo(AgtName, Status, StatusCmd, OpStatus, OpCmd, ReqTime, AcqTime, UpdTime, IniTime);
+			long long OpeTime[DA_MAXNUM_OF_AGTRECORDS];
+			int ReAgtCount = DataAccess::GetInstance()->GetAgentInfo(AgtName, Status, StatusCmd, OpStatus, OpCmd, ReqTime, AcqTime, UpdTime, IniTime, OpeTime);
 
 			// Check the agent specified in URI is managed by server
 			int TargetAgtIndex = -1;

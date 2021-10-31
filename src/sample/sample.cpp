@@ -67,7 +67,8 @@ int StatusChecker(int Id)
 	long long AcqTime[DA_MAXNUM_OF_AGTRECORDS];
 	long long UpdTime[DA_MAXNUM_OF_AGTRECORDS];
 	long long IniTime[DA_MAXNUM_OF_AGTRECORDS];
-	int ReAgtCount = DataAccess::GetInstance()->GetAgentInfo(AgtName, Status, StatusCmd, OpStatus, OpCmd, ReqTime, AcqTime, UpdTime, IniTime);
+	long long OpeTime[DA_MAXNUM_OF_AGTRECORDS];
+	int ReAgtCount = DataAccess::GetInstance()->GetAgentInfo(AgtName, Status, StatusCmd, OpStatus, OpCmd, ReqTime, AcqTime, UpdTime, IniTime, OpeTime);
 
 	long long CurTime = StkPlGetTime();
 	for (int Loop = 0; Loop < ReAgtCount; Loop++) {

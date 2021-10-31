@@ -26,7 +26,8 @@ StkObject* ApiGetAgentInfo::ExecuteImpl(StkObject* ReqObj, int Method, wchar_t U
 	long long AcqTime[DA_MAXNUM_OF_AGTRECORDS];
 	long long UpdTime[DA_MAXNUM_OF_AGTRECORDS];
 	long long IniTime[DA_MAXNUM_OF_AGTRECORDS];
-	int Count = DataAccess::GetInstance()->GetAgentInfo(Name, Status, StatusCmd, OpStatus, OpCmd, ReqTime, AcqTime, UpdTime, IniTime);
+	long long OpeTime[DA_MAXNUM_OF_AGTRECORDS];
+	int Count = DataAccess::GetInstance()->GetAgentInfo(Name, Status, StatusCmd, OpStatus, OpCmd, ReqTime, AcqTime, UpdTime, IniTime, OpeTime);
 
 	StkObject* TmpObjD = new StkObject(L"Data");
 	for (int Loop = 0; Loop < Count; Loop++) {
@@ -34,10 +35,12 @@ StkObject* ApiGetAgentInfo::ExecuteImpl(StkObject* ReqObj, int Method, wchar_t U
 		wchar_t UpdTimeStr[DA_MAXLEN_OF_UNIXTIME * 2 + 1] = L"";
 		wchar_t IniTimeStr[DA_MAXLEN_OF_UNIXTIME * 2 + 1] = L"";
 		wchar_t ReqTimeStr[DA_MAXLEN_OF_UNIXTIME * 2 + 1] = L"";
+		wchar_t OpeTimeStr[DA_MAXLEN_OF_UNIXTIME * 2 + 1] = L"";
 		StkPlSwPrintf(AcqTimeStr, DA_MAXLEN_OF_UNIXTIME * 2 + 1, L"%016x", AcqTime[Loop]);
 		StkPlSwPrintf(UpdTimeStr, DA_MAXLEN_OF_UNIXTIME * 2 + 1, L"%016x", UpdTime[Loop]);
 		StkPlSwPrintf(IniTimeStr, DA_MAXLEN_OF_UNIXTIME * 2 + 1, L"%016x", IniTime[Loop]);
 		StkPlSwPrintf(ReqTimeStr, DA_MAXLEN_OF_UNIXTIME * 2 + 1, L"%016x", ReqTime[Loop]);
+		StkPlSwPrintf(OpeTimeStr, DA_MAXLEN_OF_UNIXTIME * 2 + 1, L"%016x", OpeTime[Loop]);
 		StkObject* TmpObjC = new StkObject(L"AgentInfo");
 		TmpObjC->AppendChildElement(new StkObject(L"Name", Name[Loop]));
 		TmpObjC->AppendChildElement(new StkObject(L"Status", Status[Loop]));
@@ -48,6 +51,7 @@ StkObject* ApiGetAgentInfo::ExecuteImpl(StkObject* ReqObj, int Method, wchar_t U
 		TmpObjC->AppendChildElement(new StkObject(L"UpdTime", UpdTimeStr));
 		TmpObjC->AppendChildElement(new StkObject(L"IniTime", IniTimeStr));
 		TmpObjC->AppendChildElement(new StkObject(L"ReqTime", ReqTimeStr));
+		TmpObjC->AppendChildElement(new StkObject(L"OpeTime", OpeTimeStr));
 		TmpObjD->AppendChildElement(TmpObjC);
 	}
 	AddCodeAndMsg(TmpObj, 0, L"", L"");

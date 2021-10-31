@@ -53,6 +53,7 @@ function initClientMessage() {
     addClientMessage('AISTATUSUPTIME', {'en':'Status Update Time', 'ja':'状態更新時刻'});
     addClientMessage('AIOPSTATUS', {'en':'OpStatus', 'ja':'操作状態'});
     addClientMessage('AIOPSTATUSCMD', {'en':'Command for Op', 'ja':'操作コマンド'});
+    addClientMessage('AIOPEXECTIME', {'en':'Operation Execution Time', 'ja':'操作実行時刻'});
     addClientMessage('AISETSTATUSCMD', {'en':'Select command', 'ja':'コマンド設定'});
     addClientMessage('AIEXECCMD', {'en':'Execute command', 'ja':'コマンド実行'});
     addClientMessage('SELOPCMD', {'en':'Select operation command', 'ja':'操作コマンドを選択してください'});
@@ -224,10 +225,10 @@ function displayAgentInfo() {
                  '<th>' + getClientMessage('AINAME') + '</th>' +
                  '<th>' + getClientMessage('AISTATUS') + '</th>' +
                  '<th class="d-none d-sm-table-cell">' + getClientMessage('AISTATUSCMD') + '</th>' +
-                 '<th>' + getClientMessage('AISTATUSTIME') + '</th>' +
-                 '<th class="d-none d-md-table-cell">' + getClientMessage('AISTATUSUPTIME') + '</th>' +
+                 '<th>' + getClientMessage('AISTATUSUPTIME') + '</th>' +
                  '<th class="d-none d-lg-table-cell">' + getClientMessage('AIOPSTATUS') + '</th>' +
                  '<th class="d-none d-lg-table-cell">' + getClientMessage('AIOPSTATUSCMD') + '</th>' +
+                 '<th class="d-none d-lg-table-cell">' + getClientMessage('AIOPEXECTIME') + '</th>' +
                  '</tr>');
     agentInfoData.append(tHead);
 
@@ -251,8 +252,11 @@ function displayAgentInfo() {
                 break;
             }
         }
-        let acqTimeStr = getDateAndTimeStr(AgentInfo[Loop].AcqTime);
         let updTimeStr = getDateAndTimeStr(AgentInfo[Loop].UpdTime);
+        let opeTimeStr = '';
+        if (AgentInfo[Loop].OpeTime != 0) {
+            opeTimeStr = getDateAndTimeStr(AgentInfo[Loop].OpeTime);
+        }
 
         let tmpChkBoxStr = '';
         if (userRole != 1) {
@@ -263,10 +267,10 @@ function displayAgentInfo() {
                      '<td><a id="agentprop' + Loop + '" style="cursor: pointer;">' + AgentInfo[Loop].Name + '</a></td>' +
                      '<td><div align="center" id="statusTd' + Loop + '" data-toggle="tooltip" title="' + getTooltipStr() + '">' + getStatusLabel(AgentInfo[Loop].Status) + '</div></td>' +
                      '<td class="d-none d-sm-table-cell">' + cmdNameStatus + '</td>' +
-                     '<td>' + acqTimeStr + '</td>' +
-                     '<td class="d-none d-md-table-cell">' + updTimeStr + '</td>' +
+                     '<td>' + updTimeStr + '</td>' +
                      '<td class="d-none d-lg-table-cell"><div align="center" id="opStatusTd' + Loop + '" data-toggle="tooltip" title="' + getTooltipStr() + '">' + getStatusLabel(AgentInfo[Loop].OpStatus) + '</div></td>' +
                      '<td class="d-none d-lg-table-cell">' + cmdNameOp + '</td>' +
+                     '<td class="d-none d-lg-table-cell">' + opeTimeStr + '</td>' +
                      '</tr>');
         // Draw rectangle for agent status
         if (AgentInfo[Loop].Status == 0) {
@@ -618,6 +622,10 @@ function completeDeleteAgentDlg() {
                 let updTimeStr = getDateAndTimeStr(agentInfo[loop].UpdTime);
                 let iniTimeStr = getDateAndTimeStr(agentInfo[loop].IniTime);
                 let reqTimeStr = getDateAndTimeStr(agentInfo[loop].ReqTime);
+                let opeTimeStr = '';
+                if (agentInfo[loop].OpeTime != 0) {
+                    opeTimeStr = getDateAndTimeStr(agentInfo[loop].OpeTime);
+                }
 
                 let commandList = getArray(responseData['API_GET_COMMAND'].Data.Command);
                 let cmdNameStatus = '';
@@ -640,6 +648,7 @@ function completeDeleteAgentDlg() {
                 tBody.append('<tr><td>' + getClientMessage('AILASTPOLLINGTIME') + '</td><td>' + reqTimeStr + '</td></tr>');
                 tBody.append('<tr><td>' + getClientMessage('AIOPSTATUS') + '</td><td id="adOpStatusTd' + loop + '">' + getStatusDetailLabel(agentInfo[loop].OpStatus) + '</td></tr>');
                 tBody.append('<tr><td>' + getClientMessage('AIOPSTATUSCMD') + '</td><td>' + cmdNameOpStatus + '</td></tr>');
+                tBody.append('<tr><td>' + getClientMessage('AIOPEXECTIME') + '</td><td>' + opeTimeStr + '</td></tr>');
                 if (agentInfo[loop].Status == 0) {
                     $('#adStatusTd' + loop).css('background-color', 'LightGreen');
                 } else if (agentInfo[loop].Status <= -970 && agentInfo[loop].Status >= -979) {

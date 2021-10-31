@@ -42,12 +42,13 @@ public:
 	void SetAgentInfoForStatus(wchar_t[DA_MAXLEN_OF_AGTNAME], int);
 	void SetAgentInfoForOpCmd(wchar_t[DA_MAXLEN_OF_AGTNAME], int);
 	void SetAgentInfoForOpStatus(wchar_t[DA_MAXLEN_OF_AGTNAME], int);
-	long long SetAgentInfoForReqTime(wchar_t AgtName[DA_MAXLEN_OF_AGTNAME]);
+	long long SetAgentInfoForTime(wchar_t AgtName[DA_MAXLEN_OF_AGTNAME], int);
 	int GetAgentInfo(wchar_t[DA_MAXNUM_OF_AGTRECORDS][DA_MAXLEN_OF_AGTNAME],
 		int[DA_MAXNUM_OF_AGTRECORDS],
 		int[DA_MAXNUM_OF_AGTRECORDS],
 		int[DA_MAXNUM_OF_AGTRECORDS],
 		int[DA_MAXNUM_OF_AGTRECORDS],
+		long long[DA_MAXNUM_OF_AGTRECORDS],
 		long long[DA_MAXNUM_OF_AGTRECORDS],
 		long long[DA_MAXNUM_OF_AGTRECORDS],
 		long long[DA_MAXNUM_OF_AGTRECORDS],

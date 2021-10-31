@@ -116,6 +116,7 @@ StkObject* ApiPostAgentInfo::ExecuteImpl(StkObject* ReqObj, int Method, wchar_t 
 				StkPlSwPrintf(LogMsgJa, 256, L"%ls [%ls, %ls]", MessageProc::GetMsgJpn(MSG_CMDOPSTARTED), Name, CmdName);
 				EventLogging(LogMsg, LogMsgJa, -1);
 			} else {
+				DataAccess::GetInstance()->SetAgentInfoForTime(Name, 1);
 				wchar_t LogMsg[512] = L"";
 				wchar_t LogMsgJa[512] = L"";
 				StkPlSwPrintf(LogMsg, 256, L"%ls [%ls, %d]", MessageProc::GetMsgEng(MSG_CMDOPENDED), Name, OpStatus);
@@ -137,7 +138,7 @@ StkObject* ApiPostAgentInfo::ExecuteImpl(StkObject* ReqObj, int Method, wchar_t 
 			} else if (RetSetAgtInfo == 1) {
 				// Update
 			}
-			DataAccess::GetInstance()->SetAgentInfoForReqTime(Name);
+			DataAccess::GetInstance()->SetAgentInfoForTime(Name, 0);
 		}
 	} else {
 		*ResultCode = 400;
