@@ -70,8 +70,8 @@ StkObject* ApiGetCommandForStatus::ExecuteImpl(StkObject* ReqObj, int Method, wc
 			wchar_t Name[DA_MAXNUM_OF_CMDRECORDS][DA_MAXLEN_OF_CMDNAME];
 			int Type[DA_MAXNUM_OF_CMDRECORDS];
 			char Script[DA_MAXNUM_OF_CMDRECORDS][DA_MAXLEN_OF_CMDSCRIPT];
-			wchar_t ServerFileName[DA_MAXNUM_OF_CMDRECORDS][DA_MAXLEN_OF_SERVERFILENAME];
-			wchar_t AgentFileName[DA_MAXNUM_OF_CMDRECORDS][DA_MAXLEN_OF_AGENTFILENAME];
+			wchar_t ServerFileName[DA_MAXNUM_OF_CMDRECORDS][5][DA_MAXLEN_OF_SERVERFILENAME];
+			wchar_t AgentFileName[DA_MAXNUM_OF_CMDRECORDS][5][DA_MAXLEN_OF_AGENTFILENAME];
 			wchar_t WScript[DA_MAXLEN_OF_CMDSCRIPT / 2] = L"";
 			wchar_t* Ptr = WScript;
 			int ResCmdCount = DataAccess::GetInstance()->GetCommand(Id, Name, Type, Script, ServerFileName, AgentFileName);
@@ -134,12 +134,12 @@ StkObject* ApiGetCommandForStatus::ExecuteImpl(StkObject* ReqObj, int Method, wc
 					CommandObj->AppendChildElement(new StkObject(L"Name", Name[FoundIndex]));
 					CommandObj->AppendChildElement(new StkObject(L"Type", Type[FoundIndex]));
 					CommandObj->AppendChildElement(new StkObject(L"Script", WScript));
-					CommandObj->AppendChildElement(new StkObject(L"ServerFileName", ServerFileName[FoundIndex]));
+					CommandObj->AppendChildElement(new StkObject(L"ServerFileName", ServerFileName[FoundIndex][0]));
 					wchar_t TargetFullPath[FILENAME_MAX];
-					GetFullPathFromFileName(TargetFullPath, ServerFileName[FoundIndex]);
+					GetFullPathFromFileName(TargetFullPath, ServerFileName[FoundIndex][0]);
 					size_t FileSize = StkPlGetFileSize(TargetFullPath);
 					CommandObj->AppendChildElement(new StkObject(L"ServerFileSize", (int)FileSize));
-					CommandObj->AppendChildElement(new StkObject(L"AgentFileName", AgentFileName[FoundIndex]));
+					CommandObj->AppendChildElement(new StkObject(L"AgentFileName", AgentFileName[FoundIndex][0]));
 					DatObj->AppendChildElement(CommandObj);
 				}
 			}

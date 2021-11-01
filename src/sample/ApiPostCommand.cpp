@@ -48,8 +48,8 @@ StkObject* ApiPostCommand::ExecuteImpl(StkObject* ReqObj, int Method, wchar_t Ur
 	wchar_t Name[DA_MAXLEN_OF_CMDNAME] = L"";
 	int Type = 0;
 	wchar_t Script[DA_MAXLEN_OF_CMDSCRIPT] = L"";
-	wchar_t ServerFileName[DA_MAXLEN_OF_SERVERFILENAME] = L"";
-	wchar_t AgentFileName[DA_MAXLEN_OF_SERVERFILENAME] = L"";
+	wchar_t ServerFileName[5][DA_MAXLEN_OF_SERVERFILENAME] = { L"", L"", L"", L"", L"" };
+	wchar_t AgentFileName[5][DA_MAXLEN_OF_SERVERFILENAME] = { L"", L"", L"", L"", L"" };
 	while (CurObj) {
 		if (StkPlWcsCmp(CurObj->GetName(), L"Id") == 0) {
 			Id = CurObj->GetIntValue();
@@ -80,7 +80,7 @@ StkObject* ApiPostCommand::ExecuteImpl(StkObject* ReqObj, int Method, wchar_t Ur
 				*ResultCode = 400;
 				return ResObj;
 			}
-			StkPlWcsCpy(ServerFileName, DA_MAXLEN_OF_SERVERFILENAME, CurObj->GetStringValue());
+			StkPlWcsCpy(ServerFileName[0], DA_MAXLEN_OF_SERVERFILENAME, CurObj->GetStringValue());
 		} else if (StkPlWcsCmp(CurObj->GetName(), L"AgentFileName") == 0) {
 			if (StkPlWcsLen(CurObj->GetStringValue()) >= DA_MAXLEN_OF_AGENTFILENAME) {
 				AddCodeAndMsg(ResObj, MSG_FILENAMELENERR, MessageProc::GetMsgEng(MSG_FILENAMELENERR), MessageProc::GetMsgJpn(MSG_FILENAMELENERR));
@@ -92,7 +92,7 @@ StkObject* ApiPostCommand::ExecuteImpl(StkObject* ReqObj, int Method, wchar_t Ur
 				*ResultCode = 400;
 				return ResObj;
 			}
-			StkPlWcsCpy(AgentFileName, DA_MAXLEN_OF_AGENTFILENAME, CurObj->GetStringValue());
+			StkPlWcsCpy(AgentFileName[0], DA_MAXLEN_OF_AGENTFILENAME, CurObj->GetStringValue());
 		}
 		CurObj = CurObj->GetNext();
 	}

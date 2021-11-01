@@ -21,8 +21,8 @@ StkObject* ApiGetCommand::ExecuteImpl(StkObject* ReqObj, int Method, wchar_t Url
 	wchar_t Name[DA_MAXNUM_OF_CMDRECORDS][DA_MAXLEN_OF_CMDNAME];
 	int Type[DA_MAXNUM_OF_CMDRECORDS];
 	char Script[DA_MAXNUM_OF_CMDRECORDS][DA_MAXLEN_OF_CMDSCRIPT];
-	wchar_t ServerFileName[DA_MAXNUM_OF_CMDRECORDS][DA_MAXLEN_OF_SERVERFILENAME];
-	wchar_t AgentFileName[DA_MAXNUM_OF_CMDRECORDS][DA_MAXLEN_OF_AGENTFILENAME];
+	wchar_t ServerFileName[DA_MAXNUM_OF_CMDRECORDS][5][DA_MAXLEN_OF_SERVERFILENAME];
+	wchar_t AgentFileName[DA_MAXNUM_OF_CMDRECORDS][5][DA_MAXLEN_OF_AGENTFILENAME];
 
 	int ResCount = DataAccess::GetInstance()->GetCommand(Id, Name, Type, Script, ServerFileName, AgentFileName);
 	StkObject* TmpObjD = new StkObject(L"Data");
@@ -32,8 +32,8 @@ StkObject* ApiGetCommand::ExecuteImpl(StkObject* ReqObj, int Method, wchar_t Url
 		CmdObj->AppendChildElement(new StkObject(L"Name", Name[Loop]));
 		CmdObj->AppendChildElement(new StkObject(L"Type", Type[Loop]));
 		CmdObj->AppendChildElement(new StkObject(L"Script", (wchar_t*)Script[Loop]));
-		CmdObj->AppendChildElement(new StkObject(L"ServerFileName", ServerFileName[Loop]));
-		CmdObj->AppendChildElement(new StkObject(L"AgentFileName", AgentFileName[Loop]));
+		CmdObj->AppendChildElement(new StkObject(L"ServerFileName", ServerFileName[Loop][0]));
+		CmdObj->AppendChildElement(new StkObject(L"AgentFileName", AgentFileName[Loop][0]));
 		TmpObjD->AppendChildElement(CmdObj);
 	}
 	AddCodeAndMsg(TmpObj, 0, L"", L"");
