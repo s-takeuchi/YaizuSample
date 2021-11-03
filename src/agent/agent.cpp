@@ -281,6 +281,10 @@ int CommonProcess(StkObject* CommandSearch, char TmpTime[64], StkWebAppSend* Snd
 					TmpType = ScriptSearch->GetIntValue();
 				} else if (StkPlWcsCmp(ScriptSearch->GetName(), L"ServerFile") == 0) {
 					// ServerFile
+					if (TmpServerFileNameCount >= 5) {
+						ScriptSearch = ScriptSearch->GetNext();
+						continue;
+					}
 					StkObject* ServerFileObj = ScriptSearch->GetFirstChildElement();
 					while (ServerFileObj) {
 						if (StkPlWcsCmp(ServerFileObj->GetName(), L"ServerFileName") == 0) {
@@ -295,6 +299,10 @@ int CommonProcess(StkObject* CommandSearch, char TmpTime[64], StkWebAppSend* Snd
 					TmpName = StkPlCreateUtf8FromWideChar(ScriptSearch->GetStringValue());
 					StkPlWcsCpy(CmdName, FILENAME_MAX, ScriptSearch->GetStringValue());
 				} else if (StkPlWcsCmp(ScriptSearch->GetName(), L"AgentFileName") == 0) {
+					if (TmpAgentFileNameCount >= 5) {
+						ScriptSearch = ScriptSearch->GetNext();
+						continue;
+					}
 					StkPlConvWideCharToUtf8(TmpAgentFileName[TmpAgentFileNameCount], FILENAME_MAX, ScriptSearch->GetStringValue());
 					TmpAgentFileNameCount++;
 				}
