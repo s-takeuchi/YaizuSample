@@ -32,8 +32,12 @@ StkObject* ApiGetCommand::ExecuteImpl(StkObject* ReqObj, int Method, wchar_t Url
 		CmdObj->AppendChildElement(new StkObject(L"Name", Name[Loop]));
 		CmdObj->AppendChildElement(new StkObject(L"Type", Type[Loop]));
 		CmdObj->AppendChildElement(new StkObject(L"Script", (wchar_t*)Script[Loop]));
-		CmdObj->AppendChildElement(new StkObject(L"ServerFileName", ServerFileName[Loop][0]));
-		CmdObj->AppendChildElement(new StkObject(L"AgentFileName", AgentFileName[Loop][0]));
+		for (int LoopSvr = 0; LoopSvr < 5; LoopSvr++) {
+			CmdObj->AppendChildElement(new StkObject(L"ServerFileName", ServerFileName[Loop][LoopSvr]));
+		}
+		for (int LoopAgt = 0; LoopAgt < 5; LoopAgt++) {
+			CmdObj->AppendChildElement(new StkObject(L"AgentFileName", AgentFileName[Loop][LoopAgt]));
+		}
 		TmpObjD->AppendChildElement(CmdObj);
 	}
 	AddCodeAndMsg(TmpObj, 0, L"", L"");

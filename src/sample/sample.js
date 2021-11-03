@@ -104,7 +104,6 @@ function initClientMessage() {
     addClientMessage('COMUPDATE', {'en':'Update', 'ja':'更新'});
     addClientMessage('COMDELETE', {'en':'Delete', 'ja':'削除'});
     addClientMessage('COMMANDLABEL', {'en':'Command : ', 'ja':'コマンド : '});
-    addClientMessage('COMUNSPECIFIED', {'en':'Command unspecified', 'ja':'コマンド未設定'});
 
     addClientMessage('RESULT_UPDTIME', {'en':'Execution date and time', 'ja':'実行日時'});
     addClientMessage('RESULT_AGTNAME', {'en':'Agent Name', 'ja':'エージェント名'});
@@ -1325,10 +1324,24 @@ function switchCommandButton(targetId) {
                     typeStr = 'Windows cmd.exe /c';
                 }
                 $('#commandName').val(commandList[loop].Name);
-                $('#serverFileName0').val(commandList[loop].ServerFileName);
+                for (let loopSvr = 0; loopSvr < commandList[loop].ServerFileName.length; loopSvr++) {
+                    if (commandList[loop].ServerFileName[loopSvr] !== '') {
+                        if (loopSvr >= 1) {
+                            addServerFileName();
+                        }
+                        $('#serverFileName' + loopSvr).val(commandList[loop].ServerFileName[loopSvr]);
+                    }
+                }
                 $('#commandType').val(typeStr);
                 $('#commandScript').val(commandList[loop].Script);
-                $('#agentFileName0').val(commandList[loop].AgentFileName);
+                for (let loopAgt = 0; loopAgt < commandList[loop].AgentFileName.length; loopAgt++) {
+                    if (commandList[loop].AgentFileName[loopAgt] !== '') {
+                        if (loopAgt >= 1) {
+                            addAgentFileName();
+                        }
+                        $('#agentFileName' + loopAgt).val(commandList[loop].AgentFileName[loopAgt]);
+                    }
+                }
             }
         }
     }
@@ -1345,11 +1358,31 @@ function updateCommand(updateFlag, targetId) {
     } else if (comType === 'Windows cmd.exe /c') {
         comTypeInt = 1;
     }
+    let serverFileNameAry = ['', '', '', '', ''];
+    let agentFileNameAry = ['', '', '', '', ''];
+    for (let loop = 0; loop < 5; loop++) {
+        if ($('#serverFileName' + loop).val() != null && $('#serverFileName' + loop).val() !== '') {
+            serverFileNameAry[loop] = $('#serverFileName' + loop).val();
+        }
+        if ($('#agentFileName' + loop).val() != null && $('#agentFileName' + loop).val() !== '') {
+            agentFileNameAry[loop] = $('#agentFileName' + loop).val();
+        }
+    }
     if (updateFlag == false) {
-        var ReqObj = { Name : $("#commandName").val(), Type : comTypeInt, Script : $("#commandScript").val(), ServerFileName : $("#serverFileName0").val(), AgentFileName : $("#agentFileName0").val() };
+        var ReqObj = {
+            Name : $("#commandName").val(),
+            Type : comTypeInt, Script : $("#commandScript").val(),
+            ServerFileName : serverFileNameAry,
+            AgentFileName : agentFileNameAry
+        };
         apiCall('POST', '/api/command/', ReqObj, 'API_POST_COMMAND', refreshAfterAddCommand);
     } else {
-        var ReqObj = { Id : targetId, Name : $("#commandName").val(), Type : comTypeInt, Script : $("#commandScript").val(), ServerFileName : $("#serverFileName0").val(), AgentFileName : $("#agentFileName0").val() };
+        var ReqObj = {
+            Id : targetId, Name : $("#commandName").val(),
+            Type : comTypeInt, Script : $("#commandScript").val(),
+            ServerFileName : serverFileNameAry,
+            AgentFileName : agentFileNameAry
+        };
         apiCall('POST', '/api/command/', ReqObj, 'API_POST_COMMAND', refreshAfterUpdateCommand);
     }
 }
