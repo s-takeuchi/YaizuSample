@@ -268,24 +268,35 @@ int CommonProcess(StkObject* CommandSearch, char TmpTime[64], StkWebAppSend* Snd
 			char* TmpScript = NULL;
 			wchar_t* TmpScriptWc = NULL;
 			int TmpType = -1;
-			char TmpServerFileName[FILENAME_MAX] = "";
-			char TmpAgentFileName[FILENAME_MAX] = "";
-			int TmpServerFileSize = -1;
+			char TmpServerFileName[5][FILENAME_MAX] = {"", "", "", "", ""};
+			char TmpAgentFileName[5][FILENAME_MAX] = { "", "", "", "", "" };
+			int TmpServerFileSize[5] = {-1, -1, -1, -1, -1};
+			int TmpServerFileNameCount = 0;
+			int TmpAgentFileNameCount = 0;
 			StkObject* ScriptSearch = CommandSearch->GetFirstChildElement();
 			while (ScriptSearch) {
 				if (StkPlWcsCmp(ScriptSearch->GetName(), L"Script") == 0) {
 					TmpScriptWc = ScriptSearch->GetStringValue();
 				} else if (StkPlWcsCmp(ScriptSearch->GetName(), L"Type") == 0) {
 					TmpType = ScriptSearch->GetIntValue();
-				} else if (StkPlWcsCmp(ScriptSearch->GetName(), L"ServerFileName") == 0) {
-					StkPlConvWideCharToUtf8(TmpServerFileName, FILENAME_MAX, ScriptSearch->GetStringValue());
-				} else if (StkPlWcsCmp(ScriptSearch->GetName(), L"ServerFileSize") == 0) {
-					TmpServerFileSize = ScriptSearch->GetIntValue();
+				} else if (StkPlWcsCmp(ScriptSearch->GetName(), L"ServerFile") == 0) {
+					// ServerFile
+					StkObject* ServerFileObj = ScriptSearch->GetFirstChildElement();
+					while (ServerFileObj) {
+						if (StkPlWcsCmp(ServerFileObj->GetName(), L"ServerFileName") == 0) {
+							StkPlConvWideCharToUtf8(TmpServerFileName[TmpServerFileNameCount], FILENAME_MAX, ServerFileObj->GetStringValue());
+						} else if (StkPlWcsCmp(ServerFileObj->GetName(), L"ServerFileSize") == 0) {
+							TmpServerFileSize[TmpServerFileNameCount] = ServerFileObj->GetIntValue();
+						}
+						ServerFileObj = ServerFileObj->GetNext();
+					}
+					TmpServerFileNameCount++;
 				} else if (StkPlWcsCmp(ScriptSearch->GetName(), L"Name") == 0) {
 					TmpName = StkPlCreateUtf8FromWideChar(ScriptSearch->GetStringValue());
 					StkPlWcsCpy(CmdName, FILENAME_MAX, ScriptSearch->GetStringValue());
 				} else if (StkPlWcsCmp(ScriptSearch->GetName(), L"AgentFileName") == 0) {
-					StkPlConvWideCharToUtf8(TmpAgentFileName, FILENAME_MAX, ScriptSearch->GetStringValue());
+					StkPlConvWideCharToUtf8(TmpAgentFileName[TmpAgentFileNameCount], FILENAME_MAX, ScriptSearch->GetStringValue());
+					TmpAgentFileNameCount++;
 				}
 				ScriptSearch = ScriptSearch->GetNext();
 			}
@@ -297,14 +308,16 @@ int CommonProcess(StkObject* CommandSearch, char TmpTime[64], StkWebAppSend* Snd
 			}
 
 			// Get and save file
-			StkPlPrintf("ServerFileName=%s, ", TmpServerFileName != NULL ? TmpServerFileName : "null");
-			StkPlPrintf("ServerFileSize=%d\r\n", TmpServerFileSize);
-			if (TmpServerFileName != NULL && TmpServerFileSize >= 0 && StkPlStrCmp(TmpServerFileName, "") != 0) {
-				if (GetAndSaveFile(TmpServerFileName, TmpServerFileSize, SndObj) != 200) {
+			for (int Loop = 0; Loop < TmpServerFileNameCount; Loop++) {
+				StkPlPrintf("ServerFileName=%s, ", TmpServerFileName != NULL ? TmpServerFileName[Loop] : "null");
+				StkPlPrintf("ServerFileSize=%d\r\n", TmpServerFileSize);
+				if (TmpServerFileName != NULL && TmpServerFileSize >= 0 && StkPlStrCmp(TmpServerFileName[Loop], "") != 0) {
+					if (GetAndSaveFile(TmpServerFileName[Loop], TmpServerFileSize[Loop], SndObj) != 200) {
+						return RESULTCODE_ERROR_SERVERFILE;
+					}
+				} else if (TmpServerFileName != NULL && StkPlStrCmp(TmpServerFileName[Loop], "") != 0 && TmpServerFileSize < 0) {
 					return RESULTCODE_ERROR_SERVERFILE;
 				}
-			} else if (TmpServerFileName != NULL && StkPlStrCmp(TmpServerFileName, "") != 0 && TmpServerFileSize < 0) {
-				return RESULTCODE_ERROR_SERVERFILE;
 			}
 
 			// Execute script
@@ -360,11 +373,13 @@ int CommonProcess(StkObject* CommandSearch, char TmpTime[64], StkWebAppSend* Snd
 			}
 
 			// Load and post file
-			StkPlPrintf("AgentFileName=%s\r\n", TmpAgentFileName != NULL ? TmpAgentFileName : "null");
-			if (TmpAgentFileName != NULL && StkPlStrCmp(TmpAgentFileName, "") != 0) {
-				if (LoadAndPostFile(TmpAgentFileName, TYPE_FILE, CmdName, SndObj) != 200) {
-					delete TmpScript;
-					return RESULTCODE_ERROR_AGENTFILE;
+			for (int Loop = 0; Loop < TmpAgentFileNameCount; Loop++) {
+				StkPlPrintf("AgentFileName=%s\r\n", TmpAgentFileName != NULL ? TmpAgentFileName[Loop] : "null");
+				if (TmpAgentFileName != NULL && StkPlStrCmp(TmpAgentFileName[Loop], "") != 0) {
+					if (LoadAndPostFile(TmpAgentFileName[Loop], TYPE_FILE, CmdName, SndObj) != 200) {
+						delete TmpScript;
+						return RESULTCODE_ERROR_AGENTFILE;
+					}
 				}
 			}
 
