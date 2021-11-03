@@ -105,6 +105,7 @@ function initClientMessage() {
     addClientMessage('COMUPDATE', {'en':'Update', 'ja':'更新'});
     addClientMessage('COMDELETE', {'en':'Delete', 'ja':'削除'});
     addClientMessage('COMCANCEL', {'en':'Cancel', 'ja':'キャンセル'});
+    addClientMessage('COMCLOSE', {'en':'Close', 'ja':'閉じる'});
     addClientMessage('COMADDCOMMAND', {'en':'Add Command', 'ja':'コマンド追加'});
     addClientMessage('COMEDITCOMMAND', {'en':'Edit Command', 'ja':'コマンド編集'});
     addClientMessage('COMMANDLABEL', {'en':'Command : ', 'ja':'コマンド : '});
@@ -1238,12 +1239,17 @@ function switchCommandButton() {
         }
     }
     clearRsCommand();
-    if (cnt > 0) {
-        addRsCommand("commandSetting(-1)", "icon-plus", true);
-        addRsCommand("deleteCommand()", "icon-bin", true);
+    if (userRole != 1) {
+        if (cnt > 0) {
+            addRsCommand("commandSetting(-1)", "icon-plus", true);
+            addRsCommand("deleteCommand()", "icon-bin", true);
+        } else {
+            addRsCommand("commandSetting(-1)", "icon-plus", true);
+            addRsCommand("", "icon-bin", false);
+        }
     } else {
-        addRsCommand("commandSetting(-1)", "icon-plus", true);
-        addRsCommand("", "icon-bin", false);
+        addRsCommand("commandSetting(-1)", "icon-plus", false);
+        addRsCommand("deleteCommand()", "icon-bin", false);
     }
 }
 
@@ -1325,12 +1331,16 @@ function switchCommandButton() {
         commandSettingDlg.append('<div id="command_errmsg"/>');
         commandSettingDlg.append('<p></p>');
     
-        if (targetId == -1) {
-            commandSettingDlg.append('<button type="button" id="commandBtnAdd" class="btn btn-dark" onclick="updateCommand(false,' + targetId + ')">' + getClientMessage('COMADD') + '</button> ');
+        if (userRole != 1) {
+            if (targetId == -1) {
+                commandSettingDlg.append('<button type="button" id="commandBtnAdd" class="btn btn-dark" onclick="updateCommand(false,' + targetId + ')">' + getClientMessage('COMADD') + '</button> ');
+            } else {
+                commandSettingDlg.append('<button type="button" id="commandBtnUpdate" class="btn btn-dark" onclick="updateCommand(true, ' + targetId + ')">' + getClientMessage('COMUPDATE') + '</button> ');
+            }
+            commandSettingDlg.append('<button type="button" class="btn btn-dark" onclick="closeInputModal()">' + getClientMessage('COMCANCEL') + '</button> ');
         } else {
-            commandSettingDlg.append('<button type="button" id="commandBtnUpdate" class="btn btn-dark" onclick="updateCommand(true, ' + targetId + ')">' + getClientMessage('COMUPDATE') + '</button> ');
+            commandSettingDlg.append('<button type="button" class="btn btn-dark" onclick="closeInputModal()">' + getClientMessage('COMCLOSE') + '</button> ');
         }
-        commandSettingDlg.append('<button type="button" id="Cancel" class="btn btn-dark" onclick="closeInputModal()">' + getClientMessage('COMCANCEL') + '</button> ');
     
         let titleStr = '';
         if (targetId == -1) {
@@ -1936,7 +1946,7 @@ function resizeComponent() {
         } else if (wsize >= 400) {
             tmpWSize = 380;
         } else {
-            tmpWSize = 280;
+            tmpWSize = wsize - 20;
         }
         resizeAgentStatusHistory(tmpWSize);
     }
