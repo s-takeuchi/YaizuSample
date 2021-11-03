@@ -104,6 +104,7 @@ function initClientMessage() {
     addClientMessage('COMUPDATE', {'en':'Update', 'ja':'更新'});
     addClientMessage('COMDELETE', {'en':'Delete', 'ja':'削除'});
     addClientMessage('COMMANDLABEL', {'en':'Command : ', 'ja':'コマンド : '});
+    addClientMessage('COMUNSPECIFIED', {'en':'Command unspecified', 'ja':'コマンド未設定'});
 
     addClientMessage('RESULT_UPDTIME', {'en':'Execution date and time', 'ja':'実行日時'});
     addClientMessage('RESULT_AGTNAME', {'en':'Agent Name', 'ja':'エージェント名'});
@@ -1070,16 +1071,15 @@ function switchFileInfoButton() {
         }
     }
     clearRsCommand();
-    if (foundFlag == true) {
-        addRsCommand("deleteFile()", "icon-bin", true);
-    } else {
-        addRsCommand("deleteFile()", "icon-bin", false);
-    }
-
     if  (userRole != 1) {
         addRsCommand("clickUpload()", "icon-cloud-upload", true);
     } else {
         addRsCommand("clickUpload()", "icon-cloud-upload", false);
+    }
+    if (foundFlag == true) {
+        addRsCommand("deleteFile()", "icon-bin", true);
+    } else {
+        addRsCommand("deleteFile()", "icon-bin", false);
     }
 }
 
@@ -1136,7 +1136,10 @@ function checkAfterDeleteFile() {
 ////////////////////////////////////////////////////////////////////////////////
 
 function transDisplayCommand() {
-    apiCall('GET', '/api/command/', null, 'API_GET_COMMAND', displayCommand);
+    let contents = [];
+    contents.push({ method: 'GET', url: '/api/command/', request: null, keystring: 'API_GET_COMMAND' });
+    contents.push({ method: 'GET', url: '/api/filelist/', request: null, keystring: 'API_GET_FILELIST' });
+    MultiApiCall(contents, displayCommand);
 }
 
 function displayCommand() {
@@ -1215,44 +1218,118 @@ function switchCommandButton(targetId) {
     }
 }
 
-function commandSetting(targetId) {
-    let commandSettingDlg = $('<div/>')
-    commandSettingDlg.append('<div class="form-group"><label for="commandName">' + getClientMessage('COMNAME') + '</label><input type="text" class="form-control" id="commandName" placeholder="' + getClientMessage('COMNAME') + '"></div>');
-    commandSettingDlg.append('<div class="form-group"><label for="serverFileName">' + getClientMessage('COMCOPYTOAGT') + '</label><input type="text" class="form-control" id="serverFileName" placeholder="' + getClientMessage('COMPLACESVR') + '"></div>');
-    commandSettingDlg.append('<div class="form-group"><label for="commandType">' + getClientMessage('COMTYPE') + '</label><select class="form-control" id="commandType"><option>Linux /usr/bin/bash</option><option>Windows cmd.exe /c</option></select></div>');
-    commandSettingDlg.append('<div class="form-group"><label for="commandScript">' + getClientMessage('COMSCRIPT') + '</label><textarea class="form-control" id="commandScript" rows="3" style="margin-top: 0px; margin-bottom: 0px; height: 185px;"></textarea></div>');
-    commandSettingDlg.append('<div class="form-group"><label for="agentFileName">' + getClientMessage('COMCOPYTOSVR') + '</label><input type="text" class="form-control" id="agentFileName" placeholder="' + getClientMessage('COMPLACEAGT') + '"></div>');
-    commandSettingDlg.append('<div id="command_errmsg"/>');
+{
+    let serverFileNameCount = 0;
+    let agentFileNameCount = 0;
 
-    if (targetId == -1) {
-        commandSettingDlg.append('<button type="button" id="commandBtnAdd" class="btn btn-dark" onclick="updateCommand(false,' + targetId + ')">' + getClientMessage('COMADD') + '</button> ');
-    } else {
-        commandSettingDlg.append('<button type="button" id="commandBtnUpdate" class="btn btn-dark" onclick="updateCommand(true, ' + targetId + ')">' + getClientMessage('COMUPDATE') + '</button> ');
+    function initServerFileNameCount() {
+        serverFileNameCount = 0;
     }
-    commandSettingDlg.append('<button type="button" id="Cancel" class="btn btn-dark" onclick="closeInputModal()">Cancel</button> ');
 
-    let titleStr = '';
-    if (targetId == -1) {
-        titleStr = getClientMessage('COMADD');
-    } else {
-        titleStr = getClientMessage('COMUPDATE');
+    function initAgentFileNameCount() {
+        agentFileNameCount = 0;
     }
-    showInputModal('<h5 class="modal-title">' + titleStr + '</h5>', commandSettingDlg);
 
-    var commandList = getArray(responseData['API_GET_COMMAND'].Data.Command);
-    for (loop = 0; loop < commandList.length; loop++) {
-        if (commandList[loop].Id == targetId) {
-            var typeStr = '';
-            if (commandList[loop].Type == 0) {
-                typeStr = 'Linux /usr/bin/bash';
-            } else {
-                typeStr = 'Windows cmd.exe /c';
+    function addServerFileName() {
+        if (serverFileNameCount >= 5) {
+            return;
+        }
+        $('#serverFileName-inputgroup').append(
+          '<div id="serverFileName-inputgroup-child' + serverFileNameCount + '" class="input-group">' +
+            '<select id="serverFileName' + serverFileNameCount + '" class="form-control">' +
+              '<option></option>' +
+            '</select>' +
+            '<div class="input-group-append">' +
+              '<button class="btn btn-outline-secondary" type="button" onclick="addServerFileName()"><span class="icon icon-plus" style="font-size:20px;"></span></button>' +
+              '<button class="btn btn-outline-secondary" type="button" onclick="removeServerFileName(' + serverFileNameCount + ')"><span class="icon icon-bin" style="font-size:20px;"></span></button>' +
+            '</div>' +
+          '</div>'
+        );
+        let fileList = getArray(responseData['API_GET_FILELIST'].Data.FileInfo);
+        for (let loop = 0; loop < fileList.length; loop++) {
+            $('#serverFileName' + serverFileNameCount).append('<option>' + fileList[loop].Name + '</option>');
+        }
+        serverFileNameCount++;
+    }
+
+    function removeServerFileName(target) {
+        if (serverFileNameCount <= 1) {
+            return;
+        }
+        $('#serverFileName-inputgroup-child' + target).remove();
+        serverFileNameCount--;
+    }
+
+    function addAgentFileName() {
+        if (agentFileNameCount >= 5) {
+            return;
+        }
+        $('#agentFileName-inputgroup').append(
+          '<div id="agentFileName-inputgroup-child' + agentFileNameCount + '" class="input-group">' +
+            '<input id="agentFileName' + agentFileNameCount + '" class="form-control" type="text" placeholder="' + getClientMessage('COMPLACEAGT') + '"/>' +
+            '<div class="input-group-append">' +
+              '<button class="btn btn-outline-secondary" type="button" onclick="addAgentFileName()"><span class="icon icon-plus" style="font-size:20px;"></span></button>' +
+              '<button class="btn btn-outline-secondary" type="button" onclick="removeAgentFileName(' + agentFileNameCount + ')"><span class="icon icon-bin" style="font-size:20px;"></span></button>' +
+            '</div>' +
+          '</div>'
+        );
+        agentFileNameCount++;
+    }
+
+    function removeAgentFileName(target) {
+        if (agentFileNameCount <= 1) {
+            return;
+        }
+        $('#agentFileName-inputgroup-child' + target).remove();
+        agentFileNameCount--;
+    }
+
+    function commandSetting(targetId) {
+        let commandSettingDlg = $('<div/>')
+        commandSettingDlg.append('<div class="form-group"><label for="commandName">' + getClientMessage('COMNAME') + '</label><input type="text" class="form-control" id="commandName" placeholder="' + getClientMessage('COMNAME') + '"></div>');
+        commandSettingDlg.append('<label for="serverFileName">' + getClientMessage('COMCOPYTOAGT') + '</label><div id="serverFileName-inputgroup"/>');
+        commandSettingDlg.append('<p></p>');
+        commandSettingDlg.append('<div class="form-group"><label for="commandType">' + getClientMessage('COMTYPE') + '</label><select class="form-control" id="commandType"><option>Linux /usr/bin/bash</option><option>Windows cmd.exe /c</option></select></div>');
+        commandSettingDlg.append('<div class="form-group"><label for="commandScript">' + getClientMessage('COMSCRIPT') + '</label><textarea class="form-control" id="commandScript" rows="3" style="margin-top: 0px; margin-bottom: 0px; height: 185px;"></textarea></div>');
+        commandSettingDlg.append('<label for="agentFileName">' + getClientMessage('COMCOPYTOSVR') + '</label><div id="agentFileName-inputgroup"/>');
+        commandSettingDlg.append('<p></p>');
+        commandSettingDlg.append('<div id="command_errmsg"/>');
+        commandSettingDlg.append('<p></p>');
+    
+        if (targetId == -1) {
+            commandSettingDlg.append('<button type="button" id="commandBtnAdd" class="btn btn-dark" onclick="updateCommand(false,' + targetId + ')">' + getClientMessage('COMADD') + '</button> ');
+        } else {
+            commandSettingDlg.append('<button type="button" id="commandBtnUpdate" class="btn btn-dark" onclick="updateCommand(true, ' + targetId + ')">' + getClientMessage('COMUPDATE') + '</button> ');
+        }
+        commandSettingDlg.append('<button type="button" id="Cancel" class="btn btn-dark" onclick="closeInputModal()">Cancel</button> ');
+    
+        let titleStr = '';
+        if (targetId == -1) {
+            titleStr = getClientMessage('COMADD');
+        } else {
+            titleStr = getClientMessage('COMUPDATE');
+        }
+        showInputModal('<h5 class="modal-title">' + titleStr + '</h5>', commandSettingDlg);
+        initServerFileNameCount();
+        initAgentFileNameCount();
+        addServerFileName();
+        addAgentFileName();
+    
+        var commandList = getArray(responseData['API_GET_COMMAND'].Data.Command);
+        for (loop = 0; loop < commandList.length; loop++) {
+            if (commandList[loop].Id == targetId) {
+                var typeStr = '';
+                if (commandList[loop].Type == 0) {
+                    typeStr = 'Linux /usr/bin/bash';
+                } else {
+                    typeStr = 'Windows cmd.exe /c';
+                }
+                $('#commandName').val(commandList[loop].Name);
+                $('#serverFileName0').val(commandList[loop].ServerFileName);
+                $('#commandType').val(typeStr);
+                $('#commandScript').val(commandList[loop].Script);
+                $('#agentFileName0').val(commandList[loop].AgentFileName);
             }
-            $('#commandName').val(commandList[loop].Name);
-            $('#serverFileName').val(commandList[loop].ServerFileName);
-            $('#commandType').val(typeStr);
-            $('#commandScript').val(commandList[loop].Script);
-            $('#agentFileName').val(commandList[loop].AgentFileName);
         }
     }
 }
@@ -1269,10 +1346,10 @@ function updateCommand(updateFlag, targetId) {
         comTypeInt = 1;
     }
     if (updateFlag == false) {
-        var ReqObj = { Name : $("#commandName").val(), Type : comTypeInt, Script : $("#commandScript").val(), ServerFileName : $("#serverFileName").val(), AgentFileName : $("#agentFileName").val() };
+        var ReqObj = { Name : $("#commandName").val(), Type : comTypeInt, Script : $("#commandScript").val(), ServerFileName : $("#serverFileName0").val(), AgentFileName : $("#agentFileName0").val() };
         apiCall('POST', '/api/command/', ReqObj, 'API_POST_COMMAND', refreshAfterAddCommand);
     } else {
-        var ReqObj = { Id : targetId, Name : $("#commandName").val(), Type : comTypeInt, Script : $("#commandScript").val(), ServerFileName : $("#serverFileName").val(), AgentFileName : $("#agentFileName").val() };
+        var ReqObj = { Id : targetId, Name : $("#commandName").val(), Type : comTypeInt, Script : $("#commandScript").val(), ServerFileName : $("#serverFileName0").val(), AgentFileName : $("#agentFileName0").val() };
         apiCall('POST', '/api/command/', ReqObj, 'API_POST_COMMAND', refreshAfterUpdateCommand);
     }
 }
