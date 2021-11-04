@@ -175,8 +175,8 @@ Get command information. All of commands are acquired.<br/>
         "Name" : "Command name",
         "Type" : 0,
         "Script" : "echo hello!!",
-        "ServerFileName" : "aaa.dat",
-        "AgentFileName" : "bbb.dat"
+        "ServerFileName" : ["aaa.dat", "bbb.dat", "ccc.dat", "ddd.dat", "eee.dat"],
+        "AgentFileName" : ["ppp.dat", "qqq.dat", "rrr.dat", "sss.dat", "ttt.dat"]
       }
     ]
   }
@@ -192,8 +192,8 @@ Get command information. All of commands are acquired.<br/>
 <tr><td>Name</td><td>String</td><td>Command name</td></tr>
 <tr><td>Type</td><td>Integer</td><td>0: Linux, 1:Windows</td></tr>
 <tr><td>Script</td><td>String</td><td>Command script</td></tr>
-<tr><td>ServerFileName</td><td>String</td><td>File name (not path) copied to agent.</td></tr>
-<tr><td>AgentFileName</td><td>String</td><td>File name (not path) copied to server.</td></tr>
+<tr><td>ServerFileName</td><td>String</td><td>File name (not path) copied to agent. Five file names can be obtained.</td></tr>
+<tr><td>AgentFileName</td><td>String</td><td>File name (not path) copied to server. Five file names can be obtained.</td></tr>
 </table><br/>
 </li>
 </ul>
@@ -211,8 +211,8 @@ Configure command information.<br/>
   "Name" : "Command name",
   "Type" : 0,
   "Script" : "echo hello!!",
-  "ServerFileName" : "aaa.dat",
-  "AgentFileName" : "bbb.dat"
+  "ServerFileName" : ["aaa.dat", "bbb.dat", "ccc.dat", "ddd.dat", "eee.dat"],
+  "AgentFileName" : ["ppp.dat", "qqq.dat", "rrr.dat", "sss.dat", "ttt.dat"]
 }
 </pre>
 <table class="tblstyle">
@@ -220,8 +220,8 @@ Configure command information.<br/>
 <tr><td>Name</td><td>String</td><td>Command name</td></tr>
 <tr><td>Type</td><td>Integer</td><td>0: Linux, 1:Windows</td></tr>
 <tr><td>Script</td><td>String</td><td>Command script</td></tr>
-<tr><td>ServerFileName</td><td>String</td><td>File name (not path) copied to agent.</td></tr>
-<tr><td>AgentFileName</td><td>String</td><td>File name (not path) copied to server.</td></tr>
+<tr><td>ServerFileName</td><td>String</td><td>File name (not path) copied to agent. Maximum five file names can be specified.</td></tr>
+<tr><td>AgentFileName</td><td>String</td><td>File name (not path) copied to server. Maximum five file names can be specified.</td></tr>
 </table><br/>
 </li>
 <li>Response
@@ -243,6 +243,7 @@ Configure command information.<br/>
                                      4026:Length of file name is invalid(HTTP status code=400),
                                      4027:Forbidden character is specified in file name(HTTP status code=400),
                                      4028:Duplicated command name is specified(HTTP status code=400),
+                                     4029:The number of commands can be registered exceeded the limit.(HTTP status code=400),
                                      4020:Specified command ID does not exist(HTTP status code=400),
                                      4023:Command name is not presented(HTTP status code=400),
 </td></tr>
@@ -304,9 +305,14 @@ Get command information for status acquisition<br/>
       "Name" : "Command name",
       "Type" : 0,
       "Script" : "echo hello!!",
-      "ServerFileName" : "aaa.dat",
-      "ServerFileSize" : 65535,
-      "AgentFileName" : "bbb.dat"
+      "ServerFile" : [
+        {"ServerFileName" : "aaa.dat", "ServerFileSize" : 65535,},
+        {"ServerFileName" : "bbb.dat", "ServerFileSize" : 65535,},
+        {"ServerFileName" : "ccc.dat", "ServerFileSize" : 65535,},
+        {"ServerFileName" : "ddd.dat", "ServerFileSize" : 65535,},
+        {"ServerFileName" : "eee.dat", "ServerFileSize" : 65535,}
+      ],
+      "AgentFileName" : ["ppp.dat", "qqq.dat", "rrr.dat", "sss.dat", "ttt.dat"]
     }
   }
 }
@@ -325,9 +331,10 @@ Get command information for status acquisition<br/>
 <tr><td>Name</td><td>String</td><td>Command name</td></tr>
 <tr><td>Type</td><td>Integer</td><td>0: Linux, 1:Windows</td></tr>
 <tr><td>Script</td><td>String</td><td>Command script</td></tr>
+<tr><td>ServerFile</td><td>Element</td><td>Five elements can be obtained.</td></tr>
 <tr><td>ServerFileName</td><td>String</td><td>File name (not path) copied to agent.</td></tr>
 <tr><td>ServerFileSize</td><td>Integer</td><td>File size of the specified file name as "ServerFileName".</td></tr>
-<tr><td>AgentFileName</td><td>String</td><td>File name (not path) copied to server.</td></tr>
+<tr><td>AgentFileName</td><td>String</td><td>File name (not path) copied to server. Five file names can be obtained.</td></tr>
 </table><br/>
 </li>
 </ul>
@@ -354,9 +361,14 @@ Get command information for operation<br/>
       "Name" : "Command name",
       "Type" : 0,
       "Script" : "echo hello!!",
-      "ServerFileName" : "aaa.dat",
-      "ServerFileSize" : 65535,
-      "AgentFileName" : "bbb.dat"
+      "ServerFile" : [
+        {"ServerFileName" : "aaa.dat", "ServerFileSize" : 65535,},
+        {"ServerFileName" : "bbb.dat", "ServerFileSize" : 65535,},
+        {"ServerFileName" : "ccc.dat", "ServerFileSize" : 65535,},
+        {"ServerFileName" : "ddd.dat", "ServerFileSize" : 65535,},
+        {"ServerFileName" : "eee.dat", "ServerFileSize" : 65535,}
+      ],
+      "AgentFileName" : ["ppp.dat", "qqq.dat", "rrr.dat", "sss.dat", "ttt.dat"]
     }
   }
 }
@@ -375,9 +387,10 @@ Get command information for operation<br/>
 <tr><td>Name</td><td>String</td><td>Command name</td></tr>
 <tr><td>Type</td><td>Integer</td><td>0: Linux, 1:Windows</td></tr>
 <tr><td>Script</td><td>String</td><td>Command script</td></tr>
+<tr><td>ServerFile</td><td>Element</td><td>Five elements can be obtained.</td></tr>
 <tr><td>ServerFileName</td><td>String</td><td>File name (not path) copied to agent.</td></tr>
 <tr><td>ServerFileSize</td><td>Integer</td><td>File size of the specified file name as "ServerFileName".</td></tr>
-<tr><td>AgentFileName</td><td>String</td><td>File name (not path) copied to server.</td></tr>
+<tr><td>AgentFileName</td><td>String</td><td>File name (not path) copied to server. Five file names can be obtained.</td></tr>
 </table><br/>
 </li>
 </ul>
