@@ -1286,7 +1286,7 @@ function switchCommandButton() {
         }
         $('#serverFileName-inputgroup').append(
           '<div id="serverFileName-inputgroup-child' + serverFileNameCount + '" class="input-group">' +
-            '<select id="serverFileName' + serverFileNameCount + '" class="form-control">' +
+            '<select id="serverFileNameS' + serverFileNameCount + '" class="form-control">' +
               '<option></option>' +
             '</select>' +
             '<div class="input-group-append">' +
@@ -1297,7 +1297,7 @@ function switchCommandButton() {
         );
         let fileList = getArray(responseData['API_GET_FILELIST'].Data.FileInfo);
         for (let loop = 0; loop < fileList.length; loop++) {
-            $('#serverFileName' + serverFileNameCount).append('<option>' + fileList[loop].Name + '</option>');
+            $('#serverFileNameS' + serverFileNameCount).append('<option>' + fileList[loop].Name + '</option>');
         }
         serverFileNameCount++;
     }
@@ -1316,7 +1316,7 @@ function switchCommandButton() {
         }
         $('#agentFileName-inputgroup').append(
           '<div id="agentFileName-inputgroup-child' + agentFileNameCount + '" class="input-group">' +
-            '<input id="agentFileName' + agentFileNameCount + '" class="form-control" type="text" placeholder="' + getClientMessage('COMPLACEAGT') + '"/>' +
+            '<input id="agentFileNameS' + agentFileNameCount + '" class="form-control" type="text" placeholder="' + getClientMessage('COMPLACEAGT') + '"/>' +
             '<div class="input-group-append">' +
               '<button class="btn btn-outline-secondary" type="button" onclick="addAgentFileName()"><span class="icon icon-plus" style="font-size:18px;"></span></button>' +
               '<button class="btn btn-outline-secondary" type="button" onclick="removeAgentFileName(' + agentFileNameCount + ')"><span class="icon icon-bin" style="font-size:18px;"></span></button>' +
@@ -1384,7 +1384,7 @@ function switchCommandButton() {
                         if (loopSvr >= 1) {
                             addServerFileName();
                         }
-                        $('#serverFileName' + loopSvr).val(commandList[loop].ServerFileName[loopSvr]);
+                        $('#serverFileNameS' + loopSvr).val(commandList[loop].ServerFileName[loopSvr]);
                     }
                 }
                 $('#commandType').val(typeStr);
@@ -1394,7 +1394,7 @@ function switchCommandButton() {
                         if (loopAgt >= 1) {
                             addAgentFileName();
                         }
-                        $('#agentFileName' + loopAgt).val(commandList[loop].AgentFileName[loopAgt]);
+                        $('#agentFileNameS' + loopAgt).val(commandList[loop].AgentFileName[loopAgt]);
                     }
                 }
             }
@@ -1430,75 +1430,85 @@ function switchCommandButton() {
     
         showInputModal('<h5 class="modal-title">' + getClientMessage('COMDELCOMMAND') + '</h5>', deleteCommandDlg);
     }
-}
 
-function updateCommand(updateFlag, targetId) {
-    if (updateFlag == true && targetId == -1) {
-        return;
-    }
-    var comType = $("#commandType").val();
-    var comTypeInt = -1;
-    if (comType === 'Linux /usr/bin/bash') {
-        comTypeInt = 0;
-    } else if (comType === 'Windows cmd.exe /c') {
-        comTypeInt = 1;
-    }
-    let serverFileNameAry = ['', '', '', '', ''];
-    let agentFileNameAry = ['', '', '', '', ''];
-    for (let loop = 0; loop < 5; loop++) {
-        if ($('#serverFileName' + loop).val() != null && $('#serverFileName' + loop).val() !== '') {
-            serverFileNameAry[loop] = $('#serverFileName' + loop).val();
+    function updateCommand(updateFlag, targetId) {
+        if (updateFlag == true && targetId == -1) {
+            return;
         }
-        if ($('#agentFileName' + loop).val() != null && $('#agentFileName' + loop).val() !== '') {
-            agentFileNameAry[loop] = $('#agentFileName' + loop).val();
+        var comType = $("#commandType").val();
+        var comTypeInt = -1;
+        if (comType === 'Linux /usr/bin/bash') {
+            comTypeInt = 0;
+        } else if (comType === 'Windows cmd.exe /c') {
+            comTypeInt = 1;
+        }
+        // Padding of file array : BEGIN
+        let serverFileNameAry = ['', '', '', '', ''];
+        let agentFileNameAry = ['', '', '', '', ''];
+        let svrFileCnt = 0;
+        let agtFileCnt = 0;
+        let tmpServerFileNameAry = $('[id^="serverFileNameS"]');
+        let tmpAgentFileNameAry = $('[id^="agentFileNameS"]');
+        for (let loop = 0; loop < tmpServerFileNameAry.length; loop++) {
+            if (tmpServerFileNameAry[loop].value !== '') {
+                serverFileNameAry[svrFileCnt] = tmpServerFileNameAry[loop].value;
+                svrFileCnt++;
+            }
+        }
+        for (let loop = 0; loop < tmpAgentFileNameAry.length; loop++) {
+            if (tmpAgentFileNameAry[loop].value !== '') {
+                agentFileNameAry[agtFileCnt] = tmpAgentFileNameAry[loop].value;
+                agtFileCnt++;
+            }
+        }
+        // Padding of file array : END
+        if (updateFlag == false) {
+            var ReqObj = {
+                Name : $("#commandName").val(),
+                Type : comTypeInt, Script : $("#commandScript").val(),
+                ServerFileName : serverFileNameAry,
+                AgentFileName : agentFileNameAry
+            };
+            apiCall('POST', '/api/command/', ReqObj, 'API_POST_COMMAND', refreshAfterUpdateCommand);
+        } else {
+            var ReqObj = {
+                Id : targetId, Name : $("#commandName").val(),
+                Type : comTypeInt, Script : $("#commandScript").val(),
+                ServerFileName : serverFileNameAry,
+                AgentFileName : agentFileNameAry
+            };
+            apiCall('POST', '/api/command/', ReqObj, 'API_POST_COMMAND', refreshAfterUpdateCommand);
         }
     }
-    if (updateFlag == false) {
-        var ReqObj = {
-            Name : $("#commandName").val(),
-            Type : comTypeInt, Script : $("#commandScript").val(),
-            ServerFileName : serverFileNameAry,
-            AgentFileName : agentFileNameAry
-        };
-        apiCall('POST', '/api/command/', ReqObj, 'API_POST_COMMAND', refreshAfterUpdateCommand);
-    } else {
-        var ReqObj = {
-            Id : targetId, Name : $("#commandName").val(),
-            Type : comTypeInt, Script : $("#commandScript").val(),
-            ServerFileName : serverFileNameAry,
-            AgentFileName : agentFileNameAry
-        };
-        apiCall('POST', '/api/command/', ReqObj, 'API_POST_COMMAND', refreshAfterUpdateCommand);
-    }
-}
-
-function deleteCommand() {
-    let contents = [];
-    let commandList = getArray(responseData['API_GET_COMMAND'].Data.Command);
-    for (let loop = 0; commandList != null && loop < commandList.length; loop++) {
-        if ($('#cmdId' + commandList[loop].Id).prop('checked') == true) {
-            contents.push({ method: 'DELETE', url: '/api/command/' + commandList[loop].Id + '/', request: null, keystring: 'API_DELETE_COMMAND' });
+    
+    function deleteCommand() {
+        let contents = [];
+        let commandList = getArray(responseData['API_GET_COMMAND'].Data.Command);
+        for (let loop = 0; commandList != null && loop < commandList.length; loop++) {
+            if ($('#cmdId' + commandList[loop].Id).prop('checked') == true) {
+                contents.push({ method: 'DELETE', url: '/api/command/' + commandList[loop].Id + '/', request: null, keystring: 'API_DELETE_COMMAND' });
+            }
         }
+        initSequentialApiCall();
+        sequentialApiCall(contents, refreshAfterDeleteCommand);
     }
-    initSequentialApiCall();
-    sequentialApiCall(contents, refreshAfterDeleteCommand);
-}
-
-function refreshAfterUpdateCommand() {
-    if (commonErrorHandling('#command_errmsg', 'API_POST_COMMAND') != 0) {
-        return;
+    
+    function refreshAfterUpdateCommand() {
+        if (commonErrorHandling('#command_errmsg', 'API_POST_COMMAND') != 0) {
+            return;
+        }
+        closeInputModal();
+        transDisplayCommand();
     }
-    closeInputModal();
-    transDisplayCommand();
-}
-
-function refreshAfterDeleteCommand() {
-    finalSequentialApiCall();
-    if (commonErrorHandling('#command_errmsg', 'API_DELETE_COMMAND') != 0) {
-        return;
+    
+    function refreshAfterDeleteCommand() {
+        finalSequentialApiCall();
+        if (commonErrorHandling('#command_errmsg', 'API_DELETE_COMMAND') != 0) {
+            return;
+        }
+        closeInputModal();
+        transDisplayCommand();
     }
-    closeInputModal();
-    transDisplayCommand();
 }
 
 ////////////////////////////////////////////////////////////////////////////////

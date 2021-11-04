@@ -27,9 +27,10 @@ StkObject* ApiDeleteCommand::ExecuteImpl(StkObject* ReqObj, int Method, wchar_t 
 	StkStringParser::ParseInto1Param(UrlPath, L"/api/command/$/", L'$', TargetIdStr, 16);
 	int TargetId = StkPlWcsToL(TargetIdStr);
 	wchar_t CmdName[DA_MAXLEN_OF_CMDNAME];
+	int RetName = DataAccess::GetInstance()->GetCommandNameById(TargetId, CmdName);
 	int RetDel = DataAccess::GetInstance()->DeleteCommand(TargetId);
 
-	if (RetDel == 0) {
+	if (RetName == 0 && RetDel == 0) {
 		AddCodeAndMsg(TmpObj, 0, L"", L"");
 		*ResultCode = 200;
 
