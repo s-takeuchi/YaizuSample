@@ -111,6 +111,11 @@ StkObject* ApiPostCommand::ExecuteImpl(StkObject* ReqObj, int Method, wchar_t Ur
 			*ResultCode = 400;
 			return ResObj;
 		}
+		if (DataAccess::GetInstance()->GetNumOfCommand() >= DA_MAXNUM_OF_CMDRECORDS) {
+			AddCodeAndMsg(ResObj, MSG_CMDEXCEEDMAXCNT, MessageProc::GetMsgEng(MSG_CMDEXCEEDMAXCNT), MessageProc::GetMsgJpn(MSG_CMDEXCEEDMAXCNT));
+			*ResultCode = 400;
+			return ResObj;
+		}
 		Id = DataAccess::GetInstance()->GetMaxCommandId();
 		Id++;
 		DataAccess::GetInstance()->SetMaxCommandId(Id);

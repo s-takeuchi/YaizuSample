@@ -28,6 +28,7 @@
 #define MSG_FILENAMELENERR       4026
 #define MSG_FILENAMEFBDNCHAR     4027
 #define MSG_DUPCMDNAME           4028
+#define MSG_CMDEXCEEDMAXCNT      4029
 
 // Server Info
 #define MSG_NOPOLLINGINTVL       4041

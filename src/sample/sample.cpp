@@ -153,7 +153,9 @@ void InitMessageResource()
 	MessageProc::AddJpn(MSG_FILENAMEFBDNCHAR, L"ファイル名に使用禁止文字が含まれています。[\\ / : * ? \" < > | & %] およびスペース");
 	MessageProc::AddEng(MSG_DUPCMDNAME, L"The command which has same command name exists. Change the command name.");
 	MessageProc::AddJpn(MSG_DUPCMDNAME, L"すでに同名のコマンドが存在します。コマンド名を見直してください。");
-	
+	MessageProc::AddEng(MSG_CMDEXCEEDMAXCNT, L"The number of commands can be registered exceeded the limit.");
+	MessageProc::AddJpn(MSG_CMDEXCEEDMAXCNT, L"登録可能なコマンド数の上限を超えました。");
+
 	// Server Info
 	MessageProc::AddEng(MSG_NOPOLLINGINTVL, L"No \"PollingInterval\" element has been presented in the request.");
 	MessageProc::AddJpn(MSG_NOPOLLINGINTVL, L"リクエストに\"PollingInterval\"要素が存在しません。");

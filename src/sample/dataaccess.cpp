@@ -727,6 +727,11 @@ int DataAccess::GetCommand(int Id[DA_MAXNUM_OF_CMDRECORDS], wchar_t Name[DA_MAXN
 	return NumOfRec;
 }
 
+int DataAccess::GetNumOfCommand()
+{
+	return GetNumOfRecords(L"Command");
+}
+
 int DataAccess::GetCommandNameById(int Id, wchar_t Name[DA_MAXLEN_OF_CMDNAME])
 {
 	ColumnData *ColDatCmdFind[1];
