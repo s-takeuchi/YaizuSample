@@ -1271,13 +1271,17 @@ function switchCommandButton() {
 {
     let serverFileNameCount = 0;
     let agentFileNameCount = 0;
+    let serverFileNameIndex = 0;
+    let agentFileNameIndex = 0;
 
     function initServerFileNameCount() {
         serverFileNameCount = 0;
+        serverFileNameIndex = 0;
     }
 
     function initAgentFileNameCount() {
         agentFileNameCount = 0;
+        agentFileNameIndex = 0;
     }
 
     function addServerFileName() {
@@ -1285,21 +1289,22 @@ function switchCommandButton() {
             return;
         }
         $('#serverFileName-inputgroup').append(
-          '<div id="serverFileName-inputgroup-child' + serverFileNameCount + '" class="input-group">' +
-            '<select id="serverFileNameS' + serverFileNameCount + '" class="form-control">' +
+          '<div id="serverFileName-inputgroup-child' + serverFileNameIndex + '" class="input-group">' +
+            '<select id="serverFileNameS' + serverFileNameIndex + '" class="form-control">' +
               '<option></option>' +
             '</select>' +
             '<div class="input-group-append">' +
               '<button class="btn btn-outline-secondary" type="button" onclick="addServerFileName()"><span class="icon icon-plus" style="font-size:18px;"></span></button>' +
-              '<button class="btn btn-outline-secondary" type="button" onclick="removeServerFileName(' + serverFileNameCount + ')"><span class="icon icon-bin" style="font-size:18px;"></span></button>' +
+              '<button class="btn btn-outline-secondary" type="button" onclick="removeServerFileName(' + serverFileNameIndex + ')"><span class="icon icon-bin" style="font-size:18px;"></span></button>' +
             '</div>' +
           '</div>'
         );
         let fileList = getArray(responseData['API_GET_FILELIST'].Data.FileInfo);
         for (let loop = 0; loop < fileList.length; loop++) {
-            $('#serverFileNameS' + serverFileNameCount).append('<option>' + fileList[loop].Name + '</option>');
+            $('#serverFileNameS' + serverFileNameIndex).append('<option>' + fileList[loop].Name + '</option>');
         }
         serverFileNameCount++;
+        serverFileNameIndex++;
     }
 
     function removeServerFileName(target) {
@@ -1315,15 +1320,16 @@ function switchCommandButton() {
             return;
         }
         $('#agentFileName-inputgroup').append(
-          '<div id="agentFileName-inputgroup-child' + agentFileNameCount + '" class="input-group">' +
-            '<input id="agentFileNameS' + agentFileNameCount + '" class="form-control" type="text" placeholder="' + getClientMessage('COMPLACEAGT') + '"/>' +
+          '<div id="agentFileName-inputgroup-child' + agentFileNameIndex + '" class="input-group">' +
+            '<input id="agentFileNameS' + agentFileNameIndex + '" class="form-control" type="text" placeholder="' + getClientMessage('COMPLACEAGT') + '"/>' +
             '<div class="input-group-append">' +
               '<button class="btn btn-outline-secondary" type="button" onclick="addAgentFileName()"><span class="icon icon-plus" style="font-size:18px;"></span></button>' +
-              '<button class="btn btn-outline-secondary" type="button" onclick="removeAgentFileName(' + agentFileNameCount + ')"><span class="icon icon-bin" style="font-size:18px;"></span></button>' +
+              '<button class="btn btn-outline-secondary" type="button" onclick="removeAgentFileName(' + agentFileNameIndex + ')"><span class="icon icon-bin" style="font-size:18px;"></span></button>' +
             '</div>' +
           '</div>'
         );
         agentFileNameCount++;
+        agentFileNameIndex++;
     }
 
     function removeAgentFileName(target) {
