@@ -108,6 +108,8 @@ function initClientMessage() {
     addClientMessage('COMCLOSE', {'en':'Close', 'ja':'閉じる'});
     addClientMessage('COMADDCOMMAND', {'en':'Add Command', 'ja':'コマンド追加'});
     addClientMessage('COMEDITCOMMAND', {'en':'Edit Command', 'ja':'コマンド編集'});
+    addClientMessage('COMDELCOMMAND', {'en':'Delete Command', 'ja':'コマンドの削除'});
+    addClientMessage('COMDELCONFIRM', {'en':'Are you sure you want to delete the specified command(s)?', 'ja':'指定したコマンドを削除します。'});
     addClientMessage('COMMANDLABEL', {'en':'Command : ', 'ja':'コマンド : '});
 
     addClientMessage('RESULT_UPDTIME', {'en':'Execution date and time', 'ja':'実行日時'});
@@ -120,6 +122,7 @@ function initClientMessage() {
         'en':'Connection with REST API service failed. This may be caused by one of the following issues:<br>(1) REST API service cannot be started.<br>(2) REST API service is not registered as a firewall exception.<br>(3) The definition file [nginx.conf and/or sample.conf] for the host name and port number in the network connectivity settings is invalid.<br>(4) A timeout has occurred when waiting for data from REST API server.<br>',
         'ja':'REST APIサービスとの通信が失敗しました。次の要因が考えられます。<br>(1) REST APIサービスが開始されていない。<br>(2) REST APIサービスがファイアウォールに例外登録されていない。<br>(3) 接続先ホスト名およびポート番号の定義ファイル [nginx.conf , sample.conf] が不正。<br>(4) REST APIサーバからのデータ取得中にタイムアウトが発生した。<br>'
     });
+    addClientMessage('UNEXPECTEDERR', {'en':'Unexpected error occurred.', 'ja':'予期しないエラーが発生しました。'});
 }
 
 function getArray(targetObject) {
@@ -133,6 +136,22 @@ function getArray(targetObject) {
         targetArray.push(targetObject);
         return targetArray;
     }
+}
+
+function commonErrorHandling(element, errorCode) {
+    if (statusCode[errorCode] === undefined || responseData[errorCode] === undefined) {
+        displayAlertDanger(element, getClientMessage('UNEXPECTEDERR'));
+        return -1;
+    }
+    if (statusCode[errorCode] == -1 || statusCode[errorCode] == 0) {
+        displayAlertDanger(element, getClientMessage('CONNERR'));
+        return -1;
+    }
+    if (statusCode[errorCode] != 200) {
+        displayAlertDanger(element, getSvrMsg(responseData[errorCode]));
+        return -1;
+    }
+    return 0;
 }
 
 function getStatusLabel(status) {
@@ -1149,14 +1168,10 @@ function transDisplayCommand() {
 function displayCommand() {
     drowContainerFluid($('<div id="command" class="col-xs-12" style="display:block"></div>'));
 
-    if (statusCode['API_GET_COMMAND'] == -1 || statusCode['API_GET_COMMAND'] == 0) {
-        displayAlertDanger('#command', getClientMessage('CONNERR'));
+    if (commonErrorHandling('#command', 'API_GET_COMMAND') != 0 || commonErrorHandling('#command', 'API_GET_FILELIST') != 0) {
         return;
-    }
-    if (statusCode['API_GET_COMMAND'] != 200) {
-        displayAlertDanger('#command', getSvrMsg(responseData['API_GET_COMMAND']));
-        return;
-    }
+    }  
+
     let commandList = getArray(responseData['API_GET_COMMAND'].Data.Command);
     if (commandList == null) {
         $('#command').append(getClientMessage('NOCMDEXIST'));
@@ -1223,7 +1238,7 @@ function displayCommand() {
         $('#command').append(commandTableDiv);
         for (let loopclick = 0; loopclick < commandList.length; loopclick++) {
             $('#cmdprop' + commandList[loopclick].Id).on('click', function() {
-                commandSetting(commandList[loopclick].Id);
+                displayCommandSetting(commandList[loopclick].Id);
             });
         }
     }
@@ -1241,15 +1256,15 @@ function switchCommandButton() {
     clearRsCommand();
     if (userRole != 1) {
         if (cnt > 0) {
-            addRsCommand("commandSetting(-1)", "icon-plus", true);
-            addRsCommand("deleteCommand()", "icon-bin", true);
+            addRsCommand("displayCommandSetting(-1)", "icon-plus", true);
+            addRsCommand("displayDeleteCommandDlg()", "icon-bin", true);
         } else {
-            addRsCommand("commandSetting(-1)", "icon-plus", true);
+            addRsCommand("displayCommandSetting(-1)", "icon-plus", true);
             addRsCommand("", "icon-bin", false);
         }
     } else {
-        addRsCommand("commandSetting(-1)", "icon-plus", false);
-        addRsCommand("deleteCommand()", "icon-bin", false);
+        addRsCommand("", "icon-plus", false);
+        addRsCommand("", "icon-bin", false);
     }
 }
 
@@ -1319,7 +1334,7 @@ function switchCommandButton() {
         agentFileNameCount--;
     }
 
-    function commandSetting(targetId) {
+    function displayCommandSetting(targetId) {
         let commandSettingDlg = $('<div/>')
         commandSettingDlg.append('<div class="form-group"><label for="commandName">' + getClientMessage('COMNAME') + '</label><input type="text" class="form-control" id="commandName" placeholder="' + getClientMessage('COMNAME') + '"></div>');
         commandSettingDlg.append('<label for="serverFileName">' + getClientMessage('COMCOPYTOAGT') + '</label><div id="serverFileName-inputgroup"/>');
@@ -1385,6 +1400,36 @@ function switchCommandButton() {
             }
         }
     }
+
+    function displayDeleteCommandDlg() {
+        let commandInfo = getArray(responseData['API_GET_COMMAND'].Data.Command);
+        let foundFlag = false;
+        for (var loop = 0; commandInfo != null && loop < commandInfo.length; loop++) {
+            if ($('#cmdId' + commandInfo[loop].Id).prop('checked') == true) {
+                foundFlag = true;
+            }
+        }
+        if (foundFlag == false) {
+            return;
+        }
+    
+        let deleteCommandDlg = $('<div/>')
+        deleteCommandDlg.append(getClientMessage('COMDELCONFIRM'));
+        deleteCommandDlg.append('<p></p>');
+        for (let loop = 0; commandInfo != null && loop < commandInfo.length; loop++) {
+            if ($('#cmdId' + commandInfo[loop].Id).prop('checked') == true) {
+                deleteCommandDlg.append('&nbsp;&nbsp;&nbsp;' + commandInfo[loop].Name + '<br/>');
+            }
+        }
+        deleteCommandDlg.append('<p></p>');
+        deleteCommandDlg.append('<div id="command_errmsg"/>');
+        deleteCommandDlg.append('<p></p>');
+    
+        deleteCommandDlg.append('<button type="button" id="OK" class="btn btn-dark" onclick="deleteCommand()">Delete</button> ');
+        deleteCommandDlg.append('<button type="button" id="Cancel" class="btn btn-dark" onclick="closeInputModal()">Cancel</button> ');
+    
+        showInputModal('<h5 class="modal-title">' + getClientMessage('COMDELCOMMAND') + '</h5>', deleteCommandDlg);
+    }
 }
 
 function updateCommand(updateFlag, targetId) {
@@ -1415,7 +1460,7 @@ function updateCommand(updateFlag, targetId) {
             ServerFileName : serverFileNameAry,
             AgentFileName : agentFileNameAry
         };
-        apiCall('POST', '/api/command/', ReqObj, 'API_POST_COMMAND', refreshAfterAddCommand);
+        apiCall('POST', '/api/command/', ReqObj, 'API_POST_COMMAND', refreshAfterUpdateCommand);
     } else {
         var ReqObj = {
             Id : targetId, Name : $("#commandName").val(),
@@ -1439,28 +1484,8 @@ function deleteCommand() {
     sequentialApiCall(contents, refreshAfterDeleteCommand);
 }
 
-function refreshAfterAddCommand() {
-    $('#command .alert').remove();
-    if (statusCode['API_POST_COMMAND'] == -1 || statusCode['API_POST_COMMAND'] == 0) {
-        displayAlertDanger('#command_errmsg', getClientMessage('CONNERR'));
-        return;
-    }
-    if (statusCode['API_POST_COMMAND'] != 200) {
-        displayAlertDanger('#command_errmsg', getSvrMsg(responseData['API_POST_COMMAND']));
-        return;
-    }
-    closeInputModal();
-    transDisplayCommand();
-}
-
 function refreshAfterUpdateCommand() {
-    $('#command .alert').remove();
-    if (statusCode['API_POST_COMMAND'] == -1 || statusCode['API_POST_COMMAND'] == 0) {
-        displayAlertDanger('#command_errmsg', getClientMessage('CONNERR'));
-        return;
-    }
-    if (statusCode['API_POST_COMMAND'] != 200) {
-        displayAlertDanger('#command_errmsg', getSvrMsg(responseData['API_POST_COMMAND']));
+    if (commonErrorHandling('#command_errmsg', 'API_POST_COMMAND') != 0) {
         return;
     }
     closeInputModal();
@@ -1469,13 +1494,7 @@ function refreshAfterUpdateCommand() {
 
 function refreshAfterDeleteCommand() {
     finalSequentialApiCall();
-    $('#command .alert').remove();
-    if (statusCode['API_DELETE_COMMAND'] == -1 || statusCode['API_DELETE_COMMAND'] == 0) {
-        displayAlertDanger('#command_errmsg', getClientMessage('CONNERR'));
-        return;
-    }
-    if (statusCode['API_DELETE_COMMAND'] != 200) {
-        displayAlertDanger('#command_errmsg', getSvrMsg(responseData['API_DELETE_COMMAND']));
+    if (commonErrorHandling('#command_errmsg', 'API_DELETE_COMMAND') != 0) {
         return;
     }
     closeInputModal();

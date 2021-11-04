@@ -880,6 +880,8 @@ int DataAccess::DeleteCommand(int Id)
 		UnlockTable(L"Command");
 	} else {
 		delete RecDatCmdFind;
+		UnlockTable(L"AgentInfo");
+		UnlockTable(L"Command");
 		return -1;
 	}
 
