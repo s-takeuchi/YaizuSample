@@ -1376,6 +1376,9 @@ function switchCommandButton() {
         addAgentFileName();
     
         var commandList = getArray(responseData['API_GET_COMMAND'].Data.Command);
+        if (commandList == null) {
+            return;
+        }
         for (loop = 0; loop < commandList.length; loop++) {
             if (commandList[loop].Id == targetId) {
                 var typeStr = '';

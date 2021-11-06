@@ -72,9 +72,10 @@ StkObject* ApiGetCommandForStatus::ExecuteImpl(StkObject* ReqObj, int Method, wc
 			char Script[DA_MAXNUM_OF_CMDRECORDS][DA_MAXLEN_OF_CMDSCRIPT];
 			wchar_t ServerFileName[DA_MAXNUM_OF_CMDRECORDS][5][DA_MAXLEN_OF_SERVERFILENAME];
 			wchar_t AgentFileName[DA_MAXNUM_OF_CMDRECORDS][5][DA_MAXLEN_OF_AGENTFILENAME];
+			int Timeout[DA_MAXNUM_OF_CMDRECORDS];
 			wchar_t WScript[DA_MAXLEN_OF_CMDSCRIPT / 2] = L"";
 			wchar_t* Ptr = WScript;
-			int ResCmdCount = DataAccess::GetInstance()->GetCommand(Id, Name, Type, Script, ServerFileName, AgentFileName);
+			int ResCmdCount = DataAccess::GetInstance()->GetCommand(Id, Name, Type, Script, ServerFileName, AgentFileName, Timeout);
 
 			wchar_t AgtName[DA_MAXNUM_OF_AGTRECORDS][DA_MAXLEN_OF_AGTNAME];
 			int Status[DA_MAXNUM_OF_AGTRECORDS];
@@ -146,6 +147,7 @@ StkObject* ApiGetCommandForStatus::ExecuteImpl(StkObject* ReqObj, int Method, wc
 					for (int LoopAgt = 0; LoopAgt < 5; LoopAgt++) {
 						CommandObj->AppendChildElement(new StkObject(L"AgentFileName", AgentFileName[FoundIndex][LoopAgt]));
 					}
+					CommandObj->AppendChildElement(new StkObject(L"Timeout", Timeout[FoundIndex]));
 					DatObj->AppendChildElement(CommandObj);
 				}
 			}

@@ -23,8 +23,9 @@ StkObject* ApiGetCommand::ExecuteImpl(StkObject* ReqObj, int Method, wchar_t Url
 	char Script[DA_MAXNUM_OF_CMDRECORDS][DA_MAXLEN_OF_CMDSCRIPT];
 	wchar_t ServerFileName[DA_MAXNUM_OF_CMDRECORDS][5][DA_MAXLEN_OF_SERVERFILENAME];
 	wchar_t AgentFileName[DA_MAXNUM_OF_CMDRECORDS][5][DA_MAXLEN_OF_AGENTFILENAME];
+	int Timeout[DA_MAXNUM_OF_CMDRECORDS];
 
-	int ResCount = DataAccess::GetInstance()->GetCommand(Id, Name, Type, Script, ServerFileName, AgentFileName);
+	int ResCount = DataAccess::GetInstance()->GetCommand(Id, Name, Type, Script, ServerFileName, AgentFileName, Timeout);
 	StkObject* TmpObjD = new StkObject(L"Data");
 	for (int Loop = 0; Loop < ResCount; Loop++) {
 		StkObject* CmdObj = new StkObject(L"Command");
@@ -38,6 +39,7 @@ StkObject* ApiGetCommand::ExecuteImpl(StkObject* ReqObj, int Method, wchar_t Url
 		for (int LoopAgt = 0; LoopAgt < 5; LoopAgt++) {
 			CmdObj->AppendChildElement(new StkObject(L"AgentFileName", AgentFileName[Loop][LoopAgt]));
 		}
+		CmdObj->AppendChildElement(new StkObject(L"Timeout", Timeout[Loop]));
 		TmpObjD->AppendChildElement(CmdObj);
 	}
 	AddCodeAndMsg(TmpObj, 0, L"", L"");

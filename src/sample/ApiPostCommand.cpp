@@ -52,6 +52,7 @@ StkObject* ApiPostCommand::ExecuteImpl(StkObject* ReqObj, int Method, wchar_t Ur
 	wchar_t AgentFileName[5][DA_MAXLEN_OF_SERVERFILENAME] = { L"", L"", L"", L"", L"" };
 	int ServerFileNameCnt = 0;
 	int AgentFileNameCnt = 0;
+	int Timeout = 0;
 	while (CurObj) {
 		if (StkPlWcsCmp(CurObj->GetName(), L"Id") == 0) {
 			Id = CurObj->GetIntValue();
@@ -101,6 +102,8 @@ StkObject* ApiPostCommand::ExecuteImpl(StkObject* ReqObj, int Method, wchar_t Ur
 				StkPlWcsCpy(AgentFileName[AgentFileNameCnt], DA_MAXLEN_OF_AGENTFILENAME, CurObj->GetStringValue());
 				AgentFileNameCnt++;
 			}
+		} else if (StkPlWcsCmp(CurObj->GetName(), L"Timeout") == 0) {
+			Timeout = CurObj->GetIntValue();
 		}
 		CurObj = CurObj->GetNext();
 	}
@@ -141,7 +144,7 @@ StkObject* ApiPostCommand::ExecuteImpl(StkObject* ReqObj, int Method, wchar_t Ur
 		*ResultCode = 400;
 		return ResObj;
 	}
-	int RetSetCom = DataAccess::GetInstance()->SetCommand(Id, Name, Type, (char*)Script, ServerFileName, AgentFileName);
+	int RetSetCom = DataAccess::GetInstance()->SetCommand(Id, Name, Type, (char*)Script, ServerFileName, AgentFileName, Timeout);
 	wchar_t LogMsg[256] = L"";
 	wchar_t LogMsgJa[256] = L"";
 	if (RetSetCom == 0) {
