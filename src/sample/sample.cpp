@@ -141,6 +141,8 @@ void InitMessageResource()
 	// Command
 	MessageProc::AddEng(MSG_COMMANDNOTEXIST, L"The specified command does not exist.");
 	MessageProc::AddJpn(MSG_COMMANDNOTEXIST, L"指定したコマンドは存在しません。");
+	MessageProc::AddEng(MSG_CMDINVALIDTIMEOUT, L"An invalid timeout is specified. Specify in scope of 1 to 28800.");
+	MessageProc::AddJpn(MSG_CMDINVALIDTIMEOUT, L"タイムアウト値が不正です。1から28800 の範囲で指定可能です。");
 	MessageProc::AddEng(MSG_NOCOMMANDNAME, L"No command name has been specified.");
 	MessageProc::AddJpn(MSG_NOCOMMANDNAME, L"コマンド名が指定されていません。");
 	MessageProc::AddEng(MSG_COMNAMELENGTHERR, L"Length of command name exceeds the limitation. Maximum 31 characters can be specified as a command name.");

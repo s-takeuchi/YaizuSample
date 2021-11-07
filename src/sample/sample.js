@@ -99,6 +99,7 @@ function initClientMessage() {
     addClientMessage('COMCOPYTOAGT', {'en':'File To Be Copied To Agent', 'ja':'エージェントにコピーされるファイル'});
     addClientMessage('COMTYPE', {'en':'Command Type', 'ja':'コマンド種別'});
     addClientMessage('COMSCRIPT', {'en':'Script', 'ja':'スクリプト'});
+    addClientMessage('COMTIMEOUT', {'en':'Script Timeout Intereval (Sec)', 'ja':'スクリプトのタイムアウト時間 (秒)'});
     addClientMessage('COMCOPYTOSVR', {'en':'File To Be Copied To Server (Only file name. Do not specify directory path.)', 'ja':'サーバーにコピーされるファイル (ファイル名のみ)'});
     addClientMessage('COMPLACEAGT', {'en':'Name of file Placed In Agent', 'ja':'エージェントに配置されたファイルの名称'});
     addClientMessage('COMADD', {'en':'Add', 'ja':'追加'});
@@ -1347,6 +1348,7 @@ function switchCommandButton() {
         commandSettingDlg.append('<p></p>');
         commandSettingDlg.append('<div class="form-group"><label for="commandType">' + getClientMessage('COMTYPE') + '</label><select class="form-control" id="commandType"><option>Linux /usr/bin/bash</option><option>Windows cmd.exe /c</option></select></div>');
         commandSettingDlg.append('<div class="form-group"><label for="commandScript">' + getClientMessage('COMSCRIPT') + '</label><textarea class="form-control" id="commandScript" rows="3" style="margin-top: 0px; margin-bottom: 0px; height: 185px;"></textarea></div>');
+        commandSettingDlg.append('<div class="form-group"><label for="timeout">' + getClientMessage('COMTIMEOUT') + '</label><input type="text" class="form-control" id="timeout"/></div>');
         commandSettingDlg.append('<label for="agentFileName">' + getClientMessage('COMCOPYTOSVR') + '</label><div id="agentFileName-inputgroup"/>');
         commandSettingDlg.append('<p></p>');
         commandSettingDlg.append('<div id="command_errmsg"/>');
@@ -1370,6 +1372,9 @@ function switchCommandButton() {
             titleStr = getClientMessage('COMEDITCOMMAND');
         }
         showInputModal('<h5 class="modal-title">' + titleStr + '</h5>', commandSettingDlg);
+
+        $('#timeout').val('60');
+
         initServerFileNameCount();
         initAgentFileNameCount();
         addServerFileName();
@@ -1398,6 +1403,7 @@ function switchCommandButton() {
                 }
                 $('#commandType').val(typeStr);
                 $('#commandScript').val(commandList[loop].Script);
+                $('#timeout').val(commandList[loop].Timeout);
                 for (let loopAgt = 0; loopAgt < commandList[loop].AgentFileName.length; loopAgt++) {
                     if (commandList[loop].AgentFileName[loopAgt] !== '') {
                         if (loopAgt >= 1) {
@@ -1444,13 +1450,18 @@ function switchCommandButton() {
         if (updateFlag == true && targetId == -1) {
             return;
         }
-        var comType = $("#commandType").val();
-        var comTypeInt = -1;
+        let comType = $("#commandType").val();
+        let comTypeInt = -1;
         if (comType === 'Linux /usr/bin/bash') {
             comTypeInt = 0;
         } else if (comType === 'Windows cmd.exe /c') {
             comTypeInt = 1;
         }
+        let timeout = parseInt($("#timeout").val());
+        if (timeout == null || isNaN(timeout)) {
+            timeout = 0;
+        }
+
         // Padding of file array : BEGIN
         let serverFileNameAry = ['', '', '', '', ''];
         let agentFileNameAry = ['', '', '', '', ''];
@@ -1471,20 +1482,26 @@ function switchCommandButton() {
             }
         }
         // Padding of file array : END
+
         if (updateFlag == false) {
             var ReqObj = {
                 Name : $("#commandName").val(),
-                Type : comTypeInt, Script : $("#commandScript").val(),
+                Type : comTypeInt,
+                Script : $("#commandScript").val(),
                 ServerFileName : serverFileNameAry,
-                AgentFileName : agentFileNameAry
+                AgentFileName : agentFileNameAry,
+                Timeout : timeout
             };
             apiCall('POST', '/api/command/', ReqObj, 'API_POST_COMMAND', refreshAfterUpdateCommand);
         } else {
             var ReqObj = {
-                Id : targetId, Name : $("#commandName").val(),
-                Type : comTypeInt, Script : $("#commandScript").val(),
+                Id : targetId,
+                Name : $("#commandName").val(),
+                Type : comTypeInt,
+                Script : $("#commandScript").val(),
                 ServerFileName : serverFileNameAry,
-                AgentFileName : agentFileNameAry
+                AgentFileName : agentFileNameAry,
+                Timeout : timeout
             };
             apiCall('POST', '/api/command/', ReqObj, 'API_POST_COMMAND', refreshAfterUpdateCommand);
         }

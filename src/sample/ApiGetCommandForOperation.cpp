@@ -88,11 +88,14 @@ StkObject* ApiGetCommandForOperation::ExecuteImpl(StkObject* ReqObj, int Method,
 					CommandObj->AppendChildElement(new StkObject(L"Type", Type[Loop]));
 					CommandObj->AppendChildElement(new StkObject(L"Script", WScript));
 					for (int LoopSvr = 0; LoopSvr < 5; LoopSvr++) {
+						size_t FileSize = 0;
 						StkObject* SvrFileObj = new StkObject(L"ServerFile");
 						SvrFileObj->AppendChildElement(new StkObject(L"ServerFileName", ServerFileName[Loop][LoopSvr]));
-						wchar_t TargetFullPath[FILENAME_MAX];
-						GetFullPathFromFileName(TargetFullPath, ServerFileName[Loop][LoopSvr]);
-						size_t FileSize = StkPlGetFileSize(TargetFullPath);
+						if (StkPlWcsCmp(ServerFileName[Loop][LoopSvr], L"") != 0) {
+							wchar_t TargetFullPath[FILENAME_MAX];
+							GetFullPathFromFileName(TargetFullPath, ServerFileName[Loop][LoopSvr]);
+							FileSize = StkPlGetFileSize(TargetFullPath);
+						}
 						SvrFileObj->AppendChildElement(new StkObject(L"ServerFileSize", (int)FileSize));
 						CommandObj->AppendChildElement(SvrFileObj);
 					}

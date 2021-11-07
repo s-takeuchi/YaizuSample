@@ -144,6 +144,11 @@ StkObject* ApiPostCommand::ExecuteImpl(StkObject* ReqObj, int Method, wchar_t Ur
 		*ResultCode = 400;
 		return ResObj;
 	}
+	if (Timeout < 1 || Timeout > 28800) {
+		AddCodeAndMsg(ResObj, MSG_CMDINVALIDTIMEOUT, MessageProc::GetMsgEng(MSG_CMDINVALIDTIMEOUT), MessageProc::GetMsgJpn(MSG_CMDINVALIDTIMEOUT));
+		*ResultCode = 400;
+		return ResObj;
+	}
 	int RetSetCom = DataAccess::GetInstance()->SetCommand(Id, Name, Type, (char*)Script, ServerFileName, AgentFileName, Timeout);
 	wchar_t LogMsg[256] = L"";
 	wchar_t LogMsgJa[256] = L"";

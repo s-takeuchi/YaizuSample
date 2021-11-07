@@ -273,6 +273,7 @@ int CommonProcess(StkObject* CommandSearch, char TmpTime[64], StkWebAppSend* Snd
 			int TmpServerFileSize[5] = {-1, -1, -1, -1, -1};
 			int TmpServerFileNameCount = 0;
 			int TmpAgentFileNameCount = 0;
+			int TmpTimeout = 0;
 			StkObject* ScriptSearch = CommandSearch->GetFirstChildElement();
 			while (ScriptSearch) {
 				if (StkPlWcsCmp(ScriptSearch->GetName(), L"Script") == 0) {
@@ -305,6 +306,8 @@ int CommonProcess(StkObject* CommandSearch, char TmpTime[64], StkWebAppSend* Snd
 					}
 					StkPlConvWideCharToUtf8(TmpAgentFileName[TmpAgentFileNameCount], FILENAME_MAX, ScriptSearch->GetStringValue());
 					TmpAgentFileNameCount++;
+				} else if (StkPlWcsCmp(ScriptSearch->GetName(), L"Timeout") == 0) {
+					TmpTimeout = ScriptSearch->GetIntValue();
 				}
 				ScriptSearch = ScriptSearch->GetNext();
 			}
@@ -317,8 +320,8 @@ int CommonProcess(StkObject* CommandSearch, char TmpTime[64], StkWebAppSend* Snd
 
 			// Get and save file
 			for (int Loop = 0; Loop < TmpServerFileNameCount; Loop++) {
-				StkPlPrintf("ServerFileName=%s, ", TmpServerFileName != NULL ? TmpServerFileName[Loop] : "null");
-				StkPlPrintf("ServerFileSize=%d\r\n", TmpServerFileSize);
+				StkPlPrintf("ServerFileName=%s, ", TmpServerFileName[Loop] != NULL ? TmpServerFileName[Loop] : "null");
+				StkPlPrintf("ServerFileSize=%d\r\n", TmpServerFileSize[Loop]);
 				if (TmpServerFileName != NULL && TmpServerFileSize >= 0 && StkPlStrCmp(TmpServerFileName[Loop], "") != 0) {
 					if (GetAndSaveFile(TmpServerFileName[Loop], TmpServerFileSize[Loop], SndObj) != 200) {
 						return RESULTCODE_ERROR_SERVERFILE;
@@ -365,15 +368,15 @@ int CommonProcess(StkObject* CommandSearch, char TmpTime[64], StkWebAppSend* Snd
 
 				if (TmpType == 0) {
 					if (OperationFlag) {
-						ReturnCode = StkPlSystem("/usr/bin/bash -vc \"./aaa-operation.sh >& aaa-operation.out\"");
+						ReturnCode = StkPlExec(L"/bin/bash -c \"./aaa-operation.sh >& aaa-operation.out\"", TmpTimeout * 1000);
 					} else {
-						ReturnCode = StkPlSystem("/usr/bin/bash -vc \"./aaa-status.sh >& aaa-status.out\"");
+						ReturnCode = StkPlExec(L"/bin/bash -c \"./aaa-status.sh >& aaa-status.out\"", TmpTimeout * 1000);
 					}
 				} else if (TmpType == 1) {
 					if (OperationFlag) {
-						ReturnCode = StkPlSystem("cmd /c aaa-operation.bat > aaa-operation.out");
+						ReturnCode = StkPlExec(L"c:\\Windows\\System32\\cmd /c \"aaa-operation.bat > aaa-operation.out\"", TmpTimeout * 1000);
 					} else {
-						ReturnCode = StkPlSystem("cmd /c aaa-status.bat > aaa-status.out");
+						ReturnCode = StkPlExec(L"c:\\Windows\\System32\\cmd /c \"aaa-status.bat > aaa-status.out\"", TmpTimeout * 1000);
 					}
 				}
 			} else {
