@@ -38,6 +38,7 @@ SERVICE_TABLE_ENTRY ServiceTable[] = {
 #define RESULTCODE_ERROR_SERVERFILE      -990
 #define RESULTCODE_ERROR_AGENTFILE       -991
 #define RESULTCODE_ERROR_PLATFORM        -992
+#define RESULTCODE_ERROR_TIMEOUT         -993
 #define RESULTCODE_ERROR_INVALIDAGTDIR   -994
 #define RESULTCODE_ERROR_CMDRESULT       -995
 
@@ -256,6 +257,7 @@ int CommonProcess(StkObject* CommandSearch, char TmpTime[64], StkWebAppSend* Snd
 		return RESULTCODE_ERROR_INVALIDAGTDIR;
 	}
 	int ReturnCode = RESULTCODE_NOSCRIPT;
+	int ResultFlag = 0;
 	while (CommandSearch) {
 		if (StkPlWcsCmp(CommandSearch->GetName(), L"Data") == 0) {
 			CommandSearch = CommandSearch->GetFirstChildElement();
@@ -343,7 +345,7 @@ int CommonProcess(StkObject* CommandSearch, char TmpTime[64], StkWebAppSend* Snd
 					TmpScript = StkPlCreateUtf8FromWideChar(TmpScriptWc);
 				}
 			}
-			// Generate script
+			// Generate and execute script
 			if (TmpScript != NULL && StkPlStrCmp(TmpScript, "") != 0 && (TmpType == 0 || TmpType == 1)) {
 				StkPlPrintf("Execute script:\r\n");
 				if (TmpType != AGT_PLATFORM) {
@@ -368,15 +370,15 @@ int CommonProcess(StkObject* CommandSearch, char TmpTime[64], StkWebAppSend* Snd
 
 				if (TmpType == 0) {
 					if (OperationFlag) {
-						ReturnCode = StkPlExec(L"/bin/bash -c \"./aaa-operation.sh >& aaa-operation.out\"", TmpTimeout * 1000);
+						ReturnCode = StkPlExec(L"/bin/bash -c \"./aaa-operation.sh >& aaa-operation.out\"", TmpTimeout * 1000, &ResultFlag);
 					} else {
-						ReturnCode = StkPlExec(L"/bin/bash -c \"./aaa-status.sh >& aaa-status.out\"", TmpTimeout * 1000);
+						ReturnCode = StkPlExec(L"/bin/bash -c \"./aaa-status.sh >& aaa-status.out\"", TmpTimeout * 1000, &ResultFlag);
 					}
 				} else if (TmpType == 1) {
 					if (OperationFlag) {
-						ReturnCode = StkPlExec(L"c:\\Windows\\System32\\cmd /c \"aaa-operation.bat > aaa-operation.out\"", TmpTimeout * 1000);
+						ReturnCode = StkPlExec(L"c:\\Windows\\System32\\cmd /c \"aaa-operation.bat > aaa-operation.out\"", TmpTimeout * 1000, &ResultFlag);
 					} else {
-						ReturnCode = StkPlExec(L"c:\\Windows\\System32\\cmd /c \"aaa-status.bat > aaa-status.out\"", TmpTimeout * 1000);
+						ReturnCode = StkPlExec(L"c:\\Windows\\System32\\cmd /c \"aaa-status.bat > aaa-status.out\"", TmpTimeout * 1000, &ResultFlag);
 					}
 				}
 			} else {
@@ -394,8 +396,8 @@ int CommonProcess(StkObject* CommandSearch, char TmpTime[64], StkWebAppSend* Snd
 				}
 			}
 
+			// Load and post command result
 			if (TmpScript != NULL && StkPlStrCmp(TmpScript, "") != 0) {
-				// Load and post command result
 				char CmdResultFile[FILENAME_MAX] = "";
 				if (OperationFlag) {
 					StkPlStrCpy(CmdResultFile, FILENAME_MAX, "aaa-operation.out");
@@ -407,6 +409,19 @@ int CommonProcess(StkObject* CommandSearch, char TmpTime[64], StkWebAppSend* Snd
 					return RESULTCODE_ERROR_CMDRESULT;
 				}
 			}
+
+			// Timeout error
+			if (ReturnCode == -2 && ResultFlag != 0) {
+				delete TmpScript;
+				return RESULTCODE_ERROR_TIMEOUT;
+			}
+
+			// Internal error
+			if (ReturnCode == -1 && ResultFlag != 0) {
+				delete TmpScript;
+				return RESULTCODE_ERROR_CMDRESULT;
+			}
+
 			delete TmpScript;
 		}
 		CommandSearch = CommandSearch->GetNext();

@@ -233,7 +233,7 @@ void TestNewCommand(StkWebAppSend* StkWebAppSendObj)
 	{
 		int ResultCode = 0;
 		int ErrCode = 0;
-		StkObject* ReqObj = StkObject::CreateObjectFromJson(L"{\"Name\" : \"hello\", \"Type\" : 0, \"Script\" : \"echo hello, world!!\", \"ServerFileName\" : \"\", \"AgentFileName\" : \"\"}", &ErrCode);
+		StkObject* ReqObj = StkObject::CreateObjectFromJson(L"{\"Name\" : \"hello\", \"Type\" : 0, \"Script\" : \"echo hello, world!!\", \"ServerFileName\" : \"\", \"AgentFileName\" : \"\", \"Timeout\" : 30}", &ErrCode);
 		StkObject* ResObj = StkWebAppSendObj->SendRequestRecvResponse(StkWebAppSend::STKWEBAPP_METHOD_POST, "/api/command/", ReqObj, &ResultCode);
 		if (ResultCode != 200) {
 			StkPlPrintf("[NG]\n");

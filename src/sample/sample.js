@@ -74,6 +74,7 @@ function initClientMessage() {
     addClientMessage('RESCODE-990', {'en':'SFILE : Server file handling error.\r\n', 'ja':'SFILE : サーバファイルハンドリングエラー\r\n'});
     addClientMessage('RESCODE-991', {'en':'AFILE : Agent file handling error.\r\n', 'ja':'AFILE : エージェントファイルハンドリングエラー\r\n'});
     addClientMessage('RESCODE-992', {'en':'PLATF : Platform error.\r\n', 'ja':'PLATF : プラットフォームエラー\r\n'});
+    addClientMessage('RESCODE-993', {'en':'TIMEO : Timeout error.\r\n', 'ja':'TIMEO : タイムアウトエラー\r\n'});
     addClientMessage('RESCODE-994', {'en':'AGDIR : Invalid agent directory.\r\n', 'ja':'AGDIR : エージェントディレクトリが不正\r\n'});
     addClientMessage('RESCODE-995', {'en':'CMRLT : Command execution result handling error.\r\n', 'ja' : 'CMRLT : コマンド実行結果ハンドリングエラー\r\n'});
 
@@ -167,6 +168,7 @@ function getStatusLabel(status) {
         case -990: return 'SFILE';
         case -991: return 'AFILE';
         case -992: return 'PLATF';
+        case -993: return 'TIMEO';
         case -994: return 'AGDIR';
         case -995: return 'CMRLT';
         case 0: return 'SUCCS';
@@ -186,6 +188,7 @@ function getStatusDetailLabel(status) {
         case -990: return getClientMessage('RESCODE-990');
         case -991: return getClientMessage('RESCODE-991');
         case -992: return getClientMessage('RESCODE-992');
+        case -993: return getClientMessage('RESCODE-993');
         case -994: return getClientMessage('RESCODE-994');
         case -995: return getClientMessage('RESCODE-995');
         case 0: return getClientMessage('RESCODE_SUC');
@@ -329,6 +332,7 @@ function getTooltipStr() {
                      getClientMessage('RESCODE-990') +
                      getClientMessage('RESCODE-991') +
                      getClientMessage('RESCODE-992') +
+                     getClientMessage('RESCODE-993') +
                      getClientMessage('RESCODE-994') +
                      getClientMessage('RESCODE-995');
     return tooltipStr;
