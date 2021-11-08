@@ -176,7 +176,8 @@ Get command information. All of commands are acquired.<br/>
         "Type" : 0,
         "Script" : "echo hello!!",
         "ServerFileName" : ["aaa.dat", "bbb.dat", "ccc.dat", "ddd.dat", "eee.dat"],
-        "AgentFileName" : ["ppp.dat", "qqq.dat", "rrr.dat", "sss.dat", "ttt.dat"]
+        "AgentFileName" : ["ppp.dat", "qqq.dat", "rrr.dat", "sss.dat", "ttt.dat"],
+        "Timeout" : 30
       }
     ]
   }
@@ -194,6 +195,7 @@ Get command information. All of commands are acquired.<br/>
 <tr><td>Script</td><td>String</td><td>Command script</td></tr>
 <tr><td>ServerFileName</td><td>String</td><td>File name (not path) copied to agent. Five file names can be obtained.</td></tr>
 <tr><td>AgentFileName</td><td>String</td><td>File name (not path) copied to server. Five file names can be obtained.</td></tr>
+<tr><td>Timeout</td><td>Integer</td><td>Script execution timeout interval in second.</td></tr>
 </table><br/>
 </li>
 </ul>
@@ -212,7 +214,8 @@ Configure command information.<br/>
   "Type" : 0,
   "Script" : "echo hello!!",
   "ServerFileName" : ["aaa.dat", "bbb.dat", "ccc.dat", "ddd.dat", "eee.dat"],
-  "AgentFileName" : ["ppp.dat", "qqq.dat", "rrr.dat", "sss.dat", "ttt.dat"]
+  "AgentFileName" : ["ppp.dat", "qqq.dat", "rrr.dat", "sss.dat", "ttt.dat"],
+  "Timeout" : 30
 }
 </pre>
 <table class="tblstyle">
@@ -222,6 +225,7 @@ Configure command information.<br/>
 <tr><td>Script</td><td>String</td><td>Command script</td></tr>
 <tr><td>ServerFileName</td><td>String</td><td>File name (not path) copied to agent. Maximum five file names can be specified.</td></tr>
 <tr><td>AgentFileName</td><td>String</td><td>File name (not path) copied to server. Maximum five file names can be specified.</td></tr>
+<tr><td>Timeout</td><td>Integer</td><td>Script execution timeout interval in second. Value in scope of 1-28800 can be specified.</td></tr>
 </table><br/>
 </li>
 <li>Response
@@ -238,6 +242,7 @@ Configure command information.<br/>
                                      4206:Authorization error(HTTP status code=401),
                                      4204:Access Right error(HTTP status code=403),
                                      4203:No request specified(HTTP status code=400),
+                                     4021:An invalid timeout is specified(HTTP status code=400),
                                      4024:Length of command name is invalid(HTTP status code=400),
                                      4025:Length of script is invalid(HTTP status code=400),
                                      4026:Length of file name is invalid(HTTP status code=400),
@@ -312,7 +317,8 @@ Get command information for status acquisition<br/>
         {"ServerFileName" : "ddd.dat", "ServerFileSize" : 65535,},
         {"ServerFileName" : "eee.dat", "ServerFileSize" : 65535,}
       ],
-      "AgentFileName" : ["ppp.dat", "qqq.dat", "rrr.dat", "sss.dat", "ttt.dat"]
+      "AgentFileName" : ["ppp.dat", "qqq.dat", "rrr.dat", "sss.dat", "ttt.dat"],
+      "Timeout" : 30
     }
   }
 }
@@ -335,6 +341,7 @@ Get command information for status acquisition<br/>
 <tr><td>ServerFileName</td><td>String</td><td>File name (not path) copied to agent.</td></tr>
 <tr><td>ServerFileSize</td><td>Integer</td><td>File size of the specified file name as "ServerFileName".</td></tr>
 <tr><td>AgentFileName</td><td>String</td><td>File name (not path) copied to server. Five file names can be obtained.</td></tr>
+<tr><td>Timeout</td><td>Integer</td><td>Script execution timeout interval in second.</td></tr>
 </table><br/>
 </li>
 </ul>
@@ -368,7 +375,8 @@ Get command information for operation<br/>
         {"ServerFileName" : "ddd.dat", "ServerFileSize" : 65535,},
         {"ServerFileName" : "eee.dat", "ServerFileSize" : 65535,}
       ],
-      "AgentFileName" : ["ppp.dat", "qqq.dat", "rrr.dat", "sss.dat", "ttt.dat"]
+      "AgentFileName" : ["ppp.dat", "qqq.dat", "rrr.dat", "sss.dat", "ttt.dat"],
+      "Timeout" : 30
     }
   }
 }
@@ -391,6 +399,7 @@ Get command information for operation<br/>
 <tr><td>ServerFileName</td><td>String</td><td>File name (not path) copied to agent.</td></tr>
 <tr><td>ServerFileSize</td><td>Integer</td><td>File size of the specified file name as "ServerFileName".</td></tr>
 <tr><td>AgentFileName</td><td>String</td><td>File name (not path) copied to server. Five file names can be obtained.</td></tr>
+<tr><td>Timeout</td><td>Integer</td><td>Script execution timeout interval in second.</td></tr>
 </table><br/>
 </li>
 </ul>
