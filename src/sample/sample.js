@@ -83,6 +83,7 @@ function initClientMessage() {
     addClientMessage('SIPOLLINTVL', {'en':'Polling interval : ', 'ja':'ポーリング間隔 : '});
     addClientMessage('SISTACQINTVL', {'en':'Status acquisition interval : ', 'ja':'状態取得間隔 : '});
     addClientMessage('SIUPDATEBTN', {'en':'Update', 'ja':'更新'});
+    addClientMessage('SICLOSE', {'en':'Close', 'ja':'閉じる'});
     addClientMessage('SIUPDATED', {'en':'The server information has been updated.', 'ja':'サーバー情報が更新されました。'});
     addClientMessage('SIBUILDTIME', {'en':'Service build time : ', 'ja':'サービスビルド時刻 : '});
     addClientMessage('SIPHYMEM', {'en':'Used physical memory size in KB : ', 'ja':'使用物理メモリサイズ(KB) : '});
@@ -711,36 +712,30 @@ function transDisplayServerInfo() {
 }
 
 function displayServerInfo() {
-    drowContainer($('<div id="svrinfo" class="row col-xs-12" style="display:block"></div>'));
+    let serverInfoDlg = $('<div/>')
+    showInputModal('<h5 class="modal-title">' + getClientMessage('SERVERINFO') + '</h5>', serverInfoDlg);
 
-    $('#svrinfo').append('<h2>' + getClientMessage('SERVERINFO') + '</h2>');
     if (statusCode['API_GET_SVRINFO'] == -1 || statusCode['API_GET_SVRINFO'] == 0) {
-        displayAlertDanger('#svrinfo', getClientMessage('CONNERR'));
+        displayAlertDanger(serverInfoDlg, getClientMessage('CONNERR'));
         return;
     }
     if (statusCode['API_GET_SVRINFO'] != 200) {
-        displayAlertDanger('#svrinfo', getSvrMsg(responseData['API_GET_SVRINFO']));
+        displayAlertDanger(serverInfoDlg, getSvrMsg(responseData['API_GET_SVRINFO']));
         return;
     }
 
-    if (svrinfo_msg !== '') {
-        displayAlertSuccess('#svrinfo', svrinfo_msg);
-        svrinfo_msg = '';
-    }
-
-    $('#svrinfo').append('<p>' + getClientMessage('SISVRVERSION') + responseData['API_GET_SVRINFO'].Data.ServerInfo.Version + '</p>');
+    serverInfoDlg.append('<p>' + getClientMessage('SISVRVERSION') + responseData['API_GET_SVRINFO'].Data.ServerInfo.Version + '</p>');
 
     let buildTimeStr = responseData['API_GET_SVRINFO'].Data.ServerInfo.BuildTime;
-    $('#svrinfo').append('<p>' + getClientMessage('SIBUILDTIME') + buildTimeStr + '</p>');
+    serverInfoDlg.append('<p>' + getClientMessage('SIBUILDTIME') + buildTimeStr + '</p>');
 
     let StartTimeStr = getDateAndTimeStr(responseData['API_GET_SVRINFO'].Data.ServerInfo.StartTime);
-    $('#svrinfo').append('<p>' + getClientMessage('SISTARTTIME') + StartTimeStr + '</p>');
+    serverInfoDlg.append('<p>' + getClientMessage('SISTARTTIME') + StartTimeStr + '</p>');
 
     let PhyMem = responseData['API_GET_SVRINFO'].Data.ServerInfo.UsedPhysicalMemory;
     let VirMem = responseData['API_GET_SVRINFO'].Data.ServerInfo.UsedVirtualMemory;
-    $('#svrinfo').append('<p>' + getClientMessage('SIPHYMEM') + PhyMem + '</p>');
-    $('#svrinfo').append('<p>' + getClientMessage('SIVIRMEM') + VirMem + '</p>');
-
+    serverInfoDlg.append('<p>' + getClientMessage('SIPHYMEM') + PhyMem + '</p>');
+    serverInfoDlg.append('<p>' + getClientMessage('SIVIRMEM') + VirMem + '</p>');
 
     // Polling Interval
     if (responseData['API_GET_SVRINFO'].Data.ServerInfo.PollingInterval == 30) {
@@ -760,10 +755,10 @@ function displayServerInfo() {
     ddMenu.append('<li role="presentation"><a onclick="selectPollingInterval(2)" role="menuitem" tabindex="-1" href="#">' + pollingIntervalStr[2] + '</a></li>');
     ddMenu.append('<li role="presentation"><a onclick="selectPollingInterval(3)" role="menuitem" tabindex="-1" href="#">' + pollingIntervalStr[3] + '</a></li>');
     btnGrp.append(ddMenu);
-    $('#svrinfo').append('<p></p>');
-    $('#svrinfo').append(getClientMessage('SIPOLLINTVL'));
-    $('#svrinfo').append(btnGrp);
-    $('#svrinfo').append('<p></p>');
+    serverInfoDlg.append('<p></p>');
+    serverInfoDlg.append(getClientMessage('SIPOLLINTVL'));
+    serverInfoDlg.append(btnGrp);
+    serverInfoDlg.append('<p></p>');
 
     // Status Acquisition Interval
     if (responseData['API_GET_SVRINFO'].Data.ServerInfo.StatusAcquisitionInterval == 300) {
@@ -784,17 +779,16 @@ function displayServerInfo() {
     ddMenu.append('<li role="presentation"><a onclick="selectStatusAcquisitionInterval(3)" role="menuitem" tabindex="-1" href="#">' + statusAcquisitionIntervalStr[3] + '</a></li>');
     btnGrp.append(ddMenu);
 
-    $('#svrinfo').append('<p></p>');
-    $('#svrinfo').append(getClientMessage('SISTACQINTVL'));
-    $('#svrinfo').append(btnGrp);
-    $('#svrinfo').append('<p></p>');
+    serverInfoDlg.append('<p></p>');
+    serverInfoDlg.append(getClientMessage('SISTACQINTVL'));
+    serverInfoDlg.append(btnGrp);
+    serverInfoDlg.append('<p></p>');
+    
+    serverInfoDlg.append('<div id="svrinfo_msg"/>');
 
-    $('#svrinfo').append('<div id="svrinfo_errmsg">');
-
-    $('#svrinfo').append('<p></p>');
-    $('#svrinfo').append('<button type="button" id="serverInfoBtnUpdate" class="btn btn-primary" onclick="updateServerInfo()">' + getClientMessage('SIUPDATEBTN') + '</button> ');
-    $('#svrinfo').append('<p></p>');
-    $('td').css('vertical-align', 'middle');
+    serverInfoDlg.append('<p></p>');
+    serverInfoDlg.append('<button type="button" id="serverInfoBtnUpdate" class="btn btn-dark" onclick="updateServerInfo()">' + getClientMessage('SIUPDATEBTN') + '</button> ');
+    serverInfoDlg.append('<button type="button" id="Cancel" class="btn btn-dark" onclick="closeInputModal()">' + getClientMessage('SICLOSE') + '</button> ');
 }
 
 function selectPollingInterval(interval) {
@@ -840,15 +834,14 @@ function updateServerInfo() {
 function refreshAfterUpdateServerInfo() {
     $('#svrinfo .alert').remove();
     if (statusCode['API_POST_SVRINFO'] == -1 || statusCode['API_POST_SVRINFO'] == 0) {
-        displayAlertDanger('#svrinfo_errmsg', getClientMessage('CONNERR'));
+        displayAlertDanger('#svrinfo_msg', getClientMessage('CONNERR'));
         return;
     }
     if (statusCode['API_POST_SVRINFO'] != 200) {
-        displayAlertDanger('#svrinfo_errmsg', getSvrMsg(responseData['API_POST_SVRINFO']));
+        displayAlertDanger('#svrinfo_msg', getSvrMsg(responseData['API_POST_SVRINFO']));
         return;
     }
-    transDisplayServerInfo();
-    svrinfo_msg = getClientMessage('SIUPDATED');
+    displayAlertSuccess('#svrinfo_msg', getClientMessage('SIUPDATED'));
 }
 
 ////////////////////////////////////////////////////////////////////////////////
