@@ -1,8 +1,11 @@
 #include "../../../YaizuComLib/src/stkpl/StkPl.h"
 #include "../../../YaizuComLib/src/commonfunc/StkObject.h"
 #include "../../../YaizuComLib/src/commonfunc/StkProperties.h"
+#include "../../../YaizuComLib/src/commonfunc/msgproc.h"
 #include "../../../YaizuComLib/src/stkwebapp/StkWebAppSend.h"
 #include "../../../YaizuComLib/src/stkthread/stkthread.h"
+
+#define AGENT_VERSION "1.0.0"
 
 #define TYPE_FILE 0
 #define TYPE_COMMANDRESULT 1
@@ -314,17 +317,49 @@ int CommonProcess(StkObject* CommandSearch, char TmpTime[64], StkWebAppSend* Snd
 				ScriptSearch = ScriptSearch->GetNext();
 			}
 
-			// Name
-			StkPlPrintf("Name=%s, ", TmpName != NULL ? TmpName : "null");
+			{
+				// Logging begin
+				char LogDat[4096] = "";
+				StkPlSPrintf(LogDat, 4096, "Cmd received : Name=%s",	TmpName != NULL ? TmpName : "null");
+				MessageProc::AddLog(LogDat, MessageProc::LOG_TYPE_INFO);
+
+				bool FndSfFlag = false;
+				StkPlStrCpy(LogDat, 4096, "Cmd received : ");
+				for (int Loop = 0; Loop < TmpServerFileNameCount; Loop++) {
+					char TmpLog[4096] = "";
+					if (TmpServerFileName[Loop] != NULL && *TmpServerFileName[Loop] != '\0') {
+						StkPlSPrintf(TmpLog, 4096, "[SFile=%s, Size=%d] ", TmpServerFileName[Loop], TmpServerFileSize[Loop]);
+						StkPlStrCat(LogDat, 4096, TmpLog);
+						FndSfFlag = true;
+					}
+				}
+				if (FndSfFlag) {
+					MessageProc::AddLog(LogDat, MessageProc::LOG_TYPE_INFO);
+				}
+
+				bool FndAfFlag = false;
+				StkPlStrCpy(LogDat, 4096, "Cmd received : ");
+				for (int Loop = 0; Loop < TmpAgentFileNameCount; Loop++) {
+					char TmpLog[4096] = "";
+					if (TmpAgentFileName[Loop] != NULL && *TmpAgentFileName[Loop] != '\0') {
+						StkPlSPrintf(TmpLog, 4096, "[AFile=%s] ", TmpAgentFileName[Loop]);
+						StkPlStrCat(LogDat, 4096, TmpLog);
+						FndAfFlag = true;
+					}
+				}
+				if (FndAfFlag) {
+					MessageProc::AddLog(LogDat, MessageProc::LOG_TYPE_INFO);
+				}
+				// Logging end
+			}
+
 			if (TmpName != NULL) {
 				delete TmpName;
 			}
 
 			// Get and save file
 			for (int Loop = 0; Loop < TmpServerFileNameCount; Loop++) {
-				StkPlPrintf("ServerFileName=%s, ", TmpServerFileName[Loop] != NULL ? TmpServerFileName[Loop] : "null");
-				StkPlPrintf("ServerFileSize=%d\r\n", TmpServerFileSize[Loop]);
-				if (TmpServerFileName != NULL && TmpServerFileSize >= 0 && StkPlStrCmp(TmpServerFileName[Loop], "") != 0) {
+				if (TmpServerFileName[Loop] != NULL && TmpServerFileSize[Loop] >= 0 && StkPlStrCmp(TmpServerFileName[Loop], "") != 0) {
 					if (GetAndSaveFile(TmpServerFileName[Loop], TmpServerFileSize[Loop], SndObj) != 200) {
 						return RESULTCODE_ERROR_SERVERFILE;
 					}
@@ -347,7 +382,6 @@ int CommonProcess(StkObject* CommandSearch, char TmpTime[64], StkWebAppSend* Snd
 			}
 			// Generate and execute script
 			if (TmpScript != NULL && StkPlStrCmp(TmpScript, "") != 0 && (TmpType == 0 || TmpType == 1)) {
-				StkPlPrintf("Execute script:\r\n");
 				if (TmpType != AGT_PLATFORM) {
 					delete TmpScript;
 					return RESULTCODE_ERROR_PLATFORM;
@@ -382,13 +416,12 @@ int CommonProcess(StkObject* CommandSearch, char TmpTime[64], StkWebAppSend* Snd
 					}
 				}
 			} else {
-				StkPlPrintf("No script is presented.\r\n");
+				//
 			}
 
 			// Load and post file
 			for (int Loop = 0; Loop < TmpAgentFileNameCount; Loop++) {
-				StkPlPrintf("AgentFileName=%s\r\n", TmpAgentFileName != NULL ? TmpAgentFileName[Loop] : "null");
-				if (TmpAgentFileName != NULL && StkPlStrCmp(TmpAgentFileName[Loop], "") != 0) {
+				if (TmpAgentFileName[Loop] != NULL && StkPlStrCmp(TmpAgentFileName[Loop], "") != 0) {
 					if (LoadAndPostFile(TmpAgentFileName[Loop], TYPE_FILE, CmdName, SndObj) != 200) {
 						delete TmpScript;
 						return RESULTCODE_ERROR_AGENTFILE;
@@ -448,9 +481,9 @@ int OperationLoop(int TargetId)
 				TargetObj = TargetObj->GetFirstChildElement();
 				continue;
 			} else if (StkPlWcsCmp(TargetObj->GetName(), L"Status") == 0 && StkPlWcsCmp(TargetObj->GetStringValue(), L"Timeout") == 0) {
-				StkPlPrintf("Get Command For Operation >> Timeout [%s]\r\n", TmpTime);
+				//
 			} else if (StkPlWcsCmp(TargetObj->GetName(), L"Status") == 0 && StkPlWcsCmp(TargetObj->GetStringValue(), L"Execution") == 0) {
-				StkPlPrintf("Get Command For Operation >> Execute [%s]\r\n", TmpTime);
+				//
 
 				StkObject* ResObjStart = SoForTh2->SendRequestRecvResponse(StkWebAppSend::STKWEBAPP_METHOD_POST, "/api/agent/", GetAgentInfoForOpStatus(RESULTCODE_OPCOMMANDSTART), &Result);
 				delete ResObjStart;
@@ -492,9 +525,9 @@ int StatusLoop(int TargetId)
 				TargetObj = TargetObj->GetFirstChildElement();
 				continue;
 			} else if (StkPlWcsCmp(TargetObj->GetName(), L"Status") == 0 && StkPlWcsCmp(TargetObj->GetStringValue(), L"Timeout") == 0) {
-				StkPlPrintf("Get Command For Status >> Timeout [%s]\r\n", TmpTime);
+				//
 			} else if (StkPlWcsCmp(TargetObj->GetName(), L"Status") == 0 && StkPlWcsCmp(TargetObj->GetStringValue(), L"Execution") == 0) {
-				StkPlPrintf("Get Command For Status >> Execute [%s]\r\n", TmpTime);
+				//
 				StkObject* CommandSearch = ResGetCommandForStatus->GetFirstChildElement();
 
 				int ReturnCode = CommonProcess(CommandSearch, TmpTime, SoForTh1, false);
@@ -594,6 +627,18 @@ int LoadPropertyFile(wchar_t HostOrIpAddr[256], int* PortNum, wchar_t PathToBuck
 
 void StartXxx(wchar_t HostOrIpAddr[256], int PortNum, int InvalidDirectory, char TrustedCert[256])
 {
+	wchar_t LoggingPath[FILENAME_MAX] = L"";
+#ifdef WIN32
+	StkPlGetFullPathFromFileName(L"servalagt.log", LoggingPath);
+#else
+	StkPlWcsCpy(LoggingPath, FILENAME_MAX, L"/var/log/servalagt.log");
+#endif
+	MessageProc::StartLogging(LoggingPath);
+	MessageProc::AddLog("----------------------------------------", MessageProc::LOG_TYPE_INFO);
+	char LogBuf[1024] = "";
+	StkPlSPrintf(LogBuf, 1024, "Agent started  [Ver=%s, Build=%s %s]", AGENT_VERSION, __DATE__, __TIME__);
+	MessageProc::AddLog(LogBuf, MessageProc::LOG_TYPE_INFO);
+
 	if (TrustedCert == NULL || StkPlStrCmp(TrustedCert, "") == 0) {
 		SoForTh1 = new StkWebAppSend(1, HostOrIpAddr, PortNum);
 		SoForTh2 = new StkWebAppSend(2, HostOrIpAddr, PortNum);
@@ -657,7 +702,7 @@ int main(int argc, char* argv[])
 	int PortNum = 0;
 	wchar_t PathToBucket[256] = L"";
 	if (argc >= 5) {
-		StkPlPrintf("Agent starts\r\n");
+		//
 		StkPlConvUtf8ToWideChar(HostOrIpAddr, 256, argv[1]);
 		PortNum = StkPlAtoi(argv[2]);
 		StkPlConvUtf8ToWideChar(PathToBucket, 256, argv[3]);

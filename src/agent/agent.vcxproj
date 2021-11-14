@@ -57,6 +57,10 @@
     <Link>
       <AdditionalDependencies>Ws2_32.lib;x64\Debug\stkwebapp.lib;x64\Debug\commonfunc.lib;x64\Debug\stksocket.lib;x64\Debug\stkpl.lib;x64\Debug\stkthread.lib;Crypt32.lib;C:\Program Files\OpenSSL-Win64\lib\VC\static\libssl64MTd.lib;C:\Program Files\OpenSSL-Win64\lib\VC\static\libcrypto64MTd.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <SubSystem>Console</SubSystem>
+      <HeapReserveSize>10000000</HeapReserveSize>
+      <HeapCommitSize>10000000</HeapCommitSize>
+      <StackReserveSize>6000000</StackReserveSize>
+      <StackCommitSize>6000000</StackCommitSize>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -79,6 +83,10 @@
       <SubSystem>Console</SubSystem>
       <LinkTimeCodeGeneration>UseLinkTimeCodeGeneration</LinkTimeCodeGeneration>
       <UACExecutionLevel>RequireAdministrator</UACExecutionLevel>
+      <HeapReserveSize>10000000</HeapReserveSize>
+      <HeapCommitSize>10000000</HeapCommitSize>
+      <StackReserveSize>6000000</StackReserveSize>
+      <StackCommitSize>6000000</StackCommitSize>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>

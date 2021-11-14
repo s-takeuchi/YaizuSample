@@ -1297,9 +1297,11 @@ function switchCommandButton() {
             '</div>' +
           '</div>'
         );
-        let fileList = getArray(responseData['API_GET_FILELIST'].Data.FileInfo);
-        for (let loop = 0; loop < fileList.length; loop++) {
-            $('#serverFileNameS' + serverFileNameIndex).append('<option>' + fileList[loop].Name + '</option>');
+        if (responseData['API_GET_FILELIST'].Data !== undefined) {
+            let fileList = getArray(responseData['API_GET_FILELIST'].Data.FileInfo);
+            for (let loop = 0; loop < fileList.length; loop++) {
+                $('#serverFileNameS' + serverFileNameIndex).append('<option>' + fileList[loop].Name + '</option>');
+            }
         }
         serverFileNameCount++;
         serverFileNameIndex++;
