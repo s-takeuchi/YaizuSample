@@ -317,14 +317,26 @@ int CommonProcess(StkObject* CommandSearch, char TmpTime[64], StkWebAppSend* Snd
 				ScriptSearch = ScriptSearch->GetNext();
 			}
 
+			// Encode script according to encode specification.
+			if (TmpScriptWc != NULL && StkPlWcsCmp(TmpScriptWc, L"") != 0) {
+				if (ScriptEncode == SCRIPT_ENCODE_UTF8) {
+					TmpScript = StkPlCreateUtf8FromWideChar(TmpScriptWc);
+				} else if (ScriptEncode == SCRIPT_ENCODE_SJIS) {
+					TmpScript = StkPlWideCharToSjis(TmpScriptWc);
+				} else {
+					// Default = UTF8
+					TmpScript = StkPlCreateUtf8FromWideChar(TmpScriptWc);
+				}
+			}
+
 			{
 				// Logging begin
 				char LogDat[4096] = "";
-				StkPlSPrintf(LogDat, 4096, "Cmd received : Name=%s",	TmpName != NULL ? TmpName : "null");
+				StkPlSPrintf(LogDat, 4096, "Cmd received : [Name=%s]",	TmpName != NULL ? TmpName : "null");
 				MessageProc::AddLog(LogDat, MessageProc::LOG_TYPE_INFO);
 
 				bool FndSfFlag = false;
-				StkPlStrCpy(LogDat, 4096, "Cmd received : ");
+				StkPlStrCpy(LogDat, 4096, "    ");
 				for (int Loop = 0; Loop < TmpServerFileNameCount; Loop++) {
 					char TmpLog[4096] = "";
 					if (TmpServerFileName[Loop] != NULL && *TmpServerFileName[Loop] != '\0') {
@@ -337,8 +349,21 @@ int CommonProcess(StkObject* CommandSearch, char TmpTime[64], StkWebAppSend* Snd
 					MessageProc::AddLog(LogDat, MessageProc::LOG_TYPE_INFO);
 				}
 
+				// Script
+				{
+					char TmpLog[4096] = "";
+					StkPlStrNCpy(TmpLog, 4096, TmpScript, 50);
+					for (int Loop = 0; Loop < StkPlStrLen(TmpLog) + 1; Loop++) {
+						if (TmpLog[Loop] == '\r' || TmpLog[Loop] == '\n') {
+							TmpLog[Loop] = ' ';
+						}
+					}
+					StkPlSPrintf(LogDat, 4096, "    [Script=%s]", TmpLog);
+					MessageProc::AddLog(LogDat, MessageProc::LOG_TYPE_INFO);
+				}
+
 				bool FndAfFlag = false;
-				StkPlStrCpy(LogDat, 4096, "Cmd received : ");
+				StkPlStrCpy(LogDat, 4096, "    ");
 				for (int Loop = 0; Loop < TmpAgentFileNameCount; Loop++) {
 					char TmpLog[4096] = "";
 					if (TmpAgentFileName[Loop] != NULL && *TmpAgentFileName[Loop] != '\0') {
@@ -369,17 +394,6 @@ int CommonProcess(StkObject* CommandSearch, char TmpTime[64], StkWebAppSend* Snd
 			}
 
 			// Execute script
-			// Encode script according to encode specification.
-			if (TmpScriptWc != NULL && StkPlWcsCmp(TmpScriptWc, L"") != 0) {
-				if (ScriptEncode == SCRIPT_ENCODE_UTF8) {
-					TmpScript = StkPlCreateUtf8FromWideChar(TmpScriptWc);
-				} else if (ScriptEncode == SCRIPT_ENCODE_SJIS) {
-					TmpScript = StkPlWideCharToSjis(TmpScriptWc);
-				} else {
-					// Default = UTF8
-					TmpScript = StkPlCreateUtf8FromWideChar(TmpScriptWc);
-				}
-			}
 			// Generate and execute script
 			if (TmpScript != NULL && StkPlStrCmp(TmpScript, "") != 0 && (TmpType == 0 || TmpType == 1)) {
 				if (TmpType != AGT_PLATFORM) {
@@ -471,8 +485,10 @@ int OperationLoop(int TargetId)
 	StkPlSwPrintf(Url, 512, L"/api/opcommand/%ls/", HostName);
 	StkPlConvWideCharToUtf8(Urlc, 512, Url);
 	StkObject* ResGetCommandForOp = SoForTh2->SendRequestRecvResponse(StkWebAppSend::STKWEBAPP_METHOD_GET, Urlc, NULL, &Result);
+	static bool ErrFlag = false;
 
 	if (Result == 200 && ResGetCommandForOp != NULL) {
+		ErrFlag = false;
 		StkObject* TargetObj = ResGetCommandForOp->GetFirstChildElement();
 		while (TargetObj) {
 			char TmpTime[64] = "";
@@ -490,6 +506,9 @@ int OperationLoop(int TargetId)
 
 				StkObject* CommandSearch = ResGetCommandForOp->GetFirstChildElement();
 				int ReturnCode = CommonProcess(CommandSearch, TmpTime, SoForTh2, true);
+				char TmpLog[64] = "";
+				StkPlSPrintf(TmpLog, 128, "Cmd result (OP) : %d", ReturnCode);
+				MessageProc::AddLog(TmpLog, MessageProc::LOG_TYPE_INFO);
 
 				StkObject* ResObjEnd = SoForTh2->SendRequestRecvResponse(StkWebAppSend::STKWEBAPP_METHOD_POST, "/api/agent/", GetAgentInfoForOpStatus(ReturnCode), &Result);
 				delete ResObjEnd;
@@ -497,9 +516,12 @@ int OperationLoop(int TargetId)
 			TargetObj = TargetObj->GetNext();
 		}
 	} else {
-		char TmpTime[64] = "";
-		StkPlGetTimeInIso8601(TmpTime, true);
-		StkPlPrintf("Get Command For Operation >> Error(%d) [%s]\r\n", Result, TmpTime);
+		if (ErrFlag == false) {
+			char TmpLog[128] = "";
+			StkPlSPrintf(TmpLog, 128, "Cmd error (OP) : %d", Result);
+			MessageProc::AddLog(TmpLog, MessageProc::LOG_TYPE_ERROR);
+			ErrFlag = true;
+		}
 		StkPlSleepMs(30000);
 	}
 	delete ResGetCommandForOp;
@@ -515,8 +537,10 @@ int StatusLoop(int TargetId)
 	StkPlSwPrintf(Url, 512, L"/api/statuscommand/%ls/", HostName);
 	StkPlConvWideCharToUtf8(Urlc, 512, Url);
 	StkObject* ResGetCommandForStatus = SoForTh1->SendRequestRecvResponse(StkWebAppSend::STKWEBAPP_METHOD_GET, Urlc, NULL, &Result);
+	static bool ErrFlag = false;
 
 	if (Result == 200 && ResGetCommandForStatus != NULL) {
+		ErrFlag = false;
 		StkObject* TargetObj = ResGetCommandForStatus->GetFirstChildElement();
 		while (TargetObj) {
 			char TmpTime[64] = "";
@@ -531,6 +555,9 @@ int StatusLoop(int TargetId)
 				StkObject* CommandSearch = ResGetCommandForStatus->GetFirstChildElement();
 
 				int ReturnCode = CommonProcess(CommandSearch, TmpTime, SoForTh1, false);
+				char TmpLog[64] = "";
+				StkPlSPrintf(TmpLog, 64, "Cmd result (SA) : %d", ReturnCode);
+				MessageProc::AddLog(TmpLog, MessageProc::LOG_TYPE_INFO);
 
 				StkObject* ResObj = SoForTh1->SendRequestRecvResponse(StkWebAppSend::STKWEBAPP_METHOD_POST, "/api/agent/", GetAgentInfo(ReturnCode), &Result);
 				delete ResObj;
@@ -540,9 +567,12 @@ int StatusLoop(int TargetId)
 			TargetObj = TargetObj->GetNext();
 		}
 	} else {
-		char TmpTime[64] = "";
-		StkPlGetTimeInIso8601(TmpTime, true);
-		StkPlPrintf("Get Command For Status >> Error(%d) [%s]\r\n", Result, TmpTime);
+		if (ErrFlag == false) {
+			char TmpLog[128] = "";
+			StkPlSPrintf(TmpLog, 128, "Cmd error (SA) : %d", Result);
+			MessageProc::AddLog(TmpLog, MessageProc::LOG_TYPE_ERROR);
+			ErrFlag = true;
+		}
 		StkPlSleepMs(30000);
 	}
 	delete ResGetCommandForStatus;
@@ -556,44 +586,50 @@ int LoadPropertyFile(wchar_t HostOrIpAddr[256], int* PortNum, wchar_t PathToBuck
 	char TmpHostName[256] = "";
 	char TmpSecureMode[256] = "";
 	char TmpScriptEncode[256] = "";
+	char TmpLog[256] = "";
 	StkProperties *Prop = new StkProperties();
 	if (Prop->GetProperties(L"agent.conf") == 0) {
 		// For targethost
 		if (Prop->GetPropertyStr("targethost", TmpHostOrIpAddr) != 0) {
-			StkPlPrintf("targethost property is not found.\r\n");
+			MessageProc::AddLog("targethost property is not found.", MessageProc::LOG_TYPE_ERROR);
 			return -1;
 		}
-		StkPlPrintf("targethost property = %s\r\n", TmpHostOrIpAddr);
+		StkPlSPrintf(TmpLog, 256, "targethost property = %s", TmpHostOrIpAddr);
+		MessageProc::AddLog(TmpLog, MessageProc::LOG_TYPE_INFO);
 		StkPlConvUtf8ToWideChar(HostOrIpAddr, 256, TmpHostOrIpAddr);
 
 		// For targetport
 		if (Prop->GetPropertyInt("targetport", PortNum) != 0) {
-			StkPlPrintf("targetport property is not found.\r\n");
+			MessageProc::AddLog("targetport property is not found.", MessageProc::LOG_TYPE_ERROR);
 			return -1;
 		}
-		StkPlPrintf("targetport property = %d\r\n", *PortNum);
+		StkPlSPrintf(TmpLog, 256, "targetport property = %d", *PortNum);
+		MessageProc::AddLog(TmpLog, MessageProc::LOG_TYPE_INFO);
 
 		// For pathtobucket
 		if (Prop->GetPropertyStr("workdir", TmpPathToBucket) != 0) {
-			StkPlPrintf("workdir property is not found.\r\n");
+			MessageProc::AddLog("workdir property is not found.", MessageProc::LOG_TYPE_ERROR);
 			return -1;
 		}
-		StkPlPrintf("workdir property = %s\r\n", TmpPathToBucket);
+		StkPlSPrintf(TmpLog, 256, "workdir property = %s", TmpPathToBucket);
+		MessageProc::AddLog(TmpLog, MessageProc::LOG_TYPE_INFO);
 		StkPlConvUtf8ToWideChar(PathToBucket, 256, TmpPathToBucket);
 
 		// For hostname
 		if (Prop->GetPropertyStr("hostname", TmpHostName) != 0) {
-			StkPlPrintf("hostname property is not found.\r\n");
+			MessageProc::AddLog("hostname property is not found.", MessageProc::LOG_TYPE_ERROR);
 			return -1;
 		}
-		StkPlPrintf("hostname property = %s\r\n", TmpHostName);
+		StkPlSPrintf(TmpLog, 256, "hostname property = %s", TmpHostName);
+		MessageProc::AddLog(TmpLog, MessageProc::LOG_TYPE_INFO);
 		StkPlConvUtf8ToWideChar(LcHostName, 256, TmpHostName);
 
 		// For trustedcert
 		if (Prop->GetPropertyStr("trustedcert", TrustedCert) != 0) {
 			//
 		}
-		StkPlPrintf("trustedcert property = %s\r\n", TrustedCert);
+		StkPlSPrintf(TmpLog, 256, "trustedcert property = %s", TrustedCert);
+		MessageProc::AddLog(TmpLog, MessageProc::LOG_TYPE_INFO);
 
 		// securemode
 		bool SecureMode = false;
@@ -606,7 +642,8 @@ int LoadPropertyFile(wchar_t HostOrIpAddr[256], int* PortNum, wchar_t PathToBuck
 				StkPlStrCpy(TrustedCert, 256, "");
 			}
 		}
-		StkPlPrintf("securemode property = %s\r\n", SecureMode ? "true" : "false");
+		StkPlSPrintf(TmpLog, 256, "securemode property = %s", SecureMode ? "true" : "false");
+		MessageProc::AddLog(TmpLog, MessageProc::LOG_TYPE_INFO);
 
 		if (Prop->GetPropertyStr("scriptencode", TmpScriptEncode) == 0) {
 			if (StkPlStrCmp(TmpScriptEncode, "UTF8") == 0) {
@@ -616,10 +653,11 @@ int LoadPropertyFile(wchar_t HostOrIpAddr[256], int* PortNum, wchar_t PathToBuck
 				ScriptEncode = SCRIPT_ENCODE_SJIS;
 			}
 		}
-		StkPlPrintf("scriptencode property = %s\r\n", ScriptEncode == SCRIPT_ENCODE_SJIS ? "SJIS" : "UTF8");
+		StkPlSPrintf(TmpLog, 256, "scriptencode property = %s", ScriptEncode == SCRIPT_ENCODE_SJIS ? "SJIS" : "UTF8");
+		MessageProc::AddLog(TmpLog, MessageProc::LOG_TYPE_INFO);
 
 	} else {
-		StkPlPrintf("agent.conf is not found.\r\n");
+		MessageProc::AddLog("agent.conf is not found.", MessageProc::LOG_TYPE_FATAL);
 		return -1;
 	}
 	return 0;
@@ -627,14 +665,6 @@ int LoadPropertyFile(wchar_t HostOrIpAddr[256], int* PortNum, wchar_t PathToBuck
 
 void StartXxx(wchar_t HostOrIpAddr[256], int PortNum, int InvalidDirectory, char TrustedCert[256])
 {
-	wchar_t LoggingPath[FILENAME_MAX] = L"";
-#ifdef WIN32
-	StkPlGetFullPathFromFileName(L"servalagt.log", LoggingPath);
-#else
-	StkPlWcsCpy(LoggingPath, FILENAME_MAX, L"/var/log/servalagt.log");
-#endif
-	MessageProc::StartLogging(LoggingPath);
-	MessageProc::AddLog("----------------------------------------", MessageProc::LOG_TYPE_INFO);
 	char LogBuf[1024] = "";
 	StkPlSPrintf(LogBuf, 1024, "Agent started  [Ver=%s, Build=%s %s]", AGENT_VERSION, __DATE__, __TIME__);
 	MessageProc::AddLog(LogBuf, MessageProc::LOG_TYPE_INFO);
@@ -672,7 +702,7 @@ void StartXxx(wchar_t HostOrIpAddr[256], int PortNum, int InvalidDirectory, char
 			StkPlSleepMs(30000);
 		}
 	}
-
+	MessageProc::AddLog("Initial notification done", MessageProc::LOG_TYPE_INFO);
 	AddStkThread(1, L"StatusLoop", L"", NULL, NULL, StatusLoop, NULL, NULL);
 	AddStkThread(2, L"OperationLoop", L"", NULL, NULL, OperationLoop, NULL, NULL);
 	StartAllOfStkThreads();
@@ -684,6 +714,15 @@ void LoadPropertyFileAndStart()
 	int PortNum = 0;
 	wchar_t PathToBucket[256] = L"";
 	char TrustedCert[256] = "";
+
+	wchar_t LoggingPath[FILENAME_MAX] = L"";
+#ifdef WIN32
+	StkPlGetFullPathFromFileName(L"servalagt.log", LoggingPath);
+#else
+	StkPlWcsCpy(LoggingPath, FILENAME_MAX, L"/var/log/servalagt.log");
+#endif
+	MessageProc::StartLogging(LoggingPath);
+	MessageProc::AddLog("----------------------------------------", MessageProc::LOG_TYPE_INFO);
 
 	LoadPropertyFile(HostOrIpAddr, &PortNum, PathToBucket, HostName, TrustedCert);
 	if (HostName == NULL || StkPlWcsCmp(HostName, L"") == 0) {
