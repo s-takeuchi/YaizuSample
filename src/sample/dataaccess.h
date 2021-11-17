@@ -71,8 +71,8 @@ public:
 	bool CheckCommandExistenceByName(wchar_t[DA_MAXLEN_OF_CMDNAME]);
 	int SetCommand(int, wchar_t[DA_MAXLEN_OF_CMDNAME], int, char[DA_MAXLEN_OF_CMDSCRIPT], wchar_t[5][DA_MAXLEN_OF_SERVERFILENAME], wchar_t[5][DA_MAXLEN_OF_AGENTFILENAME], int);
 	int DeleteCommand(int);
-	int SetCommandResult(wchar_t*, wchar_t*, char*, size_t);
-	int GetCommandResult(wchar_t[DA_MAXNUM_OF_RESULT][DA_MAXLEN_OF_AGTNAME], wchar_t[DA_MAXNUM_OF_RESULT][DA_MAXLEN_OF_CMDNAME], long long[DA_MAXNUM_OF_RESULT], int[DA_MAXNUM_OF_RESULT]);
+	int SetCommandResult(wchar_t*, wchar_t*, int, int, char*, size_t);
+	int GetCommandResult(wchar_t[DA_MAXNUM_OF_RESULT][DA_MAXLEN_OF_AGTNAME], wchar_t[DA_MAXNUM_OF_RESULT][DA_MAXLEN_OF_CMDNAME], long long[DA_MAXNUM_OF_RESULT], int[DA_MAXNUM_OF_RESULT], int[DA_MAXNUM_OF_RESULT], int[DA_MAXNUM_OF_RESULT]);
 	int GetOutput(int, char*);
 
 	int IncreaseId(const wchar_t*);

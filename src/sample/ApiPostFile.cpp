@@ -26,6 +26,8 @@ StkObject* ApiPostFile::ExecuteImpl(StkObject* ReqObj, int Method, wchar_t UrlPa
 		int Type = -1;
 		wchar_t* AgentName = NULL;
 		wchar_t* CommandName = NULL;
+		int Status = -1;
+		int ExitCode = -1;
 
 		StkObject* CurObj = ReqObj->GetFirstChildElement();
 		while (CurObj) {
@@ -49,6 +51,12 @@ StkObject* ApiPostFile::ExecuteImpl(StkObject* ReqObj, int Method, wchar_t UrlPa
 			}
 			if (StkPlWcsCmp(CurObj->GetName(), L"CommandName") == 0) {
 				CommandName = CurObj->GetStringValue();
+			}
+			if (StkPlWcsCmp(CurObj->GetName(), L"Status") == 0) {
+				Status = CurObj->GetIntValue();
+			}
+			if (StkPlWcsCmp(CurObj->GetName(), L"ExitCode") == 0) {
+				ExitCode = CurObj->GetIntValue();
 			}
 			CurObj = CurObj->GetNext();
 		}
@@ -115,7 +123,7 @@ StkObject* ApiPostFile::ExecuteImpl(StkObject* ReqObj, int Method, wchar_t UrlPa
 				return TmpObj;
 			}
 			// Write data to database
-			DataAccess::GetInstance()->SetCommandResult(AgentName, CommandName, (char*)DataChar, DataCharIndex + 1);
+			DataAccess::GetInstance()->SetCommandResult(AgentName, CommandName, Status, ExitCode, (char*)DataChar, DataCharIndex + 1);
 		} else {
 			// Writing data to file
 			void* FilePtr = NULL;

@@ -76,7 +76,7 @@ StkObject* GetAgentInfoForOpStatus(int Status)
 	return NewObj;
 }
 
-int LoadAndPostFile(char* FileName, int Type, wchar_t* CommandName, StkWebAppSend* SndObj)
+int LoadAndPostFile(char* FileName, int Type, wchar_t* CommandName, int Status, int ExitCode, StkWebAppSend* SndObj)
 {
 	int ActChunkSize = CHUNKSIZE_FILE;
 	if (Type == TYPE_COMMANDRESULT) {
@@ -154,6 +154,8 @@ int LoadAndPostFile(char* FileName, int Type, wchar_t* CommandName, StkWebAppSen
 		if (Type == TYPE_COMMANDRESULT) {
 			TmpObj->AppendChildElement(new StkObject(L"AgentName", HostName));
 			TmpObj->AppendChildElement(new StkObject(L"CommandName", CommandName));
+			TmpObj->AppendChildElement(new StkObject(L"Status", Status));
+			TmpObj->AppendChildElement(new StkObject(L"ExitCode", ExitCode));
 		}
 		delete HexBuf;
 		StkObject* ResObj = SndObj->SendRequestRecvResponse(StkWebAppSend::STKWEBAPP_METHOD_POST, "/api/file/", TmpObj, &Result);
@@ -254,13 +256,25 @@ int GetAndSaveFile(char* FileName, size_t FileSize, StkWebAppSend* SndObj)
 	return Result;
 }
 
+int SendCommandResult(bool OperationFlag, wchar_t CmdName[FILENAME_MAX], int Status, int ExitCode, StkWebAppSend* SndObj)
+{
+	char CmdResultFile[FILENAME_MAX] = "";
+	if (OperationFlag) {
+		StkPlStrCpy(CmdResultFile, FILENAME_MAX, "aaa-operation.out");
+	} else {
+		StkPlStrCpy(CmdResultFile, FILENAME_MAX, "aaa-status.out");
+	}
+	if (LoadAndPostFile(CmdResultFile, TYPE_COMMANDRESULT, CmdName, Status, ExitCode, SndObj) != 200) {
+		return RESULTCODE_ERROR_CMDRESULT;
+	}
+	return Status;
+}
+
 int CommonProcess(StkObject* CommandSearch, char TmpTime[64], StkWebAppSend* SndObj, bool OperationFlag)
 {
-	if (InvalidDirFlag) {
-		return RESULTCODE_ERROR_INVALIDAGTDIR;
-	}
 	int ReturnCode = RESULTCODE_NOSCRIPT;
 	int ResultFlag = 0;
+
 	while (CommandSearch) {
 		if (StkPlWcsCmp(CommandSearch->GetName(), L"Data") == 0) {
 			CommandSearch = CommandSearch->GetFirstChildElement();
@@ -315,6 +329,18 @@ int CommonProcess(StkObject* CommandSearch, char TmpTime[64], StkWebAppSend* Snd
 					TmpTimeout = ScriptSearch->GetIntValue();
 				}
 				ScriptSearch = ScriptSearch->GetNext();
+			}
+
+			if (OperationFlag) {
+				StkPlWriteFile(L"aaa-operation.out", (char*)"\0", 1);
+			} else {
+				StkPlWriteFile(L"aaa-status.out", (char*)"\0", 1);
+			}
+
+			// Invalid directory specified
+			if (InvalidDirFlag) {
+				SendCommandResult(OperationFlag, CmdName, RESULTCODE_ERROR_INVALIDAGTDIR, -1, SndObj);
+				return RESULTCODE_ERROR_INVALIDAGTDIR;
 			}
 
 			// Encode script according to encode specification.
@@ -386,9 +412,11 @@ int CommonProcess(StkObject* CommandSearch, char TmpTime[64], StkWebAppSend* Snd
 			for (int Loop = 0; Loop < TmpServerFileNameCount; Loop++) {
 				if (TmpServerFileName[Loop] != NULL && TmpServerFileSize[Loop] >= 0 && StkPlStrCmp(TmpServerFileName[Loop], "") != 0) {
 					if (GetAndSaveFile(TmpServerFileName[Loop], TmpServerFileSize[Loop], SndObj) != 200) {
+						SendCommandResult(OperationFlag, CmdName, RESULTCODE_ERROR_SERVERFILE, -1, SndObj);
 						return RESULTCODE_ERROR_SERVERFILE;
 					}
-				} else if (TmpServerFileName != NULL && StkPlStrCmp(TmpServerFileName[Loop], "") != 0 && TmpServerFileSize < 0) {
+				} else if (TmpServerFileName != NULL && StkPlStrCmp(TmpServerFileName[Loop], "") != 0 && TmpServerFileSize[Loop] < 0) {
+					SendCommandResult(OperationFlag, CmdName, RESULTCODE_ERROR_SERVERFILE, -1, SndObj);
 					return RESULTCODE_ERROR_SERVERFILE;
 				}
 			}
@@ -398,6 +426,7 @@ int CommonProcess(StkObject* CommandSearch, char TmpTime[64], StkWebAppSend* Snd
 			if (TmpScript != NULL && StkPlStrCmp(TmpScript, "") != 0 && (TmpType == 0 || TmpType == 1)) {
 				if (TmpType != AGT_PLATFORM) {
 					delete TmpScript;
+					SendCommandResult(OperationFlag, CmdName, RESULTCODE_ERROR_PLATFORM, -1, SndObj);
 					return RESULTCODE_ERROR_PLATFORM;
 				}
 				if (TmpType == 0) {
@@ -436,36 +465,38 @@ int CommonProcess(StkObject* CommandSearch, char TmpTime[64], StkWebAppSend* Snd
 			// Load and post file
 			for (int Loop = 0; Loop < TmpAgentFileNameCount; Loop++) {
 				if (TmpAgentFileName[Loop] != NULL && StkPlStrCmp(TmpAgentFileName[Loop], "") != 0) {
-					if (LoadAndPostFile(TmpAgentFileName[Loop], TYPE_FILE, CmdName, SndObj) != 200) {
+					if (LoadAndPostFile(TmpAgentFileName[Loop], TYPE_FILE, CmdName, -1, -1, SndObj) != 200) {
 						delete TmpScript;
+						SendCommandResult(OperationFlag, CmdName, RESULTCODE_ERROR_AGENTFILE, -1, SndObj);
 						return RESULTCODE_ERROR_AGENTFILE;
 					}
 				}
 			}
 
-			// Load and post command result
-			if (TmpScript != NULL && StkPlStrCmp(TmpScript, "") != 0) {
-				char CmdResultFile[FILENAME_MAX] = "";
-				if (OperationFlag) {
-					StkPlStrCpy(CmdResultFile, FILENAME_MAX, "aaa-operation.out");
-				} else {
-					StkPlStrCpy(CmdResultFile, FILENAME_MAX, "aaa-status.out");
-				}
-				if (LoadAndPostFile(CmdResultFile, TYPE_COMMANDRESULT, CmdName, SndObj) != 200) {
-					delete TmpScript;
-					return RESULTCODE_ERROR_CMDRESULT;
-				}
+			// Normal end
+			if (ReturnCode == 0 && ResultFlag == 0) {
+				delete TmpScript;
+				SendCommandResult(OperationFlag, CmdName, 0, ReturnCode, SndObj);
+				return 0;
+			}
+
+			if (ReturnCode != 0 && ResultFlag == 0) {
+				delete TmpScript;
+				SendCommandResult(OperationFlag, CmdName, 1, ReturnCode, SndObj);
+				return 1;
 			}
 
 			// Timeout error
 			if (ReturnCode == -2 && ResultFlag != 0) {
 				delete TmpScript;
+				SendCommandResult(OperationFlag, CmdName, RESULTCODE_ERROR_TIMEOUT, -1, SndObj);
 				return RESULTCODE_ERROR_TIMEOUT;
 			}
 
 			// Internal error
 			if (ReturnCode == -1 && ResultFlag != 0) {
 				delete TmpScript;
+				SendCommandResult(OperationFlag, CmdName, RESULTCODE_ERROR_CMDRESULT, -1, SndObj);
 				return RESULTCODE_ERROR_CMDRESULT;
 			}
 

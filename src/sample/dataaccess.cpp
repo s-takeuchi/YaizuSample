@@ -156,6 +156,7 @@ int DataAccess::CreateTables(const wchar_t* DataFileName)
 			ColumnDefWStr ColDefComName(L"CmdName", DA_MAXLEN_OF_CMDNAME);
 			ColumnDefWStr ColDefAgtName(L"AgtName", DA_MAXLEN_OF_AGTNAME);
 			ColumnDefInt ColDefStatus(L"Status");
+			ColumnDefInt ColDefExitCode(L"ExitCode");
 			TableDef TabDefResult(L"Result", DA_MAXNUM_OF_RESULT);
 			TabDefResult.AddColumnDef(&ColDefId);
 			TabDefResult.AddColumnDef(&ColDefUpdTime);
@@ -163,6 +164,7 @@ int DataAccess::CreateTables(const wchar_t* DataFileName)
 			TabDefResult.AddColumnDef(&ColDefComName);
 			TabDefResult.AddColumnDef(&ColDefAgtName);
 			TabDefResult.AddColumnDef(&ColDefStatus);
+			TabDefResult.AddColumnDef(&ColDefExitCode);
 			if (CreateTable(&TabDefResult) != 0) {
 				UnlockAllTable();
 				return -1;
@@ -934,7 +936,7 @@ int DataAccess::SetMaxCommandId(int Id)
 	return Id;
 }
 
-int DataAccess::SetCommandResult(wchar_t* AgentName, wchar_t* CommandName, char* Data, size_t DataLength)
+int DataAccess::SetCommandResult(wchar_t* AgentName, wchar_t* CommandName, int Status, int ExitCode, char* Data, size_t DataLength)
 {
 	LockTable(L"Result", LOCK_EXCLUSIVE);
 	LockTable(L"Console", LOCK_EXCLUSIVE);
@@ -949,14 +951,15 @@ int DataAccess::SetCommandResult(wchar_t* AgentName, wchar_t* CommandName, char*
 	long long UpdTime = StkPlGetTime();
 	char* PtrUpdTime = (char*)&UpdTime;
 	StkPlMemCpy(UpdTimeBin, PtrUpdTime, DA_MAXLEN_OF_UNIXTIME);
-	ColumnData* ColDatCmdResult[6];
+	ColumnData* ColDatCmdResult[7];
 	ColDatCmdResult[0] = new ColumnDataInt(L"Id", MaxId);
 	ColDatCmdResult[1] = new ColumnDataBin(L"UpdTime", (unsigned char*)UpdTimeBin, DA_MAXLEN_OF_UNIXTIME);
 	ColDatCmdResult[2] = new ColumnDataInt(L"Type", 0);
 	ColDatCmdResult[3] = new ColumnDataWStr(L"CmdName", CommandName);
 	ColDatCmdResult[4] = new ColumnDataWStr(L"AgtName", AgentName);
-	ColDatCmdResult[5] = new ColumnDataInt(L"Status", 0);
-	RecordData* RecDatCmdResult = new RecordData(L"Result", ColDatCmdResult, 6);
+	ColDatCmdResult[5] = new ColumnDataInt(L"Status", Status);
+	ColDatCmdResult[6] = new ColumnDataInt(L"ExitCode", ExitCode);
+	RecordData* RecDatCmdResult = new RecordData(L"Result", ColDatCmdResult, 7);
 
 	if (MaxId > DA_MAXNUM_OF_RESULT) {
 		UpdateRecord(RecDatCmdResultSearch, RecDatCmdResult);
@@ -990,9 +993,11 @@ int DataAccess::SetCommandResult(wchar_t* AgentName, wchar_t* CommandName, char*
 }
 
 int DataAccess::GetCommandResult(wchar_t AgentName[DA_MAXNUM_OF_RESULT][DA_MAXLEN_OF_AGTNAME],
-	                             wchar_t CommandName[DA_MAXNUM_OF_RESULT][DA_MAXLEN_OF_CMDNAME],
-	                             long long UpdTime[DA_MAXNUM_OF_RESULT],
-	                             int Id[DA_MAXNUM_OF_RESULT])
+								wchar_t CommandName[DA_MAXNUM_OF_RESULT][DA_MAXLEN_OF_CMDNAME],
+								long long UpdTime[DA_MAXNUM_OF_RESULT],
+								int Id[DA_MAXNUM_OF_RESULT],
+								int Status[DA_MAXNUM_OF_RESULT],
+								int ExitCode[DA_MAXNUM_OF_RESULT])
 {
 	LockTable(L"Result", LOCK_SHARE);
 	RecordData* CmdResult = GetRecord(L"Result");
@@ -1028,6 +1033,20 @@ int DataAccess::GetCommandResult(wchar_t AgentName[DA_MAXNUM_OF_RESULT][DA_MAXLE
 			return -1;
 		}
 		Id[Index] = ColId->GetValue();
+
+		ColumnDataInt* ColStatus = (ColumnDataInt*)CurRec->GetColumn(L"Status");
+		if (!ColStatus) {
+			delete CmdResult;
+			return -1;
+		}
+		Status[Index] = ColStatus->GetValue();
+
+		ColumnDataInt* ColExitCode = (ColumnDataInt*)CurRec->GetColumn(L"ExitCode");
+		if (!ColExitCode) {
+			delete CmdResult;
+			return -1;
+		}
+		ExitCode[Index] = ColExitCode->GetValue();
 
 		Index++;
 		CurRec = CurRec->GetNextRecord();

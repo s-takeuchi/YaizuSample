@@ -85,7 +85,9 @@ StkObject* ApiGetCommandResult::ExecuteImpl(StkObject* ReqObj, int Method, wchar
 		wchar_t CommandName[DA_MAXNUM_OF_RESULT][DA_MAXLEN_OF_CMDNAME];
 		long long UpdTime[DA_MAXNUM_OF_RESULT];
 		int Id[DA_MAXNUM_OF_RESULT];
-		int Cnt = DataAccess::GetInstance()->GetCommandResult(AgentName, CommandName, UpdTime, Id);
+		int Status[DA_MAXNUM_OF_RESULT];
+		int ExitCode[DA_MAXNUM_OF_RESULT];
+		int Cnt = DataAccess::GetInstance()->GetCommandResult(AgentName, CommandName, UpdTime, Id, Status, ExitCode);
 
 		AddCodeAndMsg(TmpObj, 0, L"", L"");
 		if (Cnt != 0) {
