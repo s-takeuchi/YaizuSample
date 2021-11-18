@@ -118,6 +118,8 @@ function initClientMessage() {
     addClientMessage('RESULT_UPDTIME', {'en':'Execution date and time', 'ja':'実行日時'});
     addClientMessage('RESULT_AGTNAME', {'en':'Agent Name', 'ja':'エージェント名'});
     addClientMessage('RESULT_CMDNAME', {'en':'Command Name', 'ja':'コマンド名'});
+    addClientMessage('RESULT_RESULT', {'en':'Execution Result', 'ja':'実行結果'});
+    addClientMessage('RESULT_EXITCODE', {'en':'Exit code', 'ja':'Exit code'});
     addClientMessage('RESULT_CONSOLECLOSE', {'en':'Close', 'ja':'閉じる'});
     addClientMessage('RESULT_OUTPUT', {'en':'Command output', 'ja':'コマンド出力'});
 
@@ -1541,81 +1543,120 @@ function switchCommandButton() {
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 
-function transDisplayCommandResult() {
-    apiCall('GET', '/api/commandresult/', null, 'API_GET_COMMANDRESULT', displayCommandResult);
-}
+{
+    let targetId = -1;
 
-function displayCommandResult() {
-    drowContainerFluid($('<div id="commandresult" class="col-xs-12" style="display:block"></div>'));
-    clearRsCommand();
-
-    if (statusCode['API_GET_COMMANDRESULT'] == -1 || statusCode['API_GET_COMMANDRESULT'] == 0) {
-        displayAlertDanger('#commandresult', getClientMessage('CONNERR'));
-        return;
+    function transDisplayCommandResult() {
+        apiCall('GET', '/api/commandresult/', null, 'API_GET_COMMANDRESULT', displayCommandResult);
     }
-    if (statusCode['API_GET_COMMANDRESULT'] != 200) {
-        displayAlertDanger('#commandresult', getSvrMsg(responseData['API_GET_COMMANDRESULT']));
-        return;
-    }
-
-    let resultTableDiv = $('<div id="resulttable" class="table-responsive">');
-    if (responseData['API_GET_COMMANDRESULT'].Data === undefined) {
-        resultTableDiv.append(getClientMessage('NORESULTEXIST'));
-        $('#commandresult').append(resultTableDiv);
-    } else {
-        let commandresultList = getArray(responseData['API_GET_COMMANDRESULT'].Data.Result);
-
-        let tableListData = $('<table>');
-        tableListData.addClass('table stktable table-striped');
     
-        let tHead = $('<thead class="thead-light">');
-        tHead.append('<tr>' +
-                     '<th>' + getClientMessage('RESULT_UPDTIME') + '</th>' + '<th>' + getClientMessage('RESULT_AGTNAME') + '</th>' + '<th>' + getClientMessage('RESULT_CMDNAME') + '</th>' + '<th></th>' +
-                     '</tr>');
-        tableListData.append(tHead);
-
-        let tBody = $('<tbody>');
-        for (let Loop = 0; Loop < commandresultList.length; Loop++) {
-            let dateUpdTime = getDateAndTimeStr(commandresultList[Loop].UpdTime);
-            let resultId = commandresultList[Loop].Id;
-            tBody.append('<tr><td>' + dateUpdTime + '</td><td>' + commandresultList[Loop].AgentName + '</td><td>' + commandresultList[Loop].CommandName + '</td><td><a id="resultAncId' + resultId + '">' + '<span class="icon icon-terminal" style="font-size:30px;"></span>' + '</a></td></tr>');
+    function displayCommandResult() {
+        drowContainerFluid($('<div id="commandresult" class="col-xs-12" style="display:block"></div>'));
+        clearRsCommand();
+    
+        if (statusCode['API_GET_COMMANDRESULT'] == -1 || statusCode['API_GET_COMMANDRESULT'] == 0) {
+            displayAlertDanger('#commandresult', getClientMessage('CONNERR'));
+            return;
         }
-        tableListData.append(tBody);
-
-        resultTableDiv.append(tableListData);
-        $('#commandresult').append(resultTableDiv);
-
-        for (let loop = 0; loop < commandresultList.length; loop++) {
-            let resultId = commandresultList[loop].Id;
-            $('#resultAncId' + resultId).on('click', function() {
-                transViewConsole(resultId);
-            });
+        if (statusCode['API_GET_COMMANDRESULT'] != 200) {
+            displayAlertDanger('#commandresult', getSvrMsg(responseData['API_GET_COMMANDRESULT']));
+            return;
         }
-
+    
+        let resultTableDiv = $('<div id="resulttable" class="table-responsive">');
+        if (responseData['API_GET_COMMANDRESULT'].Data === undefined) {
+            resultTableDiv.append(getClientMessage('NORESULTEXIST'));
+            $('#commandresult').append(resultTableDiv);
+        } else {
+            let commandresultList = getArray(responseData['API_GET_COMMANDRESULT'].Data.Result);
+    
+            let tableListData = $('<table>');
+            tableListData.addClass('table stktable table-striped');
+        
+            let tHead = $('<thead class="thead-light">');
+            tHead.append('<tr>' +
+                         '<th>' + getClientMessage('RESULT_UPDTIME') + '</th>' + '<th>' + getClientMessage('RESULT_AGTNAME') + '</th>' + '<th>' + getClientMessage('RESULT_CMDNAME') + '</th>' + '<th>' + getClientMessage('RESULT_RESULT') + '</th>' +
+                         '</tr>');
+            tableListData.append(tHead);
+    
+            let tBody = $('<tbody>');
+            for (let Loop = 0; Loop < commandresultList.length; Loop++) {
+                let dateUpdTime = getDateAndTimeStr(commandresultList[Loop].UpdTime);
+                let resultId = commandresultList[Loop].Id;
+                let tmpStyle = '';
+                if (commandresultList[Loop].Status == 0) {
+                    tmpStyle = 'background-color:LightGreen;';
+                } else if (commandresultList[Loop].Status <= -980 && commandresultList[Loop].Status >= -989) {
+                    tmpStyle = 'background-color:LightSkyBlue;';
+                } else {
+                    tmpStyle = 'background-color:LightCoral;';
+                }
+        
+                tBody.append('<tr><td>' + dateUpdTime + '</td>' +
+                            '<td>' + commandresultList[Loop].AgentName + '</td>' +
+                            '<td>' + commandresultList[Loop].CommandName + '</td>' +
+                            '<td><div style="float:left;"><a id="resultAncId' + resultId + '">' + '<span class="icon icon-terminal" style="font-size:26px;"></span></a></div><div align="center" style="' + tmpStyle + 'float:left;">' + getStatusLabel(commandresultList[Loop].Status) + '</div></td></tr>');
+            }
+            tableListData.append(tBody);
+    
+            resultTableDiv.append(tableListData);
+            $('#commandresult').append(resultTableDiv);
+    
+            for (let loop = 0; loop < commandresultList.length; loop++) {
+                let resultId = commandresultList[loop].Id;
+                $('#resultAncId' + resultId).on('click', function() {
+                    transViewConsole(resultId);
+                });
+            }
+    
+        }
+        resizeComponent();
     }
-    resizeComponent();
-}
-
-function transViewConsole(resultId) {
-    apiCall('GET', '/api/commandresult/' + resultId + '/', null, 'API_GET_OUTPUT', viewConsole);
-}
-
-function viewConsole() {
-    let consoleDlg = $('<div id="viewconsole"/>');
-    showInputModal('<h5 class="modal-title">' + getClientMessage('RESULT_OUTPUT') + '</h5>', consoleDlg);
-
-    if (statusCode['API_GET_OUTPUT'] == -1 || statusCode['API_GET_OUTPUT'] == 0) {
-        displayAlertDanger('#viewconsole', getClientMessage('CONNERR'));
-    } else if (statusCode['API_GET_OUTPUT'] != 200) {
-        displayAlertDanger('#viewconsole', getSvrMsg(responseData['API_GET_OUTPUT']));
-    } else {
-        let commandOutput = responseData['API_GET_OUTPUT'].Data.Result;
-        let consoleArea = $('<div style="overflow-wrap: break-word; padding: 6px 6px 10px 10px; color: #ffffff; background-color: #000000; font-family: monospace;"/>');
-        consoleArea.html(commandOutput.Output);
-        consoleDlg.append(consoleArea);
+    
+    function transViewConsole(resultId) {
+        targetId = resultId;
+        apiCall('GET', '/api/commandresult/' + resultId + '/', null, 'API_GET_OUTPUT', viewConsole);
     }
-    consoleDlg.append('<p/>')
-    consoleDlg.append('<button type="button" class="btn btn-dark" onclick="closeInputModal();">' + getClientMessage('RESULT_CONSOLECLOSE') + '</button> ');
+    
+    function viewConsole() {
+        let consoleDlg = $('<div id="viewconsole"/>');
+        showInputModal('<h5 class="modal-title">' + getClientMessage('RESULT_OUTPUT') + '</h5>', consoleDlg);
+    
+        if (statusCode['API_GET_OUTPUT'] == -1 || statusCode['API_GET_OUTPUT'] == 0) {
+            displayAlertDanger('#viewconsole', getClientMessage('CONNERR'));
+        } else if (statusCode['API_GET_OUTPUT'] != 200) {
+            displayAlertDanger('#viewconsole', getSvrMsg(responseData['API_GET_OUTPUT']));
+        } else {
+            let commandresultList = getArray(responseData['API_GET_COMMANDRESULT'].Data.Result);
+            for (let Loop = 0; Loop < commandresultList.length; Loop++) {
+                if (commandresultList[Loop].Id == targetId) {
+                    if (commandresultList[Loop].Status == 0) {
+                        tmpStyle = 'background-color:LightGreen;';
+                    } else if (commandresultList[Loop].Status <= -980 && commandresultList[Loop].Status >= -989) {
+                        tmpStyle = 'background-color:LightSkyBlue;';
+                    } else {
+                        tmpStyle = 'background-color:LightCoral;';
+                    }
+                    consoleDlg.append(getClientMessage('RESULT_UPDTIME') + ' : ' + getDateAndTimeStr(commandresultList[Loop].UpdTime) + '<br/>');
+                    consoleDlg.append(getClientMessage('RESULT_AGTNAME') + ' : ' + commandresultList[Loop].AgentName + '<br/>');
+                    consoleDlg.append(getClientMessage('RESULT_CMDNAME') + ' : ' + commandresultList[Loop].CommandName + '<br/>');
+                    consoleDlg.append(getClientMessage('RESULT_RESULT') + ' : ' + '<div style="' + tmpStyle + '">' + getStatusDetailLabel(commandresultList[Loop].Status) + '</div>');
+
+                    let commandOutput = responseData['API_GET_OUTPUT'].Data.Result;
+                    let consoleArea = $('<div style="overflow-wrap: break-word; padding: 6px 6px 10px 10px; color: #ffffff; background-color: #000000; font-family: monospace;"/>');
+                    consoleArea.html(commandOutput.Output);
+                    consoleDlg.append(consoleArea);
+                    if (commandresultList[Loop].Status == 0 ||
+                        commandresultList[Loop].Status == 1 ||
+                        commandresultList[Loop].Status == -991) {
+                            consoleDlg.append(getClientMessage('RESULT_EXITCODE') + ' : ' + commandresultList[Loop].ExitCode + '<br/>');
+                        }
+                }
+            }
+        }
+        consoleDlg.append('<p/>')
+        consoleDlg.append('<button type="button" class="btn btn-dark" onclick="closeInputModal();">' + getClientMessage('RESULT_CONSOLECLOSE') + '</button> ');
+    }
 }
 
 ////////////////////////////////////////////////////////////////////////////////

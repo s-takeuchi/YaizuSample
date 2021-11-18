@@ -101,6 +101,8 @@ StkObject* ApiGetCommandResult::ExecuteImpl(StkObject* ReqObj, int Method, wchar
 				TmpObjC->AppendChildElement(new StkObject(L"CommandName", CommandName[Loop]));
 				TmpObjC->AppendChildElement(new StkObject(L"UpdTime", UpdTimeStr));
 				TmpObjC->AppendChildElement(new StkObject(L"Id", Id[Loop]));
+				TmpObjC->AppendChildElement(new StkObject(L"Status", Status[Loop]));
+				TmpObjC->AppendChildElement(new StkObject(L"ExitCode", ExitCode[Loop]));
 				TmpObjD->AppendChildElement(TmpObjC);
 			}
 			TmpObj->AppendChildElement(TmpObjD);
