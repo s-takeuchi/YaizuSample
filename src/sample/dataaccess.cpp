@@ -1068,21 +1068,29 @@ int DataAccess::GetCommandResult(wchar_t AgentName[DA_MAXNUM_OF_RESULT][DA_MAXLE
 			wchar_t TmpCommandName[DA_MAXLEN_OF_CMDNAME] = L"";
 			long long TmpUpdTime = 0;
 			int TmpId = 0;
+			int TmpStatus = 0;
+			int TmpExitCode = 0;
 			//
 			StkPlWcsCpy(TmpAgentName, DA_MAXLEN_OF_AGTNAME, AgentName[Loop1]);
 			StkPlWcsCpy(TmpCommandName, DA_MAXLEN_OF_CMDNAME, CommandName[Loop1]);
 			TmpUpdTime = UpdTime[Loop1];
 			TmpId = Id[Loop1];
+			TmpStatus = Status[Loop1];
+			TmpExitCode = ExitCode[Loop1];
 			//
 			StkPlWcsCpy(AgentName[Loop1], DA_MAXLEN_OF_AGTNAME, AgentName[MinTimeIndex]);
 			StkPlWcsCpy(CommandName[Loop1], DA_MAXLEN_OF_CMDNAME, CommandName[MinTimeIndex]);
 			UpdTime[Loop1] = UpdTime[MinTimeIndex];
 			Id[Loop1] = Id[MinTimeIndex];
+			Status[Loop1] = Status[MinTimeIndex];
+			ExitCode[Loop1] = ExitCode[MinTimeIndex];
 			//
 			StkPlWcsCpy(AgentName[MinTimeIndex], DA_MAXLEN_OF_AGTNAME, TmpAgentName);
 			StkPlWcsCpy(CommandName[MinTimeIndex], DA_MAXLEN_OF_CMDNAME, TmpCommandName);
 			UpdTime[MinTimeIndex] = TmpUpdTime;
 			Id[MinTimeIndex] = TmpId;
+			Status[MinTimeIndex] = TmpStatus;
+			ExitCode[MinTimeIndex] = TmpExitCode;
 		}
 	}
 
