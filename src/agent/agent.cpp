@@ -353,6 +353,9 @@ int CommonProcess(StkObject* CommandSearch, char TmpTime[64], StkWebAppSend* Snd
 					// Default = UTF8
 					TmpScript = StkPlCreateUtf8FromWideChar(TmpScriptWc);
 				}
+			} else {
+				TmpScript = new char[1];
+				TmpScript[0] = '\0';
 			}
 
 			{
@@ -412,10 +415,12 @@ int CommonProcess(StkObject* CommandSearch, char TmpTime[64], StkWebAppSend* Snd
 			for (int Loop = 0; Loop < TmpServerFileNameCount; Loop++) {
 				if (TmpServerFileName[Loop] != NULL && TmpServerFileSize[Loop] >= 0 && StkPlStrCmp(TmpServerFileName[Loop], "") != 0) {
 					if (GetAndSaveFile(TmpServerFileName[Loop], TmpServerFileSize[Loop], SndObj) != 200) {
+						delete TmpScript;
 						SendCommandResult(OperationFlag, CmdName, RESULTCODE_ERROR_SERVERFILE, -1, SndObj);
 						return RESULTCODE_ERROR_SERVERFILE;
 					}
 				} else if (TmpServerFileName != NULL && StkPlStrCmp(TmpServerFileName[Loop], "") != 0 && TmpServerFileSize[Loop] < 0) {
+					delete TmpScript;
 					SendCommandResult(OperationFlag, CmdName, RESULTCODE_ERROR_SERVERFILE, -1, SndObj);
 					return RESULTCODE_ERROR_SERVERFILE;
 				}
