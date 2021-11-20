@@ -272,7 +272,7 @@ int SendCommandResult(bool OperationFlag, wchar_t CmdName[FILENAME_MAX], int Sta
 
 int CommonProcess(StkObject* CommandSearch, char TmpTime[64], StkWebAppSend* SndObj, bool OperationFlag)
 {
-	int ReturnCode = RESULTCODE_NOSCRIPT;
+	int ReturnCode = 0;
 	int ResultFlag = 0;
 
 	while (CommandSearch) {
@@ -286,7 +286,7 @@ int CommonProcess(StkObject* CommandSearch, char TmpTime[64], StkWebAppSend* Snd
 			wchar_t CmdName[FILENAME_MAX] = L"";
 			char* TmpScript = NULL;
 			wchar_t* TmpScriptWc = NULL;
-			int TmpType = -1;
+			int TmpType = -1; // 0:Linux, 1:Windows
 			char TmpServerFileName[5][FILENAME_MAX] = {"", "", "", "", ""};
 			char TmpAgentFileName[5][FILENAME_MAX] = { "", "", "", "", "" };
 			int TmpServerFileSize[5] = {-1, -1, -1, -1, -1};
@@ -426,14 +426,16 @@ int CommonProcess(StkObject* CommandSearch, char TmpTime[64], StkWebAppSend* Snd
 				}
 			}
 
+			// Platform error detection
+			if (TmpType != AGT_PLATFORM) {
+				delete TmpScript;
+				SendCommandResult(OperationFlag, CmdName, RESULTCODE_ERROR_PLATFORM, -1, SndObj);
+				return RESULTCODE_ERROR_PLATFORM;
+			}
+
 			// Execute script
 			// Generate and execute script
 			if (TmpScript != NULL && StkPlStrCmp(TmpScript, "") != 0 && (TmpType == 0 || TmpType == 1)) {
-				if (TmpType != AGT_PLATFORM) {
-					delete TmpScript;
-					SendCommandResult(OperationFlag, CmdName, RESULTCODE_ERROR_PLATFORM, -1, SndObj);
-					return RESULTCODE_ERROR_PLATFORM;
-				}
 				if (TmpType == 0) {
 					if (OperationFlag) {
 						StkPlWriteFile(L"aaa-operation.sh", TmpScript, StkPlStrLen(TmpScript));
@@ -467,30 +469,6 @@ int CommonProcess(StkObject* CommandSearch, char TmpTime[64], StkWebAppSend* Snd
 				//
 			}
 
-			// Load and post file
-			for (int Loop = 0; Loop < TmpAgentFileNameCount; Loop++) {
-				if (TmpAgentFileName[Loop] != NULL && StkPlStrCmp(TmpAgentFileName[Loop], "") != 0) {
-					if (LoadAndPostFile(TmpAgentFileName[Loop], TYPE_FILE, CmdName, -1, -1, SndObj) != 200) {
-						delete TmpScript;
-						SendCommandResult(OperationFlag, CmdName, RESULTCODE_ERROR_AGENTFILE, -1, SndObj);
-						return RESULTCODE_ERROR_AGENTFILE;
-					}
-				}
-			}
-
-			// Normal end
-			if (ReturnCode == 0 && ResultFlag == 0) {
-				delete TmpScript;
-				SendCommandResult(OperationFlag, CmdName, 0, ReturnCode, SndObj);
-				return 0;
-			}
-
-			if (ReturnCode != 0 && ResultFlag == 0) {
-				delete TmpScript;
-				SendCommandResult(OperationFlag, CmdName, 1, ReturnCode, SndObj);
-				return 1;
-			}
-
 			// Timeout error
 			if (ReturnCode == -2 && ResultFlag != 0) {
 				delete TmpScript;
@@ -503,6 +481,31 @@ int CommonProcess(StkObject* CommandSearch, char TmpTime[64], StkWebAppSend* Snd
 				delete TmpScript;
 				SendCommandResult(OperationFlag, CmdName, RESULTCODE_ERROR_CMDRESULT, -1, SndObj);
 				return RESULTCODE_ERROR_CMDRESULT;
+			}
+
+			// Load and post file
+			for (int Loop = 0; Loop < TmpAgentFileNameCount; Loop++) {
+				if (TmpAgentFileName[Loop] != NULL && StkPlStrCmp(TmpAgentFileName[Loop], "") != 0) {
+					if (LoadAndPostFile(TmpAgentFileName[Loop], TYPE_FILE, CmdName, -1, -1, SndObj) != 200) {
+						delete TmpScript;
+						SendCommandResult(OperationFlag, CmdName, RESULTCODE_ERROR_AGENTFILE, ReturnCode, SndObj);
+						return RESULTCODE_ERROR_AGENTFILE;
+					}
+				}
+			}
+
+			// Normal end
+			if (ReturnCode == 0 && ResultFlag == 0) {
+				delete TmpScript;
+				SendCommandResult(OperationFlag, CmdName, 0, ReturnCode, SndObj);
+				return 0;
+			}
+
+			// Failed
+			if (ReturnCode != 0 && ResultFlag == 0) {
+				delete TmpScript;
+				SendCommandResult(OperationFlag, CmdName, 1, ReturnCode, SndObj);
+				return 1;
 			}
 
 			delete TmpScript;
