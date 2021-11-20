@@ -314,11 +314,11 @@ Get command information for status acquisition<br/>
       "Type" : 0,
       "Script" : "echo hello!!",
       "ServerFile" : [
-        {"ServerFileName" : "aaa.dat", "ServerFileSize" : 65535,},
-        {"ServerFileName" : "bbb.dat", "ServerFileSize" : 65535,},
-        {"ServerFileName" : "ccc.dat", "ServerFileSize" : 65535,},
-        {"ServerFileName" : "ddd.dat", "ServerFileSize" : 65535,},
-        {"ServerFileName" : "eee.dat", "ServerFileSize" : 65535,}
+        {"ServerFileName" : "aaa.dat", "ServerFileSize" : 65535},
+        {"ServerFileName" : "bbb.dat", "ServerFileSize" : 65535},
+        {"ServerFileName" : "ccc.dat", "ServerFileSize" : 65535},
+        {"ServerFileName" : "ddd.dat", "ServerFileSize" : 65535},
+        {"ServerFileName" : "eee.dat", "ServerFileSize" : 65535}
       ],
       "AgentFileName" : ["ppp.dat", "qqq.dat", "rrr.dat", "sss.dat", "ttt.dat"],
       "Timeout" : 30
@@ -603,7 +603,9 @@ Store file.<br/>
   "FileSize" : 8,
   "Type" : 1,
   "AgentName" : "agent name",
-  "CommandName" : "command name"
+  "CommandName" : "command name",
+  "Status" : 0,
+  "ExitCode" : 0
 }
 </pre>
 <table class="tblstyle">
@@ -614,6 +616,8 @@ Store file.<br/>
 <tr><td>Type</td><td>String</td><td>0:Normal file upload, 1:Command execution result upload</td></tr>
 <tr><td>AgentName</td><td>String</td><td>Agent name. Specify name when "Type" is 1.</td></tr>
 <tr><td>CommandName</td><td>String</td><td>Command name.  Specify name when "Type" is 1.</td></tr>
+<tr><td>Status</td><td>Integer</td><td>Command execution status. Specify this when "Type" is 1.</td></tr>
+<tr><td>ExitCode</td><td>Integer</td><td>Exit code of the command. Specify this when "Type" is 1.</td></tr>
 </table><br/>
 </li>
 <li>Response
@@ -729,7 +733,9 @@ Delete the specified file.<br/>
       "AgentName" : "agent name",
       "CommandName" : "command name",
       "UpdTime" : "00000000ffffffff",
-      "Id" : 123
+      "Id" : 123,
+      "Status" : 0,
+      "ExitCode" : 0
     }
   }
 }
@@ -742,7 +748,7 @@ Delete the specified file.<br/>
   "MsgJpn" : "あいう",
   "Data" : {
     "Result" : {
-      "Output" : "00FF00FF00FF00FF"
+      "Output" : "abcdefg...."
     }
   }
 }
@@ -762,6 +768,8 @@ Delete the specified file.<br/>
         <tr><td>CommandName</td><td>String</td><td>Command name</td></tr>
         <tr><td>UpdTime</td><td>String</td><td>Hexadecimal explession in 16 characters of file update time (unix epoch time)</td></tr>
         <tr><td>Id</td><td>Integer</td><td>Command execution result ID</td></tr>
+        <tr><td>Status</td><td>Integer</td><td>Command execution status</td></tr>
+        <tr><td>ExitCode</td><td>Integer</td><td>Exit code of the command</td></tr>
       </table><br/>
     </li>
   </ul>
