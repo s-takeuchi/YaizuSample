@@ -94,7 +94,10 @@ Acquires server information of YaizuSample.<br/>
 }
 </pre>
 <table class="tblstyle">
-<tr><td>Code</td><td>Integer</td><td>Result code. 0:success(HTTP status code=200)，4206:Authorization error(HTTP status code=401)</td></tr>
+<tr><td>Code</td><td>Integer</td><td>Result code. 0:success(HTTP status code=200),
+                                                  4206:Authorization error(HTTP status code=401),
+                                                  4204:Access Right error(HTTP status code=403),
+                                                </td></tr>
 <tr><td>MsgEng</td><td>String</td><td>English message. Empty string is returned when result code is 0.</td></tr>
 <tr><td>MsgJpn</td><td>String</td><td>Japanese message. Empty string is returned when result code is 0.</td></tr>
 <tr><td>Data</td><td>Element</td><td>Not returned when result code is not zero.</td></tr>

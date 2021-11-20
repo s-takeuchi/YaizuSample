@@ -714,15 +714,19 @@ function transDisplayServerInfo() {
 }
 
 function displayServerInfo() {
-    let serverInfoDlg = $('<div/>')
+    let serverInfoDlg = $('<div id="serverinfo"/>')
     showInputModal('<h5 class="modal-title">' + getClientMessage('SERVERINFO') + '</h5>', serverInfoDlg);
 
     if (statusCode['API_GET_SVRINFO'] == -1 || statusCode['API_GET_SVRINFO'] == 0) {
-        displayAlertDanger(serverInfoDlg, getClientMessage('CONNERR'));
+        displayAlertDanger("#serverinfo", getClientMessage('CONNERR'));
+        serverInfoDlg.append('<p></p>');
+        serverInfoDlg.append('<button type="button" id="Cancel" class="btn btn-dark" onclick="closeInputModal()">' + getClientMessage('SICLOSE') + '</button> ');
         return;
     }
     if (statusCode['API_GET_SVRINFO'] != 200) {
-        displayAlertDanger(serverInfoDlg, getSvrMsg(responseData['API_GET_SVRINFO']));
+        displayAlertDanger("#serverinfo", getSvrMsg(responseData['API_GET_SVRINFO']));
+        serverInfoDlg.append('<p></p>');
+        serverInfoDlg.append('<button type="button" id="Cancel" class="btn btn-dark" onclick="closeInputModal()">' + getClientMessage('SICLOSE') + '</button> ');
         return;
     }
 

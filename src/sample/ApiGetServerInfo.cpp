@@ -21,6 +21,11 @@ StkObject* ApiGetServerInfo::ExecuteImpl(StkObject* ReqObj, int Method, wchar_t 
 		*ResultCode = 401;
 		return TmpObj;
 	}
+	if (!IsAdminUser(Token)) {
+		AddCodeAndMsg(TmpObj, MSG_NO_EXEC_RIGHT, MessageProc::GetMsgEng(MSG_NO_EXEC_RIGHT), MessageProc::GetMsgJpn(MSG_NO_EXEC_RIGHT));
+		*ResultCode = 403;
+		return TmpObj;
+	}
 
 	// Build time
 	wchar_t BuildDate[32] = L"";
