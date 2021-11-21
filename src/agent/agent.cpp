@@ -272,8 +272,8 @@ int SendCommandResult(bool OperationFlag, wchar_t CmdName[FILENAME_MAX], int Sta
 
 int CommonProcess(StkObject* CommandSearch, StkWebAppSend* SndObj, bool OperationFlag)
 {
-	int ReturnCode = 0;
-	int ResultFlag = 0;
+	int ReturnCode = RESULTCODE_NOSCRIPT;
+	int ResultFlag = -1;
 
 	while (CommandSearch) {
 		if (StkPlWcsCmp(CommandSearch->GetName(), L"Data") == 0) {
@@ -282,6 +282,9 @@ int CommonProcess(StkObject* CommandSearch, StkWebAppSend* SndObj, bool Operatio
 		}
 
 		if (StkPlWcsCmp(CommandSearch->GetName(), L"Command") == 0) {
+			ReturnCode = 0;
+			ResultFlag = 0;
+
 			char* TmpName = NULL;
 			wchar_t CmdName[FILENAME_MAX] = L"";
 			char* TmpScript = NULL;
