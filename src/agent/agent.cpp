@@ -270,7 +270,7 @@ int SendCommandResult(bool OperationFlag, wchar_t CmdName[FILENAME_MAX], int Sta
 	return Status;
 }
 
-int CommonProcess(StkObject* CommandSearch, char TmpTime[64], StkWebAppSend* SndObj, bool OperationFlag)
+int CommonProcess(StkObject* CommandSearch, StkWebAppSend* SndObj, bool OperationFlag)
 {
 	int ReturnCode = 0;
 	int ResultFlag = 0;
@@ -361,7 +361,7 @@ int CommonProcess(StkObject* CommandSearch, char TmpTime[64], StkWebAppSend* Snd
 			{
 				// Logging begin
 				char LogDat[4096] = "";
-				StkPlSPrintf(LogDat, 4096, "Cmd received : [Name=%s]",	TmpName != NULL ? TmpName : "null");
+				StkPlSPrintf(LogDat, 4096, "Cmd received (%s) : [Name=%s]", (OperationFlag)? "OP" : "SA",	TmpName != NULL ? TmpName : "null");
 				MessageProc::AddLog(LogDat, MessageProc::LOG_TYPE_INFO);
 
 				bool FndSfFlag = false;
@@ -515,6 +515,59 @@ int CommonProcess(StkObject* CommandSearch, char TmpTime[64], StkWebAppSend* Snd
 	return ReturnCode;
 }
 
+// Create and generate logs for error
+// CmdType [in] : 0=Operation command, 1:Status acquisition command
+// Result [in] : HTTP Status code
+void Log4Error(int CmdType, int Result)
+{
+	char TmpLog[128] = "";
+	if (Result == 0) {
+		StkPlSPrintf(TmpLog, 128, "Cmd error (%s) : Connection error", (CmdType == 0)? "OP" : "SA");
+	} else if (Result == 200) {
+		StkPlSPrintf(TmpLog, 128, "Cmd error (%s) : Status code = 200 without response data", (CmdType == 0) ? "OP" : "SA");
+	} else {
+		StkPlSPrintf(TmpLog, 128, "Cmd error (%s) : Status code = %d", (CmdType == 0) ? "OP" : "SA", Result);
+	}
+	MessageProc::AddLog(TmpLog, MessageProc::LOG_TYPE_ERROR);
+}
+
+// Create and generate logs for response
+// CmdType [in] : 0=Operation command, 1:Status acquisition command
+// Status [in] : Status
+void Log4Result(int CmdType, int Status)
+{
+	char StatusStr[10] = "";
+	switch (Status) {
+	case -990: 
+		StkPlStrCpy(StatusStr, 10, "SFILE");
+		break;
+	case -991:
+		StkPlStrCpy(StatusStr, 10, "AFILE");
+		break;
+	case -992:
+		StkPlStrCpy(StatusStr, 10, "PLATF");
+		break;
+	case -993:
+		StkPlStrCpy(StatusStr, 10, "TIMEO");
+		break;
+	case -994:
+		StkPlStrCpy(StatusStr, 10, "AGDIR");
+		break;
+	case -995:
+		StkPlStrCpy(StatusStr, 10, "CMRLT");
+		break;
+	case 0:
+		StkPlStrCpy(StatusStr, 10, "SUCCS");
+		break;
+	default:
+		StkPlStrCpy(StatusStr, 10, "FAILD");
+		break;
+	}
+	char TmpLog[64] = "";
+	StkPlSPrintf(TmpLog, 128, "Cmd result (%s) : %s", (CmdType == 0) ? "OP" : "SA", StatusStr);
+	MessageProc::AddLog(TmpLog, MessageProc::LOG_TYPE_INFO);
+}
+
 int OperationLoop(int TargetId)
 {
 	int Result = 0;
@@ -544,10 +597,8 @@ int OperationLoop(int TargetId)
 				delete ResObjStart;
 
 				StkObject* CommandSearch = ResGetCommandForOp->GetFirstChildElement();
-				int ReturnCode = CommonProcess(CommandSearch, TmpTime, SoForTh2, true);
-				char TmpLog[64] = "";
-				StkPlSPrintf(TmpLog, 128, "Cmd result (OP) : %d", ReturnCode);
-				MessageProc::AddLog(TmpLog, MessageProc::LOG_TYPE_INFO);
+				int ReturnCode = CommonProcess(CommandSearch, SoForTh2, true);
+				Log4Result(0, ReturnCode);
 
 				StkObject* ResObjEnd = SoForTh2->SendRequestRecvResponse(StkWebAppSend::STKWEBAPP_METHOD_POST, "/api/agent/", GetAgentInfoForOpStatus(ReturnCode), &Result);
 				delete ResObjEnd;
@@ -556,9 +607,7 @@ int OperationLoop(int TargetId)
 		}
 	} else {
 		if (ErrFlag == false) {
-			char TmpLog[128] = "";
-			StkPlSPrintf(TmpLog, 128, "Cmd error (OP) : %d", Result);
-			MessageProc::AddLog(TmpLog, MessageProc::LOG_TYPE_ERROR);
+			Log4Error(0, Result);
 			ErrFlag = true;
 		}
 		StkPlSleepMs(30000);
@@ -593,10 +642,8 @@ int StatusLoop(int TargetId)
 				//
 				StkObject* CommandSearch = ResGetCommandForStatus->GetFirstChildElement();
 
-				int ReturnCode = CommonProcess(CommandSearch, TmpTime, SoForTh1, false);
-				char TmpLog[64] = "";
-				StkPlSPrintf(TmpLog, 64, "Cmd result (SA) : %d", ReturnCode);
-				MessageProc::AddLog(TmpLog, MessageProc::LOG_TYPE_INFO);
+				int ReturnCode = CommonProcess(CommandSearch, SoForTh1, false);
+				Log4Result(1, ReturnCode);
 
 				StkObject* ResObj = SoForTh1->SendRequestRecvResponse(StkWebAppSend::STKWEBAPP_METHOD_POST, "/api/agent/", GetAgentInfo(ReturnCode), &Result);
 				delete ResObj;
@@ -607,9 +654,7 @@ int StatusLoop(int TargetId)
 		}
 	} else {
 		if (ErrFlag == false) {
-			char TmpLog[128] = "";
-			StkPlSPrintf(TmpLog, 128, "Cmd error (SA) : %d", Result);
-			MessageProc::AddLog(TmpLog, MessageProc::LOG_TYPE_ERROR);
+			Log4Error(1, Result);
 			ErrFlag = true;
 		}
 		StkPlSleepMs(30000);
@@ -722,6 +767,7 @@ void StartXxx(wchar_t HostOrIpAddr[256], int PortNum, int InvalidDirectory, char
 	SoForTh2->SetSendBufSize(5000000);
 	SoForTh2->SetRecvBufSize(5000000);
 
+	bool ErrFlag = false;
 	while (true) {
 		int Result = 0;
 		StkObject* ResObj = NULL;
@@ -738,10 +784,18 @@ void StartXxx(wchar_t HostOrIpAddr[256], int PortNum, int InvalidDirectory, char
 			StkPlSleepMs(5000);
 			break;
 		} else {
+			if (!ErrFlag) {
+				MessageProc::AddLog("Waiting for connection establishment...", MessageProc::LOG_TYPE_ERROR);
+				ErrFlag = true;
+			}
 			StkPlSleepMs(30000);
 		}
 	}
-	MessageProc::AddLog("Initial notification done", MessageProc::LOG_TYPE_INFO);
+	if (InvalidDirFlag) {
+		MessageProc::AddLog("Wrong work directory (\"AGDIR\")", MessageProc::LOG_TYPE_ERROR);
+	} else {
+		MessageProc::AddLog("Initial notification done (\"START\")", MessageProc::LOG_TYPE_INFO);
+	}
 	AddStkThread(1, L"StatusLoop", L"", NULL, NULL, StatusLoop, NULL, NULL);
 	AddStkThread(2, L"OperationLoop", L"", NULL, NULL, OperationLoop, NULL, NULL);
 	StartAllOfStkThreads();
