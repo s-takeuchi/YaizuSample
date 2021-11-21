@@ -116,8 +116,8 @@ function initClientMessage() {
     addClientMessage('COMMANDLABEL', {'en':'Command : ', 'ja':'コマンド : '});
 
     addClientMessage('RESULT_UPDTIME', {'en':'Execution date and time', 'ja':'実行日時'});
-    addClientMessage('RESULT_AGTNAME', {'en':'Agent Name', 'ja':'エージェント名'});
-    addClientMessage('RESULT_CMDNAME', {'en':'Command Name', 'ja':'コマンド名'});
+    addClientMessage('RESULT_AGTNAME', {'en':'Agent', 'ja':'エージェント'});
+    addClientMessage('RESULT_CMDNAME', {'en':'Command', 'ja':'コマンド'});
     addClientMessage('RESULT_RESULT', {'en':'Execution Result', 'ja':'実行結果'});
     addClientMessage('RESULT_EXITCODE', {'en':'Exit code', 'ja':'Exit code'});
     addClientMessage('RESULT_CONSOLECLOSE', {'en':'Close', 'ja':'閉じる'});
@@ -287,7 +287,7 @@ function displayAgentInfo() {
         }
         tBody.append('<tr>' +
                      tmpChkBoxStr +
-                     '<td><a id="agentprop' + Loop + '" style="cursor: pointer;">' + AgentInfo[Loop].Name + '&nbsp;&nbsp;<span class="icon icon-eye" style="font-size:18px;"></span></a></td>' +
+                     '<td><a id="agentprop' + Loop + '" style="cursor: pointer;"><u>' + AgentInfo[Loop].Name + '</u></a></td>' +
                      '<td><div align="center" id="statusTd' + Loop + '" data-toggle="tooltip" title="' + getTooltipStr() + '">' + getStatusLabel(AgentInfo[Loop].Status) + '</div></td>' +
                      '<td class="d-none d-sm-table-cell">' + cmdNameStatus + '</td>' +
                      '<td class="d-none d-lg-table-cell">' + updTimeStr + '</td>' +
@@ -889,7 +889,7 @@ function displayFileMgmt() {
         let tHead = $('<thead class="thead-light">');
         tHead.append('<tr>' +
                      tmpChkBoxClm +
-                     '<th>' + getClientMessage('FILE_NAME') + '</th>' + '<th>' + getClientMessage('FILE_SIZE') + '</th>' + '<th>' + getClientMessage('FILE_UPDATE_TIME') + '</th>' +
+                     '<th>' + getClientMessage('FILE_NAME') + '</th>' + '<th>' + getClientMessage('FILE_SIZE') + '</th>' + '<th class="d-none d-md-table-cell">' + getClientMessage('FILE_UPDATE_TIME') + '</th>' +
                      '</tr>');
         tableListData.append(tHead);
 
@@ -901,7 +901,7 @@ function displayFileMgmt() {
             }
 
             let dateUpdTime = getDateAndTimeStr(fileList[Loop].UpdTime);
-            tBody.append('<tr>' + tmpChkBoxStr + '<td><a id="fileInfoAncId' + Loop + '" style="cursor: pointer;">' + fileList[Loop].Name + '&nbsp;&nbsp;<span class="icon icon-cloud-download" style="font-size:18px;"></span></a></td><td>' + fileList[Loop].Size + '</td><td>' + dateUpdTime + '</td></tr>');
+            tBody.append('<tr>' + tmpChkBoxStr + '<td><a id="fileInfoAncId' + Loop + '" style="cursor: pointer;"><u>' + fileList[Loop].Name + '</u></a></td><td>' + fileList[Loop].Size + '</td><td class="d-none d-md-table-cell">' + dateUpdTime + '</td></tr>');
         }
 
         tableListData.append(tBody);
@@ -1232,7 +1232,7 @@ function displayCommand() {
             }
 
             tBody.append('<tr>' + tmpChkBoxStr +
-                        '<td><a id="cmdprop' + commandList[Loop].Id + '" style="cursor: pointer;">' + commandList[Loop].Name + '&nbsp;&nbsp;<span class="icon icon-pencil" style="font-size:18px;"></span></a></td>' +
+                        '<td><a id="cmdprop' + commandList[Loop].Id + '" style="cursor: pointer;"><u>' + commandList[Loop].Name + '</u></a></td>' +
                         '<td>' + typeStr + '</td>' +
                         '<td class="d-none d-lg-table-cell">' + filesToAgt + '</td>' +
                         '<td class="d-none d-lg-table-cell">' + filesToSvr + '</td></tr>');
@@ -1579,7 +1579,7 @@ function switchCommandButton() {
         
             let tHead = $('<thead class="thead-light">');
             tHead.append('<tr>' +
-                         '<th>' + getClientMessage('RESULT_UPDTIME') + '</th>' + '<th>' + getClientMessage('RESULT_AGTNAME') + '</th>' + '<th>' + getClientMessage('RESULT_CMDNAME') + '</th>' + '<th>' + getClientMessage('RESULT_RESULT') + '</th>' +
+                         '<th>' + getClientMessage('RESULT_UPDTIME') + '</th>' + '<th>' + getClientMessage('RESULT_AGTNAME') + ' / ' + getClientMessage('RESULT_CMDNAME') + '</th>' + '<th>' + getClientMessage('RESULT_RESULT') + '</th>' +
                          '</tr>');
             tableListData.append(tHead);
     
@@ -1597,8 +1597,7 @@ function switchCommandButton() {
                 }
         
                 tBody.append('<tr><td>' + dateUpdTime + '</td>' +
-                            '<td>' + commandresultList[Loop].AgentName + '</td>' +
-                            '<td>' + commandresultList[Loop].CommandName + '</td>' +
+                            '<td>' + commandresultList[Loop].AgentName + ' / ' + commandresultList[Loop].CommandName + '</td>' +
                             '<td><div style="float:left;"><a id="resultAncId' + resultId + '" style="cursor: pointer;">' + '<span class="icon icon-terminal" style="font-size:26px;"></span></a></div><div align="center" style="' + tmpStyle + 'float:left;">' + getStatusLabel(commandresultList[Loop].Status) + '</div></td></tr>');
             }
             tableListData.append(tBody);
