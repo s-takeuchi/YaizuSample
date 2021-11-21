@@ -248,9 +248,9 @@ function displayAgentInfo() {
                  '<th>' + getClientMessage('AINAME') + '</th>' +
                  '<th>' + getClientMessage('AISTATUS') + '</th>' +
                  '<th class="d-none d-sm-table-cell">' + getClientMessage('AISTATUSCMD') + '</th>' +
-                 '<th>' + getClientMessage('AISTATUSUPTIME') + '</th>' +
-                 '<th class="d-none d-lg-table-cell">' + getClientMessage('AIOPSTATUS') + '</th>' +
-                 '<th class="d-none d-lg-table-cell">' + getClientMessage('AIOPSTATUSCMD') + '</th>' +
+                 '<th class="d-none d-lg-table-cell">' + getClientMessage('AISTATUSUPTIME') + '</th>' +
+                 '<th>' + getClientMessage('AIOPSTATUS') + '</th>' +
+                 '<th class="d-none d-sm-table-cell">' + getClientMessage('AIOPSTATUSCMD') + '</th>' +
                  '<th class="d-none d-lg-table-cell">' + getClientMessage('AIOPEXECTIME') + '</th>' +
                  '</tr>');
     agentInfoData.append(tHead);
@@ -287,12 +287,12 @@ function displayAgentInfo() {
         }
         tBody.append('<tr>' +
                      tmpChkBoxStr +
-                     '<td><a id="agentprop' + Loop + '" style="cursor: pointer;">' + AgentInfo[Loop].Name + '</a></td>' +
+                     '<td><a id="agentprop' + Loop + '" style="cursor: pointer;">' + AgentInfo[Loop].Name + '&nbsp;&nbsp;<span class="icon icon-eye" style="font-size:18px;"></span></a></td>' +
                      '<td><div align="center" id="statusTd' + Loop + '" data-toggle="tooltip" title="' + getTooltipStr() + '">' + getStatusLabel(AgentInfo[Loop].Status) + '</div></td>' +
                      '<td class="d-none d-sm-table-cell">' + cmdNameStatus + '</td>' +
-                     '<td>' + updTimeStr + '</td>' +
-                     '<td class="d-none d-lg-table-cell"><div align="center" id="opStatusTd' + Loop + '" data-toggle="tooltip" title="' + getTooltipStr() + '">' + getStatusLabel(AgentInfo[Loop].OpStatus) + '</div></td>' +
-                     '<td class="d-none d-lg-table-cell">' + cmdNameOp + '</td>' +
+                     '<td class="d-none d-lg-table-cell">' + updTimeStr + '</td>' +
+                     '<td><div align="center" id="opStatusTd' + Loop + '" data-toggle="tooltip" title="' + getTooltipStr() + '">' + getStatusLabel(AgentInfo[Loop].OpStatus) + '</div></td>' +
+                     '<td class="d-none d-sm-table-cell">' + cmdNameOp + '</td>' +
                      '<td class="d-none d-lg-table-cell">' + opeTimeStr + '</td>' +
                      '</tr>');
         // Draw rectangle for agent status
@@ -901,7 +901,7 @@ function displayFileMgmt() {
             }
 
             let dateUpdTime = getDateAndTimeStr(fileList[Loop].UpdTime);
-            tBody.append('<tr>' + tmpChkBoxStr + '<td><a id="fileInfoAncId' + Loop + '" style="cursor: pointer;">' + fileList[Loop].Name + '</a></td><td>' + fileList[Loop].Size + '</td><td>' + dateUpdTime + '</td></tr>');
+            tBody.append('<tr>' + tmpChkBoxStr + '<td><a id="fileInfoAncId' + Loop + '" style="cursor: pointer;">' + fileList[Loop].Name + '&nbsp;&nbsp;<span class="icon icon-cloud-download" style="font-size:18px;"></span></a></td><td>' + fileList[Loop].Size + '</td><td>' + dateUpdTime + '</td></tr>');
         }
 
         tableListData.append(tBody);
@@ -1599,7 +1599,7 @@ function switchCommandButton() {
                 tBody.append('<tr><td>' + dateUpdTime + '</td>' +
                             '<td>' + commandresultList[Loop].AgentName + '</td>' +
                             '<td>' + commandresultList[Loop].CommandName + '</td>' +
-                            '<td><div style="float:left;"><a id="resultAncId' + resultId + '">' + '<span class="icon icon-terminal" style="font-size:26px;"></span></a></div><div align="center" style="' + tmpStyle + 'float:left;">' + getStatusLabel(commandresultList[Loop].Status) + '</div></td></tr>');
+                            '<td><div style="float:left;"><a id="resultAncId' + resultId + '" style="cursor: pointer;">' + '<span class="icon icon-terminal" style="font-size:26px;"></span></a></div><div align="center" style="' + tmpStyle + 'float:left;">' + getStatusLabel(commandresultList[Loop].Status) + '</div></td></tr>');
             }
             tableListData.append(tBody);
     
