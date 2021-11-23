@@ -101,6 +101,7 @@ function initClientMessage() {
     addClientMessage('COMNAME', {'en':'Command Name', 'ja':'コマンド名'});
     addClientMessage('COMFILESTOAGT', {'en':'File(s) Copied To Agent', 'ja':'エージェントにコピーされるファイル'});
     addClientMessage('COMFILESTOSVR', {'en':'File(s) Copied To Server', 'ja':'サーバーにコピーされるファイル'});
+    addClientMessage('COMSCRIPTDEF', {'en':'Script Definition', 'ja':'スクリプト定義'});
     addClientMessage('COMCOPYTOAGT', {'en':'File To Be Copied To Agent', 'ja':'エージェントにコピーされるファイル'});
     addClientMessage('COMTYPE', {'en':'Command Type', 'ja':'コマンド種別'});
     addClientMessage('COMSCRIPT', {'en':'Script', 'ja':'スクリプト'});
@@ -1231,6 +1232,7 @@ function displayCommand() {
                     '<th>' + getClientMessage('COMNAME') + '</th>' +
                     '<th>' + getClientMessage('COMTYPE') + '</th>' +
                     '<th class="d-none d-lg-table-cell">' + getClientMessage('COMFILESTOAGT') + '</th>' +
+                    '<th class="d-none d-lg-table-cell">' + getClientMessage('COMSCRIPTDEF') + '</th>' +
                     '<th class="d-none d-lg-table-cell">' + getClientMessage('COMFILESTOSVR') + '</th></tr>');
         commandListTable.append(tHead);
 
@@ -1264,10 +1266,16 @@ function displayCommand() {
                 }
             }
 
+            let scriptDef = '';
+            if (commandList[Loop].Script != null && commandList[Loop].Script !== '') {
+                scriptDef = '<div align="center"><span class="icon icon-checkmark" style="font-size:18px;"></span></div>';
+            }
+
             tBody.append('<tr>' + tmpChkBoxStr +
                         '<td><a id="cmdprop' + commandList[Loop].Id + '" style="cursor: pointer;"><u>' + commandList[Loop].Name + '</u></a></td>' +
                         '<td>' + typeStr + '</td>' +
                         '<td class="d-none d-lg-table-cell">' + filesToAgt + '</td>' +
+                        '<td class="d-none d-lg-table-cell">' + scriptDef + '</td>' +
                         '<td class="d-none d-lg-table-cell">' + filesToSvr + '</td></tr>');
         }
         commandListTable.append(tBody);
