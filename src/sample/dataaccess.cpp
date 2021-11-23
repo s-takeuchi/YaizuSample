@@ -1055,15 +1055,15 @@ int DataAccess::GetCommandResult(wchar_t AgentName[DA_MAXNUM_OF_RESULT][DA_MAXLE
 
 	for (int Loop1 = 0; Loop1 < Index; Loop1++) {
 		// Search max time
-		long long MinTime = 0x7fffffffffffffff;
-		int MinTimeIndex = -1;
+		long long MaxTime = 0;
+		int MaxTimeIndex = -1;
 		for (int Loop2 = Loop1; Loop2 < Index; Loop2++) {
-			if (MinTime > UpdTime[Loop2]) {
-				MinTime = UpdTime[Loop2];
-				MinTimeIndex = Loop2;
+			if (MaxTime < UpdTime[Loop2]) {
+				MaxTime = UpdTime[Loop2];
+				MaxTimeIndex = Loop2;
 			}
 		}
-		if (MinTimeIndex != -1) {
+		if (MaxTimeIndex != -1) {
 			wchar_t TmpAgentName[DA_MAXLEN_OF_AGTNAME] = L"";
 			wchar_t TmpCommandName[DA_MAXLEN_OF_CMDNAME] = L"";
 			long long TmpUpdTime = 0;
@@ -1078,19 +1078,19 @@ int DataAccess::GetCommandResult(wchar_t AgentName[DA_MAXNUM_OF_RESULT][DA_MAXLE
 			TmpStatus = Status[Loop1];
 			TmpExitCode = ExitCode[Loop1];
 			//
-			StkPlWcsCpy(AgentName[Loop1], DA_MAXLEN_OF_AGTNAME, AgentName[MinTimeIndex]);
-			StkPlWcsCpy(CommandName[Loop1], DA_MAXLEN_OF_CMDNAME, CommandName[MinTimeIndex]);
-			UpdTime[Loop1] = UpdTime[MinTimeIndex];
-			Id[Loop1] = Id[MinTimeIndex];
-			Status[Loop1] = Status[MinTimeIndex];
-			ExitCode[Loop1] = ExitCode[MinTimeIndex];
+			StkPlWcsCpy(AgentName[Loop1], DA_MAXLEN_OF_AGTNAME, AgentName[MaxTimeIndex]);
+			StkPlWcsCpy(CommandName[Loop1], DA_MAXLEN_OF_CMDNAME, CommandName[MaxTimeIndex]);
+			UpdTime[Loop1] = UpdTime[MaxTimeIndex];
+			Id[Loop1] = Id[MaxTimeIndex];
+			Status[Loop1] = Status[MaxTimeIndex];
+			ExitCode[Loop1] = ExitCode[MaxTimeIndex];
 			//
-			StkPlWcsCpy(AgentName[MinTimeIndex], DA_MAXLEN_OF_AGTNAME, TmpAgentName);
-			StkPlWcsCpy(CommandName[MinTimeIndex], DA_MAXLEN_OF_CMDNAME, TmpCommandName);
-			UpdTime[MinTimeIndex] = TmpUpdTime;
-			Id[MinTimeIndex] = TmpId;
-			Status[MinTimeIndex] = TmpStatus;
-			ExitCode[MinTimeIndex] = TmpExitCode;
+			StkPlWcsCpy(AgentName[MaxTimeIndex], DA_MAXLEN_OF_AGTNAME, TmpAgentName);
+			StkPlWcsCpy(CommandName[MaxTimeIndex], DA_MAXLEN_OF_CMDNAME, TmpCommandName);
+			UpdTime[MaxTimeIndex] = TmpUpdTime;
+			Id[MaxTimeIndex] = TmpId;
+			Status[MaxTimeIndex] = TmpStatus;
+			ExitCode[MaxTimeIndex] = TmpExitCode;
 		}
 	}
 
