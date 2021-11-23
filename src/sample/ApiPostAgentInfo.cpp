@@ -5,6 +5,46 @@
 #include "sample.h"
 #include "ApiPostAgentInfo.h"
 
+// Create and generate logs for response
+// StatusStr [out] : Acquired string shows status
+// Status [in] : Status
+void ApiPostAgentInfo::GetStatusStr(wchar_t StatusStr[10], int Status)
+{
+	switch (Status) {
+	case -981:
+		StkPlWcsCpy(StatusStr, 10, L"NOCMD");
+		break;
+	case -990:
+		StkPlWcsCpy(StatusStr, 10, L"SFILE");
+		break;
+	case -991:
+		StkPlWcsCpy(StatusStr, 10, L"AFILE");
+		break;
+	case -992:
+		StkPlWcsCpy(StatusStr, 10, L"PLATF");
+		break;
+	case -993:
+		StkPlWcsCpy(StatusStr, 10, L"TIMEO");
+		break;
+	case -994:
+		StkPlWcsCpy(StatusStr, 10, L"AGDIR");
+		break;
+	case -995:
+		StkPlWcsCpy(StatusStr, 10, L"CMRLT");
+		break;
+	case 0:
+		StkPlWcsCpy(StatusStr, 10, L"SUCCS");
+		break;
+	case 1:
+		StkPlWcsCpy(StatusStr, 10, L"FAILD");
+		break;
+	default:
+		StkPlWcsCpy(StatusStr, 10, L"UNKNOWN");
+		break;
+	}
+}
+
+
 StkObject* ApiPostAgentInfo::ExecuteImpl(StkObject* ReqObj, int Method, wchar_t UrlPath[StkWebAppExec::URL_PATH_LENGTH], int* ResultCode, wchar_t Locale[3], wchar_t* Token)
 {
 	wchar_t Name[DA_MAXLEN_OF_AGTNAME] = L"";
@@ -88,8 +128,8 @@ StkObject* ApiPostAgentInfo::ExecuteImpl(StkObject* ReqObj, int Method, wchar_t 
 			DataAccess::GetInstance()->GetCommandNameById(StatusCmd, CmdName);
 			wchar_t LogMsg[512] = L"";
 			wchar_t LogMsgJa[512] = L"";
-			StkPlSwPrintf(LogMsg, 256, L"%ls [%ls, %ls]", MessageProc::GetMsgEng(MSG_CMDSTATUSACQCHGD), Name, CmdName);
-			StkPlSwPrintf(LogMsgJa, 256, L"%ls [%ls, %ls]", MessageProc::GetMsgJpn(MSG_CMDSTATUSACQCHGD), Name, CmdName);
+			StkPlSwPrintf(LogMsg, 256, L"%ls [%ls, %ls]", MessageProc::GetMsgEng(MSG_CMDSTATUSACQCHGD), Name, (StatusCmd == -1)? L"(Cleared)" : CmdName);
+			StkPlSwPrintf(LogMsgJa, 256, L"%ls [%ls, %ls]", MessageProc::GetMsgJpn(MSG_CMDSTATUSACQCHGD), Name, (StatusCmd == -1)? L"(Cleared)" : CmdName);
 			EventLogging(LogMsg, LogMsgJa, UserId);
 		}
 		if (OpCmdFlag) {
@@ -119,8 +159,10 @@ StkObject* ApiPostAgentInfo::ExecuteImpl(StkObject* ReqObj, int Method, wchar_t 
 				DataAccess::GetInstance()->SetAgentInfoForTime(Name, 1);
 				wchar_t LogMsg[512] = L"";
 				wchar_t LogMsgJa[512] = L"";
-				StkPlSwPrintf(LogMsg, 256, L"%ls [%ls, %d]", MessageProc::GetMsgEng(MSG_CMDOPENDED), Name, OpStatus);
-				StkPlSwPrintf(LogMsgJa, 256, L"%ls [%ls, %d]", MessageProc::GetMsgJpn(MSG_CMDOPENDED), Name, OpStatus);
+				wchar_t OpStatusStr[10] = L"";
+				GetStatusStr(OpStatusStr, OpStatus);
+				StkPlSwPrintf(LogMsg, 256, L"%ls [%ls, %ls]", MessageProc::GetMsgEng(MSG_CMDOPENDED), Name, OpStatusStr);
+				StkPlSwPrintf(LogMsgJa, 256, L"%ls [%ls, %ls]", MessageProc::GetMsgJpn(MSG_CMDOPENDED), Name, OpStatusStr);
 				EventLogging(LogMsg, LogMsgJa, -1);
 			}
 		}

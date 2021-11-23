@@ -541,29 +541,34 @@ void Log4Result(int CmdType, int Status)
 {
 	char StatusStr[10] = "";
 	switch (Status) {
-	case -990: 
+	case RESULTCODE_NOSCRIPT:
+		return;
+	case -RESULTCODE_ERROR_SERVERFILE:
 		StkPlStrCpy(StatusStr, 10, "SFILE");
 		break;
-	case -991:
+	case -RESULTCODE_ERROR_AGENTFILE:
 		StkPlStrCpy(StatusStr, 10, "AFILE");
 		break;
-	case -992:
+	case -RESULTCODE_ERROR_PLATFORM:
 		StkPlStrCpy(StatusStr, 10, "PLATF");
 		break;
-	case -993:
+	case -RESULTCODE_ERROR_TIMEOUT:
 		StkPlStrCpy(StatusStr, 10, "TIMEO");
 		break;
-	case -994:
+	case -RESULTCODE_ERROR_INVALIDAGTDIR:
 		StkPlStrCpy(StatusStr, 10, "AGDIR");
 		break;
-	case -995:
+	case -RESULTCODE_ERROR_CMDRESULT:
 		StkPlStrCpy(StatusStr, 10, "CMRLT");
 		break;
 	case 0:
 		StkPlStrCpy(StatusStr, 10, "SUCCS");
 		break;
-	default:
+	case 1:
 		StkPlStrCpy(StatusStr, 10, "FAILD");
+		break;
+	default:
+		StkPlStrCpy(StatusStr, 10, "UNKNOWN");
 		break;
 	}
 	char TmpLog[64] = "";
