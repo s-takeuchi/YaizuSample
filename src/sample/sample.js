@@ -22,7 +22,7 @@ var svrinfo_msg = '';
 function initClientMessage() {
     addClientMessage('USER_MGMT', {'en':'User Management', 'ja':'ユーザー管理'});
     addClientMessage('USER_CHG_PW', {'en':'Change Password', 'ja':'パスワードの変更'});
-    addClientMessage('OPE_LOG', {'en':'Operation log', 'ja':'操作ログ'});
+    addClientMessage('EVENT_LOG', {'en':'Event log', 'ja':'イベントログ'});
     addClientMessage('SERVER_INFO', {'en':'Server info', 'ja':'サーバ情報'});
 
     addClientMessage('AGENTINFO', {'en':' Agent Info', 'ja':' Agent Info'});
@@ -2037,12 +2037,12 @@ function checkLoginAfterApiCall() {
         let usermenuContents = [];
         if (userRole == 1) {
             usermenuContents = [
-                { actApiName: 'transDisplayLogInfo()', title: getClientMessage('OPE_LOG') },
+                { actApiName: 'transDisplayLogInfo()', title: getClientMessage('EVENT_LOG') },
                 { actApiName: 'transDisplayChgPassword()', title: getClientMessage('USER_CHG_PW') }
             ];
         } else {
             usermenuContents = [
-                { actApiName: 'transDisplayLogInfo()', title: getClientMessage('OPE_LOG') },
+                { actApiName: 'transDisplayLogInfo()', title: getClientMessage('EVENT_LOG') },
                 { actApiName: 'transDisplayUser()', title: getClientMessage('USER_MGMT') },
                 { actApiName: 'transDisplayChgPassword()', title: getClientMessage('USER_CHG_PW') },
                 { actApiName: 'transDisplayServerInfo()', title : getClientMessage('SERVER_INFO') }
