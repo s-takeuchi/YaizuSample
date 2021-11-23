@@ -543,22 +543,22 @@ void Log4Result(int CmdType, int Status)
 	switch (Status) {
 	case RESULTCODE_NOSCRIPT:
 		return;
-	case -RESULTCODE_ERROR_SERVERFILE:
+	case RESULTCODE_ERROR_SERVERFILE:
 		StkPlStrCpy(StatusStr, 10, "SFILE");
 		break;
-	case -RESULTCODE_ERROR_AGENTFILE:
+	case RESULTCODE_ERROR_AGENTFILE:
 		StkPlStrCpy(StatusStr, 10, "AFILE");
 		break;
-	case -RESULTCODE_ERROR_PLATFORM:
+	case RESULTCODE_ERROR_PLATFORM:
 		StkPlStrCpy(StatusStr, 10, "PLATF");
 		break;
-	case -RESULTCODE_ERROR_TIMEOUT:
+	case RESULTCODE_ERROR_TIMEOUT:
 		StkPlStrCpy(StatusStr, 10, "TIMEO");
 		break;
-	case -RESULTCODE_ERROR_INVALIDAGTDIR:
+	case RESULTCODE_ERROR_INVALIDAGTDIR:
 		StkPlStrCpy(StatusStr, 10, "AGDIR");
 		break;
-	case -RESULTCODE_ERROR_CMDRESULT:
+	case RESULTCODE_ERROR_CMDRESULT:
 		StkPlStrCpy(StatusStr, 10, "CMRLT");
 		break;
 	case 0:
