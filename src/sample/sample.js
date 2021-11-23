@@ -94,6 +94,8 @@ function initClientMessage() {
     addClientMessage('FILE_NAME', {'en':'File name', 'ja':'ファイル名'});
     addClientMessage('FILE_SIZE', {'en':'File size', 'ja':'ファイルサイズ'});
     addClientMessage('FILE_UPDATE_TIME', {'en':'Update time', 'ja':'更新時刻'});
+    addClientMessage('FILE_DEL', {'en':'Delete File', 'ja':'ファイルの削除'});
+    addClientMessage('FILE_DELCONFIRM', {'en':'Are you sure you want to delete the specified file(s)?', 'ja':'指定したファイルを削除します。'});
 
     addClientMessage('COMNAME', {'en':'Command Name', 'ja':'コマンド名'});
     addClientMessage('COMFILESTOAGT', {'en':'File(s) Copied To Agent', 'ja':'エージェントにコピーされるファイル'});
@@ -635,7 +637,8 @@ function completeDeleteAgentDlg() {
 
                 targetAgentExistFlag = true;
                 resizeAgentStatusHistory(320);
-        
+                agentPropDlg.append('<p></p>');
+       
                 let tableListData = $('<table>');
                 tableListData.addClass('table stktable table-striped');
                 let tBody = $('<tbody>');
@@ -663,7 +666,6 @@ function completeDeleteAgentDlg() {
                     }
                 }
         
-                tBody.append('<p></p>');
                 tBody.append('<tr><td>' + getClientMessage('AISTATUS') + '</td><td id="adStatusTd' + loop + '">' + getStatusDetailLabel(agentInfo[loop].Status) + '</td></tr>');
                 tBody.append('<tr><td>' + getClientMessage('AISTATUSCMD') + '</td><td>' + cmdNameStatus + '</td></tr>');
                 tBody.append('<tr><td>' + getClientMessage('AISTATUSTIME') + '</td><td>' + acqTimeStr + '</td></tr>');
@@ -889,7 +891,7 @@ function displayFileMgmt() {
         let tHead = $('<thead class="thead-light">');
         tHead.append('<tr>' +
                      tmpChkBoxClm +
-                     '<th>' + getClientMessage('FILE_NAME') + '</th>' + '<th>' + getClientMessage('FILE_SIZE') + '</th>' + '<th class="d-none d-md-table-cell">' + getClientMessage('FILE_UPDATE_TIME') + '</th>' +
+                     '<th>' + getClientMessage('FILE_NAME') + '</th>' + '<th>' + getClientMessage('FILE_SIZE') + '</th>' + '<th>' + getClientMessage('FILE_UPDATE_TIME') + '</th>' +
                      '</tr>');
         tableListData.append(tHead);
 
@@ -901,7 +903,7 @@ function displayFileMgmt() {
             }
 
             let dateUpdTime = getDateAndTimeStr(fileList[Loop].UpdTime);
-            tBody.append('<tr>' + tmpChkBoxStr + '<td><a id="fileInfoAncId' + Loop + '" style="cursor: pointer;"><u>' + fileList[Loop].Name + '</u></a></td><td>' + fileList[Loop].Size + '</td><td class="d-none d-md-table-cell">' + dateUpdTime + '</td></tr>');
+            tBody.append('<tr>' + tmpChkBoxStr + '<td><a id="fileInfoAncId' + Loop + '" style="cursor: pointer;"><u>' + fileList[Loop].Name + '</u></a></td><td>' + fileList[Loop].Size + '</td><td>' + dateUpdTime + '</td></tr>');
         }
 
         tableListData.append(tBody);
@@ -1104,10 +1106,41 @@ function switchFileInfoButton() {
         addRsCommand("clickUpload()", "icon-cloud-upload", false);
     }
     if (foundFlag == true) {
-        addRsCommand("deleteFile()", "icon-bin", true);
+        addRsCommand("displayDeleteFileDlg()", "icon-bin", true);
     } else {
-        addRsCommand("deleteFile()", "icon-bin", false);
+        addRsCommand("displayDeleteFileDlg()", "icon-bin", false);
     }
+}
+
+function displayDeleteFileDlg() {
+    let fileInfo = getArray(responseData['API_GET_FILELIST'].Data.FileInfo);
+    let foundFlag = false;
+    for (var loop = 0; fileInfo != null && loop < fileInfo.length; loop++) {
+        if ($('#fileInfoId' + loop).prop('checked') == true) {
+            foundFlag = true;
+        }
+    }
+    if (foundFlag == false) {
+        return;
+    }
+
+    let deleteFileDlg = $('<div/>')
+    deleteFileDlg.append(getClientMessage('FILE_DELCONFIRM'));
+    deleteFileDlg.append('<p></p>');
+    for (let loop = 0; fileInfo != null && loop < fileInfo.length; loop++) {
+        if ($('#fileInfoId' + loop).prop('checked') == true) {
+            let encFileName = encodeURI(fileInfo[loop].Name);
+            deleteFileDlg.append('&nbsp;&nbsp;&nbsp;' + encFileName + '<br/>');
+        }
+    }
+    deleteFileDlg.append('<p></p>');
+    deleteFileDlg.append('<div id="file_errmsg"/>');
+    deleteFileDlg.append('<p></p>');
+
+    deleteFileDlg.append('<button type="button" id="OK" class="btn btn-dark" onclick="deleteFile()">Delete</button> ');
+    deleteFileDlg.append('<button type="button" id="Cancel" class="btn btn-dark" onclick="closeInputModal()">Cancel</button> ');
+
+    showInputModal('<h5 class="modal-title">' + getClientMessage('FILE_DEL') + '</h5>', deleteFileDlg);
 }
 
 function deleteFile() {
@@ -1136,14 +1169,12 @@ function checkAfterDeleteFile() {
             continue;
         }
         if (statusCode['API_DELETE_FILE' + loop] == -1 || statusCode['API_DELETE_FILE' + loop] == 0) {
-            $('#filemgmttable').empty();
-            displayAlertDanger('#filemgmttable', getClientMessage('CONNERR'));
+            displayAlertDanger('#file_errmsg', getClientMessage('CONNERR'));
             errorFlag = true;
             break;
         }
         if (statusCode['API_DELETE_FILE' + loop] != 200) {
-            $('#filemgmttable').empty();
-            displayAlertDanger('#filemgmttable', getSvrMsg(responseData['API_DELETE_FILE' + loop]));
+            displayAlertDanger('#file_errmsg', getSvrMsg(responseData['API_DELETE_FILE' + loop]));
             errorFlag = true;
             break;
         }
@@ -1153,6 +1184,7 @@ function checkAfterDeleteFile() {
         delete statusCode['API_DELETE_FILE' + loop];
     }
     if (errorFlag == false) {
+        closeInputModal();
         transDisplayFileMgmt();
     }
 }
