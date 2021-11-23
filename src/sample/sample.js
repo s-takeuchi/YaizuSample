@@ -34,7 +34,8 @@ function initClientMessage() {
     addClientMessage('NOFILEEXIST', {'en':'<p>No file exists</p>', 'ja':'<p>ファイルはありません</p>'});
     addClientMessage('NORESULTEXIST', {'en':'<p>No command result exists</p>', 'ja':'<p>コマンド実行結果はありません</p>'});
 
-    addClientMessage('DASHBOARD_AGENTS', {'en':'Agent status', 'ja':'エージェントの状態'});
+    addClientMessage('DASHBOARD_CURRENTSTATUS', {'en':'Current agent status', 'ja':'現在のエージェントの状態'});
+    addClientMessage('DASHBOARD_48HSTATUS', {'en':'Status in past 48h', 'ja':'過去48時間の状態'});
     addClientMessage('DASHBOARD_SELECt_AGENT', {'en':'Select agent', 'ja':'エージェントの選択'});
     addClientMessage('DASHBOARD_STATUS_DESC', {'en':'You can choose maximum 8 agents time series status on dashboard.', 'ja':'最大8件のエージェントの状態をダッシュボードに表示できます。'});
     addClientMessage('DASHBOARD_UNSPECIFIED', {'en':'Unspecified', 'ja':'未指定'});
@@ -123,7 +124,7 @@ function initClientMessage() {
     addClientMessage('RESULT_RESULT', {'en':'Execution Result', 'ja':'実行結果'});
     addClientMessage('RESULT_EXITCODE', {'en':'Exit code', 'ja':'Exit code'});
     addClientMessage('RESULT_CONSOLECLOSE', {'en':'Close', 'ja':'閉じる'});
-    addClientMessage('RESULT_OUTPUT', {'en':'Command output', 'ja':'コマンド出力'});
+    addClientMessage('RESULT_TITLE', {'en':'Command execution result', 'ja':'コマンド実行結果'});
 
     addClientMessage('CONNERR', {
         'en':'Connection with REST API service failed. This may be caused by one of the following issues:<br>(1) REST API service cannot be started.<br>(2) REST API service is not registered as a firewall exception.<br>(3) The definition file [nginx.conf and/or sample.conf] for the host name and port number in the network connectivity settings is invalid.<br>(4) A timeout has occurred when waiting for data from REST API server.<br>',
@@ -1655,7 +1656,7 @@ function switchCommandButton() {
     
     function viewConsole() {
         let consoleDlg = $('<div id="viewconsole"/>');
-        showInputModal('<h5 class="modal-title">' + getClientMessage('RESULT_OUTPUT') + '</h5>', consoleDlg);
+        showInputModal('<h5 class="modal-title">' + getClientMessage('RESULT_TITLE') + '</h5>', consoleDlg);
     
         if (statusCode['API_GET_OUTPUT'] == -1 || statusCode['API_GET_OUTPUT'] == 0) {
             displayAlertDanger('#viewconsole', getClientMessage('CONNERR'));
@@ -1826,13 +1827,14 @@ function switchCommandButton() {
             $('#dashboard').append(getClientMessage('NOAGTINFO'));
             return;
         }
+        $('#dashboard').append('<h5>&nbsp;&nbsp;&nbsp;&nbsp;' + getClientMessage('DASHBOARD_CURRENTSTATUS') + '&nbsp;&nbsp;</h5>');
         drasPieChart($('#dashboard'), agentInfos);
     
         let selectAgentBtn = '';
         if (userRole != 1) {
             selectAgentBtn = '<a onclick="transShowSelectTimeSeriesDataDlg();" class="plane-link" style="cursor: pointer;" href="#"><span class="icon icon-cog" style="font-size:20px;"></span></a>';
         }
-        $('#dashboard').append('<h4><div class="plane-link">&nbsp;&nbsp;&nbsp;&nbsp;' + getClientMessage('DASHBOARD_AGENTS') + '&nbsp;&nbsp;' + selectAgentBtn + '</div></h4>');
+        $('#dashboard').append('<h5><div class="plane-link">&nbsp;&nbsp;&nbsp;&nbsp;' + getClientMessage('DASHBOARD_48HSTATUS') + '&nbsp;&nbsp;' + selectAgentBtn + '</div></h5>');
         let viewSettings = getArray(responseData['API_GET_VIEWSETTING'].Data.ViewSetting);
         for (let loop = 0; loop < 8; loop++) {
             selectedTsd[loop] = viewSettings[loop];
@@ -1960,7 +1962,7 @@ function switchCommandButton() {
             '<svg id="piechart" xmlns="http://www.w3.org/2000/svg" width="' + (wsize - 10) + '" height="' + hsize + '" viewBox="0 0 400 220">' +
             '<text x="250" y="40" font-size="20" fill="black">Total: ' + totalAgentCnt + '</text>' +
             '<text x="250" y="70" font-size="20" fill="black">Success: ' + successCnt + '</text>' +
-            '<text x="250" y="100" font-size="20" fill="black">Event: ' + eventCnt + '</text>' +
+            '<text x="250" y="100" font-size="20" fill="black">Normal: ' + eventCnt + '</text>' +
             '<text x="250" y="130" font-size="20" fill="black">Error: ' + errorCnt + '</text>' +
             '<text x="250" y="160" font-size="20" fill="black">No request: ' + noRequestCnt + '</text>' +
             '<rect x="230" y="55" width="18" height="18" fill="LightGreen"></rect>' +
