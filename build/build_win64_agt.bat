@@ -44,7 +44,7 @@ rem ########## Initializing ##########
 echo;
 echo Initializing...
 if exist agent rmdir /S /Q agent
-if exist deployment\servalagt.msi del deployment\servalagt.msi
+if exist deployment\servalagt-1.0.0.msi del deployment\servalagt-1.0.0.msi
 
 
 rem ########## Building ##########
@@ -87,7 +87,7 @@ if defined LOCALMACHINE (
   echo Making installer...
   %DEVENV% "setup_agt\setup_agt.sln" /rebuild Release
   if not exist deployment mkdir deployment
-  copy setup_agt\Release\servalagt.msi deployment
+  copy setup_agt\Release\servalagt-1.0.0.msi deployment
 )
 
 
