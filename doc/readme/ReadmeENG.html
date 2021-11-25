@@ -1,0 +1,256 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<HEAD>
+<title>SERVAL</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+</HEAD>
+
+<BODY>
+
+<hr/>
+<h1>SERVAL 1.0.0</h1>
+<hr/>
+
+<h1>1. SERVAL summary</h1>
+
+SERVAL is a monitoring/management software target to servers and IoT devices.<br/>
+Due to definition and execution of Windows batch files and Linux shell scripts from remote, flexible monitoring and management of servers and IoT devices can be provided.<br/>
+SERVAL provides following features.
+<ul>
+    <li>Provides management console can be connected from Web browser.</li>
+    <li>Manages xaximum 120 servers and IoT devices.</li>
+</ul>
+
+Several information systems and application software suites use a RDBMS (Relational Database Management System) as a persistence mechanism for their own data. The range of RDBMS usage shows a tendency of expansion.
+Most RDBMSs are used as a background service for information systems and application software. However, such systems can also be accessed directly for data mining, quicker commercial operation and maintenance.
+An appropriate RDBMS can be chosen to match the characteristics of the target information system and application software. As a result, multiple RDBMSs are often used simultaneously in the same business operation and maintenance environment. However, multiple RDBMS usage is characterized by the following problems:
+
+<ul>
+<li>Different data reference software applications need to be provided, which may increase the learning cost.</li>
+<li>Data reference software needs to be installed on each client-side PC. The cost of introduction is therefore higher with a greater number of client PCs.</li>
+</ul>
+
+CmdFreak is a relational database viewer (data reference software) that provides solutions for the above problems.
+
+<ul>
+<li>CmdFreak supports the major free RDBMS MySQL, PostgreSQL and MariaDB systems, providing a common user interface for these RDBMSs and enabling data reference as a common operation. It does not need to learn different reference software applications for multiple RDBMSs, which helps to reduce related learning costs.</li>
+<li>CmdFreak works as web application software, and comes with an all-in-one installer incorporating web server software. This eliminates the need for web server pre-configuration and the use of script language. The introduction cost is practically zero.</li>
+</ul>
+
+CmdFreak provides the following functions for database reference:
+
+<ul>
+<li>List records/paging</li>
+<li>Table selection</li>
+<li>Table information reference</li>
+<li>Column filtering and sorting</li>
+<li>DBMS selection</li>
+</ul>
+
+
+<hr/>
+<h1>2. System requirements</h1>
+
+CmdFreak works on systems with the following specifications:
+
+<ul><li>CPU: 2 GHz or more</li></ul>
+
+<ul><li>Memory:1 GB or more</li></ul>
+
+<ul><li>Free disk space: 20 MB or more</li></ul>
+
+<ul><li>Operating systems/editions supported:<br/>
+Windows 10 (Only 64 bit edition)<br/>
+Windows Server 2016<br/>
+Windows Server 2019<br/>
+</li></ul>
+
+<ul><li>
+Web browsers supported:<br/>
+Microsoft Internet Explorer 11<br/>
+Microsoft Edge<br/>
+Google Chrome<br/>
+Mozilla Firefox<br/>
+</li></ul>
+
+<ul><li>
+DBMSs supported:<br/>
+MySQL 5.7 (+ ODBC Driver: MySQL Connector/ODBC 5.3)<br/>
+MySQL 8.0 (+ ODBC Driver: MySQL Connector/ODBC 8.0)<br/>
+MariaDB 10.3 (+ ODBC Driver: MariaDB Connector/ODBC 3.0)<br/>
+MariaDB 10.4 (+ ODBC Driver: MariaDB Connector/ODBC 3.1)<br/>
+PostgreSQL 9.6 (+ ODBC Driver: psqlODBC 9.6)<br/>
+PostgreSQL 12.2 (+ ODBC Driver: psqlODBC 12.1)<br/>
+</li></ul>
+
+
+<hr/>
+<h1>3. Change history</h1>
+
+Version 1.1.0 ---> 1.2.0
+<ol>
+<li>Responsive design has been adopted for smartphone user.</li>
+<li>User management function has been added.</li>
+</ol>
+
+Version 1.0.0 ---> 1.1.0
+<ol>
+<li>Support for displaying unlimited record.</li>
+<li>Performance improvement for multiple user access.</li>
+</ol>
+
+
+<hr/>
+<h1>4. Installation</h1>
+
+Execute cmdfreak.msi and launch the installer.<br/>
+Follow the on-screen dialog prompts.<br/>
+CmdFreak installer performs following steps during the installation.<br>
+<ul>
+<li>Register exceptions of Windows firewall for CmdFreak.</li> 
+<li>Register service of CmdFreak to the target system.</li> 
+<li>Auto start of CmdFreak service and Web server.</li> 
+</ul>
+Overwrite installation(Repair) can be performed if cmdfreak.msi is executed after CmdFreak installation. Note that the items shown below for overwrite installation.<br/>
+<ul>
+<li>Stop CmdFreak service before overwrite installation. If you perform the overwrite installation without service stop, restart of operating system is required after overwrite installation done.</li> 
+<li>During overwrite installation, port numbers which Web server and CmdFreak service use might be changed into default. Confirm the port number after overwrite installation.</li> 
+</ul>
+
+
+<hr/>
+<h1>5. Upgrade installation</h1>
+
+In order to upgrade from CmdFreak 1.2.0, perform installation according to following steps.<br/>
+<ol>
+<li>Stop CmdFreak service.</li>
+<li>Copy &lt;Installation folder&gt;\sample.dat file to other folder.</li>
+<li>Uninstall CmdFreak 1.2.0.</li>
+<li>Install CmdFreak 1.3.0.</li>
+<li>Stop CmdFreak service.</li>
+<li>Copy and overwrite to &lt;Installation folder&gt;\sample.dat file from sample.dat which is copied in previous step.</li>
+<li>Modify &lt;Installation folder&gt;\conf\nginx.conf and &lt;Installation folder&gt;sample.conf if necessary.</li>
+<li>Start CmdFreak service.</li>
+</ol>
+
+
+<hr/>
+<h1>6. Uninstallation</h1>
+
+Select Remove CmdFreak with execution of cmdfreak.msi or perform uninstallation of CmdFreak from Control Panel.<br/>
+CmdFreak uninstallation performs following things during uninstallation.<br/>
+<ul>
+<li>Auto stop of CmdFreak service and Web server.</li>  
+<li>Deletion of CmdFreak service from the target system. </li> 
+<li>Deletion of Windows firewall exception for CmdFreak.</li> 
+</ul>
+
+
+<hr/>
+<h1>7. Login to CmdFreak</h1>
+
+Connect to the URL shown below by Web browser for use of CmdFreak after installation. If main console is displayed after login sequence of CmdFreak, it shows the installation is successfully completed.<br/>
+<p>
+http://&lt;Host name or IP address of CmdFreak&gt;:&lt;Port number of Web server&gt;/cmdfreak.html
+</p>
+<p>
+In case of specification of default installations parameters : http://localhost/cmdfreak.html
+</p>
+Initial login user name and password are follows.
+<p>
+User name : admin<br/>
+Password : manager<br/>
+</p>
+If main console is not appeared or an error ocurred, confirm the things shown below.<br/>
+<ul>
+<li>When host name is specified in the URL for the connection to CmdFreak from browser, confirm that the host name can be solved. In case the host name is not solved, change the host name to other name which can be solved, and then retry.</li>
+<li>Confirm that CmdFreak(nginx.exe) is registered as an exception of Windows firewall. If not, register nginx.exe to the Windows firewall as an exception. </li>
+<li>Confirm that the specified port number is not duplicated from other port numbers. If duplicated, specify the independent port number according to the description shown later.</li>
+</ul>
+
+
+<hr/>
+<h1>8. Start/Stop CmdFreak service</h1>
+
+Start and stop of CmdFreak service can be performed by Windows start menu.<br/>
+<ul>
+<li>[CmdFreak]-[Start CmdFreak service] : Start service<br/>
+<li>[CmdFreak]-[Stop CmdFreak service] : Stop service<br/>
+</ul>
+
+
+<hr/>
+<h1>9. Change IP address/host name and port number</h1>
+
+CmdFreak uses two kinds of IP addresses/host names and ports.<br/>
+<ul>
+<li>IP address/host name and port of Web server</li>
+<li>IP address/host name and port of CmdFreak service</li>
+</ul>
+In order to change the IP address/host name and port number after installation, following steps are required.<br/>
+<ol>
+<li>Stop CmdFreak service.</li>
+<li>
+Change IP address/host name and port number.<br/>
+<p>
+<u>In case you change IP address/host name and port number which CmdFreak service uses:</u><br/>
+Specify IP address/host name and port number to servicehost and serviceport properties in &lt;Installation folder&gt;\sample.conf<br/>
+Specify IP address/host name and port number to proxy_pass of location /api/ section in &lt;Installation folder&gt;\conf\nginx.conf<br/>
+</p>
+<p>
+<u>In case you change IP address/host name and port number which Web server uses:</u><br/>
+Change listen and server_name in &lt;Installation folder&gt;\conf\nginx.conf<br/>
+</p>
+</li>
+<li>CHange firewall setting if necessary.</li>
+<li>Start CmdFreak service.</li>
+</ol>
+
+
+<hr/>
+<h1>10. Connection using SSL/TLS</h1>
+In order to connect to CmdFreak using SSL/TLS from browser, following steps are required.<br/>
+<ol>
+<li>Stop CmdFreak service.</li>
+<li>
+Add SSL/TLS settings to nginx.conf.<br/>
+Add followings to server directive in &lt;Installation folder&gt;\conf\nginx.conf<br/>
+(Regarding certificate and private key, modify the path according to your environment.)<br/>
+ssl on;<br/>
+ssl_certificate "D:\\work\\server.crt";<br/>
+ssl_certificate_key "D:\\work\\server.key";<br/>
+</li>
+<li>Change listen port number into 443 or appropriate HTTPS port number.</li>
+<li>Start CmdFreak service.</li>
+</ol>
+
+
+<hr/>
+<h1>11. About ODBC driver</h1>
+CmdFreak uses ODBC for connecting to RDBMS. Therefore ODBC driver needs to be installed into same server where CmdFreak works. ODBC driver needs to be choosen depending on the type of target RDBMS. For example, If you want to use MySQL, ODBC driver for MySQL is required.
+CmdFreak works as a 64-bit application hense ODBC driver has to be 64-bit edition of driver. ODBC driver is provided by the vendor who provides RDBMS. Download it from the vendoer Web site.<br/>
+
+
+<hr/>
+<h1>12. Management limitations</h1>
+<ul>
+<li>Maximum length of table name: 64</li>	
+<li>Maximum length of column name: 64</li>	
+<li>Maximum length of column value(characters): 63 (64th or later characters are not displayed)</li>
+<li>Maximum number of tables: 300</li>
+<li>Maximum number of columns: 50 (51st or later columns are not displayed)</li>
+</ul>
+
+
+<hr/>
+<h1>13. Contact</h1>
+
+Please use the E-mail address below for inquiries about this product.
+<p>
+sy-takeuchi@outlook.com<br/>
+https://github.com/s-takeuchi<br/>
+</p>
+Shinya Takeuchi
+
+</BODY>
+</html>

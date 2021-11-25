@@ -1,0 +1,259 @@
+﻿<!DOCTYPE html>
+<html lang="ja">
+<HEAD>
+<title>SERVAL</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+</HEAD>
+
+<BODY>
+
+<hr/>
+<h1>SERVAL 1.0.0</h1>
+<hr/>
+
+<h1>1. SERVAL概要</h1>
+
+SERVALは、サーバ／IoTデバイスの監視・管理ソフトウェアです。<br/>
+WindowsバッチファイルやLinuxシェルスクリプトをリモートから定義・実行することにより、サーバ/IoTデバイスの柔軟な監視・管理を行うことができます。<br/>
+SERVALには以下の特徴があります。<br/>
+<ul>
+    <li>Webブラウザから接続可能な管理コンソールを提供します。</li>
+    <li>最大120台のサーバ/IoTデバイスを管理することができます。</li>
+</ul>
+
+情報システムやアプリケーションソフトウェアの多くは，それらが持つデータの永続化機構としてRDBMS(リレーショナルデータベース管理システム) を用いており，
+RDBMSの利用範囲は今後も拡大する傾向にあります。
+RDBMSは情報システムやアプリケーションソフトウェアのバックグラウンドサービスとして利用されるケースがほとんどですが， データマイニングや業務・運用の迅速化
+を目的として直接RDBMSのオリジナルデータを参照するケースがあります。 
+また，RDBMSはアプリケーションソフトウェアの特徴に応じて選定されるため，業務・運用
+の中で異なる複数のRDBMSを利用することは一般的なこととなっています。このため，複数のRDBMSを使い分けるユーザーにとって次の問題が存在していました。
+
+<ul>
+<li>RDBMSの種類に応じて異なるデータ参照ツールを利用する必要があり，そのツールの学習コストが増大する。</li> 
+<li>各クライアントに複数のデータ参照ツールをインストールする必要があり，クライアント数に比例して導入コストが増大する。</li>
+</ul>
+
+CmdFreakは，リレーショナルデータベース・ビュアー(データ参照ソフトウェア)であり，上記の問題に対して次のソリューションを提供します。
+
+<ul>
+<li>フリーのメジャーRDBMSである，MySQL, PostgreSQL, MariaDBをサポートし， これらのRDBMSに対する共通のユーザーインターフェースを介してデータの参照が可能となり
+ます。 RDBMSの種類に応じて異なるツールの操作を学ぶ必要がなく学習コストを抑えることができます。</li>
+<li>クライアント側の導入コストが実質的にゼロとなるWebアプリケーションとして動作します。 加えてWebサーバを同梱するオールインワン型のインストーラにより， 通常
+のWebアプリケーションのように，事前にWebサーバやスクリプト言語を設定しておく必要はありません。 導入に関わるコストを抑えることができます。</li>
+</ul>
+
+CmdFreakはデータベースを参照するための下記の機能を提供します。
+
+<ul>
+<li>レコード一覧の表示／ページング</li>
+<li>テーブルの選択</li>
+<li>テーブル情報の参照</li>
+<li>カラムのフィルタリング／ソーティング</li>
+<li>DBMSの選択</li>
+</ul>
+
+
+<hr/>
+<h1>2. システム要件</h1>
+
+CmdFreakは以下の環境で動作します。
+
+<ul><li>動作に必要なCPU: 2GHz以上のクロック周波数で動作するCPU</li></ul>
+
+<ul><li>動作に必要なメモリ容量: 1GBytes以上</li></ul>
+
+<ul><li>導入に必要な空きディスク容量: 20MBytes以上</li></ul>
+
+<ul><li>サポートするオペレーティングシステム／エディション:<br/>
+Windows 10 (64ビット版のみ)<br/>
+Windows Server 2016<br/>
+Windows Server 2019<br/>
+</li></ul>
+
+<ul><li>サポートするWebブラウザ:<br/>
+Microsoft Internet Explorer 11<br/>
+Microsoft Edge<br/>
+Google Chrome<br/>
+Mozilla Firefox<br/>
+</li></ul>
+
+<ul><li>サポートするDBMS:<br/>
+MySQL 5.7 (+ ODBC Driver: MySQL Connector/ODBC 5.3)<br/>
+MySQL 8.0 (+ ODBC Driver: MySQL Connector/ODBC 8.0)<br/>
+MariaDB 10.3 (+ ODBC Driver: MariaDB Connector/ODBC 3.0)<br/>
+MariaDB 10.4 (+ ODBC Driver: MariaDB Connector/ODBC 3.1)<br/>
+PostgreSQL 9.6 (+ ODBC Driver: psqlODBC 9.6)<br/>
+PostgreSQL 12.2 (+ ODBC Driver: psqlODBC 12.1)<br/>
+</li></ul>
+
+
+<hr/>
+<h1>3. 変更履歴</h1>
+
+バージョン 1.1.0 ---> 1.2.0
+<ol>
+<li>GUIにスマートフォンでも見やすいレスポンシブデザインを採用しました。</li>
+<li>ユーザー管理機能を追加しました。</li>
+</ol>
+
+バージョン 1.0.0 ---> 1.1.0
+<ol>
+<li>表示可能なレコード数が無制限になりました。</li>
+<li>複数ユーザーからの同時操作時の処理性能を改善しました。</li>
+</ol>
+
+
+<hr/>
+<h1>4. インストール方法</h1>
+
+cmdfreak.msiを実行することによりインストーラが起動します。<br/>
+インストーラの指示に従いインストールを進めてください。<br/>
+CmdFreakのインストーラは，インストール時に以下の操作を行います。<br/>
+<ul>
+<li>CmdFreakに対するWindowsファイアウォールへの例外登録。</li> 
+<li>CmdFreakサービスのシステムへの登録。</li> 
+<li>CmdFreakサービスおよびWebサーバの自動起動。</li> 
+</ul>
+CmdFreak インストール後にcmdfreak.msi を起動するとプログラムの上書きインストール(Repair) を行うことができますが， その際下記の事項について注意する必要があります。<br/>
+<ul>
+<li>上書きインストール実行前にCmdFreakのサービスを停止してください。停止せずに上書きインストールを実行すると，上書きインストール後にオペレーティングシステムの再起動が必要になります。 </li> 
+<li>上書きインストール後にWebサーバおよびCmdFreak サービスが使用するポート番号がデフォルトに変更される場合があります。必要に応じて上書きインストール後にポート番号を変更してください。</li> 
+</ul>
+
+
+<hr/>
+<h1>5. アップグレードインストール方法</h1>
+
+CmdFreak 1.2.0からアップグレードするには，以下の手順に従いアップグレードインストールを進めてください。<br/>
+<ol>
+<li>CmdFreakサービスを停止します。</li>
+<li>＜インストール先フォルダ＞\sample.datを他のフォルダにコピーします。</li>
+<li>CmdFreak 1.2.0をアンインストールします。</li>
+<li>CmdFreak 1.3.0をインストールします。</li>
+<li>CmdFreakサービスを停止します。</li>
+<li>コピーしたsample.datを＜インストール先フォルダ＞\sample.datに上書きコピーします。</li>
+<li>＜インストール先フォルダ＞\conf\nginx.confおよび＜インストール先フォルダ＞\sample.confを必要に応じて修正します。</li>
+<li>CmdFreakサービスを開始します。</li>
+</ol>
+
+
+<hr/>
+<h1>6. アンインストール方法</h1>
+
+cmdfreak.msi を起動してRemove CmdFreakを選択するか，コントロールパネルからCmdFreakのアンインストールを行ってください。<br/>
+CmdFreakのアンインストールは，アンインストール時に以下の操作を行います。<br/>
+<ul>
+<li>CmdFreakサービスおよびWebサーバの自動停止。</li>  
+<li>CmdFreakサービスのシステムからの削除。 </li> 
+<li>CmdFreakに対するWindowsファイアウォールからの例外削除。</li> 
+</ul>
+
+
+<hr/>
+<h1>7. CmdFreakへのログイン方法</h1>
+
+CmdFreakのインストール後，Webブラウザから下記のURLに接続してください。 CmdFreakのログインページからログインに成功し，メインコンソールが表示されていれば，インストールは問題なく完了しています。<br/>
+<p>
+http://＜CmdFreakのホスト名またはIPアドレス＞:＜Webサーバのポート番号＞/cmdfreak.html
+</p>
+<p>
+デフォルト値を指定してインストールした場合：http://localhost/cmdfreak.html
+</p>
+初期ログインユーザー名およびパスワードは次の通りです。
+<p>
+User name : admin<br/>
+Password : manager<br/>
+</p>
+メインコンソールが表示されない場合，またはエラーが表示される場合下記を確認してください。<br/>
+<ul>
+<li>ブラウザからCmdFreakへの接続でURLにホスト名を指定している場合，ホスト名からIPアドレスが名前解決できること。 名前解決できない場合，名前解決可能なホストに変更し，再度接続を試みてください。</li>
+<li>CmdFreak(nginx.exe)がWindowsのファイアウォールに例外登録されていること。 例外登録されていない場合，nginx.exe をファイアウォールの例外に登録してください。</li>
+<li>WebサーバおよびCmdFreakサービスが使用するポート番号が他のプロセスが使用するポート番号と重なっていないこと。 後述のポート番号の変更手順に従い，ポート番号が重ならないよう変更を行ってください。</li>
+</ul>
+
+
+<hr/>
+<h1>8. CmdFreakサービスの起動・停止</h1>
+
+CmdFreakサービスの起動および停止は，Windowsのスタートメニューから行います。<br/>
+<ul>
+<li>[CmdFreak]-[Start CmdFreak service] : サービス開始</li>
+<li>[CmdFreak]-[Stop CmdFreak service] : サービス停止</li>
+</ul>
+
+
+<hr/>
+<h1>9. IPアドレス／ホスト名およびポート番号の変更</h1>
+
+CmdFreakは，2種類のIPアドレスとポート番号を使用します。<br/>
+<ul>
+<li>WebサーバのIPアドレス／ホスト名とポート番号</li>
+<li>CmdFreakサービスのIPアドレス／ホスト名とポート番号</li>
+</ul>
+インストール後にこれらのIPアドレス／ホスト名およびポート番号を変更するためには，以下の手順で操作を行ってください。
+<ol>
+<li>CmdFreakサービスを停止します。</li>
+<li>
+IPアドレスおよびポート番号を変更します。<br/>
+<p>
+<u>CmdFreakサービスが使用するIPアドレスおよびポート番号を変更する場合:</u><br/>
+＜インストール先フォルダ＞\sample.conf のservicehostおよびserviceport プロパティにCmdFreakサービスのIPアドレスおよびポート番号を設定します。<br/>
+＜インストール先フォルダ＞\conf\nginx.conf のlocation /api/ セクションのproxy_pass にCmdFreakサービスのIPアドレスおよびポート番号を設定します。<br/>
+</p>
+<p>
+<u>Webサーバが使用するIPアドレスおよびポート番号を変更する場合:</u><br/>
+＜インストール先フォルダ＞\conf\nginx.conf のlistenおよびserver_name を変更します。<br/>
+</p>
+</li>
+<li>必要に応じてファイアウォールの設定を変更します。</li>
+<li>CmdFreakサービスを起動します。</li>
+</ol>
+
+
+<hr/>
+<h1>10. SSL/TLSによる接続</h1>
+ブラウザからSSL/TLSでCmdFreakに接続するためには，以下の手順で操作をおこなってください。<br/>
+<ol>
+<li>CmdFreakサービスを停止します。</li>
+<li>
+nginx.confにSSL/TLS接続のための設定を追加します。<br/>
+＜インストール先フォルダ＞\conf\nginx.conf のserverディレクティブに以下の記述を追加します。<br/>
+(秘密鍵および証明書ファイルへのパスは個別の環境に応じて変更してください。)<br/>
+ssl on;<br/>
+ssl_certificate "D:\\work\\server.crt";<br/>
+ssl_certificate_key "D:\\work\\server.key";<br/>
+</li>
+<li>listenポート番号を443または適切なHTTPSポート番号に変更します。</li>
+<li>CmdFreakサービスを起動します。</li>
+</ol>
+
+
+<hr/>
+<h1>11. ODBCドライバについて</h1>
+CmdFreakはRDBMSへの接続にODBCを使用しているため，CmdFreakが動作するサーバに予めODBCドライバをインストールしてください。 ODBCドライバは接続対象のRDBMSの種類に応じたものである必要があります。例えばMySQLにはMySQL用のODBCドライバが必要になります。
+CmdFreakは64ビットアプリケーションとして動作するため，ODBCドライバも64ビット版を用意してください。 ODBCドライバはRDBMSを提供するベンダーが公開しています。対象ベンダーのWebサイト等から入手してください。<br/>
+
+
+<hr/>
+<h1>12. 管理上限</h1>
+<ul>
+<li>最大テーブル名長(文字): 64</li>	
+<li>最大カラム名長(文字): 64</li>	
+<li>最大カラム値長(文字): 63 (64文字以降は表示されません)</li>
+<li>最大テーブル数: 300</li>
+<li>最大カラム数: 50 (51番目以降のカラムは表示されません)</li>
+</ul>
+
+
+<hr/>
+<h1>13. 問い合わせ先</h1>
+
+本ソフトウェアに関する問い合わせは，下記メールアドレスで受け付けています。
+<p>
+sy-takeuchi@outlook.com<br/>
+https://github.com/s-takeuchi<br/>
+</p>
+竹内伸也
+
+</BODY>
+</html>
