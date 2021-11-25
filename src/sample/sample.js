@@ -279,7 +279,10 @@ function displayAgentInfo() {
                 break;
             }
         }
-        let updTimeStr = getDateAndTimeStr(AgentInfo[Loop].UpdTime);
+        let updTimeStr = '';
+        if (AgentInfo[Loop].UpdTime != 0) {
+            updTimeStr = getDateAndTimeStr(AgentInfo[Loop].UpdTime);
+        }
         let opeTimeStr = '';
         if (AgentInfo[Loop].OpeTime != 0) {
             opeTimeStr = getDateAndTimeStr(AgentInfo[Loop].OpeTime);
@@ -647,8 +650,14 @@ function completeDeleteAgentDlg() {
                 tableListData.append(tBody);
                 agentPropDlg.append(tableListData);
 
-                let acqTimeStr = getDateAndTimeStr(agentInfo[loop].AcqTime);
-                let updTimeStr = getDateAndTimeStr(agentInfo[loop].UpdTime);
+                let acqTimeStr = '';
+                if (agentInfo[loop].AcqTime != 0) {
+                    acqTimeStr = getDateAndTimeStr(agentInfo[loop].AcqTime);
+                }
+                let updTimeStr = '';
+                if (agentInfo[loop].UpdTime != 0) {
+                    updTimeStr = getDateAndTimeStr(agentInfo[loop].UpdTime);
+                }
                 let iniTimeStr = getDateAndTimeStr(agentInfo[loop].IniTime);
                 let reqTimeStr = getDateAndTimeStr(agentInfo[loop].ReqTime);
                 let opeTimeStr = '';

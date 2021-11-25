@@ -308,10 +308,12 @@ void DataAccess::SetAgentInfoForStatusCmd(wchar_t AgtName[DA_MAXLEN_OF_AGTNAME],
 	ColDatAgtFind[0] = new ColumnDataWStr(L"Name", AgtName);
 	RecordData* RecDatAgtFind = new RecordData(L"AgentInfo", ColDatAgtFind, 1);
 
-	ColumnData *ColDatAgt[2];
+	ColumnData *ColDatAgt[4];
 	ColDatAgt[0] = new ColumnDataInt(L"StatusCmd", StatusCmd);
 	ColDatAgt[1] = new ColumnDataInt(L"Status", -982);
-	RecordData* RecDatAgt = new RecordData(L"AgentInfo", ColDatAgt, 2);
+	ColDatAgt[2] = new ColumnDataBin(L"UpdTime", (unsigned char*)"\0\0\0\0\0\0\0\0", DA_MAXLEN_OF_UNIXTIME);
+	ColDatAgt[3] = new ColumnDataBin(L"AcqTime", (unsigned char*)"\0\0\0\0\0\0\0\0", DA_MAXLEN_OF_UNIXTIME);
+	RecordData* RecDatAgt = new RecordData(L"AgentInfo", ColDatAgt, 4);
 
 	LockTable(L"AgentInfo", LOCK_EXCLUSIVE);
 	int Ret = UpdateRecord(RecDatAgtFind, RecDatAgt);
@@ -343,10 +345,11 @@ void DataAccess::SetAgentInfoForOpCmd(wchar_t AgtName[DA_MAXLEN_OF_AGTNAME], int
 	ColDatAgtFind[0] = new ColumnDataWStr(L"Name", AgtName);
 	RecordData* RecDatAgtFind = new RecordData(L"AgentInfo", ColDatAgtFind, 1);
 
-	ColumnData *ColDatAgt[2];
+	ColumnData *ColDatAgt[3];
 	ColDatAgt[0] = new ColumnDataInt(L"OpCmd", OpCmd);
 	ColDatAgt[1] = new ColumnDataInt(L"OpStatus", -983);
-	RecordData* RecDatAgt = new RecordData(L"AgentInfo", ColDatAgt, 2);
+	ColDatAgt[2] = new ColumnDataBin(L"OpeTime", (unsigned char*)"\0\0\0\0\0\0\0\0", DA_MAXLEN_OF_UNIXTIME);
+	RecordData* RecDatAgt = new RecordData(L"AgentInfo", ColDatAgt, 3);
 
 	LockTable(L"AgentInfo", LOCK_EXCLUSIVE);
 	int Ret = UpdateRecord(RecDatAgtFind, RecDatAgt);
