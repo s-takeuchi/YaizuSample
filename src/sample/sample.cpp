@@ -383,9 +383,9 @@ int main(int Argc, char* Argv[])
 	// Logging starts
 	wchar_t LoggingPath[FILENAME_MAX] = L"";
 #ifdef WIN32
-	StkPlGetFullPathFromFileName(L"sample.log", LoggingPath);
+	StkPlGetFullPathFromFileName(L"serval.log", LoggingPath);
 #else
-	StkPlWcsCpy(LoggingPath, FILENAME_MAX, L"/var/log/sample.log");
+	StkPlWcsCpy(LoggingPath, FILENAME_MAX, L"/var/log/serval.log");
 #endif
 	MessageProc::StartLogging(LoggingPath);
 	MessageProc::AddLog("----------------------------------------", MessageProc::LOG_TYPE_INFO);

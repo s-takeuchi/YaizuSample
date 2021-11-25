@@ -20,10 +20,10 @@ cp agent.service $BUILDDIR/SOURCES
 cd $BUILDDIR
 SPEC=agent.spec
 cat <<EOF > ./$SPEC
-Name:    YaizuSampleAgent
-Version: 1
-Release: 1
-Summary: YaizuSampleAgent
+Name:    servalagt
+Version: 1.0
+Release: 0.el8
+Summary: SERVAL agent
 
 License: No License No Life
 Source1: agent
@@ -31,7 +31,7 @@ Source2: agent.conf
 Source3: agent.service
 
 %description
-YaizuSampleAgent!!
+SERVAL agent
 
 %install
 mkdir -p %{buildroot}/%{_bindir}
@@ -92,10 +92,10 @@ EOF
 cd $BUILDDIR
 rpmbuild --define "_topdir ${BUILDDIR}" -bb ./$SPEC
 
-if [ -e ../deployment/YaizuSampleAgent-1-1.*.rpm ]; then
-    yes|rm ../deployment/YaizuSampleAgent-1-1.*.rpm
+if [ -e ../deployment/servalagt-1.*.rpm ]; then
+    yes|rm ../deployment/servalagt-1.*.rpm
 fi
 if [ ! -e ../deployment ]; then
     mkdir -p ../deployment
 fi
-cp RPMS/x86_64/YaizuSampleAgent-1-1.*.rpm ../deployment
+cp RPMS/x86_64/servalagt-1.*.rpm ../deployment

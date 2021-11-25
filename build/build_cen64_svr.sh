@@ -42,10 +42,10 @@ cp $BUILDDIR/SOURCES/bootstrap-4.4.1-dist/js/* $BUILDDIR/SOURCES
 cd $BUILDDIR
 SPEC=sample.spec
 cat <<EOF > ./$SPEC
-Name:    YaizuSample
-Version: 1
-Release: 1
-Summary: YaizuSample
+Name:    serval
+Version: 1.0
+Release: 0.el8
+Summary: SERVAL server
 Requires: nginx = 1:1.12.2-1.el7_4.ngx
 
 License: No License No Life
@@ -87,7 +87,7 @@ Source42: squirrel.svg
 Source43: favicon-16x16.png
 
 %description
-YaizuSample!!
+SERVAL server
 
 %install
 mkdir -p %{buildroot}/%{_bindir}
@@ -240,10 +240,10 @@ EOF
 cd $BUILDDIR
 rpmbuild --define "_topdir ${BUILDDIR}" -bb ./$SPEC
 
-if [ -e ../deployment/YaizuSample-1-1.*.rpm ]; then
-    yes|rm ../deployment/YaizuSample-1-1.*.rpm
+if [ -e ../deployment/serval-1.*.rpm ]; then
+    yes|rm ../deployment/serval-1.*.rpm
 fi
 if [ ! -e ../deployment ]; then
     mkdir -p ../deployment
 fi
-cp RPMS/x86_64/YaizuSample-1-1.*.rpm ../deployment
+cp RPMS/x86_64/serval-1.*.rpm ../deployment

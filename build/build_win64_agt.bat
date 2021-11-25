@@ -44,7 +44,7 @@ rem ########## Initializing ##########
 echo;
 echo Initializing...
 if exist agent rmdir /S /Q agent
-if exist deployment\YaizuSampleAgent.msi del deployment\YaizuSampleAgent.msi
+if exist deployment\servalagt.msi del deployment\servalagt.msi
 
 
 rem ########## Building ##########
@@ -87,7 +87,7 @@ if defined LOCALMACHINE (
   echo Making installer...
   %DEVENV% "setup_agt\setup_agt.sln" /rebuild Release
   if not exist deployment mkdir deployment
-  copy setup_agt\Release\YaizuSampleAgent.msi deployment
+  copy setup_agt\Release\servalagt.msi deployment
 )
 
 

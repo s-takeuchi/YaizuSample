@@ -44,7 +44,7 @@ rem ########## Initializing ##########
 echo;
 echo Initializing...
 if exist server rmdir /S /Q server
-if exist deployment\YaizuSample.msi del deployment\YaizuSample.msi
+if exist deployment\serval.msi del deployment\serval.msi
 
 
 rem ########## Building ##########
@@ -142,7 +142,7 @@ if defined LOCALMACHINE (
   echo Making installer...
   %DEVENV% "setup_svr\setup_svr.sln" /rebuild Release
   if not exist deployment mkdir deployment
-  copy setup_svr\Release\YaizuSample.msi deployment
+  copy setup_svr\Release\serval.msi deployment
 )
 
 
