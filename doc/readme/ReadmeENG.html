@@ -9,49 +9,31 @@
 
 <hr/>
 <h1>SERVAL 1.0.0</h1>
-<hr/>
 
+
+<hr/>
 <h1>1. SERVAL summary</h1>
 
-SERVAL is a monitoring/management software target to servers and IoT devices.<br/>
+SERVAL is a monitoring/management software targets to servers and IoT devices.<br/>
 Due to definition and execution of Windows batch files and Linux shell scripts from remote, flexible monitoring and management of servers and IoT devices can be provided.<br/>
+SERVAL is constitute of SERVAL server which provides management console and SERVAL agents which are installed in servers/IoT devices.<br/>
 SERVAL provides following features.
 <ul>
     <li>Provides management console can be connected from Web browser.</li>
-    <li>Manages xaximum 120 servers and IoT devices.</li>
-</ul>
-
-Several information systems and application software suites use a RDBMS (Relational Database Management System) as a persistence mechanism for their own data. The range of RDBMS usage shows a tendency of expansion.
-Most RDBMSs are used as a background service for information systems and application software. However, such systems can also be accessed directly for data mining, quicker commercial operation and maintenance.
-An appropriate RDBMS can be chosen to match the characteristics of the target information system and application software. As a result, multiple RDBMSs are often used simultaneously in the same business operation and maintenance environment. However, multiple RDBMS usage is characterized by the following problems:
-
-<ul>
-<li>Different data reference software applications need to be provided, which may increase the learning cost.</li>
-<li>Data reference software needs to be installed on each client-side PC. The cost of introduction is therefore higher with a greater number of client PCs.</li>
-</ul>
-
-CmdFreak is a relational database viewer (data reference software) that provides solutions for the above problems.
-
-<ul>
-<li>CmdFreak supports the major free RDBMS MySQL, PostgreSQL and MariaDB systems, providing a common user interface for these RDBMSs and enabling data reference as a common operation. It does not need to learn different reference software applications for multiple RDBMSs, which helps to reduce related learning costs.</li>
-<li>CmdFreak works as web application software, and comes with an all-in-one installer incorporating web server software. This eliminates the need for web server pre-configuration and the use of script language. The introduction cost is practically zero.</li>
-</ul>
-
-CmdFreak provides the following functions for database reference:
-
-<ul>
-<li>List records/paging</li>
-<li>Table selection</li>
-<li>Table information reference</li>
-<li>Column filtering and sorting</li>
-<li>DBMS selection</li>
+    <li>Maximum 120 servers and IoT devices can be managed.</li>
+    <li>All of operation on management console can be done by smartphone.</li>
+    <li>A command is constitute of file transfer from SERVAL server to SERVAL agent, script execution and file transfer
+        from SERVAL agent to SERVAL server. Because of this, SERVAL can provide various monitoring/management operations.</li>
+    <li>SERVAL provides periodical command execution feature aiming to monitoring and Immediate command execution feature aiming to management.</li>
+    <li>Connection establishment between SERVAL server and SERVAL agent is always direction to SERVAL server from SERVAL agent.
+        No need to open receiver ports of servers and IoT devices hence, secure monitoring/management can be provided.</li>
 </ul>
 
 
 <hr/>
 <h1>2. System requirements</h1>
 
-CmdFreak works on systems with the following specifications:
+SERVAL works on systems with the following specifications:
 
 <ul><li>CPU: 2 GHz or more</li></ul>
 
@@ -59,28 +41,27 @@ CmdFreak works on systems with the following specifications:
 
 <ul><li>Free disk space: 20 MB or more</li></ul>
 
-<ul><li>Operating systems/editions supported:<br/>
-Windows 10 (Only 64 bit edition)<br/>
+<ul><li>Operating systems supported:<br/>
+<u>SERVAL server</u><br/>
+Windows 10<br/>
+Windows 11<br/>
 Windows Server 2016<br/>
 Windows Server 2019<br/>
+<p></p>
+<u>SERVAL agent</u><br/>
+Windows 10<br/>
+Windows 11<br/>
+Windows Server 2016<br/>
+Windows Server 2019<br/>
+Redhat Enterprise Linux 8.x<br/>
+AlmaLinux 8.x<br/>
 </li></ul>
 
 <ul><li>
 Web browsers supported:<br/>
-Microsoft Internet Explorer 11<br/>
 Microsoft Edge<br/>
 Google Chrome<br/>
 Mozilla Firefox<br/>
-</li></ul>
-
-<ul><li>
-DBMSs supported:<br/>
-MySQL 5.7 (+ ODBC Driver: MySQL Connector/ODBC 5.3)<br/>
-MySQL 8.0 (+ ODBC Driver: MySQL Connector/ODBC 8.0)<br/>
-MariaDB 10.3 (+ ODBC Driver: MariaDB Connector/ODBC 3.0)<br/>
-MariaDB 10.4 (+ ODBC Driver: MariaDB Connector/ODBC 3.1)<br/>
-PostgreSQL 9.6 (+ ODBC Driver: psqlODBC 9.6)<br/>
-PostgreSQL 12.2 (+ ODBC Driver: psqlODBC 12.1)<br/>
 </li></ul>
 
 

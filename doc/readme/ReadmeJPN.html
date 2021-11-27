@@ -9,54 +9,31 @@
 
 <hr/>
 <h1>SERVAL 1.0.0</h1>
-<hr/>
 
+
+<hr/>
 <h1>1. SERVAL概要</h1>
 
 SERVALは、サーバ／IoTデバイスの監視・管理ソフトウェアです。<br/>
 WindowsバッチファイルやLinuxシェルスクリプトをリモートから定義・実行することにより、サーバ/IoTデバイスの柔軟な監視・管理を行うことができます。<br/>
+SERVALは、管理コンソールを提供するSERVALサーバと、サーバ/IoTデバイスにインストールするSERVALエージェントから構成されます。<br/>
 SERVALには以下の特徴があります。<br/>
 <ul>
     <li>Webブラウザから接続可能な管理コンソールを提供します。</li>
     <li>最大120台のサーバ/IoTデバイスを管理することができます。</li>
-</ul>
-
-情報システムやアプリケーションソフトウェアの多くは，それらが持つデータの永続化機構としてRDBMS(リレーショナルデータベース管理システム) を用いており，
-RDBMSの利用範囲は今後も拡大する傾向にあります。
-RDBMSは情報システムやアプリケーションソフトウェアのバックグラウンドサービスとして利用されるケースがほとんどですが， データマイニングや業務・運用の迅速化
-を目的として直接RDBMSのオリジナルデータを参照するケースがあります。 
-また，RDBMSはアプリケーションソフトウェアの特徴に応じて選定されるため，業務・運用
-の中で異なる複数のRDBMSを利用することは一般的なこととなっています。このため，複数のRDBMSを使い分けるユーザーにとって次の問題が存在していました。
-
-<ul>
-<li>RDBMSの種類に応じて異なるデータ参照ツールを利用する必要があり，そのツールの学習コストが増大する。</li> 
-<li>各クライアントに複数のデータ参照ツールをインストールする必要があり，クライアント数に比例して導入コストが増大する。</li>
-</ul>
-
-CmdFreakは，リレーショナルデータベース・ビュアー(データ参照ソフトウェア)であり，上記の問題に対して次のソリューションを提供します。
-
-<ul>
-<li>フリーのメジャーRDBMSである，MySQL, PostgreSQL, MariaDBをサポートし， これらのRDBMSに対する共通のユーザーインターフェースを介してデータの参照が可能となり
-ます。 RDBMSの種類に応じて異なるツールの操作を学ぶ必要がなく学習コストを抑えることができます。</li>
-<li>クライアント側の導入コストが実質的にゼロとなるWebアプリケーションとして動作します。 加えてWebサーバを同梱するオールインワン型のインストーラにより， 通常
-のWebアプリケーションのように，事前にWebサーバやスクリプト言語を設定しておく必要はありません。 導入に関わるコストを抑えることができます。</li>
-</ul>
-
-CmdFreakはデータベースを参照するための下記の機能を提供します。
-
-<ul>
-<li>レコード一覧の表示／ページング</li>
-<li>テーブルの選択</li>
-<li>テーブル情報の参照</li>
-<li>カラムのフィルタリング／ソーティング</li>
-<li>DBMSの選択</li>
+    <li>管理コンソールのすべての操作はスマートフォンでも行うことができます。</li>
+    <li>SERVALサーバからSERVALエージェントへのファイル転送、スクリプト実行、SERVALエージェントからSERVALサーバへのファイル転送
+        をひとつのセットとするコマンドを定義することにより、様々な監視・管理の操作を行うことができます。</li>
+    <li>SERVALは、サーバ/IoTデバイスの監視を目的としたコマンドの定期実行機能と、管理を目的としたコマンドの即時実行機能を提供します。</li>
+    <li>SERVALサーバとSERVALエージェント間のコネクションは、SERVALエージェントからSERVALサーバの向きで確立されます。
+        管理対象のサーバ/IoTデバイス側の受信ポートを開くことが無いため、セキュアな監視・管理を行うことができます。</li>
 </ul>
 
 
 <hr/>
 <h1>2. システム要件</h1>
 
-CmdFreakは以下の環境で動作します。
+SERVALは以下の環境で動作します。
 
 <ul><li>動作に必要なCPU: 2GHz以上のクロック周波数で動作するCPU</li></ul>
 
@@ -64,26 +41,26 @@ CmdFreakは以下の環境で動作します。
 
 <ul><li>導入に必要な空きディスク容量: 20MBytes以上</li></ul>
 
-<ul><li>サポートするオペレーティングシステム／エディション:<br/>
-Windows 10 (64ビット版のみ)<br/>
+<ul><li>サポートするオペレーティングシステム:<br/>
+<u>SERVALサーバ</u><br/>
+Windows 10<br/>
+Windows 11<br/>
 Windows Server 2016<br/>
 Windows Server 2019<br/>
+<p></p>
+<u>SERVALエージェント</u><br/>
+Windows 10<br/>
+Windows 11<br/>
+Windows Server 2016<br/>
+Windows Server 2019<br/>
+Redhat Enterprise Linux 8.x<br/>
+AlmaLinux 8.x<br/>
 </li></ul>
 
 <ul><li>サポートするWebブラウザ:<br/>
-Microsoft Internet Explorer 11<br/>
 Microsoft Edge<br/>
 Google Chrome<br/>
 Mozilla Firefox<br/>
-</li></ul>
-
-<ul><li>サポートするDBMS:<br/>
-MySQL 5.7 (+ ODBC Driver: MySQL Connector/ODBC 5.3)<br/>
-MySQL 8.0 (+ ODBC Driver: MySQL Connector/ODBC 8.0)<br/>
-MariaDB 10.3 (+ ODBC Driver: MariaDB Connector/ODBC 3.0)<br/>
-MariaDB 10.4 (+ ODBC Driver: MariaDB Connector/ODBC 3.1)<br/>
-PostgreSQL 9.6 (+ ODBC Driver: psqlODBC 9.6)<br/>
-PostgreSQL 12.2 (+ ODBC Driver: psqlODBC 12.1)<br/>
 </li></ul>
 
 
