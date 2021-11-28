@@ -1,2 +1,2 @@
-net.exe stop YaizuSampleAgent
-sc.exe delete YaizuSampleAgent
+net.exe stop SERVALagent
+sc.exe delete SERVALagent
