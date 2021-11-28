@@ -66,64 +66,56 @@ Mozilla Firefox<br/>
 
 
 <hr/>
-<h1>3. Change history</h1>
+<h1>3. SERVAL server</h1>
+<h2>3.1 Installation</h2>
 
-Version 1.1.0 ---> 1.2.0
-<ol>
-<li>Responsive design has been adopted for smartphone user.</li>
-<li>User management function has been added.</li>
-</ol>
-
-Version 1.0.0 ---> 1.1.0
-<ol>
-<li>Support for displaying unlimited record.</li>
-<li>Performance improvement for multiple user access.</li>
-</ol>
-
-
-<hr/>
-<h1>4. Installation</h1>
-
-Execute cmdfreak.msi and launch the installer.<br/>
+Execute serval-1.0.0.msi and launch the installer of SERVAL server.<br/>
 Follow the on-screen dialog prompts.<br/>
-CmdFreak installer performs following steps during the installation.<br>
+SERVAL server installer performs following steps during the installation.<br>
 <ul>
-<li>Register exceptions of Windows firewall for CmdFreak.</li> 
-<li>Register service of CmdFreak to the target system.</li> 
-<li>Auto start of CmdFreak service and Web server.</li> 
+<li>Register exceptions of Windows firewall for SERVAL server.</li> 
+<li>Register service of SERVAL server to the target system.</li> 
+<li>Auto start of SERVAL server service and Web server.</li> 
 </ul>
-Overwrite installation(Repair) can be performed if cmdfreak.msi is executed after CmdFreak installation. Note that the items shown below for overwrite installation.<br/>
+Overwrite installation(Repair) can be performed if serval-1.0.0.msi is executed after SERVAL server installation.
+Note that the items shown below for overwrite installation.<br/>
 <ul>
-<li>Stop CmdFreak service before overwrite installation. If you perform the overwrite installation without service stop, restart of operating system is required after overwrite installation done.</li> 
-<li>During overwrite installation, port numbers which Web server and CmdFreak service use might be changed into default. Confirm the port number after overwrite installation.</li> 
+<li>Stop SERVAL server service before overwrite installation. If you perform the overwrite installation without service stop, restart of operating system is required after overwrite installation done.</li> 
+<li>During overwrite installation, host name/IP address and port number which Web server and SERVAL server service use might be changed into default. Confirm the port number after overwrite installation.</li> 
+</ul>
+
+<h2>3.2 Uninstallation</h2>
+
+Select Remove SERVAL with execution of serval-1.0.0.msi or perform uninstallation of SERVAL from Control Panel.<br/>
+SERVAL server uninstallation performs following things during uninstallation.<br/>
+<ul>
+<li>Auto stop of SERVAL server service and Web server.</li>  
+<li>Deletion of SERVAL server service from the target system. </li> 
+<li>Deletion of Windows firewall exception for SERVAL server.</li> 
+</ul>
+
+<h2>3.3 Start/Stop SERVAL server service</h2>
+
+Start and stop of SERVAL server service can be performed by Windows start menu.<br/>
+<ul>
+<li>[SERVAL]-[Start service] : Start service<br/>
+<li>[SERVAL]-[Stop service] : Stop service<br/>
 </ul>
 
 
 <hr/>
-<h1>5. Upgrade installation</h1>
+<h1>4. SERVAL agent</h1>
+<h2>4.1 Installation</h2>
+<h3>4.1.1 Installation to Windows</h3>
 
-In order to upgrade from CmdFreak 1.2.0, perform installation according to following steps.<br/>
-<ol>
-<li>Stop CmdFreak service.</li>
-<li>Copy &lt;Installation folder&gt;\sample.dat file to other folder.</li>
-<li>Uninstall CmdFreak 1.2.0.</li>
-<li>Install CmdFreak 1.3.0.</li>
-<li>Stop CmdFreak service.</li>
-<li>Copy and overwrite to &lt;Installation folder&gt;\sample.dat file from sample.dat which is copied in previous step.</li>
-<li>Modify &lt;Installation folder&gt;\conf\nginx.conf and &lt;Installation folder&gt;sample.conf if necessary.</li>
-<li>Start CmdFreak service.</li>
-</ol>
-
-
-<hr/>
-<h1>6. Uninstallation</h1>
-
-Select Remove CmdFreak with execution of cmdfreak.msi or perform uninstallation of CmdFreak from Control Panel.<br/>
-CmdFreak uninstallation performs following things during uninstallation.<br/>
+Execute servalagt-1.0.0.msi and launch the installer of SERVAL server.<br/>
+Follow the on-screen dialog prompts.<br/>
+SERVAL agent installer registers SERVAL agent service to the target system.<br>
+Overwrite installation(Repair) can be performed if servalagt-1.0.0.msi is executed after SERVAL agent installation.
+Note that the items shown below for overwrite installation.<br/>
 <ul>
-<li>Auto stop of CmdFreak service and Web server.</li>  
-<li>Deletion of CmdFreak service from the target system. </li> 
-<li>Deletion of Windows firewall exception for CmdFreak.</li> 
+    <li>Stop SERVAL agent service before overwrite installation. If you perform the overwrite installation without service stop, restart of operating system is required after overwrite installation done.</li> 
+    <li>During overwrite installation, connection target host name/IP address and port number which SERVAL agent service uses might be changed into default. Confirm the port number after overwrite installation.</li> 
 </ul>
 
 
@@ -150,14 +142,6 @@ If main console is not appeared or an error ocurred, confirm the things shown be
 </ul>
 
 
-<hr/>
-<h1>8. Start/Stop CmdFreak service</h1>
-
-Start and stop of CmdFreak service can be performed by Windows start menu.<br/>
-<ul>
-<li>[CmdFreak]-[Start CmdFreak service] : Start service<br/>
-<li>[CmdFreak]-[Stop CmdFreak service] : Stop service<br/>
-</ul>
 
 
 <hr/>
