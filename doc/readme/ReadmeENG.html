@@ -106,8 +106,8 @@ Start and stop of SERVAL server service can be performed by Windows start menu.<
 <hr/>
 <h1>4. SERVAL agent</h1>
 <h2>4.1 Installation</h2>
-<h3>4.1.1 Installation to Windows</h3>
 
+<u>For Windows</u><br/>
 Execute servalagt-1.0.0.msi and launch the installer of SERVAL server.<br/>
 Follow the on-screen dialog prompts.<br/>
 SERVAL agent installer registers SERVAL agent service to the target system.<br>
@@ -117,6 +117,34 @@ Note that the items shown below for overwrite installation.<br/>
     <li>Stop SERVAL agent service before overwrite installation. If you perform the overwrite installation without service stop, restart of operating system is required after overwrite installation done.</li> 
     <li>During overwrite installation, connection target host name/IP address and port number which SERVAL agent service uses might be changed into default. Confirm the port number after overwrite installation.</li> 
 </ul>
+<p></p>
+
+<u>For Linux</u><br/>
+Install servalagt-1.0-0.el8.x86_64.rpm using following command.<br/>
+<i># yum install servalagt-1.0-0.el8.x86_64.rpm</i>
+
+<h2>4.2 Uninstallation</h2>
+
+<u>For Windows</u><br/>
+Select Remove SERVAL agent with execution of servalagt-1.0.0.msi or perform uninstallation of SERVAL agent from Control Panel.<br/>
+During uninstallation, SERVAL agent service is removed from the target system.<br/>
+<p></p>
+
+<u>For Linux</u><br/>
+Uninstall SERVAL agent using following command.<br/>
+<i># yum remove SERVALagent</i>
+
+<h2>4.3 Start/Stop SERVAL agent service</h2>
+
+<u>For Windows</u><br/>
+SERVAL agent service start and end operations can be performed by task manager.<br/>
+Launch the task manager, and then perform start or stop operation to SERVALagent using the task manager.<br/>
+<p></p>
+
+<u>Linux版</u><br/>
+Start and stop operation for SERVAL agent can be performed by following command.<br/>
+Start: <i># systemctl start servalagt</i><br/>
+Stop: <i># systemctl stop servalagt</i><br/>
 
 
 <hr/>
