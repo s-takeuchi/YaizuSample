@@ -11,7 +11,7 @@ mkdir -p $BUILDDIR/SOURCES
 # Build
 cd ../src/sample
 make all
-cp sample $BUILDDIR/SOURCES
+cp serval $BUILDDIR/SOURCES
 cp sample.conf $BUILDDIR/SOURCES
 echo servicehost=127.0.0.1 >> $BUILDDIR/SOURCES/sample.conf
 echo serviceport=8081 >> $BUILDDIR/SOURCES/sample.conf
