@@ -122,7 +122,7 @@
     <ClCompile Include="ApiPostServerInfo.cpp" />
     <ClCompile Include="ApiPostViewSetting.cpp" />
     <ClCompile Include="dataaccess.cpp" />
-    <ClCompile Include="sample.cpp" />
+    <ClCompile Include="serval.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ApiDeleteAgentInfo.h" />
@@ -144,7 +144,7 @@
     <ClInclude Include="ApiPostServerInfo.h" />
     <ClInclude Include="ApiPostViewSetting.h" />
     <ClInclude Include="dataaccess.h" />
-    <ClInclude Include="sample.h" />
+    <ClInclude Include="serval.h" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\YaizuComLib\src\commonfunc\commonfunc.vcxproj">

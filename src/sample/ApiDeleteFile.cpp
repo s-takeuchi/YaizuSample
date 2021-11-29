@@ -2,7 +2,7 @@
 #include "../../../YaizuComLib/src/commonfunc/StkStringParser.h"
 #include "../../../YaizuComLib/src/commonfunc/msgproc.h"
 #include "../../../YaizuComLib/src/stkwebapp_um/ApiBase.h"
-#include "sample.h"
+#include "serval.h"
 #include "ApiDeleteFile.h"
 
 StkObject* ApiDeleteFile::ExecuteImpl(StkObject* ReqObj, int Method, wchar_t UrlPath[StkWebAppExec::URL_PATH_LENGTH], int* ResultCode, wchar_t Locale[3], wchar_t* Token)

@@ -2,7 +2,7 @@
 #include "../../../YaizuComLib/src/stkwebapp_um/ApiBase.h"
 #include "../../../YaizuComLib/src/commonfunc/msgproc.h"
 #include "dataaccess.h"
-#include "sample.h"
+#include "serval.h"
 #include "ApiGetServerInfo.h"
 
 ApiGetServerInfo::ApiGetServerInfo()

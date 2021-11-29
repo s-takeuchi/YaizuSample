@@ -2,7 +2,7 @@
 #include "../../../YaizuComLib/src/commonfunc/StkObject.h"
 #include "../../../YaizuComLib/src/commonfunc/msgproc.h"
 #include "../../../YaizuComLib/src/stkwebapp_um/stkwebapp_um.h"
-#include "sample.h"
+#include "serval.h"
 #include "dataaccess.h"
 #include "ApiGetViewSetting.h"
 

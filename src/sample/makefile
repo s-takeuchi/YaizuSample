@@ -76,8 +76,8 @@ ApiDeleteAgentInfo.o : ApiDeleteAgentInfo.cpp
 dataaccess.o : dataaccess.cpp
 	g++ -c dataaccess.cpp -std=c++1z
 
-serval.o : sample.cpp
-	g++ -c sample.cpp -std=c++1z
+serval.o : serval.cpp
+	g++ -c serval.cpp -std=c++1z
 
 clean :
 	rm -f *.o *.a serval
