@@ -49,7 +49,7 @@ Summary: SERVAL server
 Requires: nginx = 1:1.12.2-1.el7_4.ngx
 
 License: No License No Life
-Source1: sample
+Source1: serval
 Source2: sample.conf
 Source3: sample_nginx.conf
 Source4: sample.service
@@ -138,7 +138,7 @@ install -p -m 644 %{SOURCE43} %{buildroot}/%{_datarootdir}/nginx/html/img/favico
 
 
 %files
-%{_bindir}/sample
+%{_bindir}/serval
 %config(noreplace) %{_sysconfdir}/sample.conf
 %{_sysconfdir}/nginx/conf.d/sample_nginx.conf
 %config(noreplace) %{_sysconfdir}/systemd/system/sample.service
@@ -182,7 +182,7 @@ if [ \$1 = 2 ]; then
     systemctl daemon-reload
     systemctl stop nginx.service
     systemctl stop sample.service
-    while [ \`ps -ef | grep "/usr/bin/sample" | grep -v grep | grep -v srvchk | wc -l\` != 0 ]
+    while [ \`ps -ef | grep "/usr/bin/serval" | grep -v grep | grep -v srvchk | wc -l\` != 0 ]
     do
         sleep 1
     done
@@ -219,7 +219,7 @@ if [ \$1 = 0 ]; then
     systemctl daemon-reload
     systemctl stop nginx.service
     systemctl stop sample.service
-    while [ \`ps -ef | grep "/usr/bin/sample" | grep -v grep | grep -v srvchk | wc -l\` != 0 ]
+    while [ \`ps -ef | grep "/usr/bin/serval" | grep -v grep | grep -v srvchk | wc -l\` != 0 ]
     do
         sleep 1
     done

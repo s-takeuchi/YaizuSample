@@ -1,14 +1,13 @@
 [Unit]
-Description=YaizuSample!!
+Description=SERVAL
 After=network.service
 
 [Service]
 Type=simple
 Restart=no
-ExecStart=/usr/bin/sample
-ExecStop=/usr/bin/stopsample sample.conf /usr/bin/sample
+ExecStart=/usr/bin/serval
+ExecStop=/usr/bin/stopsample sample.conf /usr/bin/serval
 KillMode=process
 
 [Install]
 WantedBy=multi-user.target
-
