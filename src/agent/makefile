@@ -1,7 +1,7 @@
 LDFLAGS = -L/usr/local/lib64 -L/usr/local/lib
 LIBS    = -lssl -lcrypto
 
-agent : agent.o
+servalagt : servalagt.o
 	cd ../../../YaizuComLib/src/stkpl; make
 	cp ../../../YaizuComLib/src/stkpl/stkpl.a .
 	cd ../../../YaizuComLib/src/stkwebapp; make
@@ -15,13 +15,13 @@ agent : agent.o
 	cd ../../../YaizuComLib/src/stkdata; make
 	cp ../../../YaizuComLib/src/stkdata/stkdata.a .
 
-	g++ -o agent agent.o stkpl.a stkwebapp.a commonfunc.a stksocket.a stkthread.a stkdata.a -std=c++1z -lstdc++fs -pthread -static-libgcc -static-libstdc++ $(LDFLAGS) $(LIBS)
+	g++ -o servalagt servalagt.o stkpl.a stkwebapp.a commonfunc.a stksocket.a stkthread.a stkdata.a -std=c++1z -lstdc++fs -pthread -static-libgcc -static-libstdc++ $(LDFLAGS) $(LIBS)
 
-agent.o : agent.cpp
-	g++ -c agent.cpp -std=c++1z
+servalagt.o : servalagt.cpp
+	g++ -c servalagt.cpp -std=c++1z
 
 clean :
-	rm -f *.o *.a agent
+	rm -f *.o *.a servalagt
 	cd ../../../YaizuComLib/src/stkpl; make clean
 	cd ../../../YaizuComLib/src/stkwebapp; make clean
 	cd ../../../YaizuComLib/src/commonfunc; make clean
@@ -29,5 +29,5 @@ clean :
 	cd ../../../YaizuComLib/src/stkthread; make clean
 	cd ../../../YaizuComLib/src/stkdata; make clean
 
-all : clean agent
+all : clean servalagt
 

@@ -1,13 +1,12 @@
 [Unit]
-Description=YaizuSampleAgent!!
+Description=SERVAL agent
 After=network.service
 
 [Service]
 Type=simple
 Restart=no
-ExecStart=/usr/bin/agent
+ExecStart=/usr/bin/servalagt
 KillMode=process
 
 [Install]
 WantedBy=multi-user.target
-

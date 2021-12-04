@@ -11,7 +11,7 @@ mkdir -p $BUILDDIR/SOURCES
 # Build
 cd ../src/agent
 make all
-cp agent $BUILDDIR/SOURCES
+cp servalagt $BUILDDIR/SOURCES
 cp agent.conf $BUILDDIR/SOURCES
 cp agent.service $BUILDDIR/SOURCES
 
@@ -26,7 +26,7 @@ Release: 0.el8
 Summary: SERVAL agent
 
 License: No License No Life
-Source1: agent
+Source1: servalagt
 Source2: agent.conf
 Source3: agent.service
 
@@ -43,7 +43,7 @@ install -p -m 644 %{SOURCE2} %{buildroot}/%{_sysconfdir}
 install -p -m 644 %{SOURCE3} %{buildroot}/%{_sysconfdir}/systemd/system
 
 %files
-%{_bindir}/agent
+%{_bindir}/servalagt
 %config(noreplace) %{_sysconfdir}/agent.conf
 %config(noreplace) %{_sysconfdir}/systemd/system/agent.service
 
@@ -52,7 +52,7 @@ if [ \$1 = 2 ]; then
     echo "Upgrade installation (pre)"
     systemctl daemon-reload
     systemctl stop agent.service
-    while [ \`ps -ef | grep "/usr/bin/agent" | grep -v grep | grep -v srvchk | wc -l\` != 0 ]
+    while [ \`ps -ef | grep "/usr/bin/servalagt" | grep -v grep | grep -v srvchk | wc -l\` != 0 ]
     do
         sleep 1
     done
