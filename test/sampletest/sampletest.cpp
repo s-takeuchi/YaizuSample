@@ -442,8 +442,8 @@ void TestGetFile(StkWebAppSend* StkWebAppSendObj)
 	wchar_t ExefileW[32] = L"sample.exe";
 	char Exefile[32] = "sample.exe";
 #else
-	wchar_t ExefileW[32] = L"sample";
-	char Exefile[32] = "sample";
+	wchar_t ExefileW[32] = L"serval";
+	char Exefile[32] = "serval";
 #endif
 
 	{
