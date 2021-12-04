@@ -11,7 +11,7 @@ mkdir -p $BUILDDIR
 # Build
 cd ../src/sample
 make all
-cp sample $BUILDDIR
+cp serval $BUILDDIR
 cp sample.conf $BUILDDIR
 cp sample.dat $BUILDDIR
 echo servicehost=localhost >> $BUILDDIR/sample.conf
@@ -25,6 +25,6 @@ cp sampletest $BUILDDIR
 cd $BUILDDIR
 echo
 echo Test starts
-./sample&
+./serval&
 ./sampletest
 echo Test ends
