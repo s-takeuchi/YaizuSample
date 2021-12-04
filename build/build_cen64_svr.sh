@@ -15,7 +15,7 @@ cp serval $BUILDDIR/SOURCES
 cp sample.conf $BUILDDIR/SOURCES
 echo servicehost=127.0.0.1 >> $BUILDDIR/SOURCES/sample.conf
 echo serviceport=8081 >> $BUILDDIR/SOURCES/sample.conf
-cp sample.service $BUILDDIR/SOURCES
+cp serval.service $BUILDDIR/SOURCES
 cp sample_nginx.conf $BUILDDIR/SOURCES
 cp sample.html $BUILDDIR/SOURCES
 cp sample.js $BUILDDIR/SOURCES
@@ -52,7 +52,7 @@ License: No License No Life
 Source1: serval
 Source2: sample.conf
 Source3: sample_nginx.conf
-Source4: sample.service
+Source4: serval.service
 Source5: sample.html
 Source6: jquery-3.2.0.min.js
 Source7: bootstrap.css
@@ -141,7 +141,7 @@ install -p -m 644 %{SOURCE43} %{buildroot}/%{_datarootdir}/nginx/html/img/favico
 %{_bindir}/serval
 %config(noreplace) %{_sysconfdir}/sample.conf
 %{_sysconfdir}/nginx/conf.d/sample_nginx.conf
-%config(noreplace) %{_sysconfdir}/systemd/system/sample.service
+%config(noreplace) %{_sysconfdir}/systemd/system/serval.service
 %{_datarootdir}/nginx/html/sample.html
 %{_datarootdir}/nginx/html/sample.js
 %{_datarootdir}/nginx/html/stkcommon.js
@@ -181,7 +181,7 @@ if [ \$1 = 2 ]; then
     echo "Upgrade installation (pre)"
     systemctl daemon-reload
     systemctl stop nginx.service
-    systemctl stop sample.service
+    systemctl stop serval.service
     while [ \`ps -ef | grep "/usr/bin/serval" | grep -v grep | grep -v srvchk | wc -l\` != 0 ]
     do
         sleep 1
@@ -204,13 +204,13 @@ if [ \$1 = 1 ]; then
     systemctl stop nginx.service
     systemctl start nginx.service
     systemctl enable nginx.service
-    systemctl start sample.service
-    systemctl enable sample.service
+    systemctl start serval.service
+    systemctl enable serval.service
 elif [ \$1 = 2 ]; then
     echo "Upgrade installation (post)"
     systemctl daemon-reload
     systemctl start nginx.service
-    systemctl start sample.service
+    systemctl start serval.service
 fi
 
 %preun
@@ -218,7 +218,7 @@ if [ \$1 = 0 ]; then
     echo "Uninstallation (preun)"
     systemctl daemon-reload
     systemctl stop nginx.service
-    systemctl stop sample.service
+    systemctl stop serval.service
     while [ \`ps -ef | grep "/usr/bin/serval" | grep -v grep | grep -v srvchk | wc -l\` != 0 ]
     do
         sleep 1
@@ -229,7 +229,7 @@ if [ \$1 = 0 ]; then
         firewall-cmd --remove-port=8080/tcp --permanent
         firewall-cmd --reload
     fi
-    systemctl disable sample.service
+    systemctl disable serval.service
     systemctl start nginx.service
 fi
 
