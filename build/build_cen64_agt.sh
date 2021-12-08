@@ -13,7 +13,7 @@ cd ../src/agent
 make all
 cp servalagt $BUILDDIR/SOURCES
 cp agent.conf $BUILDDIR/SOURCES
-cp agent.service $BUILDDIR/SOURCES
+cp servalagt.service $BUILDDIR/SOURCES
 
 
 # Make SPEC file
@@ -28,7 +28,7 @@ Summary: SERVAL agent
 License: No License No Life
 Source1: servalagt
 Source2: agent.conf
-Source3: agent.service
+Source3: servalagt.service
 
 %description
 SERVAL agent
@@ -45,13 +45,13 @@ install -p -m 644 %{SOURCE3} %{buildroot}/%{_sysconfdir}/systemd/system
 %files
 %{_bindir}/servalagt
 %config(noreplace) %{_sysconfdir}/agent.conf
-%config(noreplace) %{_sysconfdir}/systemd/system/agent.service
+%config(noreplace) %{_sysconfdir}/systemd/system/servalagt.service
 
 %pre
 if [ \$1 = 2 ]; then
     echo "Upgrade installation (pre)"
     systemctl daemon-reload
-    systemctl stop agent.service
+    systemctl stop servalagt.service
     while [ \`ps -ef | grep "/usr/bin/servalagt" | grep -v grep | grep -v srvchk | wc -l\` != 0 ]
     do
         sleep 1
@@ -66,23 +66,23 @@ if [ \$1 = 1 ]; then
     echo scriptencode=UTF8 >> %{_sysconfdir}/agent.conf
     setsebool httpd_can_network_connect on -P
     systemctl daemon-reload
-    systemctl start agent.service
-    systemctl enable agent.service
+    systemctl start servalagt.service
+    systemctl enable servalagt.service
 elif [ \$1 = 2 ]; then
     echo "Upgrade installation (post)"
     systemctl daemon-reload
-    systemctl start agent.service
+    systemctl start servalagt.service
 fi
 
 %preun
 if [ \$1 = 0 ]; then
     echo "Uninstallation (preun)"
-    systemctl stop agent.service
+    systemctl stop servalagt.service
     while [ \`ps -ef | grep "/usr/bin/agent" | grep -v grep | grep -v srvchk | wc -l\` != 0 ]
     do
         sleep 1
     done
-    systemctl disable agent.service
+    systemctl disable servalagt.service
 fi
 
 EOF
