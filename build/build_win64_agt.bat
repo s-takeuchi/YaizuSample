@@ -49,20 +49,20 @@ if exist deployment\servalagt-1.0.0.msi del deployment\servalagt-1.0.0.msi
 
 rem ########## Building ##########
 echo;
-echo Building agent.sln...
-%MSBUILD% "..\src\agent\agent.sln" /t:clean;build /p:Configuration=Release /p:platform="x64"
+echo Building servalagt.sln...
+%MSBUILD% "..\src\agent\servalagt.sln" /t:clean;build /p:Configuration=Release /p:platform="x64"
 echo Building agentsvc.sln...
 %MSBUILD% "..\src\agentsvc\agentsvc.sln" /t:clean;build /p:Configuration=Release /p:platform="x64"
 
 
 rem ########## Checking file existence ##########
 echo;
-echo Checking "agent.exe" existence...
-if not exist "..\src\agent\x64\Release\agent.exe" goto ERRORRAISED
+echo Checking "servalagt.exe" existence...
+if not exist "..\src\agent\x64\Release\servalagt.exe" goto ERRORRAISED
 echo Checking "agentsvc.exe" existence...
 if not exist "..\src\agentsvc\x64\Release\agentsvc.exe" goto ERRORRAISED
-echo Checking "agent.conf" existence...
-if not exist "..\src\agent\agent.conf" goto ERRORRAISED
+echo Checking "servalagt.conf" existence...
+if not exist "..\src\agent\servalagt.conf" goto ERRORRAISED
 echo Checking "svcadd.bat" existence...
 if not exist "..\src\agentsvc\svcadd.bat" goto ERRORRAISED
 echo Checking "svcdel.bat" existence...
@@ -74,9 +74,9 @@ echo;
 echo Deployment of files and folders...
 
 mkdir agent
-copy "..\src\agent\x64\Release\agent.exe" agent
+copy "..\src\agent\x64\Release\servalagt.exe" agent
 copy "..\src\agentsvc\x64\Release\agentsvc.exe" agent
-copy "..\src\agent\agent.conf" agent
+copy "..\src\agent\servalagt.conf" agent
 copy "..\src\agentsvc\svcadd.bat" agent
 copy "..\src\agentsvc\svcdel.bat" agent
 

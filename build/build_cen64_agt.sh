@@ -12,7 +12,7 @@ mkdir -p $BUILDDIR/SOURCES
 cd ../src/agent
 make all
 cp servalagt $BUILDDIR/SOURCES
-cp agent.conf $BUILDDIR/SOURCES
+cp servalagt.conf $BUILDDIR/SOURCES
 cp servalagt.service $BUILDDIR/SOURCES
 
 
@@ -27,7 +27,7 @@ Summary: SERVAL agent
 
 License: No License No Life
 Source1: servalagt
-Source2: agent.conf
+Source2: servalagt.conf
 Source3: servalagt.service
 
 %description
@@ -44,7 +44,7 @@ install -p -m 644 %{SOURCE3} %{buildroot}/%{_sysconfdir}/systemd/system
 
 %files
 %{_bindir}/servalagt
-%config(noreplace) %{_sysconfdir}/agent.conf
+%config(noreplace) %{_sysconfdir}/servalagt.conf
 %config(noreplace) %{_sysconfdir}/systemd/system/servalagt.service
 
 %pre
@@ -62,8 +62,8 @@ fi
 if [ \$1 = 1 ]; then
     echo "New installation (post)"
     mkdir -p %{_datadir}/servalagt
-    echo workdir=%{_datadir}/servalagt >> %{_sysconfdir}/agent.conf
-    echo scriptencode=UTF8 >> %{_sysconfdir}/agent.conf
+    echo workdir=%{_datadir}/servalagt >> %{_sysconfdir}/servalagt.conf
+    echo scriptencode=UTF8 >> %{_sysconfdir}/servalagt.conf
     setsebool httpd_can_network_connect on -P
     systemctl daemon-reload
     systemctl start servalagt.service

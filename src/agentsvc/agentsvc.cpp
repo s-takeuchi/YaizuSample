@@ -9,7 +9,7 @@ int main(int argc, char* argv[])
 		wchar_t TmpPath[FILENAME_MAX] = L"";
 		wchar_t TmpPath2[FILENAME_MAX] = L"";
 		wchar_t TmpCmd[FILENAME_MAX + 32] = L"";
-		StkPlGetFullPathFromFileName(L"agent.exe", TmpPath);
+		StkPlGetFullPathFromFileName(L"servalagt.exe", TmpPath);
 		StkPlGetFullPathWithoutFileName(TmpPath, TmpPath2);
 		StkPlPrintf("Service configuration [%s]\r\n", argv[1]);
 		StkPlSleepMs(1000);
@@ -22,7 +22,7 @@ int main(int argc, char* argv[])
 				StkPlPrintf(WorkDirPath);
 				delete TmpCmd2s;
 
-				// Grant modify permission to agent.conf
+				// Grant modify permission to servalagt.conf
 				STARTUPINFO si_acl;
 				PROCESS_INFORMATION pi_acl;
 				wchar_t CmdLineForIcacls[512];
@@ -30,13 +30,13 @@ int main(int argc, char* argv[])
 				GetSystemDirectory(SystemDir, MAX_PATH);
 				ZeroMemory(&si_acl, sizeof(si_acl));
 				si_acl.cb = sizeof(si_acl);
-				StkPlSwPrintf(CmdLineForIcacls, 512, L"\"%ls\\icacls.exe\" \"%ls\\agent.conf\" /grant Users:M", SystemDir, TmpPath2);
+				StkPlSwPrintf(CmdLineForIcacls, 512, L"\"%ls\\icacls.exe\" \"%ls\\servalagt.conf\" /grant Users:M", SystemDir, TmpPath2);
 				StkPlPrintf("%ls\r\n", CmdLineForIcacls);
 				CreateProcess(NULL, CmdLineForIcacls, NULL, NULL, false, NORMAL_PRIORITY_CLASS | CREATE_NO_WINDOW, NULL, NULL, &si_acl, &pi_acl);
 				WaitForSingleObject(pi_acl.hProcess, INFINITE);
 				CloseHandle(pi_acl.hProcess);
 
-				StkPlSwPrintf(TmpCmd, FILENAME_MAX + 32, L"%ls\\agent.conf", TmpPath2);
+				StkPlSwPrintf(TmpCmd, FILENAME_MAX + 32, L"%ls\\servalagt.conf", TmpPath2);
 				void* FileHndl = StkPlOpenFileForWrite(TmpCmd, true);
 				StkPlSeekFromEnd(FileHndl, 0);
 				size_t ActSize = 0;

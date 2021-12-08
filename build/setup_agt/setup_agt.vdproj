@@ -27,7 +27,7 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_8227B64E3ABE40518B13D4BA9B40B5C5"
+        "MsmKey" = "8:_9661D2B8D02E4FC7923E51D5BF2FF2D7"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -39,7 +39,7 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_C0523BD824D241728943DBC2D1530764"
+        "MsmKey" = "8:_FC4AC845D03149CAA8421925F1C2C49D"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -188,10 +188,10 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_8227B64E3ABE40518B13D4BA9B40B5C5"
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_9661D2B8D02E4FC7923E51D5BF2FF2D7"
             {
-            "SourcePath" = "8:..\\agent\\agent.exe"
-            "TargetName" = "8:agent.exe"
+            "SourcePath" = "8:..\\agent\\servalagt.exe"
+            "TargetName" = "8:servalagt.exe"
             "Tag" = "8:"
             "Folder" = "8:_7BE98197E1CB41A89AA3647CD3357CF5"
             "Condition" = "8:"
@@ -228,10 +228,10 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_C0523BD824D241728943DBC2D1530764"
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_FC4AC845D03149CAA8421925F1C2C49D"
             {
-            "SourcePath" = "8:..\\agent\\agent.conf"
-            "TargetName" = "8:agent.conf"
+            "SourcePath" = "8:..\\agent\\servalagt.conf"
+            "TargetName" = "8:servalagt.conf"
             "Tag" = "8:"
             "Folder" = "8:_7BE98197E1CB41A89AA3647CD3357CF5"
             "Condition" = "8:"

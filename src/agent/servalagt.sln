@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.27703.2000
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "agent", "agent.vcxproj", "{2BAE9022-5973-4839-BE7B-936D9B0704E9}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "agent", "servalagt.vcxproj", "{2BAE9022-5973-4839-BE7B-936D9B0704E9}"
 	ProjectSection(ProjectDependencies) = postProject
 		{C85C9417-1312-4A69-B254-B4F041A9D9C1} = {C85C9417-1312-4A69-B254-B4F041A9D9C1}
 		{85C0E32C-8AB1-495D-9968-0ABDEBD671AE} = {85C0E32C-8AB1-495D-9968-0ABDEBD671AE}

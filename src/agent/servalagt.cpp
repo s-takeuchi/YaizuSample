@@ -680,7 +680,7 @@ int LoadPropertyFile(wchar_t HostOrIpAddr[256], int* PortNum, wchar_t PathToBuck
 	char TmpScriptEncode[256] = "";
 	char TmpLog[256] = "";
 	StkProperties *Prop = new StkProperties();
-	if (Prop->GetProperties(L"agent.conf") == 0) {
+	if (Prop->GetProperties(L"servalagt.conf") == 0) {
 		// For targethost
 		if (Prop->GetPropertyStr("targethost", TmpHostOrIpAddr) != 0) {
 			MessageProc::AddLog("targethost property is not found.", MessageProc::LOG_TYPE_ERROR);
@@ -749,7 +749,7 @@ int LoadPropertyFile(wchar_t HostOrIpAddr[256], int* PortNum, wchar_t PathToBuck
 		MessageProc::AddLog(TmpLog, MessageProc::LOG_TYPE_INFO);
 
 	} else {
-		MessageProc::AddLog("agent.conf is not found.", MessageProc::LOG_TYPE_FATAL);
+		MessageProc::AddLog("servalagt.conf is not found.", MessageProc::LOG_TYPE_FATAL);
 		return -1;
 	}
 	return 0;
