@@ -12,10 +12,10 @@ mkdir -p $BUILDDIR
 cd ../src/sample
 make all
 cp serval $BUILDDIR
-cp sample.conf $BUILDDIR
-cp sample.dat $BUILDDIR
-echo servicehost=localhost >> $BUILDDIR/sample.conf
-echo serviceport=10009 >> $BUILDDIR/sample.conf
+cp serval.conf $BUILDDIR
+cp serval.dat $BUILDDIR
+echo servicehost=localhost >> $BUILDDIR/serval.conf
+echo serviceport=10009 >> $BUILDDIR/serval.conf
 cd ../../test/sampletest
 make all
 cp sampletest $BUILDDIR

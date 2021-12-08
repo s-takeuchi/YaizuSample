@@ -48,9 +48,9 @@ if exist server rmdir /S /Q server
 
 rem ########## Building ##########
 echo;
-echo Building sample.sln...
+echo Building serval.sln...
 rem Considering execution privilege, .exe is built as Debug. (Debug=AsInvoker, Release=AsAdmin)
-%MSBUILD% "..\src\sample\sample.sln" /t:clean;build /p:Configuration=Debug /p:platform="x64"
+%MSBUILD% "..\src\sample\serval.sln" /t:clean;build /p:Configuration=Debug /p:platform="x64"
 IF %ERRORLEVEL% NEQ 0 goto ERRORRAISED
 echo Building sampletest.sln...
 %MSBUILD% "..\test\sampletest\sampletest.sln" /t:clean;build /p:Configuration=Release /p:platform="x64"
@@ -59,8 +59,8 @@ IF %ERRORLEVEL% NEQ 0 goto ERRORRAISED
 
 rem ########## Checking file existence ##########
 echo;
-echo Checking "sample.exe" existence...
-if not exist "..\src\sample\x64\Debug\sample.exe" goto ERRORRAISED
+echo Checking "serval.exe" existence...
+if not exist "..\src\sample\x64\Debug\serval.exe" goto ERRORRAISED
 echo Checking "sampletest.exe" existence...
 if not exist "..\test\sampletest\x64\Release\sampletest.exe" goto ERRORRAISED
 
@@ -69,18 +69,18 @@ rem ########## Deployment of files and folders ##########
 echo;
 echo Deployment of files and folders...
 mkdir server
-copy "..\src\sample\x64\Debug\sample.exe" server
-copy "..\src\sample\sample.dat" server
-copy "..\src\sample\sample.conf" server
-echo servicehost=localhost>> server\sample.conf
-echo serviceport=10009>> server\sample.conf
+copy "..\src\sample\x64\Debug\serval.exe" server
+copy "..\src\sample\serval.dat" server
+copy "..\src\sample\serval.conf" server
+echo servicehost=localhost>> server\serval.conf
+echo serviceport=10009>> server\serval.conf
 copy "..\test\sampletest\x64\Release\sampletest.exe" server
 
 
 rem ########## Testing ##########
 echo;
 echo Test starts
-start server\sample.exe
+start server\serval.exe
 server\sampletest.exe
 echo Test ends
 

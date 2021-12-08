@@ -439,8 +439,8 @@ void TestGetFile(StkWebAppSend* StkWebAppSendObj)
 {
 	int TargetFileSize = -1;
 #ifdef WIN32
-	wchar_t ExefileW[32] = L"sample.exe";
-	char Exefile[32] = "sample.exe";
+	wchar_t ExefileW[32] = L"serval.exe";
+	char Exefile[32] = "serval.exe";
 #else
 	wchar_t ExefileW[32] = L"serval";
 	char Exefile[32] = "serval";
@@ -486,7 +486,7 @@ void TestGetFile(StkWebAppSend* StkWebAppSendObj)
 							FndFlag4SampleExe = true;
 							TargetFileSize = FileSize;
 						}
-						if (StkPlWcsCmp(FileName, L"sample.dat") == 0) {
+						if (StkPlWcsCmp(FileName, L"serval.dat") == 0) {
 							FndFlag4SampleDat = true;
 						}
 					}
