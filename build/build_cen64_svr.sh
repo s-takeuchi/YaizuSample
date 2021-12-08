@@ -16,7 +16,7 @@ cp serval.conf $BUILDDIR/SOURCES
 echo servicehost=127.0.0.1 >> $BUILDDIR/SOURCES/serval.conf
 echo serviceport=8081 >> $BUILDDIR/SOURCES/serval.conf
 cp serval.service $BUILDDIR/SOURCES
-cp sample_nginx.conf $BUILDDIR/SOURCES
+cp serval_nginx.conf $BUILDDIR/SOURCES
 cp serval.html $BUILDDIR/SOURCES
 cp serval.js $BUILDDIR/SOURCES
 cp serval.dat $BUILDDIR/SOURCES
@@ -51,7 +51,7 @@ Requires: nginx = 1:1.12.2-1.el7_4.ngx
 License: No License No Life
 Source1: serval
 Source2: serval.conf
-Source3: sample_nginx.conf
+Source3: serval_nginx.conf
 Source4: serval.service
 Source5: serval.html
 Source6: jquery-3.2.0.min.js
@@ -140,7 +140,7 @@ install -p -m 644 %{SOURCE43} %{buildroot}/%{_datarootdir}/nginx/html/img/favico
 %files
 %{_bindir}/serval
 %config(noreplace) %{_sysconfdir}/serval.conf
-%{_sysconfdir}/nginx/conf.d/sample_nginx.conf
+%{_sysconfdir}/nginx/conf.d/serval_nginx.conf
 %config(noreplace) %{_sysconfdir}/systemd/system/serval.service
 %{_datarootdir}/nginx/html/serval.html
 %{_datarootdir}/nginx/html/serval.js
