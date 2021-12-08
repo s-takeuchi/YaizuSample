@@ -27,12 +27,6 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_065632D1340845D48908F6D00183D218"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
         "MsmKey" = "8:_06A46CD034E34BD696E824267FDBD232"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -63,6 +57,12 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_26CE0DFFA847415DA96F55B29A0540E7"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_274A444909714CDC9BB2C6BB5A26AADE"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -76,12 +76,6 @@
         "Entry"
         {
         "MsmKey" = "8:_354AC4B248944DEA83EFE51BAC79E972"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_38E56281386C4DF79894DCE448E72F4E"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -153,6 +147,12 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_6051076A145548A2B77A01BF1E15AC50"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_623D2694A3D34E96917708716F0F89B3"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -207,12 +207,6 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_83C209FD91AC44D6A5D07AACA8CD2264"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
         "MsmKey" = "8:_876094B1770A41F0AD2FC03D85B0227C"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -237,6 +231,12 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_92D1241B36D1462DA666974C185CC05E"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_94EA46177086453EA683955B2B180AF6"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -250,6 +250,12 @@
         "Entry"
         {
         "MsmKey" = "8:_ACCE647FD80E4A1EA799D41A1F9A1948"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_ACF2248A22D64551BD4EFDBC68F0CB00"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -297,12 +303,6 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_C4089C91301B4F6B920FB7D591533163"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
         "MsmKey" = "8:_C704DA76C0AE449F84FFC3120C1D1B3D"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -328,6 +328,12 @@
         "Entry"
         {
         "MsmKey" = "8:_CDA685C13D694D8CA8CD505B69276AA8"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_CE639A8936084CF299CD4399C8582917"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -370,12 +376,6 @@
         "Entry"
         {
         "MsmKey" = "8:_F23D895CF88F4153A5415C10994B18C7"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_F6F2A9753B554031BCFB53F370DE7C16"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -480,7 +480,7 @@
             "Object" = "8:_4BF20778C63C471B924A7D2E8542E6B8"
             "FileType" = "3:2"
             "InstallAction" = "3:1"
-            "Arguments" = "8:inst ProductName=[ProductName] SrvProgram=sample WebPort=[EDITA1] SrvPort=[EDITA2]"
+            "Arguments" = "8:inst ProductName=[ProductName] SrvProgram=serval WebPort=[EDITA1] SrvPort=[EDITA2]"
             "EntryPoint" = "8:"
             "Sequence" = "3:1"
             "Identifier" = "8:_2FCA5C0E_8DEC_4BBB_AA30_50A813633FE6"
@@ -528,26 +528,6 @@
             "TargetName" = "8:nginx.vim"
             "Tag" = "8:"
             "Folder" = "8:_4B788674ED4E47FD926B63D19EFA211C"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_065632D1340845D48908F6D00183D218"
-            {
-            "SourcePath" = "8:..\\server\\html\\sample.js"
-            "TargetName" = "8:sample.js"
-            "Tag" = "8:"
-            "Folder" = "8:_328950E660704BD7856D4AF4E7C70906"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -662,6 +642,26 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_26CE0DFFA847415DA96F55B29A0540E7"
+            {
+            "SourcePath" = "8:..\\server\\serval.exe"
+            "TargetName" = "8:serval.exe"
+            "Tag" = "8:"
+            "Folder" = "8:_2EE47700FD9E4DD4BD9BDA1A2D4D47F4"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_274A444909714CDC9BB2C6BB5A26AADE"
             {
             "SourcePath" = "8:..\\server\\docs\\CHANGES.ru"
@@ -708,26 +708,6 @@
             "TargetName" = "8:PCRE.LICENCE"
             "Tag" = "8:"
             "Folder" = "8:_0F6A6CFC606B491F9792C564CC3F27B8"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_38E56281386C4DF79894DCE448E72F4E"
-            {
-            "SourcePath" = "8:..\\server\\sample.exe"
-            "TargetName" = "8:sample.exe"
-            "Tag" = "8:"
-            "Folder" = "8:_2EE47700FD9E4DD4BD9BDA1A2D4D47F4"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -962,6 +942,26 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_6051076A145548A2B77A01BF1E15AC50"
+            {
+            "SourcePath" = "8:..\\server\\serval.dat"
+            "TargetName" = "8:serval.dat"
+            "Tag" = "8:"
+            "Folder" = "8:_2EE47700FD9E4DD4BD9BDA1A2D4D47F4"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_623D2694A3D34E96917708716F0F89B3"
             {
             "SourcePath" = "8:..\\server\\html\\index.html"
@@ -1142,26 +1142,6 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_83C209FD91AC44D6A5D07AACA8CD2264"
-            {
-            "SourcePath" = "8:..\\server\\html\\sample.html"
-            "TargetName" = "8:sample.html"
-            "Tag" = "8:"
-            "Folder" = "8:_328950E660704BD7856D4AF4E7C70906"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_876094B1770A41F0AD2FC03D85B0227C"
             {
             "SourcePath" = "8:..\\server\\docs\\README"
@@ -1242,6 +1222,26 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_92D1241B36D1462DA666974C185CC05E"
+            {
+            "SourcePath" = "8:..\\server\\html\\serval.html"
+            "TargetName" = "8:serval.html"
+            "Tag" = "8:"
+            "Folder" = "8:_328950E660704BD7856D4AF4E7C70906"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_94EA46177086453EA683955B2B180AF6"
             {
             "SourcePath" = "8:..\\server\\stkwebappcmd.conf"
@@ -1288,6 +1288,26 @@
             "TargetName" = "8:IcoMoon-Free.css"
             "Tag" = "8:"
             "Folder" = "8:_328950E660704BD7856D4AF4E7C70906"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_ACF2248A22D64551BD4EFDBC68F0CB00"
+            {
+            "SourcePath" = "8:..\\server\\serval.conf"
+            "TargetName" = "8:serval.conf"
+            "Tag" = "8:"
+            "Folder" = "8:_2EE47700FD9E4DD4BD9BDA1A2D4D47F4"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -1442,26 +1462,6 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_C4089C91301B4F6B920FB7D591533163"
-            {
-            "SourcePath" = "8:..\\server\\sample.dat"
-            "TargetName" = "8:sample.dat"
-            "Tag" = "8:"
-            "Folder" = "8:_2EE47700FD9E4DD4BD9BDA1A2D4D47F4"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:TRUE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_C704DA76C0AE449F84FFC3120C1D1B3D"
             {
             "SourcePath" = "8:..\\server\\html\\bootstrap-4.4.1-dist\\css\\bootstrap-reboot.min.css"
@@ -1548,6 +1548,26 @@
             "TargetName" = "8:bootstrap.min.js"
             "Tag" = "8:"
             "Folder" = "8:_97BBF0464A424B6AA07D795EDD0BAB5E"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_CE639A8936084CF299CD4399C8582917"
+            {
+            "SourcePath" = "8:..\\server\\html\\serval.js"
+            "TargetName" = "8:serval.js"
+            "Tag" = "8:"
+            "Folder" = "8:_328950E660704BD7856D4AF4E7C70906"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -1688,26 +1708,6 @@
             "TargetName" = "8:bootstrap-reboot.css.map"
             "Tag" = "8:"
             "Folder" = "8:_870F872D462941D89217436F3A130BA9"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_F6F2A9753B554031BCFB53F370DE7C16"
-            {
-            "SourcePath" = "8:..\\..\\src\\sample\\sample.conf"
-            "TargetName" = "8:sample.conf"
-            "Tag" = "8:"
-            "Folder" = "8:_2EE47700FD9E4DD4BD9BDA1A2D4D47F4"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -2026,7 +2026,7 @@
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:SERVAL"
         "ProductCode" = "8:{CA413C2F-2F60-4105-8064-929D4A7951D0}"
-        "PackageCode" = "8:{F02F5F35-F33B-4AE4-BAC7-9606B46A8FFB}"
+        "PackageCode" = "8:{EEC2C411-8100-411D-9E6D-79FA489DCC78}"
         "UpgradeCode" = "8:{90817031-7435-47D4-A459-BD005762365D}"
         "AspNetVersion" = "8:2.0.50727.0"
         "RestartWWWService" = "11:FALSE"

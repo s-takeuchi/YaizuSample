@@ -355,7 +355,7 @@ void TerminateService(bool DbClosure)
 {
 	if (DbClosure) {
 		EventLogging(MessageProc::GetMsgEng(MSG_SERVICETERMINATED), MessageProc::GetMsgJpn(MSG_SERVICETERMINATED), -1);
-		DataAccess::GetInstance()->StopAutoSave(L"sample.dat");
+		DataAccess::GetInstance()->StopAutoSave(L"serval.dat");
 	}
 
 	// Logging ends
@@ -394,7 +394,7 @@ int main(int Argc, char* Argv[])
 
 	StkProperties *Prop = new StkProperties();
 	
-	if (Prop->GetProperties(L"sample.conf") == 0) {
+	if (Prop->GetProperties(L"serval.conf") == 0) {
 
 		// servicehost
 		if (Prop->GetPropertyStr("servicehost", IpAddrTmp) != 0) {
@@ -471,12 +471,12 @@ int main(int Argc, char* Argv[])
 			MessageProc::AddLog(LogBuf, MessageProc::LOG_TYPE_INFO);
 		}
 	} else {
-		MessageProc::AddLog("sample.conf is not found.", MessageProc::LOG_TYPE_FATAL);
+		MessageProc::AddLog("serval.conf is not found.", MessageProc::LOG_TYPE_FATAL);
 		TerminateService(false);
 	}
 
 	StkWebAppUm_Init();
-	int DbStatus = DataAccess::GetInstance()->CreateTables(L"sample.dat");
+	int DbStatus = DataAccess::GetInstance()->CreateTables(L"serval.dat");
 	if (DbStatus == -1) {
 		MessageProc::AddLog("An error occurred during data file access.", MessageProc::LOG_TYPE_FATAL);
 		TerminateService(false);
@@ -524,7 +524,7 @@ int main(int Argc, char* Argv[])
 	delete WorkDirWc;
 	EventLogging(MessageProc::GetMsgEng(MSG_SERVICESTOPPED), MessageProc::GetMsgJpn(MSG_SERVICESTOPPED), -1);
 
-	DataAccess::GetInstance()->StopAutoSave(L"sample.dat");
+	DataAccess::GetInstance()->StopAutoSave(L"serval.dat");
 
 	// Logging ends
 	MessageProc::AddLog("Service ended", MessageProc::LOG_TYPE_INFO);

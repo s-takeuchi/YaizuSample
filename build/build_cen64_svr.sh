@@ -12,14 +12,14 @@ mkdir -p $BUILDDIR/SOURCES
 cd ../src/sample
 make all
 cp serval $BUILDDIR/SOURCES
-cp sample.conf $BUILDDIR/SOURCES
-echo servicehost=127.0.0.1 >> $BUILDDIR/SOURCES/sample.conf
-echo serviceport=8081 >> $BUILDDIR/SOURCES/sample.conf
+cp serval.conf $BUILDDIR/SOURCES
+echo servicehost=127.0.0.1 >> $BUILDDIR/SOURCES/serval.conf
+echo serviceport=8081 >> $BUILDDIR/SOURCES/serval.conf
 cp serval.service $BUILDDIR/SOURCES
 cp sample_nginx.conf $BUILDDIR/SOURCES
-cp sample.html $BUILDDIR/SOURCES
-cp sample.js $BUILDDIR/SOURCES
-cp sample.dat $BUILDDIR/SOURCES
+cp serval.html $BUILDDIR/SOURCES
+cp serval.js $BUILDDIR/SOURCES
+cp serval.dat $BUILDDIR/SOURCES
 cp squirrel.svg $BUILDDIR/SOURCES
 cp favicon-16x16.png $BUILDDIR/SOURCES
 cp ../../../YaizuComLib/src/stkwebapp/stkcommon.js $BUILDDIR/SOURCES
@@ -50,10 +50,10 @@ Requires: nginx = 1:1.12.2-1.el7_4.ngx
 
 License: No License No Life
 Source1: serval
-Source2: sample.conf
+Source2: serval.conf
 Source3: sample_nginx.conf
 Source4: serval.service
-Source5: sample.html
+Source5: serval.html
 Source6: jquery-3.2.0.min.js
 Source7: bootstrap.css
 Source8: bootstrap.css.map
@@ -67,12 +67,12 @@ Source15: bootstrap-reboot.css
 Source16: bootstrap-reboot.css.map
 Source17: bootstrap-reboot.min.css
 Source18: bootstrap-reboot.min.css.map
-Source23: sample.dat
+Source23: serval.dat
 Source24: stopsample
 Source25: stkcommon.js
 Source26: stkcommon.css
 Source27: stkcommon_um.js
-Source28: sample.js
+Source28: serval.js
 Source30: bootstrap.bundle.js
 Source31: bootstrap.bundle.js.map
 Source32: bootstrap.bundle.min.js
@@ -139,11 +139,11 @@ install -p -m 644 %{SOURCE43} %{buildroot}/%{_datarootdir}/nginx/html/img/favico
 
 %files
 %{_bindir}/serval
-%config(noreplace) %{_sysconfdir}/sample.conf
+%config(noreplace) %{_sysconfdir}/serval.conf
 %{_sysconfdir}/nginx/conf.d/sample_nginx.conf
 %config(noreplace) %{_sysconfdir}/systemd/system/serval.service
-%{_datarootdir}/nginx/html/sample.html
-%{_datarootdir}/nginx/html/sample.js
+%{_datarootdir}/nginx/html/serval.html
+%{_datarootdir}/nginx/html/serval.js
 %{_datarootdir}/nginx/html/stkcommon.js
 %{_datarootdir}/nginx/html/stkcommon.css
 %{_datarootdir}/nginx/html/stkcommon_um.js
@@ -168,7 +168,7 @@ install -p -m 644 %{SOURCE43} %{buildroot}/%{_datarootdir}/nginx/html/img/favico
 %{_datarootdir}/nginx/html/bootstrap-4.4.1-dist/js/bootstrap.js.map
 %{_datarootdir}/nginx/html/bootstrap-4.4.1-dist/js/bootstrap.min.js
 %{_datarootdir}/nginx/html/bootstrap-4.4.1-dist/js/bootstrap.min.js.map
-%config(noreplace) %{_sysconfdir}/sample.dat
+%config(noreplace) %{_sysconfdir}/serval.dat
 %{_bindir}/stopsample
 %{_datarootdir}/nginx/html/IcoMoon-Free.css
 %{_datarootdir}/nginx/html/IcoMoon-Free.ttf
@@ -192,7 +192,7 @@ fi
 if [ \$1 = 1 ]; then
     echo "New installation (post)"
     mkdir -p %{_datadir}/serval
-    echo workdir=%{_datadir}/serval >> %{_sysconfdir}/sample.conf
+    echo workdir=%{_datadir}/serval >> %{_sysconfdir}/serval.conf
     setsebool httpd_can_network_connect on -P
     semanage port -a -t http_port_t -p tcp 8080
     semanage port -a -t http_port_t -p tcp 8081
