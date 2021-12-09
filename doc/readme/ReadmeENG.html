@@ -20,7 +20,7 @@ SERVAL is constitute of SERVAL server which provides management console and SERV
 SERVAL provides following features.
 <ul>
     <li>Provides management console can be connected from Web browser.</li>
-    <li>Maximum 120 servers and IoT devices can be managed.</li>
+    <li>Maximum 90 servers and IoT devices can be managed.</li>
     <li>All of operation on management console can be done by smartphone.</li>
     <li>A command is constitute of file transfer from SERVAL server to SERVAL agent, script execution and file transfer
         from SERVAL agent to SERVAL server. Because of this, SERVAL can provide various monitoring/management operations.</li>
@@ -101,6 +101,25 @@ Start and stop of SERVAL server service can be performed by Windows start menu.<
 <li>[SERVAL]-[Start service] : Start service<br/>
 <li>[SERVAL]-[Stop service] : Stop service<br/>
 </ul>
+
+<h2>3.4 Properties of SERVAL server</h2>
+
+You can configure SERVAL server setting by modification of SERVAL server properties file "&lt;Installation folder&gt;\serval.conf".<br/>
+<ul>
+    <li>servicehost<br/>
+    Specify IP address or host name which the service uses. This value needs to be matched to proxy_pass directive of nginx.conf.
+    This IP address or host name is REST API server's one. REST API works as back-end of SERVAL server.
+    Endpoint IP address or host name which is specified by a browser needs to be conformed to server_name directive of nginx.cong.</li>
+    <li>serviceport<br/>
+    Specify port number which the service uses. This value needs to be matched to proxy_pass directive of nginx.conf.
+    This port number is REST API server's one. REST API works as back-end of SERVAL server.
+    Endpoint port number which is specified by a browser needs to be conformed to listen directive of nginx.cong.</li>
+    </li>
+    <li>workdir<br/>
+    Specify folder path of files which SERVAL server manages. The files can be referred by commands defined in SERVAL server. 
+    </li>
+</ul>
+SERVAL server service needs to be restarted after properties change in order to reflect the modified value.<br/>
 
 
 <hr/>
