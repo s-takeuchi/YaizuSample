@@ -237,12 +237,12 @@ SERVALエージェントのプロパティファイルであるservalagt.confの
 
 
 <hr/>
-<h1>10. SSL/TLSによる接続</h1>
-ブラウザからSSL/TLSでCmdFreakに接続するためには，以下の手順で操作をおこなってください。<br/>
+<h1>7. TLSを使ったセキュア通信</h1>
+ブラウザからTLSでSERVALに接続するためには，以下の手順で操作をおこなってください。<br/>
 <ol>
-<li>CmdFreakサービスを停止します。</li>
+<li>SERVALサーバのサービスを停止します。</li>
 <li>
-nginx.confにSSL/TLS接続のための設定を追加します。<br/>
+nginx.confにTLS接続のための設定を追加します。<br/>
 ＜インストール先フォルダ＞\conf\nginx.conf のserverディレクティブに以下の記述を追加します。<br/>
 (秘密鍵および証明書ファイルへのパスは個別の環境に応じて変更してください。)<br/>
 ssl on;<br/>
@@ -250,29 +250,14 @@ ssl_certificate "D:\\work\\server.crt";<br/>
 ssl_certificate_key "D:\\work\\server.key";<br/>
 </li>
 <li>listenポート番号を443または適切なHTTPSポート番号に変更します。</li>
-<li>CmdFreakサービスを起動します。</li>
+<li>SERVALサーバのサービスを起動します。</li>
+<li>SERVALエージェントでセキュア通信のための設定を行います。SERVALエージェントのプロパティファイルであるservalagt.confのsecuremodeおよびtrustedcertを変更します。</li>
+<li>SERVALエージェントのサービスを再起動します。</li>
 </ol>
 
 
 <hr/>
-<h1>11. ODBCドライバについて</h1>
-CmdFreakはRDBMSへの接続にODBCを使用しているため，CmdFreakが動作するサーバに予めODBCドライバをインストールしてください。 ODBCドライバは接続対象のRDBMSの種類に応じたものである必要があります。例えばMySQLにはMySQL用のODBCドライバが必要になります。
-CmdFreakは64ビットアプリケーションとして動作するため，ODBCドライバも64ビット版を用意してください。 ODBCドライバはRDBMSを提供するベンダーが公開しています。対象ベンダーのWebサイト等から入手してください。<br/>
-
-
-<hr/>
-<h1>12. 管理上限</h1>
-<ul>
-<li>最大テーブル名長(文字): 64</li>	
-<li>最大カラム名長(文字): 64</li>	
-<li>最大カラム値長(文字): 63 (64文字以降は表示されません)</li>
-<li>最大テーブル数: 300</li>
-<li>最大カラム数: 50 (51番目以降のカラムは表示されません)</li>
-</ul>
-
-
-<hr/>
-<h1>13. 問い合わせ先</h1>
+<h1>8. 問い合わせ先</h1>
 
 本ソフトウェアに関する問い合わせは，下記メールアドレスで受け付けています。
 <p>

@@ -242,12 +242,12 @@ After you change targethost and targetport in SERVAL agent properties file "serv
 
 
 <hr/>
-<h1>10. Connection using SSL/TLS</h1>
-In order to connect to CmdFreak using SSL/TLS from browser, following steps are required.<br/>
+<h1>7. Secure connection using TLS</h1>
+In order to connect to SERVAL using TLS from browser, following steps are required.<br/>
 <ol>
-<li>Stop CmdFreak service.</li>
+<li>Stop SERVAL server service.</li>
 <li>
-Add SSL/TLS settings to nginx.conf.<br/>
+Add TLS settings to nginx.conf.<br/>
 Add followings to server directive in &lt;Installation folder&gt;\conf\nginx.conf<br/>
 (Regarding certificate and private key, modify the path according to your environment.)<br/>
 ssl on;<br/>
@@ -255,29 +255,14 @@ ssl_certificate "D:\\work\\server.crt";<br/>
 ssl_certificate_key "D:\\work\\server.key";<br/>
 </li>
 <li>Change listen port number into 443 or appropriate HTTPS port number.</li>
-<li>Start CmdFreak service.</li>
+<li>Start SERVAL server service.</li>
+<li>Configure for secure connection of SERVAL agent. securemode and trustedcert in properties file servalagt.conf of SERVAL agent need to be configured.</li>
+<li>Restart SERVAL agent service.</li>
 </ol>
 
 
 <hr/>
-<h1>11. About ODBC driver</h1>
-CmdFreak uses ODBC for connecting to RDBMS. Therefore ODBC driver needs to be installed into same server where CmdFreak works. ODBC driver needs to be choosen depending on the type of target RDBMS. For example, If you want to use MySQL, ODBC driver for MySQL is required.
-CmdFreak works as a 64-bit application hense ODBC driver has to be 64-bit edition of driver. ODBC driver is provided by the vendor who provides RDBMS. Download it from the vendoer Web site.<br/>
-
-
-<hr/>
-<h1>12. Management limitations</h1>
-<ul>
-<li>Maximum length of table name: 64</li>	
-<li>Maximum length of column name: 64</li>	
-<li>Maximum length of column value(characters): 63 (64th or later characters are not displayed)</li>
-<li>Maximum number of tables: 300</li>
-<li>Maximum number of columns: 50 (51st or later columns are not displayed)</li>
-</ul>
-
-
-<hr/>
-<h1>13. Contact</h1>
+<h1>8. Contact</h1>
 
 Please use the E-mail address below for inquiries about this product.
 <p>
