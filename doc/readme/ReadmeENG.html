@@ -165,15 +165,38 @@ Start: <i># systemctl start servalagt</i><br/>
 Stop: <i># systemctl stop servalagt</i><br/>
 
 
-<hr/>
-<h1>7. Login to CmdFreak</h1>
+<h2>4.4 Properties of SERVAL agent</h2>
 
-Connect to the URL shown below by Web browser for use of CmdFreak after installation. If main console is displayed after login sequence of CmdFreak, it shows the installation is successfully completed.<br/>
+You can configure SERVAL agent setting by modification of servalagt.conf which is properties file of SERVAL agent.
+Properties file servalagt.conf is placed in &lt;Installation folder&gt; for Windows edition or in /etc directory for Linux edition.<br/>
+<ul>
+    <li>targethost<br/>
+    Specify destination IP address or host name.</li>
+    <li>targetport<br/>
+    Specify destination port number.</li>
+    <li>hostname<br/>
+    Specify name of agent which will be registered into SERVAL server. Redundant names with other agents need to be avoided.</li>
+    <li>workdir<br/>
+    Specify directory path of files which are used by commands in SERVAL agent.</li>
+    <li>scriptencode<br/>
+    Specify encode type of command or command execution result. SJIS or UTF8 can be specified.</li>
+    <li>securemode<br/>
+    Specify enablement or disablement of secure connection (TLS). true : enable, false : disable(default)</li>
+    <li>trustedcert<br/>
+    Path to certificate file (.cer) of server.</li>
+</ul>
+SERVAL agent service needs to be restarted after properties change in order to reflect the modified value.<br/>
+
+
+<hr/>
+<h1>5. Login to SERVAL</h1>
+
+Connect to the URL shown below by Web browser for use of SERVAL after installation. If main console is displayed after login sequence of SERVAL, it shows the installation is successfully completed.<br/>
 <p>
-http://&lt;Host name or IP address of CmdFreak&gt;:&lt;Port number of Web server&gt;/cmdfreak.html
+http://&lt;Host name or IP address of SERVAL server &gt;:&lt;Port number of Web server&gt;
 </p>
 <p>
-In case of specification of default installations parameters : http://localhost/cmdfreak.html
+In case of specification of default installations parameters : http://localhost:8080
 </p>
 Initial login user name and password are follows.
 <p>
@@ -182,12 +205,10 @@ Password : manager<br/>
 </p>
 If main console is not appeared or an error ocurred, confirm the things shown below.<br/>
 <ul>
-<li>When host name is specified in the URL for the connection to CmdFreak from browser, confirm that the host name can be solved. In case the host name is not solved, change the host name to other name which can be solved, and then retry.</li>
-<li>Confirm that CmdFreak(nginx.exe) is registered as an exception of Windows firewall. If not, register nginx.exe to the Windows firewall as an exception. </li>
+<li>When host name is specified in the URL for the connection to SERVAL from browser, confirm that the host name can be solved. In case the host name is not solved, change the host name to other name which can be solved, and then retry.</li>
+<li>Confirm that SERVAL server (nginx.exe) is registered as an exception of Windows firewall. If not, register nginx.exe to the Windows firewall as an exception. </li>
 <li>Confirm that the specified port number is not duplicated from other port numbers. If duplicated, specify the independent port number according to the description shown later.</li>
 </ul>
-
-
 
 
 <hr/>
