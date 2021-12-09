@@ -108,11 +108,11 @@ You can configure SERVAL server setting by modification of SERVAL server propert
 <ul>
     <li>servicehost<br/>
     Specify IP address or host name which the service uses. This value needs to be matched to proxy_pass directive of nginx.conf.
-    This IP address or host name is REST API server's one. REST API works as back-end of SERVAL server.
+    This IP address or host name is REST API service's one. REST API works as back-end of SERVAL server.
     Endpoint IP address or host name which is specified by a browser needs to be conformed to server_name directive of nginx.cong.</li>
     <li>serviceport<br/>
     Specify port number which the service uses. This value needs to be matched to proxy_pass directive of nginx.conf.
-    This port number is REST API server's one. REST API works as back-end of SERVAL server.
+    This port number is REST API service's one. REST API works as back-end of SERVAL server.
     Endpoint port number which is specified by a browser needs to be conformed to listen directive of nginx.cong.</li>
     <li>workdir<br/>
     Specify folder path of files which SERVAL server manages. The files can be referred by commands defined in SERVAL server. 
@@ -159,7 +159,7 @@ SERVAL agent service start and end operations can be performed by task manager.<
 Launch the task manager, and then perform start or stop operation to SERVALagent using the task manager.<br/>
 <p></p>
 
-<u>Linux版</u><br/>
+<u>For Linux</u><br/>
 Start and stop operation for SERVAL agent can be performed by following command.<br/>
 Start: <i># systemctl start servalagt</i><br/>
 Stop: <i># systemctl stop servalagt</i><br/>
@@ -212,21 +212,21 @@ If main console is not appeared or an error ocurred, confirm the things shown be
 
 
 <hr/>
-<h1>9. Change IP address/host name and port number</h1>
+<h1>6. Change IP address/host name and port number</h1>
 
-CmdFreak uses two kinds of IP addresses/host names and ports.<br/>
+SERVAL server uses two kinds of IP addresses/host names and ports.<br/>
 <ul>
 <li>IP address/host name and port of Web server</li>
-<li>IP address/host name and port of CmdFreak service</li>
+<li>IP address/host name and port of REST API service</li>
 </ul>
 In order to change the IP address/host name and port number after installation, following steps are required.<br/>
 <ol>
-<li>Stop CmdFreak service.</li>
+<li>Stop SERVAL server service.</li>
 <li>
 Change IP address/host name and port number.<br/>
 <p>
-<u>In case you change IP address/host name and port number which CmdFreak service uses:</u><br/>
-Specify IP address/host name and port number to servicehost and serviceport properties in &lt;Installation folder&gt;\sample.conf<br/>
+<u>In case you change IP address/host name and port number which REST API service uses:</u><br/>
+Specify IP address/host name and port number to servicehost and serviceport properties in &lt;Installation folder&gt;\serval.conf<br/>
 Specify IP address/host name and port number to proxy_pass of location /api/ section in &lt;Installation folder&gt;\conf\nginx.conf<br/>
 </p>
 <p>
@@ -234,8 +234,10 @@ Specify IP address/host name and port number to proxy_pass of location /api/ sec
 Change listen and server_name in &lt;Installation folder&gt;\conf\nginx.conf<br/>
 </p>
 </li>
-<li>CHange firewall setting if necessary.</li>
-<li>Start CmdFreak service.</li>
+<li>Change firewall setting if necessary.</li>
+<li>Start SERVAL server service.</li>
+<li>In case you change IP address/host name and port number which Web server uses, cahnge destination IP address/host name and port number of SERVAL agent.
+After you change targethost and targetport in SERVAL agent properties file "servalagt.conf", restart SERVAL agent.</li>
 </ol>
 
 
