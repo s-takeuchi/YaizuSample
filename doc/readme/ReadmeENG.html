@@ -21,7 +21,7 @@ SERVAL provides following features.
 <ul>
     <li>Provides management console can be connected from Web browser.</li>
     <li>Maximum 90 servers and IoT devices can be managed.</li>
-    <li>All of operation on management console can be done by smartphone.</li>
+    <li>All of operations on management console can be performed by smartphone.</li>
     <li>A command is constitute of file transfer from SERVAL server to SERVAL agent, script execution and file transfer
         from SERVAL agent to SERVAL server. Because of this, SERVAL can provide various monitoring/management operations.</li>
     <li>SERVAL provides periodical command execution feature aiming to monitoring and Immediate command execution feature aiming to management.</li>
@@ -115,7 +115,7 @@ Note that nginx 1.12.2-1(nginx-1.12.2-1.el7_4.ngx.x86_64.rpm) needs to be instal
 SERVAL server installer performs following steps during the installation.<br>
 <ul>
     <li>Disablement of SELinux</li>
-    <li>Register exceptions of Windows firewall for SERVAL server.</li>
+    <li>Register exceptions of firewall for SERVAL server.</li>
     <li>Register service of SERVAL server to the target system.</li>
     <li>Auto start of SERVAL server service and restart of Web server.</li>
 </ul>
@@ -133,7 +133,13 @@ SERVAL server uninstallation performs following things during uninstallation.<br
 
 <u>For Linux</u><br/>
 Uninstall SERVAL server using following command.<br/>
-<i># yum remove serval</i>
+<i># yum remove serval</i><br/>
+SERVAL server uninstallation performs following things during uninstallation.<br/>
+<ul>
+<li>Auto stop of SERVAL server service and restart of Web server.</li>  
+<li>Deletion of SERVAL server service from the target system. </li> 
+<li>Deletion of firewall exception for SERVAL server.</li> 
+</ul>
 
 <h2>4.3 Start/Stop SERVAL server service</h2>
 
@@ -151,7 +157,7 @@ Stop: <i># systemctl stop serval</i><br/>
 
 <h2>4.4 Properties of SERVAL server</h2>
 
-You can configure SERVAL server setting by modification of servalagt.conf which is properties file of SERVAL server.
+You can configure SERVAL server setting by modification of serval.conf which is properties file of SERVAL server.
 Properties file serval.conf is placed in &lt;Installation folder&gt; for Windows edition or in /etc directory for Linux edition.<br/>
 
 <ul>
@@ -159,11 +165,11 @@ Properties file serval.conf is placed in &lt;Installation folder&gt; for Windows
     Specify IP address or host name which the service uses. This value needs to be matched to proxy_pass directive in
     &lt;Installation folder&gt;\conf\nginx.conf (for Windows edition) or /etc/nginx/conf.d/serval_nginx.conf (for Linux edition).
     This IP address or host name is REST API service's one. REST API works as back-end of SERVAL server.
-    Endpoint IP address or host name which is specified by a browser needs to be conformed to server_name directive of nginx.conf.</li>
+    Endpoint IP address or host name which is specified by a browser needs to be conformed to server_name directive of nginx.conf or serval_nginx.conf.</li>
     <li>serviceport<br/>
-    Specify port number which the service uses. This value needs to be matched to proxy_pass directive of nginx.conf.
+    Specify port number which the service uses. This value needs to be matched to proxy_pass directive of nginx.conf or serval_nginx.conf.
     This port number is REST API service's one. REST API works as back-end of SERVAL server.
-    Endpoint port number which is specified by a browser needs to be conformed to listen directive of nginx.conf.</li>
+    Endpoint port number which is specified by a browser needs to be conformed to listen directive of nginx.conf or serval_nginx.conf.</li>
     <li>workdir<br/>
     Specify folder path of files which SERVAL server manages. The files can be referred by commands defined in SERVAL server. 
     </li>
@@ -176,7 +182,7 @@ SERVAL server service needs to be restarted after properties change in order to 
 <h2>5.1 Installation</h2>
 
 <u>For Windows</u><br/>
-Execute servalagt-1.0.0.msi and launch the installer of SERVAL server.<br/>
+Execute servalagt-1.0.0.msi and launch the installer of SERVAL agent.<br/>
 Follow the on-screen dialog prompts.<br/>
 SERVAL agent installer registers SERVAL agent service to the target system.<br>
 Overwrite installation(Repair) can be performed if servalagt-1.0.0.msi is executed after SERVAL agent installation.
@@ -255,9 +261,9 @@ Password : manager<br/>
 </p>
 If main console is not appeared or an error ocurred, confirm the things shown below.<br/>
 <ul>
-<li>When host name is specified in the URL for the connection to SERVAL from browser, confirm that the host name can be solved. In case the host name is not solved, change the host name to other name which can be solved, and then retry.</li>
-<li>Confirm that SERVAL server (nginx.exe) is registered as an exception of Windows firewall. If not, register nginx.exe to the Windows firewall as an exception. </li>
-<li>Confirm that the specified port number is not duplicated from other port numbers. If duplicated, specify the independent port number according to the description shown later.</li>
+<li>In case host name is specified in the URL for the connection to SERVAL from browser, confirm that the host name can be solved. If the host name is not solved, change the host name to other name which can be solved, and then retry.</li>
+<li>Confirm that SERVAL server (nginx.exe) is registered as an exception of firewall. If not, register nginx.exe to the firewall as an exception. </li>
+<li>Confirm that the specified port number is not duplicated from port numbers which other processes use. If duplicated, specify the independent port number according to the description shown later.</li>
 </ul>
 
 
@@ -288,7 +294,7 @@ Change listen and server_name in &lt;Installation folder&gt;\conf\nginx.conf (fo
 </li>
 <li>Change firewall setting if necessary.</li>
 <li>Start SERVAL server service.</li>
-<li>In case you change IP address/host name and port number which Web server uses, cahnge destination IP address/host name and port number of SERVAL agent.
+<li>In case you change IP address/host name and port number which Web server uses, change destination IP address/host name and port number of SERVAL agent.
 After you change targethost and targetport in SERVAL agent properties file "servalagt.conf", restart SERVAL agent.</li>
 </ol>
 

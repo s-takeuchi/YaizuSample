@@ -114,7 +114,7 @@ SERVALサーバのインストール前にnginx 1.12.2-1(nginx-1.12.2-1.el7_4.ng
 SERVALサーバのインストーラは，インストール時に以下の操作を行います。<br>
 <ul>
     <li>SELinuxの無効化</li>
-    <li>SERVALサーバに対するWindowsファイアウォールへの例外登録。</li>
+    <li>SERVALサーバに対するファイアウォールへの例外登録。</li>
     <li>SERVALサーバのサービスのシステムへの登録。</li>
     <li>SERVALサーバのサービスの自動起動と、Webサーバの再起動。</li>
 </ul>
@@ -123,7 +123,7 @@ SERVALサーバのインストーラは，インストール時に以下の操�
 
 <u>Windows版</u><br/>
 serval-1.0.0.msi を起動してRemove SERVALを選択するか，コントロールパネルからSERVALのアンインストールを行ってください。<br/>
-SERVALのアンインストールは，アンインストール時に以下の操作を行います。<br/>
+SERVALのアンインストールでは，アンインストール時に以下の操作を行います。<br/>
 <ul>
 <li>SERVALサーバのサービスおよびWebサーバの自動停止。</li>  
 <li>SERVALサーバのサービスをシステムから削除。 </li> 
@@ -132,7 +132,13 @@ SERVALのアンインストールは，アンインストール時に以下の�
 
 <u>Linux版</u><br/>
 SERVALサーバ以下のコマンドでアンインストールします。<br/>
-<i># yum remove serval</i>
+<i># yum remove serval</i><br/>
+SERVALのアンインストールでは，アンインストール時に以下の操作を行います。<br/>
+<ul>
+<li>SERVALサーバのサービスの停止およびWebサーバの再起動。</li>  
+<li>SERVALサーバのサービスをシステムから削除。 </li> 
+<li>SERVALサーバに対するファイアウォールからの例外削除。</li> 
+</ul>
 
 <h2>4.3 SERVALサーバのサービスの起動・停止</h2>
 
@@ -151,18 +157,18 @@ SERVALエージェントのサービスの起動および停止は，以下の�
 <h2>4.4 SERVALサーバのプロパティの変更</h2>
 
 SERVALサーバのプロパティファイルであるserval.confを編集することでSERVALサーバの設定を行うことができます。
-servalagt.confは、Windows版の場合、＜インストール先フォルダ＞に、Linux版の場合、/etc ディレクトリに配置されています。<br/>
+serval.confは、Windows版の場合、＜インストール先フォルダ＞に、Linux版の場合、/etc ディレクトリに配置されています。<br/>
 
 <ul>
     <li>servicehost<br/>
     サービスのIPアドレスまたはホスト名を指定します。"＜インストール先フォルダ＞\conf\nginx.conf"ファイル(Windows版)または
     "/etc/nginx/conf.d/serval_nginx.conf"ファイル(Linux版)のproxy_passディレクティブで指定するURLと一致させる必要があります。
     ここで指定するIPアドレスまたはホスト名は、SERVALサーバのバックエンドとなるREST APIサービスのものとなります。
-    ブラウザから接続するエンドポイントのIPアドレスまたはホスト名は、nginx.confファイルのserver_nameディレクティブで指定してください。</li>
+    ブラウザから接続するエンドポイントのIPアドレスまたはホスト名は、nginx.confまたはserval_nginx.confファイルのserver_nameディレクティブで指定してください。</li>
     <li>serviceport<br/>
-    サービスのポート番号を指定します。nginx.confファイルのproxy_passディレクティブで指定するURLと一致させる必要があります。
+    サービスのポート番号を指定します。nginx.confまたはserval_nginx.confファイルのproxy_passディレクティブで指定するURLと一致させる必要があります。
     ここで指定するポート番号は、SERVALサーバのバックエンドとなるREST APIサービスのものとなります。
-    ブラウザから接続するエンドポイントのポート番号は、nginx.confファイルのlistenディレクティブで指定してください。</li>
+    ブラウザから接続するエンドポイントのポート番号は、nginx.confまたはserval_nginx.confファイルのlistenディレクティブで指定してください。</li>
     <li>workdir<br/>
     コマンドが使用する、SERVALサーバ内のファイル格納先のディレクトリを指定します。
     </li>
@@ -196,7 +202,7 @@ servalagt-1.0.0.msi を起動してRemove SERVAL agentを選択するか，コ�
 <p></p>
 
 <u>Linux版</u><br/>
-SERVALエージェント以下のコマンドでアンインストールします。<br/>
+SERVALエージェントを以下のコマンドでアンインストールします。<br/>
 <i># yum remove servalagt</i>
 
 <h2>5.3 SERVALエージェントのサービスの起動・停止</h2>
@@ -237,7 +243,7 @@ servalagt.confは、Windows版の場合、＜インストール先フォルダ�
 <hr/>
 <h1>6. SERVALへのログイン方法</h1>
 
-SERVALのインストール後，Webブラウザから下記のURLに接続してください。 SERVALのログインページからログインに成功し，メインコンソールが表示されていれば，インストールは問題なく完了しています。<br/>
+SERVALサーバのインストール後，Webブラウザから下記のURLに接続してください。 SERVALのログインページからログインに成功し，メインコンソールが表示されていれば，インストールは問題なく完了しています。<br/>
 <p>
 http://＜SERVALサーバのホスト名またはIPアドレス＞:＜Webサーバのポート番号＞
 </p>
@@ -252,7 +258,7 @@ Password : manager<br/>
 メインコンソールが表示されない場合，またはエラーが表示される場合下記を確認してください。<br/>
 <ul>
 <li>ブラウザからSERVALへの接続でURLにホスト名を指定している場合，ホスト名からIPアドレスが名前解決できること。 名前解決できない場合，名前解決可能なホストに変更し，再度接続を試みてください。</li>
-<li>SERVALサーバ(nginx.exe)がWindowsのファイアウォールに例外登録されていること。 例外登録されていない場合，nginx.exe をファイアウォールの例外に登録してください。</li>
+<li>SERVALサーバ(nginx.exe)がファイアウォールに例外登録されていること。 例外登録されていない場合，nginx.exe をファイアウォールの例外に登録してください。</li>
 <li>WebサーバおよびSERVALサーバサービスが使用するポート番号が他のプロセスが使用するポート番号と重なっていないこと。 後述のポート番号の変更手順に従い，ポート番号が重ならないよう変更を行ってください。</li>
 </ul>
 
