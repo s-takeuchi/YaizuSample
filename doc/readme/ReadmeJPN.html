@@ -65,9 +65,34 @@ Mozilla Firefox<br/>
 
 
 <hr/>
-<h1>3. SERVALサーバ</h1>
-<h2>3.1 インストール方法</h2>
+<h1>3. パッケージ構成</h1>
 
+SERVALは以下のふたつのパッケージ構成で提供されます。<br/>
+<ul>
+    <li>svl100.zip<br/>
+        Windows版SERVALサーバとマルチプラットフォーム用SERVALエージェントの.msiファイルおよび.rpmファイルが含まれています。<br/>
+        - serval-1.0.0.msi : Windows版SERVALサーバのインストールファイル<br/>
+        - servalagt-1.0.0.msi : Windows版SERVALエージェントのインストールファイル<br/>
+        - servalagt-1.0-0.el8.x86_64.rpm : Linux版SERVALエージェントのRPMファイル<br/>
+        - ReadmeENG.html : 英語Readmeファイル<br/>
+        - ReadmeJPN.html : 日本語Readmeファイル<br/>
+    </li>
+    <li>svl100.tar.gz<br/>
+        Linux版SERVALサーバとマルチプラットフォーム用SERVALエージェントの.msiファイルおよび.rpmファイルが含まれています。<br/>
+        - serval-1.0-0.el8.x86_64.rpm : Windows版SERVALサーバのRPMファイル<br/>
+        - servalagt-1.0.0.msi : Windows版SERVALエージェントのインストールファイル<br/>
+        - servalagt-1.0-0.el8.x86_64.rpm : Linux版SERVALエージェントのRPMファイル<br/>
+        - ReadmeENG.html : 英語Readmeファイル<br/>
+        - ReadmeJPN.html : 日本語Readmeファイル<br/>
+    </li>
+</ul>
+
+
+<hr/>
+<h1>4. SERVALサーバ</h1>
+<h2>4.1 インストール方法</h2>
+
+<u>Windows版</u><br/>
 serval-1.0.0.msiを実行することによりSERVALサーバのインストーラが起動します。<br/>
 インストーラの指示に従いインストールを進めてください。<br/>
 SERVALサーバのインストーラは，インストール時に以下の操作を行います。<br/>
@@ -82,8 +107,21 @@ SERVALサーバのインストール後にserval-1.0.0.msi を起動するとプ
 <li>上書きインストール後にWebサーバおよびSERVALサーバのサービスが使用するホスト名／IPアドレス、ポート番号等がデフォルトに変更される場合があります。必要に応じて上書きインストール後にポート番号を変更してください。</li> 
 </ul>
 
-<h2>3.2 アンインストール方法</h2>
+<u>Linux版</u><br/>
+serval-1.0-0.el8.x86_64.rpmを以下のコマンドでインストールします。<br/>
+<i># yum install serval-1.0-0.el8.x86_64.rpm</i><br/>
+SERVALサーバのインストール前にnginx 1.12.2-1(nginx-1.12.2-1.el7_4.ngx.x86_64.rpm)があらかじめインストールされている必要があります。<br/>
+SERVALサーバのインストーラは，インストール時に以下の操作を行います。<br>
+<ul>
+    <li>SELinuxの無効化</li>
+    <li>SERVALサーバに対するWindowsファイアウォールへの例外登録。</li>
+    <li>SERVALサーバのサービスのシステムへの登録。</li>
+    <li>SERVALサーバのサービスの自動起動と、Webサーバの再起動。</li>
+</ul>
 
+<h2>4.2 アンインストール方法</h2>
+
+<u>Windows版</u><br/>
 serval-1.0.0.msi を起動してRemove SERVALを選択するか，コントロールパネルからSERVALのアンインストールを行ってください。<br/>
 SERVALのアンインストールは，アンインストール時に以下の操作を行います。<br/>
 <ul>
@@ -92,15 +130,25 @@ SERVALのアンインストールは，アンインストール時に以下の�
 <li>SERVALサーバに対するWindowsファイアウォールからの例外削除。</li> 
 </ul>
 
-<h2>3.3 SERVALサーバのサービスの起動・停止</h2>
+<u>Linux版</u><br/>
+SERVALサーバ以下のコマンドでアンインストールします。<br/>
+<i># yum remove serval</i>
 
+<h2>4.3 SERVALサーバのサービスの起動・停止</h2>
+
+<u>Windows版</u><br/>
 SERVALサーバのサービスの起動および停止は，Windowsのスタートメニューから行います。<br/>
 <ul>
 <li>[SERVAL]-[Start service] : サービス開始</li>
 <li>[SERVAL]-[Stop service] : サービス停止</li>
 </ul>
 
-<h2>3.4 SERVALサーバのプロパティの変更</h2>
+<u>Linux版</u><br/>
+SERVALエージェントのサービスの起動および停止は，以下のコマンドで行います。<br/>
+起動：<i># systemctl start serval</i><br/>
+停止：<i># systemctl stop serval</i><br/>
+
+<h2>4.4 SERVALサーバのプロパティの変更</h2>
 
 SERVALサーバのプロパティファイルである"＜インストール先フォルダ＞\serval.conf"を編集することでSERVALサーバの設定を行うことができます。<br/>
 <ul>
@@ -120,8 +168,8 @@ SERVALサーバのプロパティファイルである"＜インストール先�
 
 
 <hr/>
-<h1>4. SERVALエージェント</h1>
-<h2>4.1 インストール方法</h2>
+<h1>5. SERVALエージェント</h1>
+<h2>5.1 インストール方法</h2>
 
 <u>Windows版</u><br/>
 servalagt-1.0.0.msiを実行することによりSERVALエージェントのインストーラが起動します。<br/>
@@ -138,7 +186,7 @@ SERVALエージェントのインストール後にservalagt-1.0.0.msiを起動�
 servalagt-1.0-0.el8.x86_64.rpmを以下のコマンドでインストールします。<br/>
 <i># yum install servalagt-1.0-0.el8.x86_64.rpm</i>
 
-<h2>4.2 アンインストール方法</h2>
+<h2>5.2 アンインストール方法</h2>
 <u>Windows版</u><br/>
 servalagt-1.0.0.msi を起動してRemove SERVAL agentを選択するか，コントロールパネルからSERVAL agentのアンインストールを行ってください。<br/>
 アンインストールを行うとSERVALエージェントのサービスがシステムから削除されます。<br/>
@@ -148,7 +196,7 @@ servalagt-1.0.0.msi を起動してRemove SERVAL agentを選択するか，コ�
 SERVALエージェント以下のコマンドでアンインストールします。<br/>
 <i># yum remove servalagt</i>
 
-<h2>4.3 SERVALエージェントのサービスの起動・停止</h2>
+<h2>5.3 SERVALエージェントのサービスの起動・停止</h2>
 
 <u>Windows版</u><br/>
 SERVALエージェントのサービスの起動および停止は，タスクマネージャから行います。<br/>
@@ -160,7 +208,7 @@ SERVALエージェントのサービスの起動および停止は，以下の�
 起動：<i># systemctl start servalagt</i><br/>
 停止：<i># systemctl stop servalagt</i><br/>
 
-<h2>4.4 SERVALエージェントのプロパティの変更</h2>
+<h2>5.4 SERVALエージェントのプロパティの変更</h2>
 
 SERVALエージェントのプロパティファイルであるservalagt.confを編集することでSERVALエージェントの設定を行うことができます。
 servalagt.confは、Windows版の場合、＜インストール先フォルダ＞に、Linux版の場合、/etc ディレクトリに配置されています。<br/>
@@ -184,7 +232,7 @@ servalagt.confは、Windows版の場合、＜インストール先フォルダ�
 
 
 <hr/>
-<h1>5. SERVALへのログイン方法</h1>
+<h1>6. SERVALへのログイン方法</h1>
 
 SERVALのインストール後，Webブラウザから下記のURLに接続してください。 SERVALのログインページからログインに成功し，メインコンソールが表示されていれば，インストールは問題なく完了しています。<br/>
 <p>
@@ -207,7 +255,7 @@ Password : manager<br/>
 
 
 <hr/>
-<h1>6. IPアドレス／ホスト名およびポート番号の変更</h1>
+<h1>7. IPアドレス／ホスト名およびポート番号の変更</h1>
 
 SERVALサーバは，2種類のIPアドレスとポート番号を使用します。<br/>
 <ul>
@@ -237,7 +285,7 @@ SERVALエージェントのプロパティファイルであるservalagt.confの
 
 
 <hr/>
-<h1>7. TLSを使ったセキュア通信</h1>
+<h1>8. TLSを使ったセキュア通信</h1>
 ブラウザからTLSでSERVALに接続するためには，以下の手順で操作をおこなってください。<br/>
 <ol>
 <li>SERVALサーバのサービスを停止します。</li>
@@ -257,7 +305,7 @@ ssl_certificate_key "D:\\work\\server.key";<br/>
 
 
 <hr/>
-<h1>8. 問い合わせ先</h1>
+<h1>9. 問い合わせ先</h1>
 
 本ソフトウェアに関する問い合わせは，下記メールアドレスで受け付けています。
 <p>

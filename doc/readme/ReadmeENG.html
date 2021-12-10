@@ -66,9 +66,33 @@ Mozilla Firefox<br/>
 
 
 <hr/>
-<h1>3. SERVAL server</h1>
-<h2>3.1 Installation</h2>
+<h1>3. Package structure</h1>
 
+SERVAL is provided as following two package structures.<br/>
+<ul>
+    <li>svl100.zip<br/>
+        SERVAL server for Windows edition and SERVAL agents for multi platform edition are included as .msi files and .rpm file.<br/>
+        - serval-1.0.0.msi : SERVAL server installation file for Windows edition<br/>
+        - servalagt-1.0.0.msi : SERVAL agent installation file for Windows edition<br/>
+        - servalagt-1.0-0.el8.x86_64.rpm : SERVAL agent installation file for Linux edition<br/>
+        - ReadmeENG.html : English readme file<br/>
+        - ReadmeJPN.html : Japanese readme file<br/>
+    </li>
+    <li>svl100.tar.gz<br/>
+        SERVAL server for Linux edition and SERVAL agents for multi platform edition are included as .msi file and .rpm files.<br/>
+        - serval-1.0-0.el8.x86_64.rpm : SERVAL server installation file for Linux edition<br/>
+        - servalagt-1.0.0.msi : SERVAL agent installation file for Windows edition<br/>
+        - servalagt-1.0-0.el8.x86_64.rpm : SERVAL agent installation file for Linux edition<br/>
+        - ReadmeENG.html : English readme file<br/>
+        - ReadmeJPN.html : Japanese readme file<br/>
+    </li>
+</ul>
+
+<hr/>
+<h1>4. SERVAL server</h1>
+<h2>4.1 Installation</h2>
+
+<u>For Windows</u><br/>
 Execute serval-1.0.0.msi and launch the installer of SERVAL server.<br/>
 Follow the on-screen dialog prompts.<br/>
 SERVAL server installer performs following steps during the installation.<br>
@@ -84,8 +108,21 @@ Note that the items shown below for overwrite installation.<br/>
 <li>During overwrite installation, host name/IP address and port number which Web server and SERVAL server service use might be changed into default. Confirm the port number after overwrite installation.</li> 
 </ul>
 
-<h2>3.2 Uninstallation</h2>
+<u>For Linux</u><br/>
+Install serval-1.0-0.el8.x86_64.rpm using following command.<br/>
+<i># yum install serval-1.0-0.el8.x86_64.rpm</i><br/>
+Note that nginx 1.12.2-1(nginx-1.12.2-1.el7_4.ngx.x86_64.rpm) needs to be installed before SERVAL server installation.<br/>
+SERVAL server installer performs following steps during the installation.<br>
+<ul>
+    <li>Disablement of SELinux</li>
+    <li>Register exceptions of Windows firewall for SERVAL server.</li>
+    <li>Register service of SERVAL server to the target system.</li>
+    <li>Auto start of SERVAL server service and restart of Web server.</li>
+</ul>
 
+<h2>4.2 Uninstallation</h2>
+
+<u>For Windows</u><br/>
 Select Remove SERVAL with execution of serval-1.0.0.msi or perform uninstallation of SERVAL from Control Panel.<br/>
 SERVAL server uninstallation performs following things during uninstallation.<br/>
 <ul>
@@ -94,15 +131,25 @@ SERVAL server uninstallation performs following things during uninstallation.<br
 <li>Deletion of Windows firewall exception for SERVAL server.</li> 
 </ul>
 
-<h2>3.3 Start/Stop SERVAL server service</h2>
+<u>For Linux</u><br/>
+Uninstall SERVAL server using following command.<br/>
+<i># yum remove serval</i>
 
+<h2>4.3 Start/Stop SERVAL server service</h2>
+
+<u>For Windows</u><br/>
 Start and stop of SERVAL server service can be performed by Windows start menu.<br/>
 <ul>
 <li>[SERVAL]-[Start service] : Start service<br/>
 <li>[SERVAL]-[Stop service] : Stop service<br/>
 </ul>
 
-<h2>3.4 Properties of SERVAL server</h2>
+<u>For Linux</u><br/>
+Start and stop operation for SERVAL server can be performed by following command.<br/>
+Start: <i># systemctl start serval</i><br/>
+Stop: <i># systemctl stop serval</i><br/>
+
+<h2>4.4 Properties of SERVAL server</h2>
 
 You can configure SERVAL server setting by modification of SERVAL server properties file "&lt;Installation folder&gt;\serval.conf".<br/>
 <ul>
@@ -122,8 +169,8 @@ SERVAL server service needs to be restarted after properties change in order to 
 
 
 <hr/>
-<h1>4. SERVAL agent</h1>
-<h2>4.1 Installation</h2>
+<h1>5. SERVAL agent</h1>
+<h2>5.1 Installation</h2>
 
 <u>For Windows</u><br/>
 Execute servalagt-1.0.0.msi and launch the installer of SERVAL server.<br/>
@@ -141,7 +188,7 @@ Note that the items shown below for overwrite installation.<br/>
 Install servalagt-1.0-0.el8.x86_64.rpm using following command.<br/>
 <i># yum install servalagt-1.0-0.el8.x86_64.rpm</i>
 
-<h2>4.2 Uninstallation</h2>
+<h2>5.2 Uninstallation</h2>
 
 <u>For Windows</u><br/>
 Select Remove SERVAL agent with execution of servalagt-1.0.0.msi or perform uninstallation of SERVAL agent from Control Panel.<br/>
@@ -152,7 +199,7 @@ During uninstallation, SERVAL agent service is removed from the target system.<b
 Uninstall SERVAL agent using following command.<br/>
 <i># yum remove servalagt</i>
 
-<h2>4.3 Start/Stop SERVAL agent service</h2>
+<h2>5.3 Start/Stop SERVAL agent service</h2>
 
 <u>For Windows</u><br/>
 SERVAL agent service start and end operations can be performed by task manager.<br/>
@@ -165,7 +212,7 @@ Start: <i># systemctl start servalagt</i><br/>
 Stop: <i># systemctl stop servalagt</i><br/>
 
 
-<h2>4.4 Properties of SERVAL agent</h2>
+<h2>5.4 Properties of SERVAL agent</h2>
 
 You can configure SERVAL agent setting by modification of servalagt.conf which is properties file of SERVAL agent.
 Properties file servalagt.conf is placed in &lt;Installation folder&gt; for Windows edition or in /etc directory for Linux edition.<br/>
@@ -189,7 +236,7 @@ SERVAL agent service needs to be restarted after properties change in order to r
 
 
 <hr/>
-<h1>5. Login to SERVAL</h1>
+<h1>6. Login to SERVAL</h1>
 
 Connect to the URL shown below by Web browser for use of SERVAL after installation. If main console is displayed after login sequence of SERVAL, it shows the installation is successfully completed.<br/>
 <p>
@@ -212,7 +259,7 @@ If main console is not appeared or an error ocurred, confirm the things shown be
 
 
 <hr/>
-<h1>6. Change IP address/host name and port number</h1>
+<h1>7. Change IP address/host name and port number</h1>
 
 SERVAL server uses two kinds of IP addresses/host names and ports.<br/>
 <ul>
@@ -242,7 +289,7 @@ After you change targethost and targetport in SERVAL agent properties file "serv
 
 
 <hr/>
-<h1>7. Secure connection using TLS</h1>
+<h1>8. Secure connection using TLS</h1>
 In order to connect to SERVAL using TLS from browser, following steps are required.<br/>
 <ol>
 <li>Stop SERVAL server service.</li>
@@ -262,7 +309,7 @@ ssl_certificate_key "D:\\work\\server.key";<br/>
 
 
 <hr/>
-<h1>8. Contact</h1>
+<h1>9. Contact</h1>
 
 Please use the E-mail address below for inquiries about this product.
 <p>
