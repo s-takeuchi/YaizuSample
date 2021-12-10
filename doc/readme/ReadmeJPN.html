@@ -113,7 +113,7 @@ serval-1.0-0.el8.x86_64.rpmを以下のコマンドでインストールしま�
 SERVALサーバのインストール前にnginx 1.12.2-1(nginx-1.12.2-1.el7_4.ngx.x86_64.rpm)があらかじめインストールされている必要があります。<br/>
 SERVALサーバのインストーラは，インストール時に以下の操作を行います。<br>
 <ul>
-    <li>SELinuxの無効化</li>
+    <li>SELinuxのhttpd_can_network_connectをonにします。</li>
     <li>SERVALサーバに対するファイアウォールへの例外登録。</li>
     <li>SERVALサーバのサービスのシステムへの登録。</li>
     <li>SERVALサーバのサービスの自動起動と、Webサーバの再起動。</li>
@@ -193,6 +193,7 @@ SERVALエージェントのインストール後にservalagt-1.0.0.msiを起動�
 
 <u>Linux版</u><br/>
 servalagt-1.0-0.el8.x86_64.rpmを以下のコマンドでインストールします。<br/>
+インストール時にSELinuxのhttpd_can_network_connectをonにします。<br/>
 <i># yum install servalagt-1.0-0.el8.x86_64.rpm</i>
 
 <h2>5.2 アンインストール方法</h2>

@@ -114,7 +114,7 @@ Install serval-1.0-0.el8.x86_64.rpm using following command.<br/>
 Note that nginx 1.12.2-1(nginx-1.12.2-1.el7_4.ngx.x86_64.rpm) needs to be installed before SERVAL server installation.<br/>
 SERVAL server installer performs following steps during the installation.<br>
 <ul>
-    <li>Disablement of SELinux</li>
+    <li>Change httpd_can_network_connect of SELinux into on.</li>
     <li>Register exceptions of firewall for SERVAL server.</li>
     <li>Register service of SERVAL server to the target system.</li>
     <li>Auto start of SERVAL server service and restart of Web server.</li>
@@ -195,6 +195,7 @@ Note that the items shown below for overwrite installation.<br/>
 
 <u>For Linux</u><br/>
 Install servalagt-1.0-0.el8.x86_64.rpm using following command.<br/>
+Installer changes httpd_can_network_connect of SELinux into on.<br/>
 <i># yum install servalagt-1.0-0.el8.x86_64.rpm</i>
 
 <h2>5.2 Uninstallation</h2>
