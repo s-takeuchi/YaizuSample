@@ -150,16 +150,19 @@ SERVALエージェントのサービスの起動および停止は，以下の�
 
 <h2>4.4 SERVALサーバのプロパティの変更</h2>
 
-SERVALサーバのプロパティファイルである"＜インストール先フォルダ＞\serval.conf"を編集することでSERVALサーバの設定を行うことができます。<br/>
+SERVALサーバのプロパティファイルであるserval.confを編集することでSERVALサーバの設定を行うことができます。
+servalagt.confは、Windows版の場合、＜インストール先フォルダ＞に、Linux版の場合、/etc ディレクトリに配置されています。<br/>
+
 <ul>
     <li>servicehost<br/>
-    サービスのIPアドレスまたはホスト名を指定します。"＜インストール先フォルダ＞\conf\nginx.conf"ファイルのproxy_passディレクティブで指定するURLと一致させる必要があります。
+    サービスのIPアドレスまたはホスト名を指定します。"＜インストール先フォルダ＞\conf\nginx.conf"ファイル(Windows版)または
+    "/etc/nginx/conf.d/serval_nginx.conf"ファイル(Linux版)のproxy_passディレクティブで指定するURLと一致させる必要があります。
     ここで指定するIPアドレスまたはホスト名は、SERVALサーバのバックエンドとなるREST APIサービスのものとなります。
-    ブラウザから接続するエンドポイントのIPアドレスまたはホスト名は、"＜インストール先フォルダ＞\conf\nginx.conf"ファイルのserver_nameディレクティブで指定してください。</li>
+    ブラウザから接続するエンドポイントのIPアドレスまたはホスト名は、nginx.confファイルのserver_nameディレクティブで指定してください。</li>
     <li>serviceport<br/>
-    サービスのポート番号を指定します。"＜インストール先フォルダ＞\conf\nginx.conf"ファイルのproxy_passディレクティブで指定するURLと一致させる必要があります。
+    サービスのポート番号を指定します。nginx.confファイルのproxy_passディレクティブで指定するURLと一致させる必要があります。
     ここで指定するポート番号は、SERVALサーバのバックエンドとなるREST APIサービスのものとなります。
-    ブラウザから接続するエンドポイントのポート番号は、"＜インストール先フォルダ＞\conf\nginx.conf"ファイルのlistenディレクティブで指定してください。</li>
+    ブラウザから接続するエンドポイントのポート番号は、nginx.confファイルのlistenディレクティブで指定してください。</li>
     <li>workdir<br/>
     コマンドが使用する、SERVALサーバ内のファイル格納先のディレクトリを指定します。
     </li>
@@ -269,12 +272,12 @@ SERVALサーバは，2種類のIPアドレスとポート番号を使用しま�
 IPアドレスおよびポート番号を変更します。<br/>
 <p>
 <u>REST APIサービスが使用するIPアドレス／ホスト名およびポート番号を変更する場合:</u><br/>
-＜インストール先フォルダ＞\serval.conf のservicehostおよびserviceport プロパティにREST APIサービスのIPアドレス／ホスト名およびポート番号を設定します。<br/>
-＜インストール先フォルダ＞\conf\nginx.conf のlocation /api/ セクションのproxy_pass にREST APIのIPアドレス／ホスト名およびポート番号を設定します。<br/>
+＜インストール先フォルダ＞\serval.conf (Windows版)または/etc/serval.conf (Linux版) のservicehostおよびserviceport プロパティにREST APIサービスのIPアドレス／ホスト名およびポート番号を設定します。<br/>
+＜インストール先フォルダ＞\conf\nginx.conf (Windows版)または/etc/nginx/conf.d/serval_nginx.conf (Linux版) のlocation /api/ セクションのproxy_pass にREST APIのIPアドレス／ホスト名およびポート番号を設定します。<br/>
 </p>
 <p>
 <u>Webサーバが使用するIPアドレス／ホスト名およびポート番号を変更する場合:</u><br/>
-＜インストール先フォルダ＞\conf\nginx.conf のlistenおよびserver_name を変更します。<br/>
+＜インストール先フォルダ＞\conf\nginx.conf (Windows版)または/etc/nginx/conf.d/serval_nginx.conf (Linux版) のlistenおよびserver_name を変更します。<br/>
 </p>
 </li>
 <li>必要に応じてファイアウォールの設定を変更します。</li>
@@ -291,7 +294,7 @@ SERVALエージェントのプロパティファイルであるservalagt.confの
 <li>SERVALサーバのサービスを停止します。</li>
 <li>
 nginx.confにTLS接続のための設定を追加します。<br/>
-＜インストール先フォルダ＞\conf\nginx.conf のserverディレクティブに以下の記述を追加します。<br/>
+＜インストール先フォルダ＞\conf\nginx.conf (Windows版)または/etc/nginx/conf.d/serval_nginx.conf (Linux版)のserverディレクティブに以下の記述を追加します。<br/>
 (秘密鍵および証明書ファイルへのパスは個別の環境に応じて変更してください。)<br/>
 ssl on;<br/>
 ssl_certificate "D:\\work\\server.crt";<br/>

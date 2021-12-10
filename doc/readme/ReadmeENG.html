@@ -151,16 +151,19 @@ Stop: <i># systemctl stop serval</i><br/>
 
 <h2>4.4 Properties of SERVAL server</h2>
 
-You can configure SERVAL server setting by modification of SERVAL server properties file "&lt;Installation folder&gt;\serval.conf".<br/>
+You can configure SERVAL server setting by modification of servalagt.conf which is properties file of SERVAL server.
+Properties file serval.conf is placed in &lt;Installation folder&gt; for Windows edition or in /etc directory for Linux edition.<br/>
+
 <ul>
     <li>servicehost<br/>
-    Specify IP address or host name which the service uses. This value needs to be matched to proxy_pass directive of nginx.conf.
+    Specify IP address or host name which the service uses. This value needs to be matched to proxy_pass directive in
+    &lt;Installation folder&gt;\conf\nginx.conf (for Windows edition) or /etc/nginx/conf.d/serval_nginx.conf (for Linux edition).
     This IP address or host name is REST API service's one. REST API works as back-end of SERVAL server.
-    Endpoint IP address or host name which is specified by a browser needs to be conformed to server_name directive of nginx.cong.</li>
+    Endpoint IP address or host name which is specified by a browser needs to be conformed to server_name directive of nginx.conf.</li>
     <li>serviceport<br/>
     Specify port number which the service uses. This value needs to be matched to proxy_pass directive of nginx.conf.
     This port number is REST API service's one. REST API works as back-end of SERVAL server.
-    Endpoint port number which is specified by a browser needs to be conformed to listen directive of nginx.cong.</li>
+    Endpoint port number which is specified by a browser needs to be conformed to listen directive of nginx.conf.</li>
     <li>workdir<br/>
     Specify folder path of files which SERVAL server manages. The files can be referred by commands defined in SERVAL server. 
     </li>
@@ -273,12 +276,14 @@ In order to change the IP address/host name and port number after installation, 
 Change IP address/host name and port number.<br/>
 <p>
 <u>In case you change IP address/host name and port number which REST API service uses:</u><br/>
-Specify IP address/host name and port number to servicehost and serviceport properties in &lt;Installation folder&gt;\serval.conf<br/>
-Specify IP address/host name and port number to proxy_pass of location /api/ section in &lt;Installation folder&gt;\conf\nginx.conf<br/>
+Specify IP address/host name and port number to servicehost and serviceport properties in &lt;Installation folder&gt;\serval.conf (for Windows)
+or /etc/serval.conf (for Linux)<br/>
+Specify IP address/host name and port number to proxy_pass of location /api/ section in &lt;Installation folder&gt;\conf\nginx.conf (for Windows)
+or /etc/nginx/conf.d/serval_nginx.conf (for Linux)<br/>
 </p>
 <p>
 <u>In case you change IP address/host name and port number which Web server uses:</u><br/>
-Change listen and server_name in &lt;Installation folder&gt;\conf\nginx.conf<br/>
+Change listen and server_name in &lt;Installation folder&gt;\conf\nginx.conf (for Windows) or /etc/nginx/conf.d/serval_nginx.conf (for Linux)<br/>
 </p>
 </li>
 <li>Change firewall setting if necessary.</li>
@@ -295,7 +300,7 @@ In order to connect to SERVAL using TLS from browser, following steps are requir
 <li>Stop SERVAL server service.</li>
 <li>
 Add TLS settings to nginx.conf.<br/>
-Add followings to server directive in &lt;Installation folder&gt;\conf\nginx.conf<br/>
+Add followings to server directive in &lt;Installation folder&gt;\conf\nginx.conf (for Windows) or /etc/nginx/conf.d/serval_nginx.conf (for Linux)<br/>
 (Regarding certificate and private key, modify the path according to your environment.)<br/>
 ssl on;<br/>
 ssl_certificate "D:\\work\\server.crt";<br/>
