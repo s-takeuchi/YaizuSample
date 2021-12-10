@@ -144,6 +144,7 @@
     <ClInclude Include="ApiPostServerInfo.h" />
     <ClInclude Include="ApiPostViewSetting.h" />
     <ClInclude Include="dataaccess.h" />
+    <ClInclude Include="resource.h" />
     <ClInclude Include="serval.h" />
   </ItemGroup>
   <ItemGroup>
@@ -163,6 +164,9 @@
       <Project>{85c0e32c-8ab1-495d-9968-0abdebd671ae}</Project>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="serval.rc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
