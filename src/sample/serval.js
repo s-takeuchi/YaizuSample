@@ -39,6 +39,24 @@ function initClientMessage() {
     addClientMessage('DASHBOARD_SELECt_AGENT', {'en':'Select agent', 'ja':'エージェントの選択'});
     addClientMessage('DASHBOARD_STATUS_DESC', {'en':'You can choose maximum 8 agents time series status on dashboard.', 'ja':'最大8件のエージェントの状態をダッシュボードに表示できます。'});
     addClientMessage('DASHBOARD_UNSPECIFIED', {'en':'Unspecified', 'ja':'未指定'});
+    addClientMessage('DASHBOARD_STEP', {
+        'en':'Servers and IoT devices can be managed by following steps.',
+        'ja':'次のステップで、サーバおよびIoTデバイスを管理することができます。'
+    });
+    addClientMessage('DASHBOARD_STEP1', {
+        'en':'After install agent to management target, edit properties file and configure destination setting, then restart the agent. ' +
+             'New agent is appeared on "Agent" page after the notification.',
+        'ja':'管理対象にエージェントをインストール後、プロパティファイルを編集し、通知先の設定を行い、エージェントを再起動します。' +
+             '通知後"Agent"ページに新規のエージェントが追加されます。'
+    });
+    addClientMessage('DASHBOARD_STEP2', {
+        'en':'Creates a command for monitoring and management and configure it to agent.',
+        'ja':'監視・管理用のコマンドを作成し、エージェントに設定してください。'
+    });
+    addClientMessage('DASHBOARD_STEP3', {
+        'en':'You can refer to the command execution result on "Result" page.',
+        'ja':'コマンドの実行結果は"Result"ページから参照できます。'
+    });
 
     addClientMessage('AINAME', {'en':'Name', 'ja':'名称'});
     addClientMessage('AISTATUS', {'en':'Status', 'ja':'状態'});
@@ -118,6 +136,7 @@ function initClientMessage() {
     addClientMessage('COMDELCOMMAND', {'en':'Delete Command', 'ja':'コマンドの削除'});
     addClientMessage('COMDELCONFIRM', {'en':'Are you sure you want to delete the specified command(s)?', 'ja':'指定したコマンドを削除します。'});
     addClientMessage('COMMANDLABEL', {'en':'Command : ', 'ja':'コマンド : '});
+    addClientMessage('COMMANDEXITCODE', {'en':'Exit code=0 : Success, Otherwise : Failed', 'ja':'Exit code=0 : Success, Otherwise : Failed'});
 
     addClientMessage('RESULT_UPDTIME', {'en':'Execution date and time', 'ja':'実行日時'});
     addClientMessage('RESULT_AGTNAME', {'en':'Agent', 'ja':'エージェント'});
@@ -1402,7 +1421,7 @@ function switchCommandButton() {
         commandSettingDlg.append('<label for="serverFileName">' + getClientMessage('COMCOPYTOAGT') + '</label><div id="serverFileName-inputgroup"/>');
         commandSettingDlg.append('<p></p>');
         commandSettingDlg.append('<div class="form-group"><label for="commandType">' + getClientMessage('COMTYPE') + '</label><select class="form-control" id="commandType"><option>Linux /usr/bin/bash</option><option>Windows cmd.exe /c</option></select></div>');
-        commandSettingDlg.append('<div class="form-group"><label for="commandScript">' + getClientMessage('COMSCRIPT') + '</label><textarea class="form-control" id="commandScript" rows="3" style="margin-top: 0px; margin-bottom: 0px; height: 185px;"></textarea></div>');
+        commandSettingDlg.append('<div class="form-group"><label for="commandScript">' + getClientMessage('COMSCRIPT') + '<br/>' + getClientMessage('COMMANDEXITCODE') + '</label><textarea class="form-control" id="commandScript" rows="3" style="margin-top: 0px; margin-bottom: 0px; height: 185px;"></textarea></div>');
         commandSettingDlg.append('<div class="form-group"><label for="timeout">' + getClientMessage('COMTIMEOUT') + '</label><input type="text" class="form-control" id="timeout"/></div>');
         commandSettingDlg.append('<label for="agentFileName">' + getClientMessage('COMCOPYTOSVR') + '</label><div id="agentFileName-inputgroup"/>');
         commandSettingDlg.append('<p></p>');
@@ -1841,7 +1860,13 @@ function switchCommandButton() {
         }
         let agentInfos = getArray(responseData['API_GET_AGTINFO'].Data.AgentInfo);
         if (agentInfos == null) {
-            $('#dashboard').append(getClientMessage('NOAGTINFO'));
+            $('#dashboard').append(getClientMessage('NOAGTINFO') + '<br/>');
+            $('#dashboard').append(getClientMessage('DASHBOARD_STEP') + '<br/>');
+            $('#dashboard').append('<ol>'
+                + '<li>' + getClientMessage('DASHBOARD_STEP1') +  '</li>'
+                + '<li>' + getClientMessage('DASHBOARD_STEP2') +  '</li>'
+                + '<li>' + getClientMessage('DASHBOARD_STEP3') +  '</li>'
+                + '</ol>');
             return;
         }
         $('#dashboard').append('<h5>&nbsp;&nbsp;&nbsp;&nbsp;' + getClientMessage('DASHBOARD_CURRENTSTATUS') + '&nbsp;&nbsp;</h5>');
