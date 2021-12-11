@@ -16,9 +16,17 @@ from SERVAL agent to SERVAL server. Because of this, SERVAL can provide various 
 - Connection establishment between SERVAL server and SERVAL agent is always direction to SERVAL server from SERVAL agent.
 No need to open receiver ports of servers and IoT devices hence, secure monitoring/management can be provided.
 
-![scr5](https://user-images.githubusercontent.com/4883168/145658072-d5e94043-9f05-4af7-8f6a-a2eb9e9e79b1.png)
-![scr5](https://user-images.githubusercontent.com/4883168/145658073-d7619796-1261-4933-8fb5-94ea7fa61ffb.png)
-![scr5](https://user-images.githubusercontent.com/4883168/145658074-a76760c2-1514-4ea2-bdfc-a5340e9999f3.png)
+![](https://user-images.githubusercontent.com/4883168/145658072-d5e94043-9f05-4af7-8f6a-a2eb9e9e79b1.png)
+
+*Example : List of agents managed by SERVAL*
+
+![](https://user-images.githubusercontent.com/4883168/145658073-d7619796-1261-4933-8fb5-94ea7fa61ffb.png)
+
+*Example : Dashboard*
+
+![](https://user-images.githubusercontent.com/4883168/145658074-a76760c2-1514-4ea2-bdfc-a5340e9999f3.png)
+
+*Example : Command result*
 
 ## System requirements
 SERVAL works on systems with the following specifications:
@@ -28,21 +36,21 @@ SERVAL works on systems with the following specifications:
 - Free disk space: 20 MB or more
 - Operating systems supported:
   - SERVAL server
-    Windows 10
-    Windows 11
-    Windows Server 2016
-    Windows Server 2019
-  - SERVAL agent</u>
-    Windows 10
-    Windows 11
-    Windows Server 2016
-    Windows Server 2019
-    Redhat Enterprise Linux 8.x
-    AlmaLinux 8.x
+    - Windows 10
+    - Windows 11
+    - Windows Server 2016
+    - Windows Server 2019
+  - SERVAL agent
+    - Windows 10
+    - Windows 11
+    - Windows Server 2016
+    - Windows Server 2019
+    - Redhat Enterprise Linux 8.x
+    - AlmaLinux 8.x
 - Web browsers supported:
-  Microsoft Edge
-  Google Chrome
-  Mozilla Firefox
+  - Microsoft Edge
+  - Google Chrome
+  - Mozilla Firefox
 
 ## Download
 1.0.0 Release: 2021/12/12 : 
