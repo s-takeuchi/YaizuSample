@@ -78,7 +78,7 @@ fi
 if [ \$1 = 0 ]; then
     echo "Uninstallation (preun)"
     systemctl stop servalagt.service
-    while [ \`ps -ef | grep "/usr/bin/agent" | grep -v grep | grep -v srvchk | wc -l\` != 0 ]
+    while [ \`ps -ef | grep "/usr/bin/servalagt" | grep -v grep | grep -v srvchk | wc -l\` != 0 ]
     do
         sleep 1
     done

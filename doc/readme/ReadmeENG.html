@@ -293,7 +293,7 @@ or /etc/nginx/conf.d/serval_nginx.conf (for Linux)<br/>
 Change listen and server_name in &lt;Installation folder&gt;\conf\nginx.conf (for Windows) or /etc/nginx/conf.d/serval_nginx.conf (for Linux)<br/>
 </p>
 </li>
-<li>Change firewall setting if necessary.</li>
+<li>Change firewall setting if necessary. If SELinux is enabled, add access permission to the target port using "semanage port" command.</li>
 <li>Start SERVAL server service.</li>
 <li>In case you change IP address/host name and port number which Web server uses, change destination IP address/host name and port number of SERVAL agent.
 After you change targethost and targetport in SERVAL agent properties file "servalagt.conf", restart SERVAL agent.</li>

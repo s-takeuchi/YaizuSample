@@ -287,7 +287,7 @@ IPアドレスおよびポート番号を変更します。<br/>
 ＜インストール先フォルダ＞\conf\nginx.conf (Windows版)または/etc/nginx/conf.d/serval_nginx.conf (Linux版) のlistenおよびserver_name を変更します。<br/>
 </p>
 </li>
-<li>必要に応じてファイアウォールの設定を変更します。</li>
+<li>必要に応じてファイアウォールの設定を変更します。SELinuxが有効なときは、"semanage port"コマンドで対象のポートに対してアクセス許可を与えます。</li>
 <li>SERVALサーバのサービスを起動します。</li>
 <li>Webサーバが使用するIPアドレス／ホスト名およびポート番号を変更した場合、SERVALエージェントの接続先のIPアドレス／ホスト名およびポート番号を変更します。
 SERVALエージェントのプロパティファイルであるservalagt.confのtargethostおよびtargetportを変更後、SERVALエージェントを再起動します。</li>
