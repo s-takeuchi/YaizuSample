@@ -136,7 +136,10 @@ function initClientMessage() {
     addClientMessage('COMDELCOMMAND', {'en':'Delete Command', 'ja':'コマンドの削除'});
     addClientMessage('COMDELCONFIRM', {'en':'Are you sure you want to delete the specified command(s)?', 'ja':'指定したコマンドを削除します。'});
     addClientMessage('COMMANDLABEL', {'en':'Command : ', 'ja':'コマンド : '});
-    addClientMessage('COMMANDEXITCODE', {'en':'Exit code=0 : Success, Otherwise : Failed', 'ja':'Exit code=0 : Success, Otherwise : Failed'});
+    addClientMessage('COMMANDEXITCODE', {
+        'en':'Command execution result depends on the script exit code. (0 : Success, Otherwise : Failed)',
+        'ja':'コマンドの実行結果はスクリプトのExit codeに依存します。(0 : Success, その他 : Failed)'
+    });
 
     addClientMessage('RESULT_UPDTIME', {'en':'Execution date and time', 'ja':'実行日時'});
     addClientMessage('RESULT_AGTNAME', {'en':'Agent', 'ja':'エージェント'});

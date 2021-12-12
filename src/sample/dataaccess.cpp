@@ -208,8 +208,8 @@ int DataAccess::CreateTables(const wchar_t* DataFileName)
 		{
 			ColumnData *ColDatSvr[4];
 			ColDatSvr[0] = new ColumnDataInt(L"Id", 0);
-			ColDatSvr[1] = new ColumnDataInt(L"PInterval", 300);
-			ColDatSvr[2] = new ColumnDataInt(L"SaInterval", 1800);
+			ColDatSvr[1] = new ColumnDataInt(L"PInterval", 30);
+			ColDatSvr[2] = new ColumnDataInt(L"SaInterval", 900);
 			ColDatSvr[3] = new ColumnDataInt(L"MaxCommandId", 1);
 			RecordData* RecSvrInfo = new RecordData(L"ServerInfo", ColDatSvr, 4);
 			// Add record
