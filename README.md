@@ -53,5 +53,4 @@ SERVAL works on systems with the following specifications:
   - Mozilla Firefox
 
 ## Download
-1.0.0 Release: 2021/12/12 : 
-[Windows edition](https://github.com/s-takeuchi/YaizuSample/) , [Linux edition](https://github.com/s-takeuchi/YaizuSample/)  
+[1.0.0 Release: 2021/12/22](https://github.com/s-takeuchi/YaizuSample/releases/tag/1.0.0) 
