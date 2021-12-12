@@ -52,7 +52,7 @@ if [ \$1 = 2 ]; then
     echo "Upgrade installation (pre)"
     systemctl daemon-reload
     systemctl stop servalagt.service
-    while [ \`ps -ef | grep "/usr/bin/servalagt" | grep -v grep | grep -v srvchk | wc -l\` != 0 ]
+    while [ \`ps -ef | grep "/usr/bin/servalagt " | grep -v grep | grep -v srvchk | wc -l\` != 0 ]
     do
         sleep 1
     done
@@ -78,7 +78,7 @@ fi
 if [ \$1 = 0 ]; then
     echo "Uninstallation (preun)"
     systemctl stop servalagt.service
-    while [ \`ps -ef | grep "/usr/bin/servalagt" | grep -v grep | grep -v srvchk | wc -l\` != 0 ]
+    while [ \`ps -ef | grep "/usr/bin/servalagt " | grep -v grep | grep -v srvchk | wc -l\` != 0 ]
     do
         sleep 1
     done

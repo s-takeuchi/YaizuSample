@@ -182,7 +182,7 @@ if [ \$1 = 2 ]; then
     systemctl daemon-reload
     systemctl stop nginx.service
     systemctl stop serval.service
-    while [ \`ps -ef | grep "/usr/bin/serval" | grep -v grep | grep -v srvchk | wc -l\` != 0 ]
+    while [ \`ps -ef | grep "/usr/bin/serval " | grep -v grep | grep -v srvchk | wc -l\` != 0 ]
     do
         sleep 1
     done
@@ -219,7 +219,7 @@ if [ \$1 = 0 ]; then
     systemctl daemon-reload
     systemctl stop nginx.service
     systemctl stop serval.service
-    while [ \`ps -ef | grep "/usr/bin/serval" | grep -v grep | grep -v srvchk | wc -l\` != 0 ]
+    while [ \`ps -ef | grep "/usr/bin/serval " | grep -v grep | grep -v srvchk | wc -l\` != 0 ]
     do
         sleep 1
     done
