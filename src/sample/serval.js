@@ -1951,7 +1951,10 @@ function switchCommandButton() {
         
             let updTimeInt = parseInt(timeseriesdata[loopTsd].UpdTime, 16);
             if (updTimeInt < startTime) {
-                continue;
+                if (updTimeInt + timeseriesdata[loopTsd].SaInterval < startTime) {
+                    continue;
+                }
+                updTimeInt = startTime;
             }
             let graphX = unitw * (updTimeInt - startTime) + 50;
             let graphWidth = unitw * timeseriesdata[loopTsd].SaInterval + 1;
