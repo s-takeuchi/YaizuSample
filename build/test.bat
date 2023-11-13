@@ -7,8 +7,8 @@ echo =========================================
 
 if defined GITHUBACTIONS (
   echo For GitHub Actions
-  set MSBUILD="C:\Program Files (x86)\Microsoft Visual Studio\2017\Enterprise\MSBuild\15.0\Bin\msbuild.exe"
-  set DEVENV="C:\Program Files (x86)\Microsoft Visual Studio\2017\Enterprise\Common7\IDE\devenv.exe"
+  set MSBUILD="C:\Program Files\Microsoft Visual Studio\2022\Enterprise\MSBuild\Current\Bin\msbuild.exe"
+  set DEVENV="C:\Program Files\Microsoft Visual Studio\2022\Enterprise\Common7\IDE\devenv.com"
   set SEVENZIP="7z.exe"
   set LCOUNTER=""
   goto definitionend
@@ -16,8 +16,8 @@ if defined GITHUBACTIONS (
 
 set LOCALMACHINE="true"
 
-set MSBUILD="C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\MSBuild\15.0\Bin\msbuild.exe"
-set DEVENV="C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\Common7\IDE\devenv.exe"
+set MSBUILD="C:\Program Files\Microsoft Visual Studio\2022\Community\MSBuild\Current\Bin\msbuild.exe"
+set DEVENV="C:\Program Files\Microsoft Visual Studio\2022\Community\Common7\IDE\devenv.com"
 set SEVENZIP="C:\Program Files\7-Zip\7z.exe"
 set LCOUNTER="C:\Program Files (x86)\lcounter\lcounter.exe"
 
