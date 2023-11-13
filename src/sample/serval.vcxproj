@@ -63,7 +63,7 @@
       <SDLCheck>true</SDLCheck>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>Ws2_32.lib;shlwapi.lib;Psapi.lib;x64\Debug\commonfunc.lib;x64\Debug\stkthread.lib;x64\Debug\stksocket.lib;x64\Debug\stkwebapp.lib;x64\Debug\stkwebapp_um.lib;x64\Debug\stkpl.lib;x64\Debug\stkdata.lib;Crypt32.lib;C:\Program Files\OpenSSL-Win64\lib\VC\static\libssl64MTd.lib;C:\Program Files\OpenSSL-Win64\lib\VC\static\libcrypto64MTd.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>Ws2_32.lib;shlwapi.lib;Psapi.lib;x64\Debug\commonfunc.lib;x64\Debug\stkthread.lib;x64\Debug\stksocket.lib;x64\Debug\stkwebapp.lib;x64\Debug\stkwebapp_um.lib;x64\Debug\stkpl.lib;x64\Debug\stkdata.lib;Crypt32.lib;libssl64MTd.lib;libcrypto64MTd.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)$(TargetName)$(TargetExt)</OutputFile>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Console</SubSystem>
@@ -71,6 +71,7 @@
       <HeapCommitSize>10000000</HeapCommitSize>
       <StackReserveSize>5000000</StackReserveSize>
       <StackCommitSize>5000000</StackCommitSize>
+      <AdditionalLibraryDirectories>C:\Program Files\OpenSSL-Win64\lib\VC\static;C:\Program Files\OpenSSL\lib\VC\static\</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -88,7 +89,7 @@
       <SDLCheck>true</SDLCheck>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>Ws2_32.lib;shlwapi.lib;Psapi.lib;x64\Release\commonfunc.lib;x64\Release\stkthread.lib;x64\Release\stksocket.lib;x64\Release\stkwebapp.lib;x64\Release\stkwebapp_um.lib;x64\Release\stkpl.lib;x64\Release\stkdata.lib;Crypt32.lib;C:\Program Files\OpenSSL-Win64\lib\VC\static\libssl64MT.lib;C:\Program Files\OpenSSL-Win64\lib\VC\static\libcrypto64MT.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>Ws2_32.lib;shlwapi.lib;Psapi.lib;x64\Release\commonfunc.lib;x64\Release\stkthread.lib;x64\Release\stksocket.lib;x64\Release\stkwebapp.lib;x64\Release\stkwebapp_um.lib;x64\Release\stkpl.lib;x64\Release\stkdata.lib;Crypt32.lib;libssl64MT.lib;libcrypto64MT.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)$(TargetName)$(TargetExt)</OutputFile>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Console</SubSystem>
@@ -100,6 +101,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <UACExecutionLevel>RequireAdministrator</UACExecutionLevel>
       <LinkTimeCodeGeneration>UseLinkTimeCodeGeneration</LinkTimeCodeGeneration>
+      <AdditionalLibraryDirectories>C:\Program Files\OpenSSL-Win64\lib\VC\static;C:\Program Files\OpenSSL\lib\VC\static\</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
