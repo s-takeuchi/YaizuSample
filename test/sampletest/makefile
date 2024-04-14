@@ -1,5 +1,5 @@
 LDFLAGS = -L/usr/local/lib64 -L/usr/local/lib
-LIBS    = -lssl -lcrypto
+LIBS    = -lssl -lcrypto -lstdc++
 
 sampletest : sampletest.o
 	cd ../../../YaizuComLib/src/stkpl; make
@@ -11,7 +11,7 @@ sampletest : sampletest.o
 	cd ../../../YaizuComLib/src/stksocket; make
 	cp ../../../YaizuComLib/src/stksocket/stksocket.a .
 
-	g++ -o sampletest sampletest.o stkpl.a stkwebapp.a commonfunc.a stksocket.a -std=c++1z -lstdc++fs -pthread -static-libgcc -static-libstdc++ $(LDFLAGS) $(LIBS)
+	g++ -o sampletest sampletest.o stkpl.a stkwebapp.a commonfunc.a stksocket.a -std=c++1z -lstdc++fs -pthread -static-libgcc $(LDFLAGS) $(LIBS)
 
 
 sampletest.o : sampletest.cpp
