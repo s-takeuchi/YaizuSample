@@ -46,7 +46,7 @@ Name:    serval
 Version: 1.0
 Release: 0.el8
 Summary: SERVAL server
-Requires: nginx = 1:1.12.2-1.el7_4.ngx
+Requires: nginx >= 1.20
 
 License: No License No Life
 Source1: serval
