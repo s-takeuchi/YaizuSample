@@ -1,5 +1,5 @@
 LDFLAGS = -L/usr/local/lib64 -L/usr/local/lib
-LIBS    = -lssl -lcrypto
+LIBS    = -lssl -lcrypto -lstdc++
 
 servalagt : servalagt.o
 	cd ../../../YaizuComLib/src/stkpl; make
@@ -15,7 +15,7 @@ servalagt : servalagt.o
 	cd ../../../YaizuComLib/src/stkdata; make
 	cp ../../../YaizuComLib/src/stkdata/stkdata.a .
 
-	g++ -o servalagt servalagt.o stkpl.a stkwebapp.a commonfunc.a stksocket.a stkthread.a stkdata.a -std=c++1z -lstdc++fs -pthread -static-libgcc -static-libstdc++ $(LDFLAGS) $(LIBS)
+	g++ -o servalagt servalagt.o stkpl.a stkwebapp.a commonfunc.a stksocket.a stkthread.a stkdata.a -std=c++1z -lstdc++fs -pthread -static-libgcc $(LDFLAGS) $(LIBS)
 
 servalagt.o : servalagt.cpp
 	g++ -c servalagt.cpp -std=c++1z

@@ -1,5 +1,5 @@
 LDFLAGS = -L/usr/local/lib64 -L/usr/local/lib
-LIBS    = -lssl -lcrypto
+LIBS    = -lssl -lcrypto -lstdc++
 
 serval : serval.o ApiGetServerInfo.o ApiPostServerInfo.o ApiGetAgentInfo.o ApiPostAgentInfo.o ApiGetCommandForStatus.o ApiGetCommandForOperation.o ApiGetCommand.o ApiPostCommand.o ApiDeleteCommand.o ApiGetFile.o ApiPostFile.o ApiGetFileList.o ApiDeleteFile.o ApiGetCommandResult.o ApiGetTimeSeriesData.o ApiPostViewSetting.o ApiGetViewSetting.o ApiDeleteAgentInfo.o dataaccess.o
 	cd ../../../YaizuComLib/src/stkpl; make
@@ -17,7 +17,7 @@ serval : serval.o ApiGetServerInfo.o ApiPostServerInfo.o ApiGetAgentInfo.o ApiPo
 	cd ../../../YaizuComLib/src/stkdata; make
 	cp ../../../YaizuComLib/src/stkdata/stkdata.a .
 
-	g++ -o serval serval.o ApiGetServerInfo.o ApiPostServerInfo.o ApiGetAgentInfo.o ApiPostAgentInfo.o ApiGetCommandForStatus.o ApiGetCommandForOperation.o ApiGetCommand.o ApiPostCommand.o ApiDeleteCommand.o ApiGetFile.o ApiPostFile.o ApiGetFileList.o ApiDeleteFile.o ApiGetCommandResult.o ApiGetTimeSeriesData.o ApiPostViewSetting.o ApiGetViewSetting.o ApiDeleteAgentInfo.o dataaccess.o stkpl.a stkwebapp.a stkwebapp_um.a commonfunc.a stksocket.a stkthread.a stkdata.a -std=c++1z -lstdc++fs -pthread -static-libgcc -static-libstdc++ $(LDFLAGS) $(LIBS)
+	g++ -o serval serval.o ApiGetServerInfo.o ApiPostServerInfo.o ApiGetAgentInfo.o ApiPostAgentInfo.o ApiGetCommandForStatus.o ApiGetCommandForOperation.o ApiGetCommand.o ApiPostCommand.o ApiDeleteCommand.o ApiGetFile.o ApiPostFile.o ApiGetFileList.o ApiDeleteFile.o ApiGetCommandResult.o ApiGetTimeSeriesData.o ApiPostViewSetting.o ApiGetViewSetting.o ApiDeleteAgentInfo.o dataaccess.o stkpl.a stkwebapp.a stkwebapp_um.a commonfunc.a stksocket.a stkthread.a stkdata.a -std=c++1z -lstdc++fs -pthread -static-libgcc $(LDFLAGS) $(LIBS)
 
 ApiGetServerInfo.o : ApiGetServerInfo.cpp
 	g++ -c ApiGetServerInfo.cpp -std=c++1z
