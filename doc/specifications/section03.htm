@@ -1,6 +1,6 @@
 ﻿<!DOCTYPE html>
 
-<html lang="ja">
+<html lang="en">
 <HEAD>
 <title>YaizuSample</title>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
@@ -94,6 +94,47 @@ securemode=true
 
 </div><p>
 
+<H2 ID="3.2">3.2 Long-term Evaluation</H2>
+In order to evaluate SERVAL's availability, a long-term evaluation has been performed.
+This section shows the results of the evaluation.
+
+<h3 ID="3.2.1">3.2.1 Purpose of the Evaluation</h3>
+<div class="topic">
+  SERVAL is a server-side software that multiple clients connect to.
+  It also has the potential to be used for mission-critical purposes;
+  therefore, SERVAL needs to consistently provide services over the long term.
+  Through the evaluation, we confirm whether SERVAL fulfills its availability requirements.
+</div>
+
+<h3 ID="3.2.2">3.2.2 Evaluation Term</h3>
+<div class="topic">
+  From December 12, 2021, to July 20, 2024
+</div>
+
+<h3 ID="3.2.3">3.2.3 Evaluation Environments</h3>
+<div class="topic">
+  The following environments are used for the evaluation:
+  <ul>
+    <li>
+      SERVAL-dev:<br/>
+      AWS Lightsail; 512 MB RAM, 1 vCPU, 20 GB SSD; Amazon Linux 2<br/>
+      Hosts one SERVAL server and one real SERVAL agent.
+    </li>
+    <li>
+      SERVAL-Validation:<br/>
+      AWS Lightsail; 512 MB RAM, 1 vCPU, 20 GB SSD; Amazon Linux 2<br/>
+      Hosts one real SERVAL agent and 20 dummy SERVAL agents (manually executed agents).
+    </li>
+  </ul>
+</div>
+
+<h3 ID="3.2.4">3.2.4 Evaluation Results</h3>
+<div class="topic">
+  SERVAL server : Worked normally for 2 years and 7 months without any service downtime.<br/>
+  Two real agents : Worked normally for 2 years and 7 months without any service downtime.<br/>
+  Dummy Agents: Some agents terminated within a few months, while others worked for more than one year.
+                However, all agents eventually went down within two years.<br/>
+</div>
 
 </div>
 </BODY>
