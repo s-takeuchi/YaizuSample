@@ -94,7 +94,7 @@ securemode=true
 
 </div><p>
 
-<H2 ID="3.2">3.2 Long-term Evaluation</H2>
+<H2 ID="3.2">3.2 Long-term Evaluation (From December 12, 2021, to July 20, 2024)</H2>
 In order to evaluate SERVAL's availability, a long-term evaluation has been performed.
 This section shows the results of the evaluation.
 
@@ -126,15 +126,51 @@ This section shows the results of the evaluation.
       Hosts one real SERVAL agent and 20 dummy SERVAL agents (manually executed agents).
     </li>
   </ul>
+  Server configuration:
+  <ul>
+    <li>Polling interval : 30 sec</li>
+    <li>Status acquisition interval : 60 min</li>
+    <li>SSL/TLS communication : Enabled</li>
+  </ul>
 </div>
 
 <h3 ID="3.2.4">3.2.4 Evaluation Results</h3>
 <div class="topic">
   SERVAL server : Worked normally for 2 years and 7 months without any service downtime.<br/>
-  Two real agents : Worked normally for 2 years and 7 months without any service downtime.<br/>
+  Two real agents : Worked for 2 years and 7 months; however, one agent restarted
+                    its service after an irregular service-down on July 17, 2023.<br/>
   Dummy Agents: Some agents terminated within a few months, while others worked for more than one year.
-                However, all agents eventually went down within two years.<br/>
-</div>
+                However, all agents eventually went down within two years.
+                Note that the dummy agent does not have an auto-restarting feature.<br/>
+  
+  The following table shows the last status notification time for each dummy agent. 
+  It can be assumed that each agent went down after sending its last status notification.<br/>
+  <p></p>
+  <table class="tblstyle">
+    <tr><th>Dummy agent name</th><th>Last status notification time</th></tr>
+    <tr><td>serval-dev01</td><td>2023/07/18 00:46:25</td></tr>
+    <tr><td>serval-dev02</td><td>2023/04/10 09:46:26</td></tr>
+    <tr><td>serval-dev03</td><td>2022/07/30 06:46:25</td></tr>
+    <tr><td>serval-dev04</td><td>2023/07/18 00:46:25</td></tr>
+    <tr><td>serval-dev05</td><td>2023/07/18 00:46:24</td></tr>
+    <tr><td>serval-dev06</td><td>2022/03/31 12:46:24</td></tr>
+    <tr><td>serval-dev07</td><td>2023/07/18 00:46:24</td></tr>
+    <tr><td>serval-dev08</td><td>2023/07/18 00:46:24</td></tr>
+    <tr><td>serval-dev09</td><td>2023/07/18 00:46:25</td></tr>
+    <tr><td>serval-dev10</td><td>2022/03/25 04:46:26</td></tr>
+    <tr><td>serval-dev11</td><td>2022/05/30 02:46:26</td></tr>
+    <tr><td>serval-dev12</td><td>2022/09/10 02:46:25</td></tr>
+    <tr><td>serval-dev13</td><td>2023/07/18 00:46:26</td></tr>
+    <tr><td>serval-dev14</td><td>2022/11/13 23:46:26</td></tr>
+    <tr><td>serval-dev15</td><td>2023/01/16 03:46:25</td></tr>
+    <tr><td>serval-dev16</td><td>2022/10/18 08:46:25</td></tr>
+    <tr><td>serval-dev17</td><td>2023/07/18 00:46:25</td></tr>
+    <tr><td>serval-dev18</td><td>2023/07/18 00:46:27</td></tr>
+    <tr><td>serval-dev19</td><td>2022/08/20 12:46:25</td></tr>
+    <tr><td>serval-dev20</td><td>2022/06/18 23:46:27</td></tr>
+  </table>
+
+ </div>
 
 </div>
 </BODY>
