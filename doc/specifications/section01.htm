@@ -22,17 +22,17 @@ sample.conf can handle following properties.
 <tr><th>Property name</th><th>Description</th></tr>
 <tr><td>servicehost</td><td>IP address or host name of server where listen to client connection.</td></tr>
 <tr><td>serviceport</td><td>Port number where listen to client connection.</td></tr>
-<tr><td>workerthreads</td><td>Number of worker threads handle client connection.<br/>
-                              This number includes threads for status acquisition and threads for operation.<br/>
-                              n (2 =&lt; n =&lt; 250)<br/>(defalult=190)</td></tr>
-<tr><td>threadinterval</td><td>Wait time in milliseconds which each thread takes.<br/>(default=200)</td></tr>
-<tr><td>securemode</td><td>Enable SSL/TLS connection.<br/>true or false can be specified.<br/>(defauld=false)</td></tr>
-<tr><td>privatekey</td><td>Path to private key file for secure connection.<br/></td></tr>
-<tr><td>certificate</td><td>Path to certificate file for secure connection.<br/></td></tr>
-<tr><td>trustedcert</td><td>Path to trusted certificate file for secure connection.<br/>This is used by StkWebAppCmd.</td></tr>
-<tr><td>workdir</td><td>Work directory<br/>(default=Same directory with executable file)</td></tr>
-</table><br/>
-An example of sample.conf is shown below.<br/>
+<tr><td>workerthreads</td><td>Number of worker threads handle client connection.<br>
+                              This number includes threads for status acquisition and threads for operation.<br>
+                              n (2 =&lt; n =&lt; 250)<br>(defalult=190)</td></tr>
+<tr><td>threadinterval</td><td>Wait time in milliseconds which each thread takes.<br>(default=200)</td></tr>
+<tr><td>securemode</td><td>Enable SSL/TLS connection.<br>true or false can be specified.<br>(defauld=false)</td></tr>
+<tr><td>privatekey</td><td>Path to private key file for secure connection.<br></td></tr>
+<tr><td>certificate</td><td>Path to certificate file for secure connection.<br></td></tr>
+<tr><td>trustedcert</td><td>Path to trusted certificate file for secure connection.<br>This is used by StkWebAppCmd.</td></tr>
+<tr><td>workdir</td><td>Work directory<br>(default=Same directory with executable file)</td></tr>
+</table><br>
+An example of sample.conf is shown below.<br>
 <table class="tblstyle"><tr><td>
 <pre><code>servicehost=localhost
 serviceport=8081
@@ -57,12 +57,12 @@ agent.conf can handle following properties.
 <tr><td>targetport</td><td>Port number where agent connects tos</td></tr>
 <tr><td>workdir</td><td>Work directory</td></tr>
 <tr><td>hostname</td><td>Host name which server recognizes.</td></tr>
-<tr><td>scriptencode</td><td>Encode type of script. UTF8 or SJIS can be specified.<br/>
+<tr><td>scriptencode</td><td>Encode type of script. UTF8 or SJIS can be specified.<br>
                              In case you use Linux and SJIS specification, preliminaly you need to install ja_JP.SJIS locale to your system.</td></tr>
-<tr><td>securemode</td><td>Enable SSL/TLS connection.<br/>true or false can be specified.<br/>(defauld=false)</td></tr>
-<tr><td>trustedcert</td><td>Path to trusted certificate file for secure connection.<br/></td></tr>
-</table><br/>
-An example of agent.conf is shown below.<br/>
+<tr><td>securemode</td><td>Enable SSL/TLS connection.<br>true or false can be specified.<br>(defauld=false)</td></tr>
+<tr><td>trustedcert</td><td>Path to trusted certificate file for secure connection.<br></td></tr>
+</table><br>
+An example of agent.conf is shown below.<br>
 <table class="tblstyle"><tr><td>
 <pre><code>targethost=localhost
 targetport=8081
@@ -78,31 +78,49 @@ trustedcert=C:\Program Files\Example\ca.crt</code></pre>
 <H2 ID="1.3">1.3 Data and configuration files</H2>
 <div class="topic">
 <p>
-YaizuSample agent uses following folders and files.<br/>
+YaizuSample agent uses following folders and files.<br>
 </p>
-Windows edition<br/>
+Windows edition<br>
 <ul>
-<li>&lt;Installation folder&gt;\servalagt.conf<br/>Properties flie of agent</li>
-<li>&lt;Installation folder&gt;\work<br/>Work folder of agent</li>
-</ul>Linux edition<br/>
+<li>&lt;Installation folder&gt;\servalagt.conf<br>Properties flie of agent</li>
+<li>&lt;Installation folder&gt;\work<br>Work folder of agent</li>
+</ul>Linux edition<br>
 <ul>
-<li>/etc/servalagt.conf<br/>Properties flie of agent</li>
-<li>/usr/share/servalagt<br/>Work folder of agent</li>
+<li>/etc/servalagt.conf<br>Properties flie of agent</li>
+<li>/usr/share/servalagt<br>Work folder of agent</li>
 </ul>
 
 <p>
-YaizuSample server uses following folders and files.<br/>
+YaizuSample server uses following folders and files.<br>
 </p>
-Windows edition<br/>
+Windows edition<br>
 <ul>
-<li>&lt;Installation folder&gt;\serval.conf<br/>Properties flie of server</li>
-<li>&lt;Installation folder&gt;\work<br/>Work folder of server</li>
-</ul>Linux edition<br/>
+<li>&lt;Installation folder&gt;\serval.conf<br>Properties flie of server</li>
+<li>&lt;Installation folder&gt;\work<br>Work folder of server</li>
+</ul>Linux edition<br>
 <ul>
-<li>/etc/serval.conf<br/>Properties flie of server</li>
-<li>/usr/share/serval<br/>Work folder of server</li>
+<li>/etc/serval.conf<br>Properties flie of server</li>
+<li>/usr/share/serval<br>Work folder of server</li>
 </ul>
 </div><p>
+
+
+<H2 ID="1.4">1.4 Agent Command Usage</H2>
+<div class="topic">
+The agent can be executed as a command. The command-line usage for execution is shown below.<br>
+<pre><code>
+agent destination_host_name_or_IP_addres  port_number  path_to_bucket  host_name  [trusted_certificate]
+</code></pre>
+If multiple agents need to be launched, create a batch file as follows.<br>
+<pre><code>
+echo off
+for /l %%i in (1,1,90) do (
+    if not exist hello%%i mkdir hello%%i
+    start /B agent serval.red-squirrels.net 8080 hello%%i hello%%i "C:\work\tmp\key\serval.cer"
+)
+</code></pre>
+Note: Create the folders 'hello1' to 'hello90' in advance.
+</div>
 
 
 </div>
