@@ -2045,54 +2045,39 @@ function initServal() {
     } else {
         setClientLanguage(0);
     }
-    showLoginModal(checkLogin);
+    showLoginModalAndCheck(doAfterLogin);
 }
 
-function checkLogin(dummyId, dummyPw) {
-    setAuthenticationToken(dummyId + ' ' + dummyPw);
-    apiCall('GET', '/api/user/', null, 'API_GET_USER', checkLoginAfterApiCall);
-}
+function doAfterLogin() {
+    userRole = responseData['API_GET_USER'].Data.User.Role;
 
-function checkLoginAfterApiCall() {
-    if (statusCode['API_GET_USER'] == -1 || statusCode['API_GET_USER'] == 0) {
-        setLoginResult(2);
-        return;
-    } else if (statusCode['API_GET_USER'] != 200) {
-        setLoginResult(1);
-        return;
-    } else {
-        userRole = responseData['API_GET_USER'].Data.User.Role;
+    let contents = [];
+    contents = [
+        { actApiName : "transDisplayAgentInfo()", title : 'Agent' },
+        { actApiName : "transDisplayFileMgmt()", title : "File" },
+        { actApiName : "transDisplayCommand()", title : 'Command' },
+        { actApiName : "transDisplayCommandResult()", title : 'Result' }
+    ];
+    iconAlwaysVisible();
+    initMainPage('SERVAL', 'squirrel.svg', contents, 'transDisplayDashboard()');
+    clearRsCommand();
 
-        let contents = [];
-        contents = [
-            { actApiName : "transDisplayAgentInfo()", title : 'Agent' },
-            { actApiName : "transDisplayFileMgmt()", title : "File" },
-            { actApiName : "transDisplayCommand()", title : 'Command' },
-            { actApiName : "transDisplayCommandResult()", title : 'Result' }
+    let usermenuContents = [];
+    if (userRole == 1) {
+        usermenuContents = [
+            { actApiName: 'transDisplayLogInfo()', title: getClientMessage('EVENT_LOG') },
+            { actApiName: 'transDisplayChgPassword()', title: getClientMessage('USER_CHG_PW') }
         ];
-        iconAlwaysVisible();
-        initMainPage('SERVAL', 'squirrel.svg', contents, 'transDisplayDashboard()');
-        clearRsCommand();
-
-        let usermenuContents = [];
-        if (userRole == 1) {
-            usermenuContents = [
-                { actApiName: 'transDisplayLogInfo()', title: getClientMessage('EVENT_LOG') },
-                { actApiName: 'transDisplayChgPassword()', title: getClientMessage('USER_CHG_PW') }
-            ];
-        } else {
-            usermenuContents = [
-                { actApiName: 'transDisplayLogInfo()', title: getClientMessage('EVENT_LOG') },
-                { actApiName: 'transDisplayUser()', title: getClientMessage('USER_MGMT') },
-                { actApiName: 'transDisplayChgPassword()', title: getClientMessage('USER_CHG_PW') },
-                { actApiName: 'transDisplayServerInfo()', title : getClientMessage('SERVER_INFO') }
-            ];
-        }
-        addRsUserMenu(usermenuContents);
-        setLoginResult(0);
-        transDisplayDashboard();
-        return;
+    } else {
+        usermenuContents = [
+            { actApiName: 'transDisplayLogInfo()', title: getClientMessage('EVENT_LOG') },
+            { actApiName: 'transDisplayUser()', title: getClientMessage('USER_MGMT') },
+            { actApiName: 'transDisplayChgPassword()', title: getClientMessage('USER_CHG_PW') },
+            { actApiName: 'transDisplayServerInfo()', title : getClientMessage('SERVER_INFO') }
+        ];
     }
+    addRsUserMenu(usermenuContents);
+    transDisplayDashboard();
 }
 
 function resizeComponent() {
