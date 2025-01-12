@@ -1,0 +1,12 @@
+x64/
+*.exe
+.vs/
+build/deployment/
+build/agent/
+build/server/
+build/webapp/
+build/setup_svr/Release/
+build/setup_svr/Debug/
+build/setup_agt/Release/
+build/setup_agt/Debug/
+*.user
