@@ -26,5 +26,6 @@ cd $BUILDDIR
 echo
 echo Test starts
 ./serval&
+sleep 3
 ./sampletest
 echo Test ends
