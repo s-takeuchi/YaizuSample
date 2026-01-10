@@ -129,6 +129,12 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_5612838F6658495FBD101340420BE876"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_57C451CFDB19463C8D890D6A5D89650F"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -201,13 +207,13 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_80BC413562B3488DB063EAD120F7CFD2"
+        "MsmKey" = "8:_7E308A3C80B44928961F69794D82DB29"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
-        "MsmKey" = "8:_876094B1770A41F0AD2FC03D85B0227C"
+        "MsmKey" = "8:_80BC413562B3488DB063EAD120F7CFD2"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -268,6 +274,12 @@
         "Entry"
         {
         "MsmKey" = "8:_AE260468F1104BBFA8EF4ECEB1FF41DF"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_AFA4E6D60EEC475F82FA37E397CDF7EC"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -376,6 +388,12 @@
         "Entry"
         {
         "MsmKey" = "8:_F23D895CF88F4153A5415C10994B18C7"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_F703D5506548468791AC67D972C16C08"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -882,6 +900,26 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_5612838F6658495FBD101340420BE876"
+            {
+            "SourcePath" = "8:..\\server\\docs\\SECURITY.md"
+            "TargetName" = "8:SECURITY.md"
+            "Tag" = "8:"
+            "Folder" = "8:_0F6A6CFC606B491F9792C564CC3F27B8"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_57C451CFDB19463C8D890D6A5D89650F"
             {
             "SourcePath" = "8:..\\server\\docs\\zlib.LICENSE"
@@ -1122,12 +1160,12 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_80BC413562B3488DB063EAD120F7CFD2"
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_7E308A3C80B44928961F69794D82DB29"
             {
-            "SourcePath" = "8:..\\server\\html\\bootstrap-4.4.1-dist\\js\\bootstrap.js.map"
-            "TargetName" = "8:bootstrap.js.map"
+            "SourcePath" = "8:..\\server\\docs\\CONTRIBUTING.md"
+            "TargetName" = "8:CONTRIBUTING.md"
             "Tag" = "8:"
-            "Folder" = "8:_97BBF0464A424B6AA07D795EDD0BAB5E"
+            "Folder" = "8:_0F6A6CFC606B491F9792C564CC3F27B8"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -1142,12 +1180,12 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_876094B1770A41F0AD2FC03D85B0227C"
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_80BC413562B3488DB063EAD120F7CFD2"
             {
-            "SourcePath" = "8:..\\server\\docs\\README"
-            "TargetName" = "8:README"
+            "SourcePath" = "8:..\\server\\html\\bootstrap-4.4.1-dist\\js\\bootstrap.js.map"
+            "TargetName" = "8:bootstrap.js.map"
             "Tag" = "8:"
-            "Folder" = "8:_0F6A6CFC606B491F9792C564CC3F27B8"
+            "Folder" = "8:_97BBF0464A424B6AA07D795EDD0BAB5E"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -1348,6 +1386,26 @@
             "TargetName" = "8:bootstrap.bundle.js"
             "Tag" = "8:"
             "Folder" = "8:_97BBF0464A424B6AA07D795EDD0BAB5E"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_AFA4E6D60EEC475F82FA37E397CDF7EC"
+            {
+            "SourcePath" = "8:..\\server\\docs\\README.md"
+            "TargetName" = "8:README.md"
+            "Tag" = "8:"
+            "Folder" = "8:_0F6A6CFC606B491F9792C564CC3F27B8"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -1708,6 +1766,26 @@
             "TargetName" = "8:bootstrap-reboot.css.map"
             "Tag" = "8:"
             "Folder" = "8:_870F872D462941D89217436F3A130BA9"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_F703D5506548468791AC67D972C16C08"
+            {
+            "SourcePath" = "8:..\\server\\docs\\CODE_OF_CONDUCT.md"
+            "TargetName" = "8:CODE_OF_CONDUCT.md"
+            "Tag" = "8:"
+            "Folder" = "8:_0F6A6CFC606B491F9792C564CC3F27B8"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
